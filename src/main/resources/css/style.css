@@ -1,0 +1,21 @@
+.title-text {
+    -fx-font-family: "ethnocentric rg.ttf";
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.normal-text {
+    -fx-font-family: "PixelOperator";
+    -fx-font-size: 16px;
+}
+
+.split-pane-divider {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-padding: 0;
+}
+
+.split-pane-divider .horizontal-grabber,
+.split-pane-divider .vertical-grabber {
+    -fx-background-color: transparent !important;
+}

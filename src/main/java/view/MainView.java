@@ -5,6 +5,7 @@ import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class MainView {
@@ -17,6 +18,8 @@ public class MainView {
 
             Pane root = loader.load();
             root.setStyle("-fx-background-color: white;");
+            Font.loadFont(getClass().getResource("/fonts/ethnocentric rg.ttf").toExternalForm(), 14);
+
 
             Scene scene = new Scene(root, 600, 400);
 
