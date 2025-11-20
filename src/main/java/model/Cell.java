@@ -1,58 +1,66 @@
 package model;
 
 /**
-* Abstract base class that represents a single logical cell on the board.
-* 
-* Every cell has:
-*  - a type (mine, question, surprise, empty)
-*  - its coordinates (row, column)
-*  - the number of adjacent mines (1-8 or 0)
-*  
-* The view/controller decide how to display and reveal the cell,
-* this class only stores the logical state.
-*/
+ * Abstract base class that represents a single logical cell on the board.
+ *
+ * A cell contains:
+ *   - its position (row, column)
+ *   - a logical type (mine, question, surprise, empty, number)
+ *   - the number of adjacent mines (0–8), which is calculated by the Board
+ *
+ * This class stores only the logical data.
+ * Rendering / UI behavior is handled elsewhere (View/Controller layers).
+ */
 public abstract class Cell {
 
- private final int row;
- private final int col;
- private int adjacentMines; // number of mines in the 8 neighbours
+    private final int row;      // The row of the cell on the board
+    private final int col;      // The column of the cell on the board
+    private int adjacentMines;  // How many mines exist around this cell (0–8)
 
- protected Cell(int row, int col) {
-     this.row = row;
-     this.col = col;
-     this.adjacentMines = 0;
- }
+    /**
+     * Base constructor. Must be called by all subclasses.
+     *
+     * @param row row index of this cell
+     * @param col column index of this cell
+     */
+    protected Cell(int row, int col) {
+        this.row = row;
+        this.col = col;
+        this.adjacentMines = 0; // default, will be updated later
+    }
 
- /**
-  * @return the logical type of this cell.
-  */
- public abstract CellType getType();
+    // @return the logical type of this cell (MINE, QUESTION, EMPTY, NUMBER, SURPRISE)
+    public abstract CellType getType();
 
- public int getRow() {
-     return row;
- }
+    // @return the row index of this cell
+    public int getRow() {
+        return row;
+    }
 
- public int getCol() {
-     return col;
- }
+    // @return the column index of this cell
+    public int getCol() {
+        return col;
+    }
 
- public int getAdjacentMines() {
-     return adjacentMines;
- }
+    //@return number of adjacent mines
+    public int getAdjacentMines() {
+        return adjacentMines;
+    }
 
- /**
-  * Sets the number of adjacent mines around this cell.
-  * This is calculated by the Board after it finishes placing mines.
-  */
- public void setAdjacentMines(int adjacentMines) {
-     this.adjacentMines = adjacentMines;
- }
+    /**
+     * Sets the number of adjacent mines.
+     * This is calculated by the Board only AFTER all mines are placed.
+     * @param adjacentMines number of mines around this cell
+     */
+    public void setAdjacentMines(int adjacentMines) {
+        this.adjacentMines = adjacentMines;
+    }
 
- /**
-  * Convenience method.
-  * return true if this cell is a mine.
-  */
- public boolean isMine() {
-     return getType() == CellType.MINE;
- }
+    /**
+     * Helper method to quickly check if this cell is a mine.
+     * @return true if cell type is MINE.
+     */
+    public boolean isMine() {
+        return getType() == CellType.MINE;
+    }
 }
