@@ -47,11 +47,7 @@ public abstract class Cell {
         return adjacentMines;
     }
 
-    /**
-     * Sets the number of adjacent mines.
-     * This is calculated by the Board only AFTER all mines are placed.
-     * @param adjacentMines number of mines around this cell
-     */
+   
     public void setAdjacentMines(int adjacentMines) {
         this.adjacentMines = adjacentMines;
     }
