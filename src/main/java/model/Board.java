@@ -205,7 +205,7 @@ public class Board {
      return cells[row][col];
  }
 
- /**
+ /*
   * Utility method for QA tests:
   * counts how many cells of the given type exist on the current board.
   */
