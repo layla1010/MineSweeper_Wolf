@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Board {
 
+    private final Difficulty difficulty;
     private final int rows;
     private final int cols;
     private final int mineCount;
@@ -14,11 +15,12 @@ public class Board {
     private final Cell[][] cells;
 
     public Board(Difficulty difficulty) {
+        this.difficulty = difficulty;
         this.rows = difficulty.getRows();
         this.cols = difficulty.getCols();
         this.mineCount = difficulty.getMines();
         this.questionCount = difficulty.getQuestions();
-        this.surpriseCount = difficulty.getSurprises();   // make sure Difficulty has this
+        this.surpriseCount = difficulty.getSurprises();
         this.cells = new Cell[rows][cols];
 
         initEmpty();
@@ -30,7 +32,7 @@ public class Board {
     private void initEmpty() {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                cells[r][c] = new EmptyCell(r, c);   // was (c, c) – bug, fixed
+                cells[r][c] = new EmptyCell(r, c);
             }
         }
     }
@@ -67,7 +69,7 @@ public class Board {
             }
         }
 
-        // --- Place surprise cells (on non-mine cells) ---
+        // --- Place surprise cells (on non-mine, non-question cells) ---
         int placedSurprises = 0;
         while (placedSurprises < surpriseCount && index < positions.size()) {
             int[] pos = positions.get(index++);
@@ -90,9 +92,9 @@ public class Board {
                 Cell cell = cells[r][c];
 
                 // skip “special” cells – they don't show numbers
-                if (cell.isMine() ||
-                    cell.getType() == CellType.QUESTION ||
-                    cell.getType() == CellType.SURPRISE) {
+                if (cell.isMine()
+                        || cell.getType() == CellType.QUESTION
+                        || cell.getType() == CellType.SURPRISE) {
                     continue;
                 }
 
@@ -111,7 +113,7 @@ public class Board {
                     numberCell.setAdjacentMines(count);
                     cells[r][c] = numberCell;
                 } else {
-                    // keep it as EmptyCell, but you can setAdjacentMines(0) explicitly if you want
+                    // keep it as EmptyCell and explicitly set 0
                     cell.setAdjacentMines(0);
                 }
             }
@@ -120,6 +122,12 @@ public class Board {
 
     private boolean inBounds(int r, int c) {
         return r >= 0 && r < rows && c >= 0 && c < cols;
+    }
+
+    // ---------- Getters used by controller / view / QA ----------
+
+    public Difficulty getDifficulty() {
+        return difficulty;
     }
 
     public int getRows() {
@@ -134,7 +142,31 @@ public class Board {
         return mineCount;
     }
 
+    public int getQuestionCount() {
+        return questionCount;
+    }
+
+    public int getSurpriseCount() {
+        return surpriseCount;
+    }
+
     public Cell getCell(int row, int col) {
+        if (!inBounds(row, col)) {
+            throw new IllegalArgumentException("Row/col out of range");
+        }
         return cells[row][col];
+    }
+
+    // Utility method for QA tests: counts how many cells of the given type exist
+    public int countCellsOfType(CellType type) {
+        int count = 0;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (cells[r][c].getType() == type) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 }
