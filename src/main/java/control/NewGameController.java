@@ -1,0 +1,191 @@
+package control;
+
+import java.io.File;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import model.Difficulty;
+import model.GameConfig;
+
+public class NewGameController {
+
+    @FXML private TextField player1Nickname;
+    @FXML private TextField player2Nickname;
+    @FXML private ToggleGroup difficultyGroup;
+    @FXML private ToggleButton easyToggle;
+    @FXML private ToggleButton medToggle;
+    @FXML private ToggleButton hardToggle;
+    @FXML private Rectangle recP1;
+    @FXML private Rectangle recP2;
+    @FXML private ImageView player1avatar;
+    @FXML private ImageView player2avatar;
+    @FXML private ImageView img1;
+    @FXML private ImageView img2;
+    @FXML private ImageView img3;
+    @FXML private ImageView img4;
+    @FXML private ImageView img5;
+    @FXML private ImageView img6;
+    @FXML private ImageView img7;
+    @FXML private ImageView img8;
+    @FXML private ImageView img9;
+    @FXML private ImageView img10;
+    @FXML private ImageView img11;
+    @FXML private ImageView img12;
+    @FXML private ImageView img13;
+
+    private boolean player1AvatarChosen = false;
+    private boolean player2AvatarChosen = false;
+    private int selectedPlayer = 1;
+
+    @FXML
+    private void initialize() {
+        selectPlayer(1);
+        setupAvatarThumbnails();
+    }
+
+    private void setupAvatarThumbnails() {
+        ImageView[] thumbs = {
+            img1, img2, img3, img4, img5, img6,
+            img7, img8, img9, img10, img11, img12, img13
+        };
+
+        for (ImageView iv : thumbs) {
+            if (iv != null) {
+                iv.setOnMouseClicked(e -> setAvatarFromImageView(iv));
+            }
+        }
+    }
+
+    private void setAvatarFromImageView(ImageView source) {
+        Image image = source.getImage();
+        if (image == null) return;
+
+        if (selectedPlayer == 1) {
+            player1avatar.setImage(image);
+            player1AvatarChosen = true;
+        } else {
+            player2avatar.setImage(image);
+            player2AvatarChosen = true;
+        }
+    }
+
+    @FXML
+    private void onPlayer1AreaClicked() {
+        selectPlayer(1);
+    }
+
+    @FXML
+    private void onPlayer2AreaClicked() {
+        selectPlayer(2);
+    }
+
+    private void selectPlayer(int player) {
+        this.selectedPlayer = player;
+        if (recP1 != null && recP2 != null) {
+            if (player == 1) {
+                recP1.setStroke(Color.web("#FFD0E4"));
+                recP2.setStroke(Color.web("#483a7e"));
+            } else {
+                recP1.setStroke(Color.web("#483a7e"));
+                recP2.setStroke(Color.web("#FFD0E4"));
+            }
+        }
+    }
+
+    @FXML
+    private void onStartGameClicked() {
+
+        String nickname1 = player1Nickname.getText();
+        String nickname2 = player2Nickname.getText();
+
+        if (nickname1 == null || nickname1.trim().isEmpty() ||
+            nickname2 == null || nickname2.trim().isEmpty()) {
+            showError("Please enter both players names.");
+            return;
+        }
+
+        Toggle selectedToggle = difficultyGroup.getSelectedToggle();
+        if (selectedToggle == null) {
+            showError("Please select a difficulty level.");
+            return;
+        }
+
+        if (!player1AvatarChosen || !player2AvatarChosen) {
+            showError("Please select an avatar for both players.");
+            return;
+        }
+
+        Difficulty difficulty;
+        if (selectedToggle == easyToggle) {
+            difficulty = Difficulty.EASY;
+        } else if (selectedToggle == medToggle) {
+            difficulty = Difficulty.MEDIUM;
+        } else {
+            difficulty = Difficulty.HARD;
+        }
+
+        GameConfig config = new GameConfig(
+            nickname1.trim(),
+            nickname2.trim(),
+            difficulty
+        );
+
+        System.out.println("player 1 nickname is: " + config.getPlayer1Nickname());
+        System.out.println("Player 2 nickname: " + config.getPlayer2Nickname());
+        System.out.println("Difficulty: " + config.getDifficulty());
+        System.out.println("Rows: " + config.getRows());
+        System.out.println("Cols: " + config.getCols());
+        System.out.println("Initial lives: " + config.getInitialLives());
+        System.out.println("Mines: " + config.getMines());
+        System.out.println("Questions: " + config.getQuestions());
+        System.out.println("Surprises: " + config.getSurprises());
+    }
+
+    @FXML
+    private void onPlus() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose Avatar Image");
+        fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+
+        Stage stage = null;
+        if (player1avatar != null && player1avatar.getScene() != null) {
+            stage = (Stage) player1avatar.getScene().getWindow();
+        }
+
+        File file = (stage == null)
+            ? fileChooser.showOpenDialog(null)
+            : fileChooser.showOpenDialog(stage);
+
+        if (file != null) {
+            Image img = new Image(file.toURI().toString());
+            if (selectedPlayer == 1) {
+                player1avatar.setImage(img);
+                player1AvatarChosen = true;
+            } else {
+                player2avatar.setImage(img);
+                player2AvatarChosen = true;
+            }
+        }
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Input Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}
