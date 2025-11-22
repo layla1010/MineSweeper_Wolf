@@ -2,7 +2,6 @@ package control;
 
 import model.Board;
 import model.Cell;
-import model.CellType;
 import model.Difficulty;
 import model.GameConfig;
 import javafx.fxml.FXML;
