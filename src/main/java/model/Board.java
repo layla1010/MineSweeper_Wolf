@@ -57,7 +57,7 @@ public class Board {
             cells[r][c] = new MineCell(r, c);
         }
 
-        // --- Place question cells (on non-mine cells) ---
+        // --- Place question cells ---
         int placedQuestions = 0;
         while (placedQuestions < questionCount && index < positions.size()) {
             int[] pos = positions.get(index++);
@@ -69,7 +69,7 @@ public class Board {
             }
         }
 
-        // --- Place surprise cells (on non-mine, non-question cells) ---
+        // --- Place surprise cells ---
         int placedSurprises = 0;
         while (placedSurprises < surpriseCount && index < positions.size()) {
             int[] pos = positions.get(index++);
@@ -91,7 +91,7 @@ public class Board {
             for (int c = 0; c < cols; c++) {
                 Cell cell = cells[r][c];
 
-                // skip “special” cells – they don't show numbers
+                // skip special cells
                 if (cell.isMine()
                         || cell.getType() == CellType.QUESTION
                         || cell.getType() == CellType.SURPRISE) {
@@ -108,12 +108,10 @@ public class Board {
                 }
 
                 if (count > 0) {
-                    // convert this empty cell into a NumberCell
                     NumberCell numberCell = new NumberCell(r, c);
                     numberCell.setAdjacentMines(count);
                     cells[r][c] = numberCell;
                 } else {
-                    // keep it as EmptyCell and explicitly set 0
                     cell.setAdjacentMines(0);
                 }
             }
@@ -124,7 +122,7 @@ public class Board {
         return r >= 0 && r < rows && c >= 0 && c < cols;
     }
 
-    // ---------- Getters used by controller / view / QA ----------
+    // ---------- Getters ----------
 
     public Difficulty getDifficulty() {
         return difficulty;
@@ -157,7 +155,6 @@ public class Board {
         return cells[row][col];
     }
 
-    // Utility method for QA tests: counts how many cells of the given type exist
     public int countCellsOfType(CellType type) {
         int count = 0;
         for (int r = 0; r < rows; r++) {
