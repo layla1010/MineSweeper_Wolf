@@ -24,11 +24,11 @@ public class Board {
  private final Difficulty difficulty;
  private final int rows;
  private final int cols;
+ 
 
  private final int mineCount;
  private final int questionCount;
  private final int surpriseCount;
-
  private final Cell[][] cells;
  private final Random random;
 
