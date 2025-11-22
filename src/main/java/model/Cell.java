@@ -42,12 +42,11 @@ public abstract class Cell {
         return col;
     }
 
-    //@return number of adjacent mines
+    // @return number of adjacent mines
     public int getAdjacentMines() {
         return adjacentMines;
     }
 
-   
     public void setAdjacentMines(int adjacentMines) {
         this.adjacentMines = adjacentMines;
     }

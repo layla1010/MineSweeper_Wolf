@@ -56,6 +56,19 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <!-- Added By Jihad-->
+            
+            <plugin>
+    			<groupId>org.openjfx</groupId>
+    			<artifactId>javafx-maven-plugin</artifactId>
+    			<version>0.0.8</version>
+    			<configuration>
+        			<mainClass>com.minesweeper.Main</mainClass>
+    			</configuration>
+			</plugin>
+			<!-- Added By Jihad-->
+            
 
         </plugins>
     </build>
