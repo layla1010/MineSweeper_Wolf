@@ -16,79 +16,86 @@ public class Board {
     public Board(Difficulty difficulty) {
         this.rows = difficulty.getRows();
         this.cols = difficulty.getCols();
-        this.mineCount = difficulty.getMineCount();
-        this.questionCount = difficulty.getQuestionCount();
-        this.surpriseCount = difficulty.getSurpriseCount();
+        this.mineCount = difficulty.getMines();
+        this.questionCount = difficulty.getQuestions();
+        this.surpriseCount = difficulty.getSurprises();   // make sure Difficulty has this
         this.cells = new Cell[rows][cols];
 
         initEmpty();
         placeRandomSpecialCells();
         computeNeighborNumbers();
     }
-    //fill an empty board
+
+    // Fill board with base EmptyCells
     private void initEmpty() {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                cells[r][c] = new Cell();
+                cells[r][c] = new EmptyCell(r, c);   // was (c, c) – bug, fixed
             }
         }
     }
 
-    //Method purpose: randomly placing the Mines, Question cells, and Surprise cells on the board.
+    // Randomly place mines, questions, and surprises
     private void placeRandomSpecialCells() {
-        //create list of all coordinates: loop through every row and every column and store each coordinate as:[r,c]
         List<int[]> positions = new ArrayList<>();
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 positions.add(new int[]{r, c});
             }
         }
-        //now positions contains all possible cell location but shuffled!
-        
-        //Here the list is randomly mixed, so the order becomes unpredictable
-        Collections.shuffle(positions);
 
+        Collections.shuffle(positions);
         int index = 0;
 
-        //mines
+        // --- Place mines ---
         for (int i = 0; i < mineCount; i++, index++) {
             int[] pos = positions.get(index);
-            cells[pos[0]][pos[1]].setType(CellType.MINE);
+            int r = pos[0];
+            int c = pos[1];
+            cells[r][c] = new MineCell(r, c);
         }
 
-        //question marks
-        for (int i = 0; i < questionCount; i++, index++) {
-            int[] pos = positions.get(index);
-            if (!cells[pos[0]][pos[1]].isMine()) {
-                cells[pos[0]][pos[1]].setType(CellType.QUESTION);
+        // --- Place question cells (on non-mine cells) ---
+        int placedQuestions = 0;
+        while (placedQuestions < questionCount && index < positions.size()) {
+            int[] pos = positions.get(index++);
+            int r = pos[0];
+            int c = pos[1];
+            if (!cells[r][c].isMine()) {
+                cells[r][c] = new QuestionCell(r, c);
+                placedQuestions++;
             }
         }
 
-        //surprise cells
-        for (int i = 0; i < surpriseCount; i++, index++) {
-            int[] pos = positions.get(index);
-            if (!cells[pos[0]][pos[1]].isMine()) {
-                cells[pos[0]][pos[1]].setType(CellType.SURPRISE);
+        // --- Place surprise cells (on non-mine cells) ---
+        int placedSurprises = 0;
+        while (placedSurprises < surpriseCount && index < positions.size()) {
+            int[] pos = positions.get(index++);
+            int r = pos[0];
+            int c = pos[1];
+            if (!cells[r][c].isMine() && cells[r][c].getType() != CellType.QUESTION) {
+                cells[r][c] = new SurpriseCell(r, c);
+                placedSurprises++;
             }
         }
     }
 
-    //Method purpose: it calculates how many adjacent mines each normal cell has
+    // Calculate how many adjacent mines each normal cell has
     private void computeNeighborNumbers() {
-    	//These two arrays represent the 8 directions around a cell:
         int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
         int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
-        //-1,-1: up left, -1,0: up center, -1,1: up right
-        //0,-1: left, 0,1: right
-        //1,-1: down left, 1,0: down center, 1,1: down right
-        
+
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 Cell cell = cells[r][c];
-                //skip cells that are non numbered!
-                if (cell.isMine() || cell.getType() == CellType.QUESTION || cell.getType() == CellType.SURPRISE) {
+
+                // skip “special” cells – they don't show numbers
+                if (cell.isMine() ||
+                    cell.getType() == CellType.QUESTION ||
+                    cell.getType() == CellType.SURPRISE) {
                     continue;
                 }
+
                 int count = 0;
                 for (int i = 0; i < 8; i++) {
                     int nr = r + dr[i];
@@ -97,12 +104,20 @@ public class Board {
                         count++;
                     }
                 }
-                cell.setNeighborMines(count);
+
+                if (count > 0) {
+                    // convert this empty cell into a NumberCell
+                    NumberCell numberCell = new NumberCell(r, c);
+                    numberCell.setAdjacentMines(count);
+                    cells[r][c] = numberCell;
+                } else {
+                    // keep it as EmptyCell, but you can setAdjacentMines(0) explicitly if you want
+                    cell.setAdjacentMines(0);
+                }
             }
         }
     }
 
-    //to ensure we don't read outside the board
     private boolean inBounds(int r, int c) {
         return r >= 0 && r < rows && c >= 0 && c < cols;
     }
@@ -123,4 +138,3 @@ public class Board {
         return cells[row][col];
     }
 }
-

@@ -45,12 +45,5 @@ public enum Difficulty {
 	public int getSurprises() {
 		return surprises;
 	}
-
-    public int getSurpriseCount() {
-        return switch (this) {
-            case EASY -> 2;
-            case MEDIUM -> 3;
-            case HARD -> 4;
-        };
-    }
+}
 

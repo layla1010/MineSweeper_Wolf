@@ -1,8 +1,12 @@
 package control;
 
 import java.io.File;
+import java.io.IOException;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
@@ -136,9 +140,9 @@ public class NewGameController {
         }
 
         GameConfig config = new GameConfig(
-            nickname1.trim(),
-            nickname2.trim(),
-            difficulty
+                nickname1.trim(),
+                nickname2.trim(),
+                difficulty
         );
 
         System.out.println("player 1 nickname is: " + config.getPlayer1Nickname());
@@ -150,6 +154,24 @@ public class NewGameController {
         System.out.println("Mines: " + config.getMines());
         System.out.println("Questions: " + config.getQuestions());
         System.out.println("Surprises: " + config.getSurprises());
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/board_view.fxml"));
+            Parent root = loader.load();
+
+            // pass GameConfig to GameController
+            GameController controller = loader.getController();
+            controller.init(config);
+
+            // switch to game screen
+            Stage stage = (Stage) player1Nickname.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Failed to start the game due to an internal error.");
+        }
     }
 
     @FXML

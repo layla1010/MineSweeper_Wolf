@@ -1,4 +1,4 @@
-package controler;
+package control;
 
 import model.Board;
 import model.Cell;
@@ -16,13 +16,12 @@ import javafx.scene.layout.RowConstraints;
 
 public class GameController {
 
-    //IDs for FXML elements
     @FXML private GridPane player1Grid;
     @FXML private GridPane player2Grid;
     @FXML private Label player1BombsLeftLabel;
     @FXML private Label player2BombsLeftLabel;
     @FXML private Label difficultyLabel;
-    @FXML private Label timeLabel;   //not yet functional, we’ll set initial text
+    @FXML private Label timeLabel;
     @FXML private Label scoreLabel;
 
     private Difficulty difficulty;
@@ -32,32 +31,39 @@ public class GameController {
     private int sharedHearts;
     private int score;
 
-    //Called automatically after FXML is loaded
-    @FXML
-    private void initialize() {
-        GameConfig config = GameConfig.getCurrentOrDefault();
+    private GameConfig config;
+
+    /**
+     * Called by NewGameController after FXML is loaded.
+     */
+    public void init(GameConfig config) {
+        this.config = config;
         this.difficulty = config.getDifficulty();
 
         this.board1 = new Board(difficulty);
         this.board2 = new Board(difficulty);
 
-        this.sharedHearts = difficulty.getStartingHearts();
+        this.sharedHearts = difficulty.getInitialLives();
         this.score = 0;
 
-        initLabels(config);
+        initLabels();
         buildGridForPlayer(player1Grid, board1, true);
         buildGridForPlayer(player2Grid, board2, false);
     }
 
-    private void initLabels(GameConfig config) {
-        difficultyLabel.setText("Difficulty: " + difficulty.name().charAt(0) +
+    private void initLabels() {
+        difficultyLabel.setText("Difficulty: " +
+                difficulty.name().charAt(0) +
                 difficulty.name().substring(1).toLowerCase());
-        timeLabel.setText("Time: 00:00"); //timer is not implemented yet
 
-        player1BombsLeftLabel.setText(config.getPlayer1Name() +
-                ", Bombs left: " + board1.getMineCount());
-        player2BombsLeftLabel.setText(config.getPlayer2Name() +
-                ", Bombs left: " + board2.getMineCount());
+        timeLabel.setText("Time: 00:00");
+
+        player1BombsLeftLabel.setText(
+                config.getPlayer1Nickname() + ", Bombs left: " + board1.getMineCount()
+        );
+        player2BombsLeftLabel.setText(
+                config.getPlayer2Nickname() + ", Bombs left: " + board2.getMineCount()
+        );
 
         scoreLabel.setText("Score: " + score);
     }
@@ -70,7 +76,6 @@ public class GameController {
         int rows = board.getRows();
         int cols = board.getCols();
 
-        //make all cells same size (percentage)
         double colPercent = 100.0 / cols;
         double rowPercent = 100.0 / rows;
 
@@ -88,7 +93,6 @@ public class GameController {
             grid.getRowConstraints().add(rc);
         }
 
-        //Add buttons
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 Button cellButton = createCellButton(board, r, c, isPlayer1);
@@ -103,7 +107,6 @@ public class GameController {
         button.setPrefSize(25, 25);
         button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         button.setStyle("-fx-background-color: #222; -fx-text-fill: #ffffff;");
-
         button.setOnAction(event -> handleCellClick(board, row, col, button, isPlayer1));
         return button;
     }
@@ -115,7 +118,7 @@ public class GameController {
             case MINE -> {
                 button.setText("X");
                 button.setStyle("-fx-background-color: red; -fx-text-fill: white;");
-                sharedHearts = Math.max(0, sharedHearts - 1); //only to understand what happens to shared lives
+                sharedHearts = Math.max(0, sharedHearts - 1);
             }
             case QUESTION -> {
                 button.setText("?");
@@ -125,10 +128,10 @@ public class GameController {
             case SURPRISE -> {
                 button.setText("🎁");
                 button.setStyle("-fx-background-color: #444; -fx-text-fill: yellow;");
-                score += 2; // example rule
+                score += 2;
             }
             case NUMBER -> {
-                int n = cell.getNeighborMines();
+                int n = cell.getAdjacentMines();
                 button.setText(String.valueOf(n));
                 button.setDisable(true);
                 score += 1;
@@ -143,18 +146,14 @@ public class GameController {
         scoreLabel.setText("Score: " + score);
     }
 
-    //Default for now
     @FXML
     private void onExitBtnClicked() {
-    	System.out.println("Exit clicked but not implemented yet:)");
-    	System.exit(0);
-        
+        System.out.println("Exit clicked but not implemented yet:)");
+        System.exit(0);
     }
 
     @FXML
     private void onHelpBtnClicked() {
-        //show a dialog or help window
         System.out.println("Help clicked but not implemented yet:)");
     }
 }
-
