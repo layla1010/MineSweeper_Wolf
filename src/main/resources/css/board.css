@@ -1,0 +1,60 @@
+/* Base tile (unrevealed) */
+.cell-tile {
+    -fx-background-color: linear-gradient(#121726, #050814);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #1f2937;
+    -fx-border-width: 1.5;
+    -fx-text-fill: #f9fafb;
+    -fx-font-family: "System";
+    -fx-font-size: 13px;
+    -fx-padding: 0;
+}
+
+/* Hover / click for nice feel */
+.cell-tile:hover {
+    -fx-background-color: linear-gradient(#20263a, #0b1020);
+    -fx-cursor: hand;
+}
+
+.cell-tile:pressed {
+    -fx-background-color: #02030a;
+    -fx-translate-y: 1;
+}
+
+/* States: hidden vs revealed */
+.cell-hidden {
+    /* same as base or slightly brighter border */
+}
+
+.cell-revealed {
+    -fx-background-color: #0b1220;
+    -fx-border-color: #374151;
+}
+
+/* Mines */
+.cell-mine {
+    -fx-background-color: #3b0213;
+    -fx-border-color: #fb7185;
+    -fx-text-fill: #fecaca;
+}
+
+/* Numbers */
+.cell-number {
+    -fx-text-fill: #93c5fd;
+}
+
+/* Empty */
+.cell-empty {
+    -fx-text-fill: transparent;
+}
+
+/* Question cells */
+.cell-question {
+    -fx-text-fill: #facc15;
+}
+
+/* Surprise cells */
+.cell-surprise {
+    -fx-text-fill: #a855f7;
+}

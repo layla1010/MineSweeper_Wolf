@@ -19,7 +19,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="750.0" maxWidth="1400.0" prefHeight="750.0" prefWidth="1201.0" style="-fx-background-color: #050814;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.NewGameController">
+<GridPane maxHeight="750.0" maxWidth="1400.0" prefHeight="750.0" prefWidth="1201.0" style="-fx-background-color: #050814;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.NewGameController">
 
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="400.0" prefWidth="400.0" />
@@ -63,49 +63,49 @@
                             </toggleGroup>
                         </ToggleButton>
 
-                        <Sphere layoutX="195.0" layoutY="28.0" onMouseClicked="#playClickSound" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(213,255,0,0.85), 32, 0.65, 0, 0);" styleClass="difficulty-toggle">
+                        <Sphere layoutX="195.0" layoutY="37.0" onMouseClicked="#onEasyCardClicked" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(213,255,0,0.85), 32, 0.65, 0, 0);" styleClass="difficulty-toggle">
                             <material>
                                 <PhongMaterial diffuseColor="#D5FF00" specularColor="#F5FF7A" />
                             </material>
                         </Sphere>
 
-                        <Text fill="#D5FF00" layoutX="178.0" layoutY="53.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="EASY">
+                        <Text fill="#D5FF00" layoutX="179.0" layoutY="62.0" onMouseClicked="#onEasyCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="EASY">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="71.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="91.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Grid Size                                                                            9x9" wrappingWidth="314.9">
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="71.0" onMouseClicked="#onEasyCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="91.0" onMouseClicked="#onEasyCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Grid Size                                                                            9x9" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="106.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="141.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="176.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="211.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="106.0" onMouseClicked="#onEasyCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="141.0" onMouseClicked="#onEasyCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="176.0" onMouseClicked="#onEasyCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="211.0" onMouseClicked="#onEasyCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="126.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Lives                                                                                     10" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="126.0" onMouseClicked="#onEasyCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Lives                                                                                     10" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="160.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Mines                                                 10 (for each board)" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="160.0" onMouseClicked="#onEasyCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Mines                                                 10 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="195.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Questions                                          6 (for each board)" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="195.0" onMouseClicked="#onEasyCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Questions                                          6 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="231.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Surprises                                           2 (for each board)" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="231.0" onMouseClicked="#onEasyCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Surprises                                           2 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
@@ -117,49 +117,49 @@
                     <children>
                         <ToggleButton fx:id="medToggle" layoutY="7.0" maxHeight="253.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" style="-fx-border-radius: 40; -fx-background-radius: 40; -fx-background-color: #0B1226;" styleClass="difficulty-toggle" toggleGroup="$difficultyGroup" />
 
-                        <Text fill="#FF9F31" layoutX="172.0" layoutY="62.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Medium">
+                        <Text fill="#FF9F31" layoutX="172.0" layoutY="62.0" onMouseClicked="#onMediumCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Medium">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Sphere layoutX="195.0" layoutY="37.0" onMouseClicked="#playClickSound" radius="15.0" styleClass="difficulty-toggle">
+                        <Sphere layoutX="195.0" layoutY="37.0" onMouseClicked="#onMediumCardClicked" radius="15.0" styleClass="difficulty-toggle">
                             <material>
                                 <PhongMaterial diffuseColor="#FF9F31" specularColor="#FFD097" />
                             </material>
                         </Sphere>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="71.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="107.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="142.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="177.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="212.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="71.0" onMouseClicked="#onMediumCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="107.0" onMouseClicked="#onMediumCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="142.0" onMouseClicked="#onMediumCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="177.0" onMouseClicked="#onMediumCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="212.0" onMouseClicked="#onMediumCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="91.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Text                                                                                13x13" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="91.0" onMouseClicked="#onMediumCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Text                                                                                13x13" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="126.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Lives                                                                                           8" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="126.0" onMouseClicked="#onMediumCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Lives                                                                                           8" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="161.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Mines                                                 26(for each board)" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="161.0" onMouseClicked="#onMediumCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Mines                                                 26(for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="196.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Questions                                          7 (for each board)" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="196.0" onMouseClicked="#onMediumCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Questions                                          7 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="231.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Surprises                                           3 (for each board)" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="231.0" onMouseClicked="#onMediumCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Surprises                                           3 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
@@ -171,49 +171,49 @@
                     <children>
                         <ToggleButton fx:id="hardToggle" layoutY="7.0" maxHeight="253.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" style="-fx-border-radius: 40;  -fx-background-radius: 40; -fx-background-color: #0B1226;" styleClass="difficulty-toggle" toggleGroup="$difficultyGroup" />
 
-                        <Sphere layoutX="195.0" layoutY="37.0" onMouseClicked="#playClickSound" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(255,59,95,0.9), 38, 0.7, 0, 0); " styleClass="difficulty-toggle">
+                        <Sphere layoutX="195.0" layoutY="37.0" onMouseClicked="#onHardCardClicked" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(255,59,95,0.9), 38, 0.7, 0, 0); " styleClass="difficulty-toggle">
                             <material>
                                 <PhongMaterial diffuseColor="#FF375F" specularColor="#FF7DA3" />
                             </material>
                         </Sphere>
 
-                        <Text fill="#FF375F" layoutX="176.0" layoutY="62.0" onMouseClicked="#playClickSound" strokeType="INSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="HARD">
+                        <Text fill="#FF375F" layoutX="176.0" layoutY="62.0" onMouseClicked="#onHardCardClicked" strokeType="INSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="HARD">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="71.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="106.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="141.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="176.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="211.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="71.0" onMouseClicked="#onHardCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="106.0" onMouseClicked="#onHardCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="141.0" onMouseClicked="#onHardCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="176.0" onMouseClicked="#onHardCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="211.0" onMouseClicked="#onHardCardClicked" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="91.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Text                                                                                 16x16" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="91.0" onMouseClicked="#onHardCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Text                                                                                 16x16" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="125.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Lives                                                                                          6" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="125.0" onMouseClicked="#onHardCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Lives                                                                                          6" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="160.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Mines                                                  44(for each board)" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="160.0" onMouseClicked="#onHardCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Mines                                                  44(for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="195.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Questions                                        11(for each board)" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="195.0" onMouseClicked="#onHardCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Questions                                        11(for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#8B94C4" layoutX="38.0" layoutY="230.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Surprises                                            4(for each board)" wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="230.0" onMouseClicked="#onHardCardClicked" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Surprises                                            4(for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>

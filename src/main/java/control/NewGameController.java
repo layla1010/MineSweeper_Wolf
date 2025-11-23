@@ -61,6 +61,12 @@ public class NewGameController {
 
     
     private Clip clickClip;
+    
+    private Stage stage;
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 
     @FXML
     private void initialize() {
@@ -155,16 +161,20 @@ public class NewGameController {
     
     @FXML
     private void onEasyCardClicked() {
-        easyToggle.fire();  // behaves exactly like clicking the toggle
+        playClickSound();     
+        easyToggle.fire();    
     }
+
 
     @FXML
     private void onMediumCardClicked() {
+        playClickSound();     
         medToggle.fire();
     }
 
     @FXML
     private void onHardCardClicked() {
+        playClickSound();     
         hardToggle.fire();
     }
 
@@ -221,14 +231,12 @@ public class NewGameController {
         System.out.println("Surprises: " + config.getSurprises());
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/board_view_jihad.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/board_view.fxml"));
             Parent root = loader.load();
 
-            // pass GameConfig to GameController
             GameController controller = loader.getController();
             controller.init(config);
 
-            // switch to game screen
             Stage stage = (Stage) player1Nickname.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
