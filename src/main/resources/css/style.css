@@ -3,9 +3,21 @@
     -fx-faint-focus-color: transparent;
 }
 
-.difficulty-toggle:selected {
-    -fx-effect: dropshadow(gaussian, #a95c77, 25, 0.6, 0.5, 0.5);
+.difficulty-toggle {
+	-fx-cursor: hand;
+    -fx-background-color: #0B1226;
+    -fx-text-fill: #F6F7FF;
+
+    -fx-border-color: #274B8E;   
+    -fx-border-width: 2;
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
 }
+
+.difficulty-toggle:selected {
+    -fx-border-color: #35E0FF;   
+}
+
 
 
 .title-text {

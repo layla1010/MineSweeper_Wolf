@@ -17,7 +17,6 @@ public class MainView {
                     new FXMLLoader(MainView.class.getResource("/view/new_game_view.fxml"));
 
             Pane root = loader.load();
-            root.setStyle("-fx-background-color: white;");
             Font.loadFont(getClass().getResource("/fonts/ethnocentric rg.ttf").toExternalForm(), 14);
 
 

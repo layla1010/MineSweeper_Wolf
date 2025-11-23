@@ -19,13 +19,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="750.0" maxWidth="1400.0"
-          prefHeight="750.0" prefWidth="1201.0"
-          style="-fx-background-color: #c69fa5;"
-          stylesheets="@../css/style.css"
-          xmlns="http://javafx.com/javafx/21"
-          xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="control.NewGameController">
+<GridPane maxHeight="750.0" maxWidth="1400.0" prefHeight="750.0" prefWidth="1201.0" style="-fx-background-color: #050814;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.NewGameController">
 
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="400.0" prefWidth="400.0" />
@@ -43,22 +37,14 @@
 
     <children>
 
-        <!-- HEADER -->
-        <AnchorPane maxHeight="75.0" maxWidth="1200.0"
-                    minHeight="15.0" minWidth="1200.0"
-                    prefHeight="20.0" prefWidth="1200.0">
+        <AnchorPane maxHeight="75.0" maxWidth="1200.0" minHeight="15.0" minWidth="1200.0" prefHeight="20.0" prefWidth="1200.0">
             <children>
-                <Text fill="#813d54" layoutX="504.0" layoutY="35.0"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Game Setup" textAlignment="CENTER" wrappingWidth="200.0">
+                <Text fill="#F6F7FF" layoutX="504.0" layoutY="35.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-effect: dropshadow(gaussian, #FF3BFF, 20, 0.3, 0, 0);" text="Game Setup" textAlignment="CENTER" wrappingWidth="200.0">
                     <font>
                         <Font name="Copperplate Gothic Bold" size="24.0" />
                     </font>
                 </Text>
-                <Text fill="#813d54" layoutX="325.0" layoutY="51.0"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Select difficulty level, pick your avatar, snd get ready for an epic, stressful time!"
-                      wrappingWidth="557.9">
+                <Text fill="#8B94C4" layoutX="325.0" layoutY="51.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Select difficulty level, pick your avatar, and get ready for an epic, stressful time!" wrappingWidth="557.9">
                     <font>
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
@@ -66,102 +52,60 @@
             </children>
         </AnchorPane>
 
-        <!-- DIFFICULTY CARDS -->
         <AnchorPane minWidth="1200.0" prefHeight="296.0" prefWidth="774.0" GridPane.rowIndex="2">
             <children>
 
-                <!-- EASY -->
-                <AnchorPane layoutX="6.0" layoutY="1.0"
-                            maxHeight="-Infinity" maxWidth="390.0"
-                            minHeight="253.0" minWidth="390.0"
-                            prefHeight="253.0" prefWidth="390.0">
+                <AnchorPane layoutX="6.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="390.0" minHeight="253.0" minWidth="390.0" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
                     <children>
-                        <ToggleButton fx:id="easyToggle"
-                                      layoutY="7.0"
-                                      maxHeight="279.0" maxWidth="390.0"
-                                      minHeight="253.0" minWidth="390.0"
-                                      mnemonicParsing="false"
-                                      prefHeight="253.0" prefWidth="390.0"
-                                      selected="true"
-                                      style="-fx-border-radius: 40; -fx-background-radius: 40; -fx-background-color: #692b40;"
-                                      styleClass="difficulty-toggle">
+                        <ToggleButton fx:id="easyToggle" layoutY="7.0" maxHeight="279.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" selected="true" style="-fx-border-radius: 40; -fx-background-radius: 40; -fx-background-color: #0B1226;" styleClass="difficulty-toggle">
                             <toggleGroup>
                                 <ToggleGroup fx:id="difficultyGroup" />
                             </toggleGroup>
                         </ToggleButton>
 
-                        <Sphere layoutX="195.0" layoutY="28.0" radius="15.0"
-                                style="-fx-effect: dropshadow(gaussian, rgba(243,175,203,0.85), 32, 0.65, 0, 0);">
+                        <Sphere layoutX="195.0" layoutY="28.0" onMouseClicked="#playClickSound" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(213,255,0,0.85), 32, 0.65, 0, 0);" styleClass="difficulty-toggle">
                             <material>
-                                <PhongMaterial diffuseColor="#F3AFCB" specularColor="#FFD0E4" />
+                                <PhongMaterial diffuseColor="#D5FF00" specularColor="#F5FF7A" />
                             </material>
                         </Sphere>
 
-                        <Text fill="#f3afcb" layoutX="178.0" layoutY="53.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="EASY">
+                        <Text fill="#D5FF00" layoutX="178.0" layoutY="53.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="EASY">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0"
-                                   fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="71.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="91.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Grid Size                                                                            9x9"
-                              wrappingWidth="314.9">
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="71.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="91.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Grid Size                                                                            9x9" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="106.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="141.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="176.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="211.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="106.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="141.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="176.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="211.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="126.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Lives                                                                                     10"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="126.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Lives                                                                                     10" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="160.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Mines                                                 10 (for each board)"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="160.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Mines                                                 10 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="195.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Questions                                          6 (for each board)"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="195.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Questions                                          6 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="231.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Surprises                                           2 (for each board)"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="231.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Surprises                                           2 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
@@ -169,98 +113,53 @@
                     </children>
                 </AnchorPane>
 
-                <!-- MEDIUM -->
-                <AnchorPane layoutX="405.0" layoutY="1.0"
-                            maxHeight="-Infinity" maxWidth="390.0"
-                            minHeight="253.0" minWidth="390.0"
-                            prefHeight="253.0" prefWidth="390.0">
+                <AnchorPane layoutX="405.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="390.0" minHeight="253.0" minWidth="390.0" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
                     <children>
-                        <ToggleButton fx:id="medToggle"
-                                      layoutY="7.0"
-                                      maxHeight="253.0" maxWidth="390.0"
-                                      minHeight="253.0" minWidth="390.0"
-                                      mnemonicParsing="false"
-                                      prefHeight="253.0" prefWidth="390.0"
-                                      style="-fx-border-radius: 40; -fx-background-radius: 40; -fx-background-color: #692b40;"
-                                      styleClass="difficulty-toggle"
-                                      toggleGroup="$difficultyGroup" />
+                        <ToggleButton fx:id="medToggle" layoutY="7.0" maxHeight="253.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" style="-fx-border-radius: 40; -fx-background-radius: 40; -fx-background-color: #0B1226;" styleClass="difficulty-toggle" toggleGroup="$difficultyGroup" />
 
-                        <Text fill="#e46aa3" layoutX="172.0" layoutY="62.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Medium">
+                        <Text fill="#FF9F31" layoutX="172.0" layoutY="62.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Medium">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Sphere layoutX="195.0" layoutY="37.0" radius="15.0"
-                                style="-fx-effect: dropshadow(gaussian, rgba(228,106,163,0.8), 30, 0.6, 0, 0);">
+                        <Sphere layoutX="195.0" layoutY="37.0" onMouseClicked="#playClickSound" radius="15.0" styleClass="difficulty-toggle">
                             <material>
-                                <PhongMaterial diffuseColor="#E46AA3" specularColor="#FF9FC8" />
+                                <PhongMaterial diffuseColor="#FF9F31" specularColor="#FFD097" />
                             </material>
                         </Sphere>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0"
-                                   fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="71.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0"
-                                   fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="107.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0"
-                                   fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="142.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0"
-                                   fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="177.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0"
-                                   fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="212.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="71.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="107.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="142.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="177.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="212.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="91.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Text                                                                                13x13"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="91.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Text                                                                                13x13" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="126.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Lives                                                                                           8"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="126.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Lives                                                                                           8" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="161.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Mines                                                 26(for each board)"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="161.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Mines                                                 26(for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="196.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Questions                                          7 (for each board)"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="196.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Questions                                          7 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="231.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Surprises                                           3 (for each board)"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="231.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Surprises                                           3 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
@@ -268,98 +167,53 @@
                     </children>
                 </AnchorPane>
 
-                <!-- HARD -->
-                <AnchorPane layoutX="803.0" layoutY="1.0"
-                            maxHeight="-Infinity" maxWidth="390.0"
-                            minHeight="253.0" minWidth="390.0"
-                            prefHeight="253.0" prefWidth="390.0">
+                <AnchorPane layoutX="803.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="390.0" minHeight="253.0" minWidth="390.0" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
                     <children>
-                        <ToggleButton fx:id="hardToggle"
-                                      layoutY="7.0"
-                                      maxHeight="253.0" maxWidth="390.0"
-                                      minHeight="253.0" minWidth="390.0"
-                                      mnemonicParsing="false"
-                                      prefHeight="253.0" prefWidth="390.0"
-                                      style="-fx-border-radius: 40; -fx-background-radius: 40; -fx-background-color: #692b40;"
-                                      styleClass="difficulty-toggle"
-                                      toggleGroup="$difficultyGroup" />
+                        <ToggleButton fx:id="hardToggle" layoutY="7.0" maxHeight="253.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" style="-fx-border-radius: 40;  -fx-background-radius: 40; -fx-background-color: #0B1226;" styleClass="difficulty-toggle" toggleGroup="$difficultyGroup" />
 
-                        <Sphere layoutX="195.0" layoutY="37.0" radius="15.0"
-                                style="-fx-effect: dropshadow(gaussian, rgba(170,15,69,0.9), 38, 0.7, 0, 0);">
+                        <Sphere layoutX="195.0" layoutY="37.0" onMouseClicked="#playClickSound" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(255,59,95,0.9), 38, 0.7, 0, 0); " styleClass="difficulty-toggle">
                             <material>
-                                <PhongMaterial diffuseColor="#AA0F45" specularColor="#FF638C" />
+                                <PhongMaterial diffuseColor="#FF375F" specularColor="#FF7DA3" />
                             </material>
                         </Sphere>
 
-                        <Text fill="#ff638c" layoutX="176.0" layoutY="62.0"
-                              strokeType="INSIDE" strokeWidth="0.0"
-                              text="HARD">
+                        <Text fill="#FF375F" layoutX="176.0" layoutY="62.0" onMouseClicked="#playClickSound" strokeType="INSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="HARD">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0"
-                                   fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="71.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0"
-                                   fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="106.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0"
-                                   fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="141.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0"
-                                   fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="176.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0"
-                                   fill="#813d54"
-                                   height="30.0" layoutX="24.0" layoutY="211.0"
-                                   stroke="#a1546f" strokeType="INSIDE" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="71.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="106.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="141.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="176.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#111A33" height="30.0" layoutX="24.0" layoutY="211.0" onMouseClicked="#playClickSound" stroke="#274B8E" strokeType="INSIDE" styleClass="difficulty-toggle" width="342.0" />
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="91.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Text                                                                                 16x16"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="91.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Text                                                                                 16x16" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="125.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Lives                                                                                          6"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="125.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Lives                                                                                          6" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="160.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Mines                                                  44(for each board)"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="160.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Mines                                                  44(for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="195.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Questions                                        11(for each board)"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="195.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Questions                                        11(for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                         </Text>
 
-                        <Text fill="#d3c7e7" layoutX="38.0" layoutY="230.0"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Surprises                                            4(for each board)"
-                              wrappingWidth="314.9">
+                        <Text fill="#8B94C4" layoutX="38.0" layoutY="230.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="difficulty-toggle" text="Surprises                                            4(for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
@@ -369,83 +223,51 @@
             </children>
         </AnchorPane>
 
-        <!-- PLAYER AREA + AVATARS -->
-        <AnchorPane layoutX="26.0" layoutY="29.0"
-                    maxHeight="-Infinity" maxWidth="1200.0"
-                    minHeight="209.0" minWidth="1200.0"
-                    prefHeight="270.0" prefWidth="1200.0"
-                    GridPane.rowIndex="4" GridPane.rowSpan="2147483647">
+        <AnchorPane layoutX="26.0" layoutY="29.0" maxHeight="-Infinity" maxWidth="1200.0" minHeight="209.0" minWidth="1200.0" prefHeight="270.0" prefWidth="1200.0" GridPane.rowIndex="4" GridPane.rowSpan="2147483647">
             <children>
 
-                <!-- Player 1 box -->
-                <Rectangle fx:id="recP1"
-                           arcHeight="60.0" arcWidth="60.0"
-                           fill="#692b40"
-                           height="100.0" layoutX="24.0" layoutY="-2.0"
-                           stroke="#483a7e" strokeType="INSIDE" width="390.0"
-                           onMouseClicked="#onPlayer1AreaClicked"/>
+                <Rectangle fx:id="recP1" arcHeight="60.0" arcWidth="60.0" fill="#0B1226" height="100.0" layoutX="24.0" layoutY="-2.0" onMouseClicked="#onPlayer1AreaClicked" stroke="#35E0FF" strokeType="INSIDE" width="390.0" />
 
-                <TextField fx:id="player1Nickname"
-                           layoutX="114.0" layoutY="35.0"
-                           prefHeight="26.0" prefWidth="249.0"
-                           promptText="Player 1"
-                           style="-fx-background-color: #813d54; -fx-text-fill: #d3c7e7;">
+                <TextField fx:id="player1Nickname" layoutX="114.0" layoutY="35.0" onMouseClicked="#onPlayer1AreaClicked" prefHeight="26.0" prefWidth="249.0" promptText="Player 1" style="-fx-background-color: #111A33;                                   -fx-text-fill: #F6F7FF;                                   -fx-prompt-text-fill: #4A537A;                                   -fx-background-radius: 20;                                   -fx-border-color: #3C8DFF;                                   -fx-border-radius: 20;                                   -fx-border-width: 1;">
                     <font>
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
                 </TextField>
 
-                <!-- Player 2 box -->
-                <Rectangle fx:id="recP2"
-                           arcHeight="60.0" arcWidth="60.0"
-                           fill="#692b40"
-                           height="100.0" layoutX="24.0" layoutY="101.0"
-                           stroke="#483a7e" strokeType="INSIDE" width="390.0"
-                           onMouseClicked="#onPlayer2AreaClicked"/>
+                <Rectangle fx:id="recP2" arcHeight="60.0" arcWidth="60.0" fill="#0B1226" height="100.0" layoutX="24.0" layoutY="101.0" onMouseClicked="#onPlayer2AreaClicked" stroke="#35E0FF" strokeType="INSIDE" width="390.0" />
 
-                <TextField fx:id="player2Nickname"
-                           layoutX="114.0" layoutY="138.0"
-                           prefHeight="26.0" prefWidth="249.0"
-                           promptText="Player 2"
-                           style="-fx-background-color: #813d54; -fx-text-fill: #d3c7e7;">
+                <TextField fx:id="player2Nickname" layoutX="114.0" layoutY="138.0" onMouseClicked="#onPlayer2AreaClicked" prefHeight="26.0" prefWidth="249.0" promptText="Player 2" style="-fx-background-color: #111A33;                                   -fx-text-fill: #F6F7FF;                                   -fx-prompt-text-fill: #4A537A;                                   -fx-background-radius: 20;                                   -fx-border-color: #3C8DFF;                                   -fx-border-radius: 20;                                   -fx-border-width: 1;">
                     <font>
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
                 </TextField>
 
-                <!-- Player avatar slots (plus icon initially) -->
-                <ImageView fx:id="player1avatar"
-                           fitHeight="66.0" fitWidth="58.0"
-                           layoutX="46.0" layoutY="19.0" preserveRatio="true">
+                <ImageView fx:id="player1avatar" fitHeight="66.0" fitWidth="58.0" layoutX="46.0" layoutY="19.0" onMouseClicked="#onPlayer1AreaClicked" preserveRatio="true">
+                    <clip>
+                        <Circle centerX="30" centerY="30" radius="30" />
+                    </clip>
                     <image>
                         <Image url="@../images/plus.png" />
                     </image>
                 </ImageView>
 
-                <ImageView fx:id="player2avatar"
-                           fitHeight="66.0" fitWidth="58.0"
-                           layoutX="46.0" layoutY="122.0" preserveRatio="true">
+                <ImageView fx:id="player2avatar" fitHeight="66.0" fitWidth="58.0" layoutX="46.0" layoutY="122.0" onMouseClicked="#onPlayer2AreaClicked" preserveRatio="true">
+                    <clip>
+                        <Circle centerX="30" centerY="30" radius="30" />
+                    </clip>
                     <image>
                         <Image url="@../images/plus.png" />
                     </image>
                 </ImageView>
 
-                <!-- Avatar thumbnail carousel -->
-                <AnchorPane layoutX="391.0" layoutY="8.0"
-                            prefHeight="200.0" prefWidth="774.0">
+                <AnchorPane layoutX="421.0" layoutY="8.0" onMouseClicked="#playClickSound" prefHeight="200.0" prefWidth="768.0">
                     <children>
-                        <AnchorPane layoutX="26.0" layoutY="6.0"
-                                    maxHeight="-Infinity" maxWidth="-Infinity"
-                                    minHeight="-Infinity" minWidth="-Infinity"
-                                    prefHeight="175.0" prefWidth="748.0"
-                                    style="-fx-background-radius: 150; -fx-border-radius: 150; -fx-border-color: #813d54; -fx-border-width: 3;">
+                        <AnchorPane layoutX="8.0" layoutY="6.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="175.0" prefWidth="766.0" style="-fx-background-radius: 150;                                            -fx-border-radius: 150;                                            -fx-border-color: #274B8E;                                            -fx-border-width: 3;">
                             <children>
 
-                                <!-- row 1 of avatars -->
-                                <StackPane layoutX="634.0" layoutY="22.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="634.0" layoutY="22.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img10" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img10" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -456,10 +278,9 @@
                                     </children>
                                 </StackPane>
 
-                                <StackPane layoutX="569.0" layoutY="22.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="569.0" layoutY="22.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img9" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img9" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -470,10 +291,9 @@
                                     </children>
                                 </StackPane>
 
-                                <StackPane layoutX="504.0" layoutY="22.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="504.0" layoutY="22.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img8" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img8" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -484,10 +304,9 @@
                                     </children>
                                 </StackPane>
 
-                                <StackPane layoutX="439.0" layoutY="22.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="439.0" layoutY="22.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img7" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img7" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -498,10 +317,9 @@
                                     </children>
                                 </StackPane>
 
-                                <StackPane layoutX="374.0" layoutY="22.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="374.0" layoutY="22.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img6" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img6" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -512,10 +330,9 @@
                                     </children>
                                 </StackPane>
 
-                                <StackPane layoutX="309.0" layoutY="22.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="309.0" layoutY="22.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img5" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img5" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -526,10 +343,9 @@
                                     </children>
                                 </StackPane>
 
-                                <StackPane layoutX="244.0" layoutY="22.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="244.0" layoutY="22.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img4" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img4" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -540,10 +356,9 @@
                                     </children>
                                 </StackPane>
 
-                                <StackPane layoutX="179.0" layoutY="22.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="179.0" layoutY="22.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img3" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img3" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -554,10 +369,9 @@
                                     </children>
                                 </StackPane>
 
-                                <StackPane layoutX="114.0" layoutY="22.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="114.0" layoutY="22.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img2" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img2" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -568,10 +382,9 @@
                                     </children>
                                 </StackPane>
 
-                                <StackPane layoutX="49.0" layoutY="22.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="49.0" layoutY="22.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img1" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img1" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -582,11 +395,9 @@
                                     </children>
                                 </StackPane>
 
-                                <!-- row 2 of avatars -->
-                                <StackPane layoutX="207.0" layoutY="88.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="207.0" layoutY="88.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img13" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img13" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -597,10 +408,9 @@
                                     </children>
                                 </StackPane>
 
-                                <StackPane layoutX="142.0" layoutY="88.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="142.0" layoutY="88.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img12" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img12" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -611,10 +421,9 @@
                                     </children>
                                 </StackPane>
 
-                                <StackPane layoutX="76.0" layoutY="88.0" prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="76.0" layoutY="88.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0">
                                     <children>
-                                        <ImageView fx:id="img11" fitHeight="60.0" fitWidth="60.0"
-                                                   pickOnBounds="true" preserveRatio="true">
+                                        <ImageView fx:id="img11" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" pickOnBounds="true" preserveRatio="true">
                                             <clip>
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
@@ -625,22 +434,14 @@
                                     </children>
                                 </StackPane>
 
-                                <!-- PLUS BUTTON FOR FILE CHOOSER -->
-                                <StackPane layoutX="277.0" layoutY="88.0"
-                                           prefHeight="65.0" prefWidth="65.0">
+                                <StackPane layoutX="277.0" layoutY="88.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0" style="-fx-cursor: hand;">
                                     <children>
-                                        <ImageView fitHeight="60.0" fitWidth="60.0"
-                                                   preserveRatio="true">
+                                        <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" preserveRatio="true">
                                             <image>
                                                 <Image url="@../images/plus.png" />
                                             </image>
                                         </ImageView>
-                                        <Button maxHeight="60.0" maxWidth="60.0"
-                                                minHeight="60.0" minWidth="60.0"
-                                                mnemonicParsing="false"
-                                                onAction="#onPlus"
-                                                prefHeight="60.0" prefWidth="60.0"
-                                                style="-fx-background-radius: 100; -fx-background-color: transparent;" />
+                                        <Button maxHeight="60.0" maxWidth="60.0" minHeight="60.0" minWidth="60.0" mnemonicParsing="false" onAction="#onPlus" onMouseClicked="#playClickSound" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 100;-fx-background-color: transparent; -fx-cursor: hand;" />
                                     </children>
                                 </StackPane>
 
@@ -649,13 +450,7 @@
                     </children>
                 </AnchorPane>
 
-                <!-- START GAME BUTTON -->
-                <Button layoutX="509.0" layoutY="208.0"
-                        mnemonicParsing="false"
-                        onAction="#onStartGameClicked"
-                        prefHeight="47.0" prefWidth="182.0"
-                        style="-fx-background-color: #813d54;"
-                        text="start game" textFill="#d3c7e7">
+                <Button layoutX="509.0" layoutY="208.0" mnemonicParsing="false" onAction="#onStartGameClicked" onMouseClicked="#playClickSound" prefHeight="47.0" prefWidth="182.0" style="-fx-cursor: hand; -fx-background-color: linear-gradient(#3C8DFF, #274B8E);-fx-background-radius: 30;" text="start game" textFill="#F6F7FF">
                     <font>
                         <Font name="Copperplate Gothic Light" size="24.0" />
                     </font>
@@ -664,25 +459,15 @@
             </children>
         </AnchorPane>
 
-        <!-- SUBHEADER: DIFFICULTY TITLE -->
-        <AnchorPane prefHeight="73.0" prefWidth="826.0"
-                    GridPane.columnSpan="2147483647"
-                    GridPane.rowIndex="1">
+        <AnchorPane prefHeight="73.0" prefWidth="826.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
             <children>
-                <Line endX="72.8" endY="-1.3E-5"
-                      layoutX="97.0" layoutY="7.0"
-                      startX="-100.0" stroke="#692b40" />
-                <Text fill="#813d54" layoutX="-2.0" layoutY="5.0"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Choose Difficulty" wrappingWidth="172.5">
+                <Line endX="72.8" endY="-1.3E-5" layoutX="97.0" layoutY="7.0" onMouseClicked="#playClickSound" startX="-100.0" stroke="#274B8E" />
+                <Text fill="#F6F7FF" layoutX="-2.0" layoutY="5.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose Difficulty" wrappingWidth="172.5">
                     <font>
                         <Font name="Copperplate Gothic Bold" size="16.0" />
                     </font>
                 </Text>
-                <Text fill="#813d54" layoutX="22.0" layoutY="25.0"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="select the challenege that fits your skills and style"
-                      wrappingWidth="355.7">
+                <Text fill="#8B94C4" layoutX="22.0" layoutY="25.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="select the challenge that fits your skills and style" wrappingWidth="355.7">
                     <font>
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
@@ -690,29 +475,19 @@
             </children>
         </AnchorPane>
 
-        <!-- SUBHEADER: PLAYER CUSTOMIZATION -->
-        <AnchorPane prefHeight="70.0" prefWidth="1200.0"
-                    GridPane.columnSpan="2147483647"
-                    GridPane.rowIndex="3">
+        <AnchorPane prefHeight="70.0" prefWidth="1200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
             <children>
-                <Text fill="#813d54" layoutY="13.0"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Player Customization" wrappingWidth="200.0">
+                <Text fill="#F6F7FF" layoutY="13.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Player Customization" wrappingWidth="200.0">
                     <font>
                         <Font name="Copperplate Gothic Bold" size="15.0" />
                     </font>
                 </Text>
-                <Text fill="#813d54" layoutX="18.0" layoutY="37.0"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Insert nickname and avatar"
-                      wrappingWidth="249.6">
+                <Text fill="#8B94C4" layoutX="18.0" layoutY="37.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Insert nickname and avatar" wrappingWidth="249.6">
                     <font>
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
                 </Text>
-                <Line endX="74.09" endY="-1.8E-5"
-                      layoutX="98.0" layoutY="17.0"
-                      startX="-100.0" stroke="#692b40" />
+                <Line endX="74.09" endY="-1.8E-5" layoutX="98.0" layoutY="17.0" onMouseClicked="#playClickSound" startX="-100.0" stroke="#274B8E" />
             </children>
         </AnchorPane>
 
