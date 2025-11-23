@@ -89,105 +89,15 @@
             </Button>
               </children>
           </HBox>
-      <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="762.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
-         <children>
-            <StackPane prefHeight="50.0" prefWidth="881.0">
-               <children>
-                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Images/heart.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane prefHeight="50.0" prefWidth="881.0">
-               <children>
-                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Images/heart.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane prefHeight="50.0" prefWidth="881.0">
-               <children>
-                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Images/heart.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane prefHeight="50.0" prefWidth="881.0">
-               <children>
-                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Images/heart.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane prefHeight="50.0" prefWidth="881.0">
-               <children>
-                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Images/heart.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane prefHeight="50.0" prefWidth="881.0">
-               <children>
-                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Images/heart.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane prefHeight="50.0" prefWidth="881.0">
-               <children>
-                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Images/heart.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane prefHeight="50.0" prefWidth="881.0">
-               <children>
-                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Images/heart.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane prefHeight="50.0" prefWidth="881.0">
-               <children>
-                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Images/heart.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane prefHeight="50.0" prefWidth="881.0">
-               <children>
-                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Images/heart.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <Label fx:id="scoreLabel1" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="100.0" text="Score: 0" textFill="#E5E7EB">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-         </children>
-      </HBox>
+	     <HBox fx:id="heartsBox"
+		      alignment="CENTER"
+		      prefHeight="50.0"
+		      prefWidth="762.0"
+		      spacing="5.0"
+		      GridPane.columnIndex="1"
+		      GridPane.columnSpan="3"
+		      GridPane.rowIndex="4">
+		</HBox>
     </children>
    <columnConstraints>
       <ColumnConstraints maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />

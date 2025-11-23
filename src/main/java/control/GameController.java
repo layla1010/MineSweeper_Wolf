@@ -4,10 +4,22 @@ import model.Board;
 import model.Cell;
 import model.Difficulty;
 import model.GameConfig;
-import view.MainView;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.geometry.Insets;
+import javafx.scene.layout.StackPane;
+import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
@@ -18,11 +30,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
 
 public class GameController {
 
@@ -33,28 +50,21 @@ public class GameController {
     @FXML private Label difficultyLabel;
     @FXML private Label timeLabel;
     @FXML private Label scoreLabel;
+    @FXML private HBox heartsBox;
+
 
     private Difficulty difficulty;
     private Board board1;
     private Board board2;
-    private Stage stage;
-
-    
-    private Button[][] p1Buttons;
-    private Button[][] p2Buttons;
-
-
+    private StackPane[][] p1Buttons;
+    private StackPane[][] p2Buttons;
     private GameConfig config;
-
     private int sharedHearts;
     private int score;
     private int minesLeft1;
     private int minesLeft2;
    
 
-    /**
-     * Called by NewGameController after FXML is loaded.
-     */
     public void init(GameConfig config) {
     	
     	System.out.println("GameController.init called");
@@ -72,11 +82,41 @@ public class GameController {
 
         this.sharedHearts = difficulty.getInitialLives();
         this.score = 0;
-
+        
+        buildHeartsBar();
         initLabels();
         buildGridForPlayer(player1Grid, board1, true);
         buildGridForPlayer(player2Grid, board2, false);
     }
+    
+    private static final int TOTAL_HEART_SLOTS = 10;
+
+    private void buildHeartsBar() {
+        if (heartsBox == null) return;
+
+        heartsBox.getChildren().clear();
+
+        for (int i = 0; i < TOTAL_HEART_SLOTS; i++) {
+            boolean isFull = i < sharedHearts;
+
+            String imgPath = isFull ? "/Images/heart.png" : "/Images/favorite.png";
+            Image img = new Image(getClass().getResourceAsStream(imgPath));
+
+            ImageView iv = new ImageView(img);
+            iv.setFitHeight(50);
+            iv.setFitWidth(50);
+            iv.setPreserveRatio(true);
+
+            StackPane slot = new StackPane(iv);
+            slot.setPrefSize(50, 50);
+            slot.setMinSize(50, 50);
+            slot.setMaxSize(50, 50);
+            StackPane.setMargin(iv, new Insets(0));
+
+            heartsBox.getChildren().add(slot);
+        }
+    }
+
 
     private void initLabels() {
         difficultyLabel.setText("Difficulty: " +
@@ -95,6 +135,7 @@ public class GameController {
         
         scoreLabel.setText("Score: " + score);
     }
+
 
     private void buildGridForPlayer(GridPane grid, Board board, boolean isPlayer1) {
         grid.getChildren().clear();
@@ -121,13 +162,12 @@ public class GameController {
             grid.getRowConstraints().add(rc);
         }
 
-        Button[][] buttons = new Button[rows][cols];
+        StackPane[][] buttons = new StackPane[rows][cols];
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                Button cellButton = createCellButton(board, r, c, isPlayer1);
-                buttons[r][c] = cellButton;
-                grid.add(cellButton, c, r);
+            	StackPane tile = createCellTile(board, r, c, isPlayer1);
+            	grid.add(tile, c, r);
             }
         }
 
@@ -138,33 +178,34 @@ public class GameController {
         }
     }
 
-    private Button createCellButton(Board board, int row, int col, boolean isPlayer1) {
+    private StackPane createCellTile(Board board, int row, int col, boolean isPlayer1) {
         Button button = new Button();
         button.setMinSize(0, 0);
         button.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        
-        GridPane.setHgrow(button, Priority.ALWAYS);
-        GridPane.setVgrow(button, Priority.ALWAYS);
-
         button.getStyleClass().addAll("cell-tile", "cell-hidden");
+
+        StackPane tile = new StackPane(button);  
+        tile.setMinSize(0, 0);
+        tile.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        tile.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        GridPane.setHgrow(tile, Priority.ALWAYS);
+        GridPane.setVgrow(tile, Priority.ALWAYS);
 
         final int r = row;
         final int c = col;
 
-        button.setOnMouseClicked(event -> {
-            handleCellClick(board, r, c, button, isPlayer1);
-            
-            
-
-          
+        button.setOnMouseClicked(e -> {
+            handleCellClick(board, r, c, button, tile, isPlayer1);
         });
 
-        return button;
+        return tile;
     }
 
 
-    private void handleCellClick(Board board, int row, int col, Button button, boolean isPlayer1) {
+
+    private void handleCellClick(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
         Cell cell = board.getCell(row, col);
 
         // remove all possible state classes
@@ -179,13 +220,15 @@ public class GameController {
                 button.setText("💣");
                 button.getStyleClass().addAll("cell-revealed", "cell-mine");
                 sharedHearts = Math.max(0, sharedHearts - 1);
+                triggerExplosion(tile);
+
                 if (isPlayer1) {
                 	 minesLeft1 -= 1;
                 }
                 else {
                	 	 minesLeft2 -= 1;
-
                 }
+                buildHeartsBar();
             }
             case QUESTION -> {
                 button.setText("?");
@@ -234,6 +277,62 @@ public class GameController {
     @FXML
     private void onHelpBtnClicked() {
         System.out.println("Help clicked but screen not created yet!");
+    }
+    
+    private void triggerExplosion(StackPane tilePane) {
+        double centerX = tilePane.getWidth() / 2.0;
+        double centerY = tilePane.getHeight() / 2.0;
+
+        Circle flash = new Circle(20, Color.ORANGERED);
+        flash.setOpacity(0.8);
+        flash.setCenterX(centerX);
+        flash.setCenterY(centerY);
+        tilePane.getChildren().add(flash);
+
+        FadeTransition flashFade = new FadeTransition(Duration.millis(200), flash);
+        flashFade.setFromValue(0.8);
+        flashFade.setToValue(0);
+
+        Circle shockwave = new Circle(0, Color.TRANSPARENT);
+        shockwave.setStroke(Color.YELLOW);
+        shockwave.setStrokeWidth(3);
+        shockwave.setCenterX(centerX);
+        shockwave.setCenterY(centerY);
+        tilePane.getChildren().add(shockwave);
+
+        Timeline shockExpand = new Timeline(
+            new KeyFrame(Duration.ZERO,
+                new KeyValue(shockwave.radiusProperty(), 0),
+                new KeyValue(shockwave.opacityProperty(), 1)
+            ),
+            new KeyFrame(Duration.millis(400),
+                new KeyValue(shockwave.radiusProperty(), 40),
+                new KeyValue(shockwave.opacityProperty(), 0)
+            )
+        );
+
+        List<Rectangle> debrisList = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            Rectangle debris = new Rectangle(4, 4, Color.DARKGRAY);
+            debris.setTranslateX(centerX);
+            debris.setTranslateY(centerY);
+            tilePane.getChildren().add(debris);
+            debrisList.add(debris);
+
+            TranslateTransition debrisFly = new TranslateTransition(Duration.millis(600), debris);
+            debrisFly.setByX((Math.random() - 0.5) * 100);
+            debrisFly.setByY((Math.random() - 0.5) * 100);
+            debrisFly.setInterpolator(Interpolator.EASE_OUT);
+            debrisFly.play();
+        }
+
+        flashFade.play();
+        shockExpand.play();
+
+        shockExpand.setOnFinished(e -> {
+            tilePane.getChildren().removeAll(flash, shockwave);
+            tilePane.getChildren().removeAll(debrisList);
+        });
     }
     
     @FXML
