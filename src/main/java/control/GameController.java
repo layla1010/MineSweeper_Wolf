@@ -339,11 +339,11 @@ public class GameController {
     private void onBackBtnClicked() throws IOException {
         Stage stage = (Stage) player1Grid.getScene().getWindow();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/new_game_view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
         Parent root = loader.load();
 
-        NewGameController newGameController = loader.getController();
-        newGameController.setStage(stage);  // if you need stage inside NewGameController
+        MainController controller = loader.getController();
+        controller.setStage(stage);  
 
         stage.setScene(new Scene(root));
         stage.show();
