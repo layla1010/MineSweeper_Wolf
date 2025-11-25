@@ -2,6 +2,7 @@ package control;
 
 import model.Board;
 import model.Cell;
+import model.CellType;
 import model.Difficulty;
 import model.GameConfig;
 
@@ -24,6 +25,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -63,13 +66,12 @@ public class GameController {
     private int score;
     private int minesLeft1;
     private int minesLeft2;
+    private boolean isPlayer1Turn = true;
+    private ImageCursor forbiddenCursor;
    
 
     public void init(GameConfig config) {
     	
-    	System.out.println("GameController.init called");
-        System.out.println("player1Grid = " + player1Grid);
-        System.out.println("player2Grid = " + player2Grid);
         
         this.config = config;
         this.difficulty = config.getDifficulty();
@@ -87,6 +89,9 @@ public class GameController {
         initLabels();
         buildGridForPlayer(player1Grid, board1, true);
         buildGridForPlayer(player2Grid, board2, false);
+        
+        initForbiddenCursor(); 
+        applyTurnStateToBoards(); 
     }
     
     private static final int TOTAL_HEART_SLOTS = 10;
@@ -119,23 +124,25 @@ public class GameController {
 
 
     private void initLabels() {
-        difficultyLabel.setText("Difficulty: " +
-                difficulty.name().charAt(0) +
-                difficulty.name().substring(1).toLowerCase());
+        difficultyLabel.setText("Difficulty: " + difficulty.name().charAt(0) + difficulty.name().substring(1).toLowerCase());
 
         timeLabel.setText("Time: 00:00");
 
-        player1BombsLeftLabel.setText(
-                config.getPlayer1Nickname() + ", Mines left: " + board1.getMineCount()
-        );
-        player2BombsLeftLabel.setText(
-                config.getPlayer2Nickname() + ", Mines left: " + board2.getMineCount()
-        );
-        
+        player1BombsLeftLabel.setText(config.getPlayer1Nickname() + ", Mines left: " + board1.getMineCount());
+        player2BombsLeftLabel.setText(config.getPlayer2Nickname() + ", Mines left: " + board2.getMineCount());
         
         scoreLabel.setText("Score: " + score);
     }
 
+    
+    private void initForbiddenCursor() {
+        try {
+            Image img = new Image(getClass().getResourceAsStream("/Images/cursor_forbidden.png"));
+            forbiddenCursor = new ImageCursor(img, img.getWidth() / 2, img.getHeight() / 2);
+        } catch (Exception e) {
+            forbiddenCursor = null;
+        }
+    }
 
     private void buildGridForPlayer(GridPane grid, Board board, boolean isPlayer1) {
         grid.getChildren().clear();
@@ -167,7 +174,8 @@ public class GameController {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
             	StackPane tile = createCellTile(board, r, c, isPlayer1);
-            	grid.add(tile, c, r);
+            	 buttons[r][c] = tile;
+            	 grid.add(tile, c, r);
             }
         }
 
@@ -195,82 +203,209 @@ public class GameController {
 
         final int r = row;
         final int c = col;
-
+        final boolean tileIsPlayer1 = isPlayer1;
+        
         button.setOnMouseClicked(e -> {
-            handleCellClick(board, r, c, button, tile, isPlayer1);
+        	if ((tileIsPlayer1 && !isPlayer1Turn) || (!tileIsPlayer1 && isPlayer1Turn)) {
+        		return;
+        	}
+        	if (button.isDisable()) {
+                return;
+        	}
+            boolean consumedAction = handleCellClick(board, r, c, button, tile, tileIsPlayer1);
+            if (consumedAction) {
+                switchTurn();
+            }
+                
         });
 
         return tile;
     }
 
 
+    private void revealSingleCell(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
 
-    private void handleCellClick(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
-        Cell cell = board.getCell(row, col);
+			Cell cell = board.getCell(row, col);
+			if (button.isDisable()) {
+			    return;
+			}
+			 button.getStyleClass().removeAll(
+				        "cell-hidden", "cell-revealed", "cell-mine", "cell-question", "cell-surprise", "cell-number", "cell-empty");
+			 switch (cell.getType()) {
+		        case MINE -> {
+		            button.setText("💣");
+		            button.getStyleClass().addAll("cell-revealed", "cell-mine");
+		            sharedHearts = Math.max(0, sharedHearts - 1);
+		            triggerExplosion(tile);
 
-        // remove all possible state classes
-        button.getStyleClass().removeAll(
-            "cell-hidden", "cell-revealed",
-            "cell-mine", "cell-question",
-            "cell-surprise", "cell-number", "cell-empty"
-        );
+		            if (isPlayer1) {
+		                minesLeft1 -= 1;
+		            } else {
+		                minesLeft2 -= 1;
+		            }
+		            buildHeartsBar();
+		        }
+		        case QUESTION -> {
+		            button.setText("?");
+		            button.getStyleClass().addAll("cell-revealed", "cell-question");
+		            score += 0;
+		        }
+		        case SURPRISE -> {
+		            button.setText("★");
+		            button.getStyleClass().addAll("cell-revealed", "cell-surprise");
+		            score += 2;
+		        }
+		        case NUMBER -> {
+		            int n = cell.getAdjacentMines();
+		            button.setText(String.valueOf(n));
+		            button.setDisable(true);
+		            button.getStyleClass().addAll("cell-revealed", "cell-number");
+		            score += 1;
+		        }
+		        case EMPTY -> {
+		            button.setText("");
+		            button.setDisable(true);
+		            button.getStyleClass().addAll("cell-revealed", "cell-empty");
+		            score += 1;
+		        }
+		    }
 
-        switch (cell.getType()) {
-            case MINE -> {
-                button.setText("💣");
-                button.getStyleClass().addAll("cell-revealed", "cell-mine");
-                sharedHearts = Math.max(0, sharedHearts - 1);
-                triggerExplosion(tile);
+		    updateScoreAndMineLabels();
+    }
 
-                if (isPlayer1) {
-                	 minesLeft1 -= 1;
+    
+    
+    private boolean handleCellClick(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
+
+    	Cell cell = board.getCell(row, col);
+        revealSingleCell(board, row, col, button, tile, isPlayer1);
+        if (cell.getType() == CellType.EMPTY) {
+            cascadeReveal(board, row, col, isPlayer1);
+        }
+        return true;
+    }
+
+   
+    private void cascadeReveal(Board board, int startRow, int startCol, boolean isPlayer1) {
+
+        StackPane[][] buttons = isPlayer1 ? p1Buttons : p2Buttons;
+        int rows = board.getRows();
+        int cols = board.getCols();
+
+        boolean[][] visited = new boolean[rows][cols];
+
+        java.util.Deque<int[]> stack = new java.util.ArrayDeque<>();
+        stack.push(new int[]{startRow, startCol});
+
+        while (!stack.isEmpty()) {
+            int[] rc = stack.pop();
+            int r = rc[0];
+            int c = rc[1];
+
+            if (r < 0 || c < 0 || r >= rows || c >= cols) continue;
+            if (visited[r][c]) continue;
+            visited[r][c] = true;
+
+            Cell cell = board.getCell(r, c);
+
+            if (cell.getType() == CellType.MINE) {
+                continue;
+            }
+
+            StackPane tile = buttons[r][c];
+            if (tile == null || tile.getChildren().isEmpty()) continue;
+
+            Button btn = (Button) tile.getChildren().get(0);
+
+            revealSingleCell(board, r, c, btn, tile, isPlayer1);
+
+            if (cell.getType() == CellType.EMPTY || (cell.getType() == CellType.NUMBER && cell.getAdjacentMines() == 0)) {
+                for (int dr = -1; dr <= 1; dr++) {
+                    for (int dc = -1; dc <= 1; dc++) {
+                        if (dr == 0 && dc == 0) {
+                        	continue;
+                        }
+                        int nr = r + dr;
+                        int nc = c + dc;
+                        if (nr < 0 || nc < 0 || nr >= rows || nc >= cols) {
+                        	continue;
+                        }
+                        if (!visited[nr][nc]) {
+                            stack.push(new int[]{nr, nc});
+                        }
+                    }
                 }
-                else {
-               	 	 minesLeft2 -= 1;
-                }
-                buildHeartsBar();
-            }
-            case QUESTION -> {
-                button.setText("?");
-                button.getStyleClass().addAll("cell-revealed", "cell-question");
-                score += 0;
-            }
-            case SURPRISE -> {
-                button.setText("★");
-                button.getStyleClass().addAll("cell-revealed", "cell-surprise");
-                score += 2;
-            }
-            case NUMBER -> {
-                int n = cell.getAdjacentMines();
-                button.setText(String.valueOf(n));
-                button.setDisable(true);
-                button.getStyleClass().addAll("cell-revealed", "cell-number");
-                score += 1;
-            }
-            case EMPTY -> {
-                button.setText("");
-                button.setDisable(true);
-                button.getStyleClass().addAll("cell-revealed", "cell-empty");
-                score += 1;
             }
         }
+    }
 
-        
+
+    private void updateScoreAndMineLabels() {
         scoreLabel.setText("Score: " + score);
-        
-        player1BombsLeftLabel.setText(
-                config.getPlayer1Nickname() + ", Mines left: " + minesLeft1
-        );
-        player2BombsLeftLabel.setText(
-                config.getPlayer2Nickname() + ", Mines left: " + minesLeft2
-        );
-        
+
+        player1BombsLeftLabel.setText(config.getPlayer1Nickname() + ", Mines left: " + minesLeft1);
+        player2BombsLeftLabel.setText(config.getPlayer2Nickname() + ", Mines left: " + minesLeft2);
+    }
+    
+    private void switchTurn() {
+        isPlayer1Turn = !isPlayer1Turn;
+        applyTurnStateToBoards();
+    }
+    
+    private void applyTurnStateToBoards() {
+        if (player1Grid == null || player2Grid == null) {
+        	return;
+        }
+
+        if (isPlayer1Turn) {
+            setBoardActive(player1Grid, player1BombsLeftLabel);
+            setBoardInactive(player2Grid, player2BombsLeftLabel);
+        } else {
+            setBoardInactive(player1Grid, player1BombsLeftLabel);
+            setBoardActive(player2Grid, player2BombsLeftLabel);
+        }
+    }
+    
+    private void setBoardActive(GridPane grid, Label label) {
+
+    	grid.setDisable(false);
+
+        grid.getStyleClass().remove("inactive-board");
+        if (!grid.getStyleClass().contains("active-board")) {
+            grid.getStyleClass().add("active-board");
+        }
+
+        grid.setCursor(Cursor.HAND);
+
+        label.getStyleClass().remove("inactive-player-label");
+        if (!label.getStyleClass().contains("active-player-label")) {
+            label.getStyleClass().add("active-player-label");
+        }
+    }
+
+    private void setBoardInactive(GridPane grid, Label label) {
+        grid.setDisable(false);
+
+        grid.getStyleClass().remove("active-board");
+        if (!grid.getStyleClass().contains("inactive-board")) {
+            grid.getStyleClass().add("inactive-board");
+        }
+
+        if (forbiddenCursor != null) {
+            grid.setCursor(forbiddenCursor);
+        } else {
+            grid.setCursor(Cursor.DEFAULT);
+        }
+
+        label.getStyleClass().remove("active-player-label");
+        if (!label.getStyleClass().contains("inactive-player-label")) {
+            label.getStyleClass().add("inactive-player-label");
+        }
     }
 
 
     @FXML
     private void onExitBtnClicked() {
-        System.out.println("Exit clicked -> Exit whole system (need to edit!!):)");
         System.exit(0);
     }
 
@@ -300,16 +435,8 @@ public class GameController {
         shockwave.setCenterY(centerY);
         tilePane.getChildren().add(shockwave);
 
-        Timeline shockExpand = new Timeline(
-            new KeyFrame(Duration.ZERO,
-                new KeyValue(shockwave.radiusProperty(), 0),
-                new KeyValue(shockwave.opacityProperty(), 1)
-            ),
-            new KeyFrame(Duration.millis(400),
-                new KeyValue(shockwave.radiusProperty(), 40),
-                new KeyValue(shockwave.opacityProperty(), 0)
-            )
-        );
+        Timeline shockExpand = new Timeline(new KeyFrame(Duration.ZERO, new KeyValue(shockwave.radiusProperty(), 0), new KeyValue(shockwave.opacityProperty(), 1)),
+                                            new KeyFrame(Duration.millis(400), new KeyValue(shockwave.radiusProperty(), 40), new KeyValue(shockwave.opacityProperty(), 0)));
 
         List<Rectangle> debrisList = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
@@ -339,11 +466,11 @@ public class GameController {
     private void onBackBtnClicked() throws IOException {
         Stage stage = (Stage) player1Grid.getScene().getWindow();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/new_game_view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
         Parent root = loader.load();
 
-        NewGameController newGameController = loader.getController();
-        newGameController.setStage(stage);  // if you need stage inside NewGameController
+        MainController controller = loader.getController();
+        controller.setStage(stage);  
 
         stage.setScene(new Scene(root));
         stage.show();

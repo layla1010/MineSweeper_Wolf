@@ -2,12 +2,6 @@ package control;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,7 +21,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Difficulty;
 import model.GameConfig;
-
+import util.SoundManager;
 
 public class NewGameController {
 
@@ -59,9 +53,6 @@ public class NewGameController {
     private boolean player2AvatarChosen = false;
     private int selectedPlayer = 1;
 
-    
-    private Clip clickClip;
-    
     private Stage stage;
 
     public void setStage(Stage stage) {
@@ -70,44 +61,15 @@ public class NewGameController {
 
     @FXML
     private void initialize() {
-        
-    	loadClickSound();
         selectPlayer(1);
         setupAvatarThumbnails();
     }
 
-    
-
-    private void loadClickSound() {
-        try {
-            // Make sure your file is at: src/main/resources/sounds/click.wav
-            var url = getClass().getResource("/Sounds/pop-tap.wav");
-            if (url == null) {
-                System.err.println("click.wav not found on classpath!");
-                return;
-            }
-
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-            clickClip = AudioSystem.getClip();      // <-- NO CASTS, returns Clip
-            clickClip.open(audioIn);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @FXML
     private void playClickSound() {
-        if (clickClip != null) {
-            if (clickClip.isRunning()) {
-                clickClip.stop();
-            }
-            clickClip.setFramePosition(0); // rewind
-            clickClip.start();
-        }
+        SoundManager.playClick();
     }
 
-    
-   
     private void setupAvatarThumbnails() {
         ImageView[] thumbs = {
             img1, img2, img3, img4, img5, img6,
@@ -116,7 +78,10 @@ public class NewGameController {
 
         for (ImageView iv : thumbs) {
             if (iv != null) {
-                iv.setOnMouseClicked(e -> setAvatarFromImageView(iv));
+                iv.setOnMouseClicked(e -> {
+                    playClickSound();
+                    setAvatarFromImageView(iv);
+                });
             }
         }
     }
@@ -158,32 +123,28 @@ public class NewGameController {
             }
         }
     }
-    
+
     @FXML
     private void onEasyCardClicked() {
-        playClickSound();     
-        easyToggle.fire();    
+        playClickSound();
+        easyToggle.fire();
     }
-
 
     @FXML
     private void onMediumCardClicked() {
-        playClickSound();     
+        playClickSound();
         medToggle.fire();
     }
 
     @FXML
     private void onHardCardClicked() {
-        playClickSound();     
+        playClickSound();
         hardToggle.fire();
     }
 
-
     @FXML
     private void onStartGameClicked() {
-    	
         playClickSound();
-
 
         String nickname1 = player1Nickname.getText();
         String nickname2 = player2Nickname.getText();
@@ -220,16 +181,6 @@ public class NewGameController {
                 difficulty
         );
 
-        System.out.println("player 1 nickname is: " + config.getPlayer1Nickname());
-        System.out.println("Player 2 nickname: " + config.getPlayer2Nickname());
-        System.out.println("Difficulty: " + config.getDifficulty());
-        System.out.println("Rows: " + config.getRows());
-        System.out.println("Cols: " + config.getCols());
-        System.out.println("Initial lives: " + config.getInitialLives());
-        System.out.println("Mines: " + config.getMines());
-        System.out.println("Questions: " + config.getQuestions());
-        System.out.println("Surprises: " + config.getSurprises());
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/board_view.fxml"));
             Parent root = loader.load();
@@ -249,7 +200,7 @@ public class NewGameController {
 
     @FXML
     private void onPlus() {
-    	playClickSound();
+        playClickSound();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose Avatar Image");
         fileChooser.getExtensionFilters().add(

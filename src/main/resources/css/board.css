@@ -1,20 +1,17 @@
-/* Base tile (unrevealed) */
 .cell-tile {
     -fx-background-color: linear-gradient(#121726, #050814);
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
     -fx-border-color: #1f2937;
     -fx-border-width: 1.5;
     -fx-text-fill: #f9fafb;
-    -fx-font-family: "System";
-    -fx-font-size: 13px;
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 18px;
     -fx-padding: 0;
 }
 
-/* Hover / click for nice feel */
 .cell-tile:hover {
     -fx-background-color: linear-gradient(#20263a, #0b1020);
-    -fx-cursor: hand;
 }
 
 .cell-tile:pressed {
@@ -22,13 +19,11 @@
     -fx-translate-y: 1;
 }
 
-/* States: hidden vs revealed */
 .cell-hidden {
-    /* same as base or slightly brighter border */
 }
 
 .cell-revealed {
-    -fx-background-color: #0b1220;
+    -fx-background-color: white;
     -fx-border-color: #374151;
 }
 
@@ -39,22 +34,39 @@
     -fx-text-fill: #fecaca;
 }
 
-/* Numbers */
 .cell-number {
-    -fx-text-fill: #93c5fd;
+    -fx-text-fill: navy blue;
+    -fx-font-family: "Copperplate Gothic Bold";
+    
+    
 }
 
-/* Empty */
-.cell-empty {
-    -fx-text-fill: transparent;
-}
 
-/* Question cells */
+
 .cell-question {
     -fx-text-fill: #facc15;
 }
 
-/* Surprise cells */
 .cell-surprise {
     -fx-text-fill: #a855f7;
+}
+
+.grid-board.active-board {
+    -fx-opacity: 1.0;
+    -fx-effect: dropshadow(gaussian, #3C8DFF, 30, 0.5, 0, 0);
+}
+
+.grid-board.inactive-board {
+    -fx-opacity: 0.5;
+    -fx-effect: none;
+}
+
+.active-player-label {
+    -fx-text-fill: #F6F7FF;
+    -fx-font-weight: bold;
+}
+
+.inactive-player-label {
+    -fx-text-fill: #8B94C4;
+    -fx-font-weight: normal;
 }

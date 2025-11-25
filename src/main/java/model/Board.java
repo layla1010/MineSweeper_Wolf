@@ -107,13 +107,17 @@ public class Board {
                     }
                 }
 
-                if (count > 0) {
-                    NumberCell numberCell = new NumberCell(r, c);
+                if (count == 0) {
+                    cell.setType(CellType.EMPTY);
+                    cell.setAdjacentMines(0);
+
+                } else {
+                	NumberCell numberCell = new NumberCell(r, c);
                     numberCell.setAdjacentMines(count);
                     cells[r][c] = numberCell;
-                } else {
-                    cell.setAdjacentMines(0);
+                    cell.setType(CellType.NUMBER);
                 }
+                
             }
         }
     }
