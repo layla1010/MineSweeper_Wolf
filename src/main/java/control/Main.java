@@ -13,6 +13,11 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
     	
     	SoundManager.init();
+    	util.SoundManager.startMusic();
+    	
+    	/*if (musicIsOnButton != null && musicIsOnButton.getGraphic() instanceof ImageView iv) {
+        iv.setImage(new Image(getClass().getResourceAsStream("/Images/volume.png")));
+    }*/
 
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/view/main_view.fxml")

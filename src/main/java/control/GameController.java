@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Insets;
@@ -54,6 +56,8 @@ public class GameController {
     @FXML private Label timeLabel;
     @FXML private Label scoreLabel;
     @FXML private HBox heartsBox;
+    @FXML private Button pauseBtn;
+    @FXML private Button musicIsOnButton;
 
 
     private Difficulty difficulty;
@@ -68,7 +72,9 @@ public class GameController {
     private int minesLeft2;
     private boolean isPlayer1Turn = true;
     private ImageCursor forbiddenCursor;
-   
+    private boolean isPaused = false;
+    private javafx.animation.Timeline timer;
+    private long elapsedSeconds = 0;
 
     public void init(GameConfig config) {
     	
@@ -92,6 +98,9 @@ public class GameController {
         
         initForbiddenCursor(); 
         applyTurnStateToBoards(); 
+        elapsedSeconds = 0;
+        updateTimeLabel();
+        startTimer();
     }
     
     private static final int TOTAL_HEART_SLOTS = 10;
@@ -206,6 +215,19 @@ public class GameController {
         final boolean tileIsPlayer1 = isPlayer1;
         
         button.setOnMouseClicked(e -> {
+        	if (isPaused) {
+                return;
+            }
+        	
+        	 if (e.getButton() == MouseButton.SECONDARY) {
+        	        handleFlagClick(board, r, c, button, tile, tileIsPlayer1);
+        	        return;
+        	    }
+        	 
+        	 if (e.getButton() != MouseButton.PRIMARY) {
+        	        return;
+        	    }
+        	
         	if ((tileIsPlayer1 && !isPlayer1Turn) || (!tileIsPlayer1 && isPlayer1Turn)) {
         		return;
         	}
@@ -222,9 +244,37 @@ public class GameController {
         return tile;
     }
 
-
+    
+    private void handleFlagClick(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
+    	if (button.isDisable()) {
+            return;
+        }
+    	if (button.getStyleClass().contains("cell-flagged")) {
+    		 button.getStyleClass().remove("cell-flagged");
+    	     button.setGraphic(null);
+    	     button.setText("");
+    	     return;
+    	} else {
+    		  button.getStyleClass().add("cell-flagged");
+    	        button.setText("");
+    	}
+    	 try {
+             Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
+             ImageView iv = new ImageView(img);
+             iv.setFitWidth(20);
+             iv.setFitHeight(20);
+             iv.setPreserveRatio(true);
+             button.setGraphic(iv);
+         } catch (Exception ex) {
+        	 button.setText("🚩");
+         }
+     }
+         
     private void revealSingleCell(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
 
+    	button.getStyleClass().remove("cell-flagged");
+        button.setGraphic(null);
+        
 			Cell cell = board.getCell(row, col);
 			if (button.isDisable()) {
 			    return;
@@ -246,15 +296,38 @@ public class GameController {
 		            buildHeartsBar();
 		        }
 		        case QUESTION -> {
-		            button.setText("?");
-		            button.getStyleClass().addAll("cell-revealed", "cell-question");
-		            score += 0;
+		        	try {
+		                 Image img = new Image(getClass().getResourceAsStream("/Images/question-mark.png"));
+		                 ImageView iv = new ImageView(img);
+		                 iv.setFitWidth(30);
+		                 iv.setFitHeight(30);
+		                 iv.setPreserveRatio(true);
+		                 button.setGraphic(iv);
+		                 button.getStyleClass().addAll("cell-revealed", "cell-question");
+			             score += 0;
+		             } catch (Exception ex) {
+		            	 button.setText("?");
+			             button.getStyleClass().addAll("cell-revealed", "cell-question");
+			             score += 0;
+		             }
+		           
 		        }
 		        case SURPRISE -> {
-		            button.setText("★");
-		            button.getStyleClass().addAll("cell-revealed", "cell-surprise");
-		            score += 2;
-		        }
+		        	 try {
+		                 Image img = new Image(getClass().getResourceAsStream("/Images/giftbox.png"));
+		                 ImageView iv = new ImageView(img);
+		                 iv.setFitWidth(30);
+		                 iv.setFitHeight(30);
+		                 iv.setPreserveRatio(true);
+		                 button.setGraphic(iv);
+		                 button.getStyleClass().addAll("cell-revealed", "cell-surprise");
+			             score += 2;
+		             } catch (Exception ex) {
+		            	 button.setText("★");
+		            	 button.getStyleClass().addAll("cell-revealed", "cell-surprise");
+			             score += 2;
+		             }
+	        	}
 		        case NUMBER -> {
 		            int n = cell.getAdjacentMines();
 		            button.setText(String.valueOf(n));
@@ -402,6 +475,47 @@ public class GameController {
             label.getStyleClass().add("inactive-player-label");
         }
     }
+    
+    private void startTimer() {
+        if (timer != null) {
+            timer.stop();
+        }
+
+        timer = new javafx.animation.Timeline(
+            new KeyFrame(Duration.seconds(1), e -> {
+                if (!isPaused) {
+                	elapsedSeconds++;
+                    updateTimeLabel();
+                }
+            })
+        );
+        timer.setCycleCount(javafx.animation.Animation.INDEFINITE);
+        timer.play();
+    }
+    
+    private void pauseTimer() {
+        if (timer != null) {
+            timer.pause();
+        }
+    }
+
+    private void resumeTimer() {
+        if (timer != null) {
+            timer.play();
+        }
+    }
+
+    private void stopTimer() {
+        if (timer != null) {
+            timer.stop();
+        }
+    }
+    
+    private void updateTimeLabel() {
+        long minutes = elapsedSeconds / 60;
+        long seconds = elapsedSeconds % 60;
+        timeLabel.setText(String.format("Time: %02d:%02d", minutes, seconds));
+    }
 
 
     @FXML
@@ -474,6 +588,46 @@ public class GameController {
 
         stage.setScene(new Scene(root));
         stage.show();
+    }
+    
+    
+    @FXML
+    private void onPauseGame() throws IOException {
+    	isPaused = !isPaused;
+    	
+    	if (pauseBtn != null && pauseBtn.getGraphic() instanceof ImageView iv) {
+            String iconPath = isPaused
+                    ? "/Images/play-button.png"
+                    : "/Images/pause.png";
+
+            Image img = new Image(getClass().getResourceAsStream(iconPath));
+            iv.setImage(img);
+        }
+    	double opacity = isPaused ? 0.6 : 1.0;
+        if (player1Grid != null) player1Grid.setOpacity(opacity);
+        if (player2Grid != null) player2Grid.setOpacity(opacity);
+        
+        if (isPaused) {
+            pauseTimer();
+        } else {
+            resumeTimer();
+        }
+    	
+    }
+    
+    @FXML
+    private void onSoundOff() throws IOException {
+        util.SoundManager.toggleMusic();
+        
+        if (musicIsOnButton != null && musicIsOnButton.getGraphic() instanceof ImageView iv) {
+            String iconPath = util.SoundManager.isMusicOn()
+                    ? "/Images/volume.png"  // music is ON
+                    : "/Images/mute.png";   // music is OFF
+
+            Image img = new Image(getClass().getResourceAsStream(iconPath));
+            iv.setImage(img);
+        }
+    	
     }
 
 }
