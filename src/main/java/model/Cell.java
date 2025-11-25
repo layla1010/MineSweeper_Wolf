@@ -16,6 +16,7 @@ public abstract class Cell {
     private final int row;      // The row of the cell on the board
     private final int col;      // The column of the cell on the board
     private int adjacentMines;  // How many mines exist around this cell (0–8)
+	private CellType type;
 
     /**
      * Base constructor. Must be called by all subclasses.
@@ -50,6 +51,10 @@ public abstract class Cell {
     public void setAdjacentMines(int adjacentMines) {
         this.adjacentMines = adjacentMines;
     }
+    
+    public void setType(CellType type) {
+        this.type = type;
+    }
 
     /**
      * Helper method to quickly check if this cell is a mine.
@@ -57,5 +62,9 @@ public abstract class Cell {
      */
     public boolean isMine() {
         return getType() == CellType.MINE;
+    }
+    
+    public boolean isEmpty() {
+        return getType() == CellType.EMPTY;
     }
 }
