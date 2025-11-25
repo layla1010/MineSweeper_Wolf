@@ -5,18 +5,12 @@ import model.Cell;
 import model.CellType;
 import model.Difficulty;
 import model.GameConfig;
+import model.Game;         
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.geometry.Insets;
-import javafx.scene.layout.StackPane;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -26,6 +20,7 @@ import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
@@ -33,8 +28,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
@@ -44,9 +42,10 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
+import javafx.scene.input.MouseButton;
 
 public class GameController {
+
 
     @FXML private GridPane player1Grid;
     @FXML private GridPane player2Grid;
@@ -60,50 +59,53 @@ public class GameController {
     @FXML private Button musicIsOnButton;
 
 
+    private Game game;              
+    private GameConfig config;
     private Difficulty difficulty;
     private Board board1;
     private Board board2;
     private StackPane[][] p1Buttons;
     private StackPane[][] p2Buttons;
-    private GameConfig config;
+
     private int sharedHearts;
     private int score;
     private int minesLeft1;
     private int minesLeft2;
+
     private boolean isPlayer1Turn = true;
-    private ImageCursor forbiddenCursor;
     private boolean isPaused = false;
-    private javafx.animation.Timeline timer;
+
+    private ImageCursor forbiddenCursor;
+
+    private Timeline timer;
     private long elapsedSeconds = 0;
 
-    public void init(GameConfig config) {
-    	
-        
-        this.config = config;
-        this.difficulty = config.getDifficulty();
+    private static final int TOTAL_HEART_SLOTS = 10;
 
+
+    public void init(GameConfig config) {
+
+        this.config = config;
+        this.game   = new Game(config);   
+        this.difficulty = config.getDifficulty();
         this.board1 = new Board(difficulty);
         this.board2 = new Board(difficulty);
-        this.minesLeft1= board1.getMineCount();
-        this.minesLeft2= board2.getMineCount();
-
-
+        this.minesLeft1 = board1.getMineCount();
+        this.minesLeft2 = board2.getMineCount();
         this.sharedHearts = difficulty.getInitialLives();
         this.score = 0;
-        
+
         buildHeartsBar();
         initLabels();
         buildGridForPlayer(player1Grid, board1, true);
         buildGridForPlayer(player2Grid, board2, false);
-        
-        initForbiddenCursor(); 
-        applyTurnStateToBoards(); 
+        initForbiddenCursor();
+        applyTurnStateToBoards();
         elapsedSeconds = 0;
         updateTimeLabel();
         startTimer();
     }
-    
-    private static final int TOTAL_HEART_SLOTS = 10;
+
 
     private void buildHeartsBar() {
         if (heartsBox == null) return;
@@ -133,25 +135,34 @@ public class GameController {
 
 
     private void initLabels() {
-        difficultyLabel.setText("Difficulty: " + difficulty.name().charAt(0) + difficulty.name().substring(1).toLowerCase());
+        difficultyLabel.setText(
+                "Difficulty: " +
+                difficulty.name().charAt(0) +
+                difficulty.name().substring(1).toLowerCase()
+        );
 
         timeLabel.setText("Time: 00:00");
 
-        player1BombsLeftLabel.setText(config.getPlayer1Nickname() + ", Mines left: " + board1.getMineCount());
-        player2BombsLeftLabel.setText(config.getPlayer2Nickname() + ", Mines left: " + board2.getMineCount());
-        
+        player1BombsLeftLabel.setText(
+                config.getPlayer1Nickname() + ", Mines left: " + board1.getMineCount()
+        );
+        player2BombsLeftLabel.setText(
+                config.getPlayer2Nickname() + ", Mines left: " + board2.getMineCount()
+        );
+
         scoreLabel.setText("Score: " + score);
     }
 
-    
+
     private void initForbiddenCursor() {
         try {
             Image img = new Image(getClass().getResourceAsStream("/Images/cursor_forbidden.png"));
             forbiddenCursor = new ImageCursor(img, img.getWidth() / 2, img.getHeight() / 2);
         } catch (Exception e) {
-            forbiddenCursor = null;
+            forbiddenCursor = null; 
         }
     }
+
 
     private void buildGridForPlayer(GridPane grid, Board board, boolean isPlayer1) {
         grid.getChildren().clear();
@@ -182,9 +193,9 @@ public class GameController {
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-            	StackPane tile = createCellTile(board, r, c, isPlayer1);
-            	 buttons[r][c] = tile;
-            	 grid.add(tile, c, r);
+                StackPane tile = createCellTile(board, r, c, isPlayer1);
+                buttons[r][c] = tile;
+                grid.add(tile, c, r);
             }
         }
 
@@ -195,6 +206,7 @@ public class GameController {
         }
     }
 
+
     private StackPane createCellTile(Board board, int row, int col, boolean isPlayer1) {
         Button button = new Button();
         button.setMinSize(0, 0);
@@ -202,7 +214,7 @@ public class GameController {
         button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         button.getStyleClass().addAll("cell-tile", "cell-hidden");
 
-        StackPane tile = new StackPane(button);  
+        StackPane tile = new StackPane(button);
         tile.setMinSize(0, 0);
         tile.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         tile.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -213,152 +225,177 @@ public class GameController {
         final int r = row;
         final int c = col;
         final boolean tileIsPlayer1 = isPlayer1;
-        
+
         button.setOnMouseClicked(e -> {
-        	if (isPaused) {
+            if (isPaused) {
+                return; 
+            }
+
+            if (e.getButton() == MouseButton.SECONDARY) {
+                if ((tileIsPlayer1 && !isPlayer1Turn) ||
+                    (!tileIsPlayer1 && isPlayer1Turn)) {
+                    return;
+                }
+
+                if (button.isDisable()) {
+                    return; 
+                }
+
+                toggleFlag(button);
+                return; 
+            }
+
+            if (e.getButton() != MouseButton.PRIMARY) {
                 return;
             }
-        	
-        	 if (e.getButton() == MouseButton.SECONDARY) {
-        	        handleFlagClick(board, r, c, button, tile, tileIsPlayer1);
-        	        return;
-        	    }
-        	 
-        	 if (e.getButton() != MouseButton.PRIMARY) {
-        	        return;
-        	    }
-        	
-        	if ((tileIsPlayer1 && !isPlayer1Turn) || (!tileIsPlayer1 && isPlayer1Turn)) {
-        		return;
-        	}
-        	if (button.isDisable()) {
+
+            if ((tileIsPlayer1 && !isPlayer1Turn) ||
+                (!tileIsPlayer1 && isPlayer1Turn)) {
                 return;
-        	}
+            }
+
+            if (button.isDisable()) {
+                return;
+            }
+
             boolean consumedAction = handleCellClick(board, r, c, button, tile, tileIsPlayer1);
             if (consumedAction) {
                 switchTurn();
             }
-                
         });
 
         return tile;
     }
 
-    
-    private void handleFlagClick(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
-    	if (button.isDisable()) {
+
+    private void toggleFlag(Button button) {
+        if (button.getGraphic() instanceof ImageView) {
+            button.setGraphic(null);
+            button.getStyleClass().remove("cell-flagged");
             return;
         }
-    	if (button.getStyleClass().contains("cell-flagged")) {
-    		 button.getStyleClass().remove("cell-flagged");
-    	     button.setGraphic(null);
-    	     button.setText("");
-    	     return;
-    	} else {
-    		  button.getStyleClass().add("cell-flagged");
-    	        button.setText("");
-    	}
-    	 try {
-             Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
-             ImageView iv = new ImageView(img);
-             iv.setFitWidth(20);
-             iv.setFitHeight(20);
-             iv.setPreserveRatio(true);
-             button.setGraphic(iv);
-         } catch (Exception ex) {
-        	 button.setText("🚩");
-         }
-     }
-         
-    private void revealSingleCell(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
 
-    	button.getStyleClass().remove("cell-flagged");
-        button.setGraphic(null);
-        
-			Cell cell = board.getCell(row, col);
-			if (button.isDisable()) {
-			    return;
-			}
-			 button.getStyleClass().removeAll(
-				        "cell-hidden", "cell-revealed", "cell-mine", "cell-question", "cell-surprise", "cell-number", "cell-empty");
-			 switch (cell.getType()) {
-		        case MINE -> {
-		            button.setText("💣");
-		            button.getStyleClass().addAll("cell-revealed", "cell-mine");
-		            sharedHearts = Math.max(0, sharedHearts - 1);
-		            triggerExplosion(tile);
-
-		            if (isPlayer1) {
-		                minesLeft1 -= 1;
-		            } else {
-		                minesLeft2 -= 1;
-		            }
-		            buildHeartsBar();
-		        }
-		        case QUESTION -> {
-		        	try {
-		                 Image img = new Image(getClass().getResourceAsStream("/Images/question-mark.png"));
-		                 ImageView iv = new ImageView(img);
-		                 iv.setFitWidth(30);
-		                 iv.setFitHeight(30);
-		                 iv.setPreserveRatio(true);
-		                 button.setGraphic(iv);
-		                 button.getStyleClass().addAll("cell-revealed", "cell-question");
-			             score += 0;
-		             } catch (Exception ex) {
-		            	 button.setText("?");
-			             button.getStyleClass().addAll("cell-revealed", "cell-question");
-			             score += 0;
-		             }
-		           
-		        }
-		        case SURPRISE -> {
-		        	 try {
-		                 Image img = new Image(getClass().getResourceAsStream("/Images/giftbox.png"));
-		                 ImageView iv = new ImageView(img);
-		                 iv.setFitWidth(30);
-		                 iv.setFitHeight(30);
-		                 iv.setPreserveRatio(true);
-		                 button.setGraphic(iv);
-		                 button.getStyleClass().addAll("cell-revealed", "cell-surprise");
-			             score += 2;
-		             } catch (Exception ex) {
-		            	 button.setText("★");
-		            	 button.getStyleClass().addAll("cell-revealed", "cell-surprise");
-			             score += 2;
-		             }
-	        	}
-		        case NUMBER -> {
-		            int n = cell.getAdjacentMines();
-		            button.setText(String.valueOf(n));
-		            button.setDisable(true);
-		            button.getStyleClass().addAll("cell-revealed", "cell-number");
-		            score += 1;
-		        }
-		        case EMPTY -> {
-		            button.setText("");
-		            button.setDisable(true);
-		            button.getStyleClass().addAll("cell-revealed", "cell-empty");
-		            score += 1;
-		        }
-		    }
-
-		    updateScoreAndMineLabels();
+        try {
+            Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
+            ImageView iv = new ImageView(img);
+            iv.setFitWidth(20);
+            iv.setFitHeight(20);
+            iv.setPreserveRatio(true);
+            button.setGraphic(iv);
+        } catch (Exception ex) {
+            button.setText("🚩");
+        }
+        if (!button.getStyleClass().contains("cell-flagged")) {
+            button.getStyleClass().add("cell-flagged");
+        }
     }
 
-    
-    
-    private boolean handleCellClick(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
 
-    	Cell cell = board.getCell(row, col);
+    private void revealSingleCell(Board board,
+                                  int row,
+                                  int col,
+                                  Button button,
+                                  StackPane tile,
+                                  boolean isPlayer1) {
+
+        Cell cell = board.getCell(row, col);
+
+        if (button.isDisable()) {
+            return;
+        }
+
+        if (button.getGraphic() instanceof ImageView) {
+            button.setGraphic(null);
+        }
+        button.getStyleClass().remove("cell-flagged");
+
+        button.getStyleClass().removeAll(
+                "cell-hidden", "cell-revealed",
+                "cell-mine", "cell-question",
+                "cell-surprise", "cell-number", "cell-empty"
+        );
+
+        switch (cell.getType()) {
+            case MINE -> {
+                button.setText("💣");
+                button.getStyleClass().addAll("cell-revealed", "cell-mine");
+                sharedHearts = Math.max(0, sharedHearts - 1);
+                triggerExplosion(tile);
+
+                if (isPlayer1) {
+                    minesLeft1 -= 1;
+                } else {
+                    minesLeft2 -= 1;
+                }
+                buildHeartsBar();
+            }
+            case QUESTION -> {
+            	 try {
+                     Image img = new Image(getClass().getResourceAsStream("/Images/question-mark.png"));
+                     ImageView iv = new ImageView(img);
+                     iv.setFitWidth(20);
+                     iv.setFitHeight(20);
+                     iv.setPreserveRatio(true);
+                     button.setGraphic(iv);
+                     button.getStyleClass().addAll("cell-revealed", "cell-question");
+                     score += 0;  
+                 } catch (Exception ex) {
+                	 button.setText("?");
+                     button.getStyleClass().addAll("cell-revealed", "cell-question");
+                     score += 0;                 }
+            }
+            case SURPRISE -> {
+            	try {
+                    Image img = new Image(getClass().getResourceAsStream("/Images/giftbox.png"));
+                    ImageView iv = new ImageView(img);
+                    iv.setFitWidth(20);
+                    iv.setFitHeight(20);
+                    iv.setPreserveRatio(true);
+                    button.setGraphic(iv);
+                    button.getStyleClass().addAll("cell-revealed", "cell-surprise");
+                    score += 2;
+                } catch (Exception ex) {
+                	button.setText("★");
+                    button.getStyleClass().addAll("cell-revealed", "cell-surprise");
+                    score += 2;               }
+                
+            }
+            case NUMBER -> {
+                int n = cell.getAdjacentMines();
+                button.setText(String.valueOf(n));
+                button.setDisable(true);
+                button.getStyleClass().addAll("cell-revealed", "cell-number");
+                score += 1;
+            }
+            case EMPTY -> {
+                button.setText("");
+                button.setDisable(true);
+                button.getStyleClass().addAll("cell-revealed", "cell-empty");
+                score += 1;
+            }
+        }
+
+        updateScoreAndMineLabels();
+    }
+
+    private boolean handleCellClick(Board board,
+                                    int row,
+                                    int col,
+                                    Button button,
+                                    StackPane tile,
+                                    boolean isPlayer1) {
+
+        Cell cell = board.getCell(row, col);
+
         revealSingleCell(board, row, col, button, tile, isPlayer1);
+
         if (cell.getType() == CellType.EMPTY) {
             cascadeReveal(board, row, col, isPlayer1);
         }
-        return true;
+
+        return true; 
     }
 
-   
     private void cascadeReveal(Board board, int startRow, int startCol, boolean isPlayer1) {
 
         StackPane[][] buttons = isPlayer1 ? p1Buttons : p2Buttons;
@@ -366,7 +403,6 @@ public class GameController {
         int cols = board.getCols();
 
         boolean[][] visited = new boolean[rows][cols];
-
         java.util.Deque<int[]> stack = new java.util.ArrayDeque<>();
         stack.push(new int[]{startRow, startCol});
 
@@ -387,22 +423,19 @@ public class GameController {
 
             StackPane tile = buttons[r][c];
             if (tile == null || tile.getChildren().isEmpty()) continue;
-
             Button btn = (Button) tile.getChildren().get(0);
 
             revealSingleCell(board, r, c, btn, tile, isPlayer1);
 
-            if (cell.getType() == CellType.EMPTY || (cell.getType() == CellType.NUMBER && cell.getAdjacentMines() == 0)) {
+            if (cell.getType() == CellType.EMPTY ||
+                (cell.getType() == CellType.NUMBER && cell.getAdjacentMines() == 0)) {
+
                 for (int dr = -1; dr <= 1; dr++) {
                     for (int dc = -1; dc <= 1; dc++) {
-                        if (dr == 0 && dc == 0) {
-                        	continue;
-                        }
+                        if (dr == 0 && dc == 0) continue;
                         int nr = r + dr;
                         int nc = c + dc;
-                        if (nr < 0 || nc < 0 || nr >= rows || nc >= cols) {
-                        	continue;
-                        }
+                        if (nr < 0 || nc < 0 || nr >= rows || nc >= cols) continue;
                         if (!visited[nr][nc]) {
                             stack.push(new int[]{nr, nc});
                         }
@@ -416,19 +449,22 @@ public class GameController {
     private void updateScoreAndMineLabels() {
         scoreLabel.setText("Score: " + score);
 
-        player1BombsLeftLabel.setText(config.getPlayer1Nickname() + ", Mines left: " + minesLeft1);
-        player2BombsLeftLabel.setText(config.getPlayer2Nickname() + ", Mines left: " + minesLeft2);
+        player1BombsLeftLabel.setText(
+                config.getPlayer1Nickname() + ", Mines left: " + minesLeft1
+        );
+        player2BombsLeftLabel.setText(
+                config.getPlayer2Nickname() + ", Mines left: " + minesLeft2
+        );
     }
-    
+
+
     private void switchTurn() {
         isPlayer1Turn = !isPlayer1Turn;
         applyTurnStateToBoards();
     }
-    
+
     private void applyTurnStateToBoards() {
-        if (player1Grid == null || player2Grid == null) {
-        	return;
-        }
+        if (player1Grid == null || player2Grid == null) return;
 
         if (isPlayer1Turn) {
             setBoardActive(player1Grid, player1BombsLeftLabel);
@@ -438,10 +474,9 @@ public class GameController {
             setBoardActive(player2Grid, player2BombsLeftLabel);
         }
     }
-    
-    private void setBoardActive(GridPane grid, Label label) {
 
-    	grid.setDisable(false);
+    private void setBoardActive(GridPane grid, Label label) {
+        grid.setDisable(false);
 
         grid.getStyleClass().remove("inactive-board");
         if (!grid.getStyleClass().contains("active-board")) {
@@ -457,7 +492,8 @@ public class GameController {
     }
 
     private void setBoardInactive(GridPane grid, Label label) {
-        grid.setDisable(false);
+    	
+        grid.setDisable(false); 
 
         grid.getStyleClass().remove("active-board");
         if (!grid.getStyleClass().contains("inactive-board")) {
@@ -475,24 +511,25 @@ public class GameController {
             label.getStyleClass().add("inactive-player-label");
         }
     }
-    
+
+
     private void startTimer() {
         if (timer != null) {
             timer.stop();
         }
 
-        timer = new javafx.animation.Timeline(
-            new KeyFrame(Duration.seconds(1), e -> {
-                if (!isPaused) {
-                	elapsedSeconds++;
-                    updateTimeLabel();
-                }
-            })
+        timer = new Timeline(
+                new KeyFrame(Duration.seconds(1), e -> {
+                    if (!isPaused) {
+                        elapsedSeconds++;
+                        updateTimeLabel();
+                    }
+                })
         );
-        timer.setCycleCount(javafx.animation.Animation.INDEFINITE);
+        timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();
     }
-    
+
     private void pauseTimer() {
         if (timer != null) {
             timer.pause();
@@ -510,7 +547,7 @@ public class GameController {
             timer.stop();
         }
     }
-    
+
     private void updateTimeLabel() {
         long minutes = elapsedSeconds / 60;
         long seconds = elapsedSeconds % 60;
@@ -520,6 +557,7 @@ public class GameController {
 
     @FXML
     private void onExitBtnClicked() {
+        stopTimer();
         System.exit(0);
     }
 
@@ -527,7 +565,62 @@ public class GameController {
     private void onHelpBtnClicked() {
         System.out.println("Help clicked but screen not created yet!");
     }
-    
+
+    @FXML
+    private void onBackBtnClicked() throws IOException {
+        stopTimer();
+
+        Stage stage = (Stage) player1Grid.getScene().getWindow();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
+        Parent root = loader.load();
+
+        MainController controller = loader.getController();
+        controller.setStage(stage);
+
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+
+    @FXML
+    private void onPauseGame() {
+        isPaused = !isPaused;
+
+        if (pauseBtn != null && pauseBtn.getGraphic() instanceof ImageView iv) {
+            String iconPath = isPaused ? "/Images/play-button.png"
+                                       : "/Images/pause.png";
+            Image img = new Image(getClass().getResourceAsStream(iconPath));
+            iv.setImage(img);
+        }
+
+        double opacity = isPaused ? 0.6 : 1.0;
+        if (player1Grid != null) player1Grid.setOpacity(opacity);
+        if (player2Grid != null) player2Grid.setOpacity(opacity);
+
+        if (isPaused) {
+            pauseTimer();
+        } else {
+            resumeTimer();
+        }
+    }
+
+
+    @FXML
+    private void onSoundOff() {
+        util.SoundManager.toggleMusic();
+
+        if (musicIsOnButton != null && musicIsOnButton.getGraphic() instanceof ImageView iv) {
+            String iconPath = util.SoundManager.isMusicOn()
+                    ? "/Images/volume.png"
+                    : "/Images/mute.png";
+
+            Image img = new Image(getClass().getResourceAsStream(iconPath));
+            iv.setImage(img);
+        }
+    }
+
+
     private void triggerExplosion(StackPane tilePane) {
         double centerX = tilePane.getWidth() / 2.0;
         double centerY = tilePane.getHeight() / 2.0;
@@ -549,8 +642,16 @@ public class GameController {
         shockwave.setCenterY(centerY);
         tilePane.getChildren().add(shockwave);
 
-        Timeline shockExpand = new Timeline(new KeyFrame(Duration.ZERO, new KeyValue(shockwave.radiusProperty(), 0), new KeyValue(shockwave.opacityProperty(), 1)),
-                                            new KeyFrame(Duration.millis(400), new KeyValue(shockwave.radiusProperty(), 40), new KeyValue(shockwave.opacityProperty(), 0)));
+        Timeline shockExpand = new Timeline(
+                new KeyFrame(Duration.ZERO,
+                        new KeyValue(shockwave.radiusProperty(), 0),
+                        new KeyValue(shockwave.opacityProperty(), 1)
+                ),
+                new KeyFrame(Duration.millis(400),
+                        new KeyValue(shockwave.radiusProperty(), 40),
+                        new KeyValue(shockwave.opacityProperty(), 0)
+                )
+        );
 
         List<Rectangle> debrisList = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
@@ -575,59 +676,4 @@ public class GameController {
             tilePane.getChildren().removeAll(debrisList);
         });
     }
-    
-    @FXML
-    private void onBackBtnClicked() throws IOException {
-        Stage stage = (Stage) player1Grid.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
-        Parent root = loader.load();
-
-        MainController controller = loader.getController();
-        controller.setStage(stage);  
-
-        stage.setScene(new Scene(root));
-        stage.show();
-    }
-    
-    
-    @FXML
-    private void onPauseGame() throws IOException {
-    	isPaused = !isPaused;
-    	
-    	if (pauseBtn != null && pauseBtn.getGraphic() instanceof ImageView iv) {
-            String iconPath = isPaused
-                    ? "/Images/play-button.png"
-                    : "/Images/pause.png";
-
-            Image img = new Image(getClass().getResourceAsStream(iconPath));
-            iv.setImage(img);
-        }
-    	double opacity = isPaused ? 0.6 : 1.0;
-        if (player1Grid != null) player1Grid.setOpacity(opacity);
-        if (player2Grid != null) player2Grid.setOpacity(opacity);
-        
-        if (isPaused) {
-            pauseTimer();
-        } else {
-            resumeTimer();
-        }
-    	
-    }
-    
-    @FXML
-    private void onSoundOff() throws IOException {
-        util.SoundManager.toggleMusic();
-        
-        if (musicIsOnButton != null && musicIsOnButton.getGraphic() instanceof ImageView iv) {
-            String iconPath = util.SoundManager.isMusicOn()
-                    ? "/Images/volume.png"  // music is ON
-                    : "/Images/mute.png";   // music is OFF
-
-            Image img = new Image(getClass().getResourceAsStream(iconPath));
-            iv.setImage(img);
-        }
-    	
-    }
-
 }
