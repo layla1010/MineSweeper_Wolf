@@ -4,6 +4,9 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 public class SoundManager {
 
     private static Clip clickClip;
@@ -80,4 +83,6 @@ public class SoundManager {
     public static boolean isMusicOn() {
         return musicOn;
     }
+    
+    
 }

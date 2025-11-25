@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
@@ -48,6 +49,8 @@ public class NewGameController {
     @FXML private ImageView img11;
     @FXML private ImageView img12;
     @FXML private ImageView img13;
+    @FXML private Button setUpmusicIsOnButton;
+
 
     private boolean player1AvatarChosen = false;
     private boolean player2AvatarChosen = false;
@@ -227,6 +230,21 @@ public class NewGameController {
             }
         }
     }
+    
+    @FXML void onSoundOff() {
+        util.SoundManager.toggleMusic();
+
+        if (setUpmusicIsOnButton != null && setUpmusicIsOnButton.getGraphic() instanceof ImageView iv) {
+            String iconPath = util.SoundManager.isMusicOn()
+                    ? "/Images/volume.png"
+                    : "/Images/mute.png";
+
+            Image img = new Image(getClass().getResourceAsStream(iconPath));
+            iv.setImage(img);
+        }
+    }
+    
+  
 
     private void showError(String message) {
         Alert alert = new Alert(AlertType.ERROR);

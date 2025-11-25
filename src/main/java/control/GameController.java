@@ -580,6 +580,8 @@ public class GameController {
 
         stage.setScene(new Scene(root));
         stage.show();
+        stage.centerOnScreen();
+
     }
 
 

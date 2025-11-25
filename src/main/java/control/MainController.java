@@ -28,15 +28,13 @@ public class MainController {
 
     @FXML
     private void initialize() {
-        // If you DON'T want a click when main screen opens, delete this line:
-        // SoundManager.playClick();
         playLogoAnimation();
     }
 
     private void playLogoAnimation() {
         TranslateTransition slide = new TranslateTransition(Duration.millis(1200), logoImage);
         slide.setFromX(-600);
-        slide.setToX(0);
+        slide.setToX(50);
         slide.setInterpolator(Interpolator.EASE_OUT);
 
         FadeTransition fade = new FadeTransition(Duration.millis(800), logoImage);
@@ -61,6 +59,8 @@ public class MainController {
 
             stage.setScene(new Scene(root));
             stage.show();
+            stage.centerOnScreen();
+
 
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -82,4 +82,11 @@ public class MainController {
         SoundManager.playClick();
         // TODO: implement screen
     }
+    
+    @FXML
+    private void     onSettingsClicked() {
+        SoundManager.playClick();
+        // TODO: implement screen
+    }
+    
 }

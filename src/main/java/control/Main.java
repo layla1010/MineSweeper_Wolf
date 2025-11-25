@@ -20,7 +20,7 @@ public class Main extends Application {
     }*/
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/view/main_view.fxml")
+                getClass().getResource("/view/stats_view.fxml")
         );
         Parent root = loader.load();
 
@@ -28,6 +28,8 @@ public class Main extends Application {
         stage.setTitle("Minesweeper");
         stage.setScene(scene);
         stage.show();
+        stage.centerOnScreen();
+
     }
 
     public static void main(String[] args) {

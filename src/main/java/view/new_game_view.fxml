@@ -49,6 +49,15 @@
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
                 </Text>
+                <Button fx:id="setUpmusicIsOnButton" layoutX="1146.0" layoutY="18.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSoundOff" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 50; -fx-background-color: transparent;">
+               <graphic>
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@/Images/volume.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
             </children>
         </AnchorPane>
 
@@ -461,8 +470,8 @@
 
         <AnchorPane prefHeight="73.0" prefWidth="826.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
             <children>
-                <Line endX="72.8" endY="-1.3E-5" layoutX="97.0" layoutY="7.0" onMouseClicked="#playClickSound" startX="-100.0" stroke="#274B8E" />
-                <Text fill="#F6F7FF" layoutX="-2.0" layoutY="5.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose Difficulty" wrappingWidth="172.5">
+                <Line endX="72.8" layoutX="97.0" layoutY="7.0" onMouseClicked="#playClickSound" startX="-100.0" stroke="#274B8E" />
+                <Text fill="#F6F7FF" layoutX="5.0" layoutY="5.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose Difficulty" wrappingWidth="172.5">
                     <font>
                         <Font name="Copperplate Gothic Bold" size="16.0" />
                     </font>
@@ -477,7 +486,7 @@
 
         <AnchorPane prefHeight="70.0" prefWidth="1200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
             <children>
-                <Text fill="#F6F7FF" layoutY="13.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Player Customization" wrappingWidth="200.0">
+                <Text fill="#F6F7FF" layoutX="5.0" layoutY="13.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Player Customization" wrappingWidth="200.0">
                     <font>
                         <Font name="Copperplate Gothic Bold" size="15.0" />
                     </font>
@@ -487,7 +496,7 @@
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
                 </Text>
-                <Line endX="74.09" endY="-1.8E-5" layoutX="98.0" layoutY="17.0" onMouseClicked="#playClickSound" startX="-100.0" stroke="#274B8E" />
+                <Line endX="100.0" layoutX="100.0" layoutY="17.0" onMouseClicked="#playClickSound" startX="-100.0" stroke="#274B8E" />
             </children>
         </AnchorPane>
 

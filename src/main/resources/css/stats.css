@@ -1,0 +1,19 @@
+.scroll-pane .scroll-bar:horizontal .thumb {
+    -fx-background-color: #3C8DFF;
+    -fx-background-radius: 5;
+}
+
+.scroll-pane .scroll-bar:horizontal .track {
+    -fx-background-color: #0f182e;
+}
+
+.scroll-pane .increment-button,
+.scroll-pane .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-pane {
+    -fx-background: #050814;
+    -fx-background-color: #050814;
+}
