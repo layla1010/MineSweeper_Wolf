@@ -48,6 +48,8 @@ import java.time.LocalTime;
 
 import model.Game;
 import model.SysData;
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
 
 
 public class GameController {
@@ -76,6 +78,8 @@ public class GameController {
     private ImageCursor forbiddenCursor;
     
     private boolean gameOver = false;
+    private Timeline gameTimer;
+    private int elapsedSeconds = 0;
    
 
     public void init(GameConfig config) {
@@ -100,6 +104,7 @@ public class GameController {
         
         initForbiddenCursor(); 
         applyTurnStateToBoards(); 
+        startGameTimer();
     }
     
     private static final int TOTAL_HEART_SLOTS = 10;
@@ -502,6 +507,9 @@ public class GameController {
         }
         gameOver = true;
 
+        // stop the stopwatch
+        stopGameTimer();
+        
         // ✅ Save game result to history (CSV)
         saveCurrentGameToHistory();
 
@@ -526,7 +534,7 @@ public class GameController {
                 difficulty,
                 score,
                 LocalDate.now(),
-                LocalTime.now()
+                elapsedSeconds
         );
 
         SysData sysData = SysData.getInstance();
@@ -536,6 +544,33 @@ public class GameController {
         // Print the actual game line to Eclipse console
         System.out.println("Saved game: " + game);
     }
+    
+    private void startGameTimer() {
+        elapsedSeconds = 0;
+        updateTimeLabel(); // show 00:00 at start
+
+        gameTimer = new Timeline(
+                new KeyFrame(Duration.seconds(1), e -> {
+                    elapsedSeconds++;
+                    updateTimeLabel();
+                })
+        );
+        gameTimer.setCycleCount(Timeline.INDEFINITE);
+        gameTimer.play();
+    }
+
+    private void stopGameTimer() {
+        if (gameTimer != null) {
+            gameTimer.stop();
+        }
+    }
+
+    private void updateTimeLabel() {
+        int minutes = elapsedSeconds / 60;
+        int seconds = elapsedSeconds % 60;
+        timeLabel.setText(String.format("Time: %d:%02d", minutes, seconds));
+    }
+
 
 
 }
