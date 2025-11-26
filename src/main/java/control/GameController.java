@@ -50,6 +50,9 @@ import model.Game;
 import model.SysData;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
+import model.GameResult;
+
+
 
 
 public class GameController {
@@ -81,6 +84,11 @@ public class GameController {
     private Timeline gameTimer;
     private int elapsedSeconds = 0;
    
+ // number of non-mine cells that still need to be revealed
+    private int safeCellsRemaining1;
+    private int safeCellsRemaining2;
+    private boolean gameWon = false; 
+    
 
     public void init(GameConfig config) {
     	
@@ -93,6 +101,12 @@ public class GameController {
         this.minesLeft1= board1.getMineCount();
         this.minesLeft2= board2.getMineCount();
 
+        // total safe cells = total cells - mines (for win conditions)
+                int totalCells1 = board1.getRows() * board1.getCols();
+                int totalCells2 = board2.getRows() * board2.getCols();
+                this.safeCellsRemaining1 = totalCells1 - board1.getMineCount();
+                this.safeCellsRemaining2 = totalCells2 - board2.getMineCount();
+        
 
         this.sharedHearts = difficulty.getInitialLives();
         this.score = 0;
@@ -251,6 +265,7 @@ public class GameController {
 			 switch (cell.getType()) {
 		        case MINE -> {
 		            button.setText("💣");
+		            button.setDisable(true);
 		            button.getStyleClass().addAll("cell-revealed", "cell-mine");
 		            sharedHearts = Math.max(0, sharedHearts - 1);
 		            triggerExplosion(tile);
@@ -261,7 +276,7 @@ public class GameController {
 		                minesLeft2 -= 1;
 		            }
 		            buildHeartsBar();
-		            
+		            // LOSE condition
 		            if (sharedHearts == 0) {
 		                onGameOver();
 		            }
@@ -290,7 +305,26 @@ public class GameController {
 		            score += 1;
 		        }
 		    }
+			 // After revealing, update safe-cells counters for non-mine cells
+		        if (cell.getType() != CellType.MINE) {
+		            if (isPlayer1) {
+		                safeCellsRemaining1 = Math.max(0, safeCellsRemaining1 - 1);
+		            } else {
+		                safeCellsRemaining2 = Math.max(0, safeCellsRemaining2 - 1);
+		            }
 
+		            //  WIN condition:
+		            // all safe cells on both boards are revealed AND we still have hearts
+		            if (!gameOver && sharedHearts > 0
+		                    && safeCellsRemaining1 == 0
+		                    && safeCellsRemaining2 == 0) {
+		                gameWon = true;
+		                onGameOver();
+		            }
+		        }
+
+			 
+			 
 		    updateScoreAndMineLabels();
     }
 
@@ -527,12 +561,15 @@ public class GameController {
         if (config == null) {
             return; // should not happen, but just in case
         }
+        
+        GameResult result = gameWon ? GameResult.WIN : GameResult.LOSE;
 
         Game game = new Game(
                 config.getPlayer1Nickname(),
                 config.getPlayer2Nickname(),
                 difficulty,
                 score,
+                result,
                 LocalDate.now(),
                 elapsedSeconds
         );

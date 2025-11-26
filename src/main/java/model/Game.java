@@ -7,20 +7,24 @@ import java.util.Objects;
 
 /**
  * Represents a single finished game that will appear in the History screen.
- * A Game stores:
+ * Stores:
  *  - player1 nickname
  *  - player2 nickname
  *  - difficulty level
  *  - final score
+ *  - result (WIN / LOSE)
  *  - date of the game
- *  - time of the game (time of day)
+ *  - duration in seconds (stopwatch from start to end)
  */
+
+
 public class Game {
 
     private final String player1Nickname;
     private final String player2Nickname;
     private final Difficulty difficulty;
     private final int finalScore;
+    private final GameResult result;
     private final LocalDate date;   // e.g. 2025-11-26
     final int durationSeconds;;   // total duration in seconds
 
@@ -32,6 +36,7 @@ public class Game {
                 String player2Nickname,
                 Difficulty difficulty,
                 int finalScore,
+                GameResult result,
                 LocalDate date,
                 int durationSeconds) {
 
@@ -48,6 +53,7 @@ public class Game {
         this.player2Nickname = player2Nickname.trim();
         this.difficulty = Objects.requireNonNull(difficulty, "difficulty cannot be null");
         this.finalScore = finalScore;
+        this.result = Objects.requireNonNull(result, "result cannot be null");
         this.date = Objects.requireNonNull(date, "date cannot be null");
         this.durationSeconds = durationSeconds;
     }
@@ -65,7 +71,12 @@ public class Game {
     }
 
     public int getFinalScore() {
+    	
         return finalScore;
+    }
+    
+    public GameResult getResult() {
+        return result;
     }
 
     public LocalDate getDate() {
@@ -91,6 +102,13 @@ public class Game {
     public String getDateAsString() {
         return date.toString(); // ISO_LOCAL_DATE by default
     }
+    
+    /**
+     * Nice text for UI ("Win" / "Lose")
+     */
+    public String getResultAsText() {
+        return (result == GameResult.WIN) ? "Win" : "Lose";
+    }
 
 
     @Override
@@ -100,6 +118,7 @@ public class Game {
                 ", player2='" + player2Nickname + '\'' +
                 ", difficulty=" + difficulty +
                 ", finalScore=" + finalScore +
+                ", result=" + result +
                 ", date=" + date +
                 ", duration=" + getDurationFormatted() +
                 '}';

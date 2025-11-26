@@ -21,7 +21,7 @@ public class HistoryTest {
                 Difficulty.EASY,
                 55,
                 LocalDate.now(),
-                LocalTime.now()
+                136
         );
 
         // 3) Add the game into memory

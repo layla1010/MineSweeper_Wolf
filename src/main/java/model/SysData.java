@@ -88,20 +88,18 @@ public class SysData {
     }
 
     /**
-     * Parses a CSV line into a Game object.
      * Expected format:
-     * date,time,difficulty,score,player1,player2
-     *
-     * Example:
-     * 2025-11-26,21:15,EASY,42,Alice,Bob
+     * date,duration,difficulty,score,result,player1,player2
      */
+    
+    
     private Game parseGameFromCsvLine(String line) {
         if (line == null || line.trim().isEmpty()) {
             return null;
         }
 
         String[] parts = line.split(",", -1);  // -1 -> keep empty strings if any
-        if (parts.length != 6) {
+        if (parts.length != 7) {
             // Not in expected format
             return null;
         }
@@ -111,10 +109,11 @@ public class SysData {
             int durationSeconds =  parseDuration(parts[1]); 
             Difficulty difficulty = Difficulty.valueOf(parts[2]);
             int score = Integer.parseInt(parts[3]);
-            String player1 = parts[4];
-            String player2 = parts[5];
+            GameResult result = GameResult.valueOf(parts[4]);   // WIN / LOSE
+            String player1 = parts[5];
+            String player2 = parts[6];
 
-            return new Game(player1, player2, difficulty, score, date, durationSeconds);
+            return new Game(player1, player2, difficulty, score ,result , date, durationSeconds);
 
         } catch (Exception e) {
             // If any parsing fails, skip this line
@@ -157,7 +156,7 @@ public class SysData {
 
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             // Header row (optional but nice for readability)
-            writer.write("date,duration,difficulty,score,player1,player2");
+            writer.write("date,duration,difficulty,score,result,player1,player2");
             writer.newLine();
 
             for (Game game : games) {
@@ -179,10 +178,11 @@ public class SysData {
         String durationStr = game.getDurationFormatted();    // "21:15"
         String difficultyStr = game.getDifficulty().name();
         String scoreStr = Integer.toString(game.getFinalScore());
+        String resultStr = game.getResult().name();          // WIN / LOSE
         String p1 = sanitizeForCsv(game.getPlayer1Nickname());
         String p2 = sanitizeForCsv(game.getPlayer2Nickname());
 
-        return String.join(",", dateStr, durationStr, difficultyStr, scoreStr, p1, p2);
+        return String.join(",", dateStr, durationStr, difficultyStr, scoreStr, resultStr, p1, p2);
     }
 
     /**
