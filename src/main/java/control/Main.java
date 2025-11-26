@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
+import model.SysData;
 
 public class Main extends Application {
 
@@ -13,6 +14,9 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
     	
     	SoundManager.init();
+    	
+    	 // ✅ LOAD HISTORY FROM CSV ONCE WHEN APP STARTS
+        SysData.getInstance().loadHistoryFromCsv();
 
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/view/main_view.fxml")
