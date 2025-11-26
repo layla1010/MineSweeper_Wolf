@@ -42,3 +42,146 @@
 .split-pane-divider .vertical-grabber {
     -fx-background-color: transparent !important;
 }
+
+/* Aya Ala Deen – Settings Screen Implementation Documentation */
+
+/* Back arrow button used in Settings and Filters screens */
+.settings-back-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4fd1ff;
+    -fx-font-size: 28px;
+    -fx-cursor: hand;
+}
+
+.settings-back-button:hover {
+    -fx-text-fill: #7be3ff;
+}
+
+/* Big menu buttons in Settings screen */
+.settings-menu-button {
+    -fx-pref-width: 800;
+    -fx-pref-height: 70;
+    -fx-background-color: linear-gradient(#3C8DFF, #274B8E);
+    -fx-text-fill: #F6F7FF;
+    -fx-font-family: "Copperplate Gothic Bold";
+    -fx-font-size: 26px;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: #111827;
+    -fx-border-width: 1.5;
+    -fx-cursor: hand;
+}
+
+.settings-menu-button:hover {
+    -fx-background-color: linear-gradient(#60A5FF, #3158A3);
+}
+
+.settings-menu-button:pressed {
+    -fx-translate-y: 1;
+}
+
+/* Filters screen rows */
+.filter-row {
+    -fx-background-color: #0B1226;
+    -fx-padding: 12 20 12 20;
+    -fx-spacing: 20;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-color: #111827;
+    -fx-border-width: 1.5;
+}
+
+.filter-label {
+    -fx-text-fill: #E5E7EB;
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 20px;
+}
+
+/* Modern switch-style toggle button */
+.switch-toggle {
+    -fx-background-color: #111827;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #4B5563;
+    -fx-border-width: 2;
+    -fx-pref-width: 70;
+    -fx-pref-height: 32;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+/* On state */
+.switch-toggle:selected {
+    -fx-background-color: #22c55e;
+    -fx-border-color: #16a34a;
+}
+
+/* No text inside the toggle */
+.switch-toggle .text {
+    -fx-opacity: 0;
+}
+
+/* Aya Ala Deen – WOLF Settings & Filters Design */
+
+/* Root of settings screen */
+.settings-root {
+    -fx-background-color: linear-gradient(#050814, #02030A);
+}
+
+/* Back button (arrow) */
+.settings-back-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #9CA3AF;
+    -fx-font-size: 20px;
+    -fx-cursor: hand;
+}
+
+.settings-back-button:hover {
+    -fx-text-fill: #E5F4FF;
+}
+
+/* Wolf logo glow */
+.wolf-logo {
+    -fx-effect: dropshadow(gaussian, rgba(79,209,255,0.85), 25, 0.6, 0, 0);
+}
+
+/* Title & subtitle */
+.settings-title {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.7), 20, 0.4, 0, 3);
+}
+
+.settings-subtitle {
+    -fx-text-alignment: center;
+}
+
+/* Dashboard grid */
+.settings-dashboard {
+    -fx-padding: 10 40 0 40;
+}
+
+/* Main cards */
+.menu-card {
+    -fx-background-color: linear-gradient(#0B1226, #050814);
+    -fx-background-radius: 24;
+    -fx-border-radius: 24;
+    -fx-border-color: #1F2937;
+    -fx-border-width: 2;
+    -fx-cursor: hand;
+    -fx-padding: 20;
+}
+
+.menu-card:hover {
+    -fx-background-color: linear-gradient(#111827, #070b16);
+    -fx-border-color: #3C8DFF;
+    -fx-effect: dropshadow(gaussian, rgba(60,141,255,0.7), 24, 0.6, 0, 0);
+    -fx-translate-y: -2;
+}
+
+.menu-card:pressed {
+    -fx-background-color: #020617;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+}
+
+.menu-card-icon {
+    -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.85), 18, 0.7, 0, 0);
+}
