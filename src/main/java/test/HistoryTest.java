@@ -2,6 +2,7 @@ package test;
 
 import model.SysData;
 import model.Game;
+import model.GameResult;
 import model.Difficulty;
 
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ public class HistoryTest {
                 "Layla",
                 Difficulty.EASY,
                 55,
+                GameResult.WIN,
                 LocalDate.now(),
                 136
         );
