@@ -108,13 +108,13 @@ public class SysData {
 
         try {
             LocalDate date = LocalDate.parse(parts[0]); // "2025-11-26"
-            LocalTime time = LocalTime.parse(parts[1]); // "21:15"
+            int durationSeconds =  parseDuration(parts[1]); 
             Difficulty difficulty = Difficulty.valueOf(parts[2]);
             int score = Integer.parseInt(parts[3]);
             String player1 = parts[4];
             String player2 = parts[5];
 
-            return new Game(player1, player2, difficulty, score, date, time);
+            return new Game(player1, player2, difficulty, score, date, durationSeconds);
 
         } catch (Exception e) {
             // If any parsing fails, skip this line
@@ -122,6 +122,26 @@ public class SysData {
             return null;
         }
     }
+    
+ // Accept "M:SS", "MM:SS", or pure seconds like "123"
+    private int parseDuration(String text) {
+        if (text == null || text.isBlank()) {
+            return 0;
+        }
+
+        text = text.trim();
+
+        if (text.contains(":")) {
+            String[] parts = text.split(":");
+            int minutes = Integer.parseInt(parts[0]);
+            int seconds = Integer.parseInt(parts[1]);
+            return minutes * 60 + seconds;
+        } else {
+            return Integer.parseInt(text); // assume raw seconds
+        }
+    }
+    
+    
 
     // ====================================================
     //  CSV SAVING
@@ -137,7 +157,7 @@ public class SysData {
 
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             // Header row (optional but nice for readability)
-            writer.write("date,time,difficulty,score,player1,player2");
+            writer.write("date,duration,difficulty,score,player1,player2");
             writer.newLine();
 
             for (Game game : games) {
@@ -156,13 +176,13 @@ public class SysData {
      */
     private String formatGameAsCsvLine(Game game) {
         String dateStr = game.getDate().toString(); // "2025-11-26"
-        String timeStr = game.getTimeAsString();    // "21:15"
+        String durationStr = game.getDurationFormatted();    // "21:15"
         String difficultyStr = game.getDifficulty().name();
         String scoreStr = Integer.toString(game.getFinalScore());
         String p1 = sanitizeForCsv(game.getPlayer1Nickname());
         String p2 = sanitizeForCsv(game.getPlayer2Nickname());
 
-        return String.join(",", dateStr, timeStr, difficultyStr, scoreStr, p1, p2);
+        return String.join(",", dateStr, durationStr, difficultyStr, scoreStr, p1, p2);
     }
 
     /**
