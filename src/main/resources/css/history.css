@@ -1,0 +1,117 @@
+/* ===== Root background ===== */
+.history-root {
+    -fx-background-color: #050814;
+}
+
+/* ===== ScrollPane tweaks ===== */
+.history-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.history-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ===== Title & top bar ===== */
+.history-title {
+    -fx-text-fill: #35E0FF;
+    -fx-font-size: 48px;
+    -fx-font-family: "Copperplate Gothic Bold", "Georgia", "Serif";
+}
+
+.history-back-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #d5e8ff;
+    -fx-font-size: 14px;
+    -fx-border-color: #2a3040;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 4 14 4 14;
+    -fx-cursor: hand;
+}
+
+.history-back-button:hover {
+    -fx-border-color: #35E0FF;
+    -fx-text-fill: #35E0FF;
+}
+
+/* ===== List container ===== */
+.history-list {
+    -fx-padding: 20 40 30 40;
+}
+
+/* ===== Empty label when no games ===== */
+.history-empty-label {
+    -fx-text-fill: #d5e8ff;
+    -fx-font-size: 16px;
+}
+
+/* ===== Cards ===== */
+.history-card {
+    -fx-background-color: #11151f;
+    -fx-background-radius: 22;
+    -fx-border-radius: 22;
+    -fx-border-color: #2a3040;
+    -fx-border-width: 1;
+    -fx-padding: 12 18 12 18;
+}
+
+.history-card:hover {
+    -fx-border-color: #35E0FF;
+    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.25), 12, 0.2, 0, 4);
+}
+
+/* top row: difficulty | players | result */
+.history-card-header {
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* bottom row: date | score | time */
+.history-card-footer {
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* ===== Pills & badges ===== */
+.pill-label {
+    -fx-padding: 4 14 4 14;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* difficulty pill */
+.difficulty-pill {
+    -fx-background-color: transparent;
+    -fx-border-color: #35E0FF;
+    -fx-text-fill: #35E0FF;
+}
+
+/* result pills */
+.result-pill-won {
+    -fx-background-color: rgba(35, 160, 90, 0.15);
+    -fx-border-color: #23a05a;
+    -fx-text-fill: #7CFFB3;
+}
+
+.result-pill-lost {
+    -fx-background-color: rgba(200, 60, 60, 0.18);
+    -fx-border-color: #c23c3c;
+    -fx-text-fill: #ff9b9b;
+}
+
+/* players text */
+.players-label {
+    -fx-text-fill: #f2f7ff;
+    -fx-font-size: 16px;
+}
+
+/* small badges: date, score, time */
+.info-badge {
+    -fx-background-color: #151a26;
+    -fx-background-radius: 16;
+    -fx-padding: 4 12 4 12;
+    -fx-text-fill: #d5e8ff;
+    -fx-font-size: 13px;
+}

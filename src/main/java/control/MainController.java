@@ -7,6 +7,7 @@ import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
@@ -28,7 +29,6 @@ public class MainController {
 
     @FXML
     private void initialize() {
-        // If you DON'T want a click when main screen opens, delete this line:
         // SoundManager.playClick();
         playLogoAnimation();
     }
@@ -80,6 +80,25 @@ public class MainController {
     @FXML
     private void onHistoryBtnClicked() {
         SoundManager.playClick();
-        // TODO: implement screen
+        try {
+            Stage stage = (Stage) mainGrid.getScene().getWindow();
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/view/history_view.fxml")
+            );
+            Parent root = loader.load();
+
+            HistoryController historyController = loader.getController();
+            historyController.setStage(stage);
+
+            stage.setScene(new Scene(root, 1200, 750));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+
+
 }
