@@ -1,6 +1,7 @@
 package control;
 
 import model.Board;
+
 import model.Cell;
 import model.CellType;
 import model.Difficulty;
@@ -42,6 +43,11 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import model.Game;
+import model.SysData;
 
 
 public class GameController {
@@ -68,6 +74,8 @@ public class GameController {
     private int minesLeft2;
     private boolean isPlayer1Turn = true;
     private ImageCursor forbiddenCursor;
+    
+    private boolean gameOver = false;
    
 
     public void init(GameConfig config) {
@@ -143,6 +151,7 @@ public class GameController {
             forbiddenCursor = null;
         }
     }
+    
 
     private void buildGridForPlayer(GridPane grid, Board board, boolean isPlayer1) {
         grid.getChildren().clear();
@@ -206,6 +215,9 @@ public class GameController {
         final boolean tileIsPlayer1 = isPlayer1;
         
         button.setOnMouseClicked(e -> {
+        	if (gameOver) {
+                return;
+            }
         	if ((tileIsPlayer1 && !isPlayer1Turn) || (!tileIsPlayer1 && isPlayer1Turn)) {
         		return;
         	}
@@ -244,6 +256,10 @@ public class GameController {
 		                minesLeft2 -= 1;
 		            }
 		            buildHeartsBar();
+		            
+		            if (sharedHearts == 0) {
+		                onGameOver();
+		            }
 		        }
 		        case QUESTION -> {
 		            button.setText("?");
@@ -475,5 +491,51 @@ public class GameController {
         stage.setScene(new Scene(root));
         stage.show();
     }
+    
+    /**
+     * Called once when the game is finished.
+     * For now, "finished" = when sharedHearts reaches 0.
+     */
+    private void onGameOver() {
+        if (gameOver) {
+            return; // already handled
+        }
+        gameOver = true;
+
+        // ✅ Save game result to history (CSV)
+        saveCurrentGameToHistory();
+
+        // ✅ Also print to console so you can see it works
+        System.out.println("Game over! Saved to history.");
+    }
+
+    /**Build a new Game and save it to the history csv file
+     *
+     *
+     */
+    
+    
+    private void saveCurrentGameToHistory() {
+        if (config == null) {
+            return; // should not happen, but just in case
+        }
+
+        Game game = new Game(
+                config.getPlayer1Nickname(),
+                config.getPlayer2Nickname(),
+                difficulty,
+                score,
+                LocalDate.now(),
+                LocalTime.now()
+        );
+
+        SysData sysData = SysData.getInstance();
+        sysData.addGameToHistory(game);
+        sysData.saveHistoryToCsv();
+
+        // Print the actual game line to Eclipse console
+        System.out.println("Saved game: " + game);
+    }
+
 
 }
