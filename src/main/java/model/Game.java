@@ -22,7 +22,7 @@ public class Game {
     private final Difficulty difficulty;
     private final int finalScore;
     private final LocalDate date;   // e.g. 2025-11-26
-    private final LocalTime time;   // e.g. 21:15
+    final int durationSeconds;;   // total duration in seconds
 
     // We will reuse these both for CSV and for the History screen
     public static final DateTimeFormatter TIME_FORMATTER =
@@ -33,7 +33,7 @@ public class Game {
                 Difficulty difficulty,
                 int finalScore,
                 LocalDate date,
-                LocalTime time) {
+                int durationSeconds) {
 
         if (player1Nickname == null || player1Nickname.trim().isEmpty()) {
             throw new IllegalArgumentException("player1Nickname cannot be null or empty");
@@ -41,12 +41,15 @@ public class Game {
         if (player2Nickname == null || player2Nickname.trim().isEmpty()) {
             throw new IllegalArgumentException("player2Nickname cannot be null or empty");
         }
+        if (durationSeconds < 0) {
+            throw new IllegalArgumentException("durationSeconds cannot be negative");
+        }
         this.player1Nickname = player1Nickname.trim();
         this.player2Nickname = player2Nickname.trim();
         this.difficulty = Objects.requireNonNull(difficulty, "difficulty cannot be null");
         this.finalScore = finalScore;
         this.date = Objects.requireNonNull(date, "date cannot be null");
-        this.time = Objects.requireNonNull(time, "time cannot be null");
+        this.durationSeconds = durationSeconds;
     }
 
     public String getPlayer1Nickname() {
@@ -69,8 +72,17 @@ public class Game {
         return date;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public int getDurationSeconds() {
+        return durationSeconds;
+    }
+    
+    /**
+     * Formats the duration as M:SS (e.g. "10:21").
+     */
+    public String getDurationFormatted() {
+        int minutes = durationSeconds / 60;
+        int seconds = durationSeconds % 60;
+        return String.format("%d:%02d", minutes, seconds);
     }
 
     /**
@@ -80,12 +92,6 @@ public class Game {
         return date.toString(); // ISO_LOCAL_DATE by default
     }
 
-    /**
-     * Helper for showing the time as text (e.g. "21:15").
-     */
-    public String getTimeAsString() {
-        return time.format(TIME_FORMATTER);
-    }
 
     @Override
     public String toString() {
@@ -95,7 +101,7 @@ public class Game {
                 ", difficulty=" + difficulty +
                 ", finalScore=" + finalScore +
                 ", date=" + date +
-                ", time=" + time +
+                ", duration=" + getDurationFormatted() +
                 '}';
     }
 }
