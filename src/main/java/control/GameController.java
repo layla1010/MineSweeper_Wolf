@@ -5,6 +5,7 @@ import model.Cell;
 import model.CellType;
 import model.Difficulty;
 import model.GameConfig;
+import util.UIAnimations;
 import model.Game;         
 
 import java.io.IOException;
@@ -57,6 +58,7 @@ public class GameController {
     @FXML private HBox heartsBox;
     @FXML private Button pauseBtn;
     @FXML private Button musicIsOnButton;
+    @FXML private Parent root;
 
 
     private Game game;              
@@ -95,6 +97,8 @@ public class GameController {
         this.sharedHearts = difficulty.getInitialLives();
         this.score = 0;
 
+        UIAnimations.applyHoverZoomToAllButtons(root);
+        UIAnimations.applyFloatingToCards(root);
         buildHeartsBar();
         initLabels();
         buildGridForPlayer(player1Grid, board1, true);

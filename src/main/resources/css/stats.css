@@ -13,7 +13,72 @@
     -fx-padding: 0;
 }
 
-.scroll-pane {
-    -fx-background: #050814;
-    -fx-background-color: #050814;
+.chart-pie-label {
+    -fx-opacity: 0;
 }
+
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.default-color0.chart-pie {
+    -fx-pie-color: #ff638c;  
+	}
+	
+.default-color1.chart-pie {
+    -fx-pie-color: #813d54;  
+}
+
+.chart-pie-label {
+    -fx-opacity: 0;
+}
+
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.wins-chart .default-color0.chart-pie {
+    -fx-pie-color: #22c55e;   
+}
+.wins-chart .default-color1.chart-pie {
+    -fx-pie-color: #e5e7eb;   
+}
+
+.losses-chart .default-color0.chart-pie {
+    -fx-pie-color: #ef4444;
+}
+.losses-chart .default-color1.chart-pie {
+    -fx-pie-color: #e5e7eb;
+}
+
+.giveups-chart .default-color0.chart-pie {
+    -fx-pie-color: #f59e0b;
+}
+
+.giveups-chart .default-color1.chart-pie {
+    -fx-pie-color: #e5e7eb;
+}
+
+.winswithnomistakes-chart .default-color0.chart-pie {
+	-fx-pie-color: #4d6998
+}
+
+.winswithnomistakes-chart .default-color1.chart-pie {
+	-fx-pie-color: #e5e7eb;
+}
+
+.chart-series-line.default-color0 {
+    -fx-stroke: #22c55e;   
+}
+
+.chart-series-line.default-color1 {
+    -fx-stroke: #3b82f6;   
+}
+
+.chart-series-line.default-color2 {
+    -fx-stroke: #ef4444;  
+}
+
+
