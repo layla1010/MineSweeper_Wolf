@@ -46,7 +46,7 @@
                   </ImageView>
                </children>
             </HBox>
-            <Button fx:id="newQuestionButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="161.0" styleClass="primary-button" text="+ New Question" textAlignment="CENTER" VBox.vgrow="NEVER">
+            <Button fx:id="newQuestionButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="161.0" styleClass="primary-button" text="+ New Question" onAction="#onNewQuestionButtonClicked" textAlignment="CENTER" VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets />
                </VBox.margin>

@@ -11,6 +11,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.collections.FXCollections?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.AddQuestionController">
@@ -103,8 +105,8 @@
       </VBox>
       <HBox alignment="CENTER" layoutX="300.0" layoutY="413.0" prefHeight="54.0" prefWidth="200.0" spacing="20.0">
          <children>
-            <Button fx:id="saveButton" mnemonicParsing="false" styleClass="primary-button" text="Save Question" />
-            <Button fx:id="cancelButton" mnemonicParsing="false" text="Cancel" />
+            <Button fx:id="saveButton" mnemonicParsing="false" styleClass="primary-button" text="Save Question" onAction="#onSaveButtonClicked" />
+            <Button fx:id="cancelButton" mnemonicParsing="false" text="Cancel" onAction="#onCancelButtonClicked" />
          </children>
       </HBox>
    </children>

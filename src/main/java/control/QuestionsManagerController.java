@@ -2,9 +2,14 @@ package control;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import model.Question;
 
+import javafx.scene.control.Button;
+import javafx.event.ActionEvent; 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +24,26 @@ public class QuestionsManagerController {
 
     @FXML
     private VBox questionsContainerVBox;
+    @FXML
+    private Button newQuestionButton;
+    
+    
+    @FXML
+    private void onNewQuestionButtonClicked(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/view/Add_Question_view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) newQuestionButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Add New Question");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     public void initialize() {
