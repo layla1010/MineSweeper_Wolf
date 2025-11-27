@@ -28,7 +28,6 @@ public class Board {
         computeNeighborNumbers();
     }
 
-    // Fill board with base EmptyCells
     private void initEmpty() {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -37,7 +36,6 @@ public class Board {
         }
     }
 
-    // Randomly place mines, questions, and surprises
     private void placeRandomSpecialCells() {
         List<int[]> positions = new ArrayList<>();
         for (int r = 0; r < rows; r++) {
@@ -49,7 +47,6 @@ public class Board {
         Collections.shuffle(positions);
         int index = 0;
 
-        // --- Place mines ---
         for (int i = 0; i < mineCount; i++, index++) {
             int[] pos = positions.get(index);
             int r = pos[0];
@@ -57,7 +54,6 @@ public class Board {
             cells[r][c] = new MineCell(r, c);
         }
 
-        // --- Place question cells ---
         int placedQuestions = 0;
         while (placedQuestions < questionCount && index < positions.size()) {
             int[] pos = positions.get(index++);
@@ -69,7 +65,6 @@ public class Board {
             }
         }
 
-        // --- Place surprise cells ---
         int placedSurprises = 0;
         while (placedSurprises < surpriseCount && index < positions.size()) {
             int[] pos = positions.get(index++);
@@ -82,7 +77,6 @@ public class Board {
         }
     }
 
-    // Calculate how many adjacent mines each normal cell has
     private void computeNeighborNumbers() {
         int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
         int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
@@ -91,7 +85,6 @@ public class Board {
             for (int c = 0; c < cols; c++) {
                 Cell cell = cells[r][c];
 
-                // skip special cells
                 if (cell.isMine()
                         || cell.getType() == CellType.QUESTION
                         || cell.getType() == CellType.SURPRISE) {
@@ -126,7 +119,6 @@ public class Board {
         return r >= 0 && r < rows && c >= 0 && c < cols;
     }
 
-    // ---------- Getters ----------
 
     public Difficulty getDifficulty() {
         return difficulty;
