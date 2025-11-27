@@ -1,7 +1,6 @@
 package model;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -16,126 +15,17 @@ import java.util.Objects;
  *  - date of the game
  *  - duration in seconds (stopwatch from start to end)
  */
-
-
 public class Game {
-	
-	private final GameConfig config;
-    private final Board board1;
-    private final Board board2;
-
-    private int sharedHearts;
-    private int score;
-    private int minesLeft1;
-    private int minesLeft2;
-    private boolean isPlayer1Turn;
-    private boolean paused;
-    private long elapsedSeconds;
-    
-    public Game(GameConfig config) {
-        this.config = config;
-        this.board1 = new Board(config.getDifficulty());
-        this.board2 = new Board(config.getDifficulty());
-
-        this.sharedHearts   = config.getDifficulty().getInitialLives();
-        this.score          = 0;
-        this.minesLeft1     = board1.getMineCount();
-        this.minesLeft2     = board2.getMineCount();
-        this.isPlayer1Turn  = true;
-        this.paused         = false;
-        this.elapsedSeconds = 0;
-    }
-    
-    
-    public GameConfig getConfig() {
-        return config;
-    }
-
-    public Difficulty getDifficulty() {
-        return config.getDifficulty();
-    }
-
-    public Board getBoard1() {
-        return board1;
-    }
-
-    public Board getBoard2() {
-        return board2;
-    }
-
-    public int getSharedHearts() {
-        return sharedHearts;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public int getMinesLeft1() {
-        return minesLeft1;
-    }
-
-    public int getMinesLeft2() {
-        return minesLeft2;
-    }
-
-    public boolean isPlayer1Turn() {
-        return isPlayer1Turn;
-    }
-
-    public boolean isPaused() {
-        return paused;
-    }
-
-    public long getElapsedSeconds() {
-        return elapsedSeconds;
-    }
-
-    
-    public void loseHeart() {
-        if (sharedHearts > 0) {
-            sharedHearts--;
-        }
-    }
-
-    public void addScore(int delta) {
-        score += delta;
-        if (score < 0) score = 0;
-    }
-
-    public void decrementMinesLeftForPlayer1() {
-        if (minesLeft1 > 0) {
-            minesLeft1--;
-        }
-    }
-
-    public void decrementMinesLeftForPlayer2() {
-        if (minesLeft2 > 0) {
-            minesLeft2--;
-        }
-    }
-
-    public void switchTurn() {
-        isPlayer1Turn = !isPlayer1Turn;
-    }
-
-    public void setPaused(boolean paused) {
-        this.paused = paused;
-    }
-
-    public void incrementElapsedSeconds() {
-        elapsedSeconds++;
-    }
 
     private final String player1Nickname;
     private final String player2Nickname;
     private final Difficulty difficulty;
     private final int finalScore;
     private final GameResult result;
-    private final LocalDate date;   // e.g. 2025-11-26
-    final int durationSeconds;;   // total duration in seconds
+    private final LocalDate date;       // e.g. 2025-11-26
+    private final int durationSeconds;  // total duration in seconds
 
-    // We will reuse these both for CSV and for the History screen
+    // Can be used elsewhere if needed (for time fields, not used directly here)
     public static final DateTimeFormatter TIME_FORMATTER =
             DateTimeFormatter.ofPattern("HH:mm");
 
@@ -156,6 +46,7 @@ public class Game {
         if (durationSeconds < 0) {
             throw new IllegalArgumentException("durationSeconds cannot be negative");
         }
+
         this.player1Nickname = player1Nickname.trim();
         this.player2Nickname = player2Nickname.trim();
         this.difficulty = Objects.requireNonNull(difficulty, "difficulty cannot be null");
@@ -178,10 +69,9 @@ public class Game {
     }
 
     public int getFinalScore() {
-    	
         return finalScore;
     }
-    
+
     public GameResult getResult() {
         return result;
     }
@@ -193,7 +83,7 @@ public class Game {
     public int getDurationSeconds() {
         return durationSeconds;
     }
-    
+
     /**
      * Formats the duration as M:SS (e.g. "10:21").
      */
@@ -209,14 +99,13 @@ public class Game {
     public String getDateAsString() {
         return date.toString(); // ISO_LOCAL_DATE by default
     }
-    
+
     /**
-     * Nice text for UI ("Win" / "Lose")
+     * Nice text for UI ("Win" / "Lose").
      */
     public String getResultAsText() {
         return (result == GameResult.WIN) ? "Win" : "Lose";
     }
-
 
     @Override
     public String toString() {
