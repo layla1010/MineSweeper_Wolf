@@ -198,14 +198,16 @@ public class QuestionsManagerController {
             VBox card = loader.load();
 
             QuestionCardController cardController = loader.getController();
-            cardController.setData(
-                    q.getId(),
-                    q.getDifficulty(),
-                    q.getText(),
-                    q.getOptA(), q.getOptB(), q.getOptC(), q.getOptD(),
-                    q.getCorrectOption()
-            );
+//            cardController.setData(
+//                    q.getId(),
+//                    q.getDifficulty(),
+//                    q.getText(),
+//                    q.getOptA(), q.getOptB(), q.getOptC(), q.getOptD(),
+//                    q.getCorrectOption()
+//            );
+            cardController.setData(q);
             card.setMaxWidth(Double.MAX_VALUE);
+            cardController.setParentController(this);
 
             questionsContainerVBox.getChildren().add(card);
 
@@ -213,6 +215,35 @@ public class QuestionsManagerController {
             e.printStackTrace();
         }
     }
+    
+    public void openEditScreen(Question q) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/view/Edit_Question_view.fxml"));
+            Parent root = loader.load();
+
+            // Get the edit screen controller and pass the question to it
+            EditQuestionController editController = loader.getController();
+            editController.setQuestion(q);  // we'll implement this next
+
+            Stage stage = (Stage) questionsContainerVBox.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Edit Question");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void deleteQuestion(Question q) {
+        // temporary stub – you can later implement:
+        // 1. confirm dialog
+        // 2. remove from CSV
+        // 3. refresh UI
+        System.out.println("Delete requested for question id=" + q.getId());
+    }
+
 
 }
 

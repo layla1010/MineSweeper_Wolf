@@ -22,13 +22,13 @@
 
             <HBox spacing="10" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
                 <children>
-                    <ImageView fx:id="editImg" fitHeight="24.0" fitWidth="20.0"
+                    <ImageView fx:id="editImg" onMouseClicked="#onEditClicked" fitHeight="24.0" fitWidth="20.0"
                                pickOnBounds="true" preserveRatio="true">
                         <image>
                             <Image url="@/Images/editing.png"/>
                         </image>
                     </ImageView>
-                    <ImageView fx:id="deleteImg" fitHeight="24.0" fitWidth="20.0"
+                    <ImageView fx:id="deleteImg" onMouseClicked="#onDeleteClicked" fitHeight="24.0" fitWidth="20.0"
                                pickOnBounds="true" preserveRatio="true">
                         <image>
                             <Image url="@/Images/bin.png"/>
