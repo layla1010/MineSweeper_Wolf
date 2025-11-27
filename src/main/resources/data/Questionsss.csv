@@ -1,0 +1,25 @@
+﻿ID,Question,Difficulty,A,B,C,D,Correct Answer
+1,What is the main purpose of system modeling?,1,To replace the final system implementation,To develop abstract models showing different system perspectives,To generate test cases automatically,To create user interfaces,B
+2,Which UML diagram shows interactions between a system and its environment?,1,Class diagram,Use case diagram,State diagram,Activity diagram,B
+3,Which requirement type describes what the system must do?,1,Non-functional requirements,User experience requirements,Domain requirements,Functional requirements,D
+4,What is verification concerned with?,1,Ensuring the system meets user expectations,Ensuring the system is bug-free,Ensuring the product matches earlier-phase specifications,Ensuring the product is ready for delivery,C
+5,A design pattern is best described as:,1,A UML notation,A reusable solution to a recurring design problem,A coding convention,A testing technique,B
+6,What is the main function of a review?,1,To rewrite project requirements,To detect errors and evaluate a work product,To execute the program,To run acceptance tests,B
+7,Which perspective models how components interact inside a system?,2,Interaction perspective,Structural perspective ,Behavioral perspective,External perspective,A
+8,What is a major problem with natural-language requirements?,2,They require programming knowledge,They may be ambiguous and unclear,They are too mathematical,They are always incomplete,B
+9,In the project life cycle when does integration testing occur?,2,Before implementation,During contract review,Before requirements validation,After modules are combined,D
+10,What does the Singleton pattern ensure?,2,That multiple instances can run in parallel,That the system runs faster,That only one instance of a class exists,That objects automatically save state,C
+11,Which model is most suitable for event-driven reactive systems?,2,Use case diagram,State machine model,Activity diagram,Class diagram,B
+12,Which type of review is usually conducted at major project milestones and focuses on approval?,2,Peer review,Walkthrough,Formal review,Informal review,C
+13,Which requirement type often affects overall system architecture rather than individual components?,3,Non-functional requirements,User requirements,Functional requirements,Domain requirements,A
+14,In UML sequence diagrams what do lifelines represent?,3,The time between events,The decomposition of classes into attributes,The static structure of the system,Execution flow of objects or actors,D
+15,Which activity in requirements engineering resolves conflicting requirements?,3,Requirements validation,Requirements prioritization and negotiation,Requirements discovery,Requirements specification,B
+16,What is the main drawback of depending only on interviews for requirements elicitation?,3,They take too long,They cannot capture domain-specific knowledge fully,They are too structured,They exclude stakeholders,B
+17,Code inspection has what approximate defect removal effectiveness?,3,20%,35%,65%,90%,C
+18,Which design activity involves identifying principal objects and their relationships?,3,Requirements engineering,Architectural design,Object-oriented detailed design,Testing strategy design,C
+19,Why are domain requirements often difficult for software engineers to understand?,4,They are expressed in application-specific language unfamiliar to engineers,They include too many UML diagrams,They contain excessive mathematical notation,They focus on user interface rather than logic,A
+20,What is a major consequence of poor system boundary definition in context modeling?,4,Incorrect system behavior modeling,Increased political conflicts and misallocated workloads,Limited design flexibility,Reduced performance,B
+21,In the SQA defect removal cost model why is solving a defect during operation extremely expensive?,4,It requires rewriting documentation,It delays integration,It must be solved by senior managers,The defect impacts real users and may require large-scale fixes,D
+22,What is a key reason UML is less useful for dynamically typed languages like Python?,4,Python does not support classes,UML is optimized for static typing and compile-time structures,Python lacks diagramming tools,Python code cannot be modeled visually,B
+23,During detailed design what is the main focus?,4,Determining system boundaries,Designing test cases,Specifying module-level data structures and algorithms,Creating user stories,C
+24,What is one major indirect objective of conducting technical reviews?,4,Delivering a final product,Training team members and transferring knowledge,Reducing hardware costs,Improving GUI design,B
