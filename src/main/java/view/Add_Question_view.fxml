@@ -10,9 +10,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.collections.FXCollections?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.AddQuestionController">
    <children>
       <VBox alignment="TOP_CENTER" layoutY="26.0" prefHeight="354.0" prefWidth="800.0" spacing="15.0" styleClass="root-background" AnchorPane.bottomAnchor="420.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0">
          <children>
@@ -39,13 +40,22 @@
                   <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="780.0" spacing="10.0">
                      <children>
                         <Label text="Difficulty:" />
-                        <ComboBox fx:id="difficultyComboBox" editable="true" prefWidth="150.0" />
+						<ComboBox fx:id="difficultyComboBox" prefWidth="150.0">
+   							<items>
+      							<FXCollections fx:factory="observableArrayList">
+         						<String fx:value="1" />
+         						<String fx:value="2" />
+         						<String fx:value="3" />
+         						<String fx:value="4" />
+      							</FXCollections>
+   							</items>
+						</ComboBox>
                      </children>
                   </HBox>
                   <HBox prefHeight="58.0" prefWidth="780.0" spacing="10.0">
                      <children>
                         <Label text="Enter the Question: " />
-                        <TextArea prefHeight="56.0" prefRowCount="2" prefWidth="665.0" HBox.hgrow="ALWAYS" />
+                        <TextArea fx:id="questionTextArea" prefHeight="56.0" prefRowCount="2" prefWidth="665.0" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
@@ -75,7 +85,16 @@
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                      <children>
                         <Label text="The Correct Answer Is:" />
-                        <ComboBox fx:id="correctAnswerComboBox" prefHeight="25.0" prefWidth="54.0" />
+                        <ComboBox fx:id="correctAnswerComboBox" prefHeight="25.0" prefWidth="80.0">
+   							<items>
+      							<FXCollections fx:factory="observableArrayList">
+         						<String fx:value="A" />
+         						<String fx:value="B" />
+         						<String fx:value="C" />
+         						<String fx:value="D" />
+      							</FXCollections>
+   							</items>
+						</ComboBox>
                      </children>
                   </HBox>
                </children>
