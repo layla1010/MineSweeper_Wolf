@@ -62,7 +62,6 @@ public class GameController {
     @FXML private Button musicIsOnButton;
     @FXML private Parent root;
 
-    private Game game;
     private GameConfig config;
     private Difficulty difficulty;
     private Board board1;
@@ -93,7 +92,6 @@ public class GameController {
 
     public void init(GameConfig config) {
         this.config = config;
-        this.game = new Game(config);
         this.difficulty = config.getDifficulty();
 
         this.board1 = new Board(difficulty);
@@ -658,6 +656,11 @@ public class GameController {
             iv.setImage(img);
         }
     }
+    
+    @FXML
+    private void onMainMenu() {
+    
+    }
 
    
     private void triggerExplosion(StackPane tilePane) {
@@ -727,6 +730,9 @@ public class GameController {
         stopTimer();
 
         saveCurrentGameToHistory();
+        
+        showEndGameScreen();
+
 
         System.out.println("Game over! Saved to history.");
     }
@@ -755,4 +761,37 @@ public class GameController {
 
         System.out.println("Saved game: " + gameRecord);
     }
+    
+    @FXML
+    private void showEndGameScreen() {
+        try {
+            // 1. Decide which FXML to load
+            String fxmlPath = gameWon
+                    ? "/view/win_view.fxml"
+                    : "/view/lose_view.fxml";
+
+            // 2. Get current stage from any node in this scene
+            Stage stage = (Stage) player1Grid.getScene().getWindow();
+
+            // 3. Load the end-game view
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent endRoot = loader.load();
+
+            // 4. Optional: if your Win/Lose controller needs the stage, you can do:
+            //   WinController controller = loader.getController();
+            //   controller.setStage(stage);
+            // or similar, depending on your controller name
+
+            // 5. Switch scene
+            Scene endScene = new Scene(endRoot, stage.getScene().getWidth(), stage.getScene().getHeight());
+            stage.setScene(endScene);
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            // If something goes wrong, at least don't crash silently
+        }
+    }
+
 }

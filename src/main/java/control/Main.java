@@ -14,7 +14,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         SysData.getInstance().loadHistoryFromCsv();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/win_view.fxml"));
         Parent root = loader.load();
 
         Scene scene = new Scene(root, 1200, 740);
