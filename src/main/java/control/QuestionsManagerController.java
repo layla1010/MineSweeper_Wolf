@@ -20,12 +20,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.Optional;
+
 public class QuestionsManagerController {
 
     @FXML
     private VBox questionsContainerVBox;
     @FXML
     private Button newQuestionButton;
+    
+    private List<Question> questions = new ArrayList<>();
     
     
     @FXML
@@ -45,16 +55,33 @@ public class QuestionsManagerController {
         }
     }
 
+//    @FXML
+//    public void initialize() {
+//        //First we load questions from CSV
+//        List<Question> questions = loadQuestionsFromCsv("/Data/Questionsss.csv");
+//
+//        //Then for each question we add a card
+//        for (Question q : questions) {
+//            addQuestionCard(q);
+//        }
+//    }
+    
+    
     @FXML
     public void initialize() {
-        //First we load questions from CSV
-        List<Question> questions = loadQuestionsFromCsv("/Data/Questionsss.csv");
+        reloadQuestionsUI();
+    }
 
-        //Then for each question we add a card
+    private void reloadQuestionsUI() {
+        questions.clear();
+        questions.addAll(loadQuestionsFromCsv("/Data/Questionsss.csv"));
+
+        questionsContainerVBox.getChildren().clear();
         for (Question q : questions) {
             addQuestionCard(q);
         }
     }
+    
     //Method to call csv file and turn each valid row into a question object
     private List<Question> loadQuestionsFromCsv(String resourcePath) {
         //A list to store questions objects
@@ -236,13 +263,105 @@ public class QuestionsManagerController {
         }
     }
     
-    public void deleteQuestion(Question q) {
-        // temporary stub – you can later implement:
-        // 1. confirm dialog
-        // 2. remove from CSV
-        // 3. refresh UI
-        System.out.println("Delete requested for question id=" + q.getId());
+   
+    	public void deleteQuestion(Question q) {
+    	    if (q == null) return;
+
+    	    // 1. Confirm with the user
+    	    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    	    alert.setTitle("Delete Question");
+    	    alert.setHeaderText("Are you sure you want to delete this question?");
+    	    alert.setContentText("ID #" + q.getId() + " – " + q.getText());
+
+    	    Optional<ButtonType> result = alert.showAndWait();
+    	    if (result.isEmpty() || result.get() != ButtonType.OK) {
+    	        // user cancelled -> do nothing
+    	        return;
+    	    }
+
+    	    // 2. Remove from our in-memory list (by id)
+    	    questions.removeIf(qq -> qq.getId() == q.getId());
+
+    	    // 3. Save the updated list back to the CSV (with IDs renumbered)
+    	    saveQuestionsToCsv(questions);
+
+    	    // 4. Refresh the UI from the CSV
+    	    reloadQuestionsUI();
+
+    	    System.out.println("Delete requested for question id=" + q.getId());
     }
+    	
+    	
+    	// Writes the given list of questions back to the CSV file
+    	private void saveQuestionsToCsv(List<Question> questions) {
+    	    // adjust path if your file is elsewhere
+    	    String filePath = "src/main/resources/Data/Questionsss.csv";
+
+    	    try (PrintWriter pw = new PrintWriter(
+    	            new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
+
+    	        // IMPORTANT – header order you asked for:
+    	        // col A: ID, B: Question, C: Difficulty, D: A, E: B, F: C, G: D, H: Correct Answer
+    	        pw.println("ID,Question,Difficulty,A,B,C,D,Correct Answer");
+
+    	        int newId = 1;
+    	        for (Question q : questions) {
+    	            // Renumber IDs to keep them serial after delete
+    	            q.setId(newId++);
+
+    	            String difficultyNum = mapDifficultyToNumber(q.getDifficulty());       // Easy -> "1"
+    	            String correctLetter = mapCorrectNumberToLetter(q.getCorrectOption()); // 1 -> "A"
+
+    	            String line = String.join(",",
+    	                    String.valueOf(q.getId()),        // ID
+    	                    escapeCsv(q.getText()),           // Question
+    	                    difficultyNum,                    // Difficulty (1–4)
+    	                    escapeCsv(q.getOptA()),           // A
+    	                    escapeCsv(q.getOptB()),           // B
+    	                    escapeCsv(q.getOptC()),           // C
+    	                    escapeCsv(q.getOptD()),           // D
+    	                    correctLetter                     // Correct Answer
+    	            );
+    	            pw.println(line);
+    	        }
+
+    	    } catch (IOException e) {
+    	        e.printStackTrace();
+    	    }
+    	}
+
+    	// escape values that contain commas/quotes/newlines
+    	private String escapeCsv(String s) {
+    	    if (s == null) return "";
+    	    if (s.contains(",") || s.contains("\"") || s.contains("\n")) {
+    	        s = s.replace("\"", "\"\"");  // " -> ""
+    	        return "\"" + s + "\"";
+    	    }
+    	    return s;
+    	}
+
+    	// Difficulty text -> number
+    	private String mapDifficultyToNumber(String difficultyText) {
+    	    if (difficultyText == null) return "1";
+    	    switch (difficultyText.toLowerCase()) {
+    	        case "easy":   return "1";
+    	        case "medium": return "2";
+    	        case "hard":   return "3";
+    	        case "expert": return "4";
+    	        default:       return "1";
+    	    }
+    	}
+
+    	// correctOption 1..4 -> "A..D"
+    	private String mapCorrectNumberToLetter(int correctOption) {
+    	    switch (correctOption) {
+    	        case 1:  return "A";
+    	        case 2:  return "B";
+    	        case 3:  return "C";
+    	        case 4:  return "D";
+    	        default: return "A";
+    	    }
+    	}
 
 
 }

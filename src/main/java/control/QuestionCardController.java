@@ -79,9 +79,9 @@ public class QuestionCardController {
       
       @FXML
       private void onDeleteClicked(MouseEvent event) {
-//          if (parentController != null && question != null) {
-//              parentController.openEditScreen(question);
-//          }
+    	  if (parentController != null && question != null) {
+    	        parentController.deleteQuestion(question);
+    	    }
     	  System.out.println("Delete clicked for question id=" + question.getId());
       }
 
