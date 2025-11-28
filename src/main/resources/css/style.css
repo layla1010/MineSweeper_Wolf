@@ -10,6 +10,7 @@
 
     -fx-border-color: #274B8E;   
     -fx-border-width: 2;
+    
     -fx-background-radius: 40;
     -fx-border-radius: 40;
 }
@@ -41,83 +42,6 @@
 .split-pane-divider .horizontal-grabber,
 .split-pane-divider .vertical-grabber {
     -fx-background-color: transparent !important;
-}
-
-/* Aya Ala Deen – Settings Screen Implementation Documentation */
-
-/* Back arrow button used in Settings and Filters screens */
-.settings-back-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #4fd1ff;
-    -fx-font-size: 28px;
-    -fx-cursor: hand;
-}
-
-.settings-back-button:hover {
-    -fx-text-fill: #7be3ff;
-}
-
-/* Big menu buttons in Settings screen */
-.settings-menu-button {
-    -fx-pref-width: 800;
-    -fx-pref-height: 70;
-    -fx-background-color: linear-gradient(#3C8DFF, #274B8E);
-    -fx-text-fill: #F6F7FF;
-    -fx-font-family: "Copperplate Gothic Bold";
-    -fx-font-size: 26px;
-    -fx-background-radius: 18;
-    -fx-border-radius: 18;
-    -fx-border-color: #111827;
-    -fx-border-width: 1.5;
-    -fx-cursor: hand;
-}
-
-.settings-menu-button:hover {
-    -fx-background-color: linear-gradient(#60A5FF, #3158A3);
-}
-
-.settings-menu-button:pressed {
-    -fx-translate-y: 1;
-}
-
-/* Filters screen rows */
-.filter-row {
-    -fx-background-color: #0B1226;
-    -fx-padding: 12 20 12 20;
-    -fx-spacing: 20;
-    -fx-alignment: CENTER_LEFT;
-    -fx-border-color: #111827;
-    -fx-border-width: 1.5;
-}
-
-.filter-label {
-    -fx-text-fill: #E5E7EB;
-    -fx-font-family: "Copperplate Gothic Light";
-    -fx-font-size: 20px;
-}
-
-/* Modern switch-style toggle button */
-.switch-toggle {
-    -fx-background-color: #111827;
-    -fx-background-radius: 20;
-    -fx-border-radius: 20;
-    -fx-border-color: #4B5563;
-    -fx-border-width: 2;
-    -fx-pref-width: 70;
-    -fx-pref-height: 32;
-    -fx-padding: 0;
-    -fx-cursor: hand;
-}
-
-/* On state */
-.switch-toggle:selected {
-    -fx-background-color: #22c55e;
-    -fx-border-color: #16a34a;
-}
-
-/* No text inside the toggle */
-.switch-toggle .text {
-    -fx-opacity: 0;
 }
 
 /* Aya Ala Deen – WOLF Settings & Filters Design */
