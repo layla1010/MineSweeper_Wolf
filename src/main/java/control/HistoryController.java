@@ -42,9 +42,8 @@ public class HistoryController {
     
     private final List<Game> allGames = new ArrayList<>();
 
-    // date format used in CSV / Game.getDateAsString()
-    private static final DateTimeFormatter DATE_FORMATTER =
-            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter CSV_DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd"); // how it is stored in CSV
     
     
     public void setStage(Stage stage) {
@@ -66,8 +65,9 @@ public class HistoryController {
             sortTypeCombo.getSelectionModel().select("None");
         }
         
-        onFilterTypeChanged();
-
+       
+            filterTypeCombo.setOnAction(event -> onFilterTypeChanged());
+       
 
         refreshHistoryView();
     }
@@ -163,20 +163,22 @@ public class HistoryController {
         String type = filterTypeCombo.getValue();
         boolean isDate = "Date".equals(type);
 
-        if (filterValueField != null) {
-            filterValueField.setDisable(isDate);
-            if (isDate) {
-                filterValueField.clear();
-            }
-        }
-
+        // If DATE is selected → enable DatePicker, disable text field
         if (dateFilterPicker != null) {
             dateFilterPicker.setDisable(!isDate);
             if (!isDate) {
                 dateFilterPicker.setValue(null);
             }
         }
+
+        if (filterValueField != null) {
+            filterValueField.setDisable(isDate);
+            if (isDate) {
+                filterValueField.clear();
+            }
+        }
     }
+
 
 
     
@@ -200,7 +202,7 @@ public class HistoryController {
 
             for (Game g : source) {
                 java.time.LocalDate gameDate =
-                        java.time.LocalDate.parse(g.getDateAsString(), DATE_FORMATTER);
+                        java.time.LocalDate.parse(g.getDateAsString(), CSV_DATE_FORMATTER);
                 if (gameDate.equals(selected)) {
                     result.add(g);
                 }
@@ -263,12 +265,12 @@ public class HistoryController {
 
             case "Date (newest)" ->
                 list.sort(Comparator.<Game, LocalDate>comparing(
-                        g -> LocalDate.parse(g.getDateAsString(), DATE_FORMATTER)
+                        g -> LocalDate.parse(g.getDateAsString(), CSV_DATE_FORMATTER)
                 ).reversed());
 
             case "Date (oldest)" ->
                 list.sort(Comparator.<Game, LocalDate>comparing(
-                        g -> LocalDate.parse(g.getDateAsString(), DATE_FORMATTER)
+                        g -> LocalDate.parse(g.getDateAsString(), CSV_DATE_FORMATTER)
                 ));
 
             case "Duration (short → long)" ->
