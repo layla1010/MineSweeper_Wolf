@@ -774,9 +774,17 @@ public class GameController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent endRoot = loader.load();
 
-            
+            EndGameController controller = loader.getController();
+            controller.init(
+                    stage,
+                    config,
+                    score,
+                    elapsedSeconds,
+                    sharedHearts,
+                    gameWon
+            );
 
-            Scene endScene = new Scene(endRoot, stage.getScene().getWidth(), stage.getScene().getHeight());
+            Scene endScene = new Scene(endRoot, 700, 450);
             stage.setScene(endScene);
             stage.centerOnScreen();
             stage.show();
@@ -785,5 +793,6 @@ public class GameController {
             e.printStackTrace();
         }
     }
+
 
 }
