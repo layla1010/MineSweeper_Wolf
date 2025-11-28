@@ -1,12 +1,19 @@
 package control;
 
-import java.io.IOException;
-import java.util.List;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -23,26 +30,60 @@ public class HistoryController {
     @FXML private BorderPane root;
     @FXML private VBox historyList;
 
+    
+   // filter + sort controls
+    @FXML private ComboBox<String> filterTypeCombo;
+    @FXML private TextField filterValueField;
+    @FXML private ComboBox<String> sortTypeCombo;
+    @FXML private javafx.scene.control.DatePicker dateFilterPicker;
+    
     private Stage stage;
 
+    
+    private final List<Game> allGames = new ArrayList<>();
+
+    private static final DateTimeFormatter CSV_DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd"); // how it is stored in CSV
+    
+    
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
     @FXML
     private void initialize() {
-        // load from CSV each time we open the history screen
+        // load history once when screen opens
         SysData.getInstance().loadHistoryFromCsv();
-        populateHistory();
-    }
+        allGames.clear();
+        allGames.addAll(SysData.getInstance().getHistory().getGames());
 
-    private void populateHistory() {
+        // default selections
+        if (filterTypeCombo != null && filterTypeCombo.getSelectionModel().isEmpty()) {
+            filterTypeCombo.getSelectionModel().select("All");
+        }
+        if (sortTypeCombo != null && sortTypeCombo.getSelectionModel().isEmpty()) {
+            sortTypeCombo.getSelectionModel().select("None");
+        }
+        
+       
+            filterTypeCombo.setOnAction(event -> onFilterTypeChanged());
+       
+
+        refreshHistoryView();
+    }
+    
+    private void refreshHistoryView() {
+        List<Game> filtered = applyFilter(allGames);
+        List<Game> sorted = applySort(filtered);
+        populateHistory(sorted);
+    }
+    
+    
+    private void populateHistory(List<Game> games) {
         historyList.getChildren().clear();
 
-        List<Game> games = SysData.getInstance().getHistory().getGames();
-
         if (games.isEmpty()) {
-            Label empty = new Label("No games played yet.");
+            Label empty = new Label("No games found.");
             empty.getStyleClass().add("history-empty-label");
             historyList.getChildren().add(empty);
             return;
@@ -111,6 +152,167 @@ public class HistoryController {
 
         card.getChildren().add(content);
         return card;
+    }
+    
+    /* =====================  FILTER & SORT  ===================== */
+    
+    @FXML
+    private void onFilterTypeChanged() {
+        if (filterTypeCombo == null) return;
+
+        String type = filterTypeCombo.getValue();
+        boolean isDate = "Date".equals(type);
+
+        // If DATE is selected → enable DatePicker, disable text field
+        if (dateFilterPicker != null) {
+            dateFilterPicker.setDisable(!isDate);
+            if (!isDate) {
+                dateFilterPicker.setValue(null);
+            }
+        }
+
+        if (filterValueField != null) {
+            filterValueField.setDisable(isDate);
+            if (isDate) {
+                filterValueField.clear();
+            }
+        }
+    }
+
+
+
+    
+    private List<Game> applyFilter(List<Game> source) {
+        String type = filterTypeCombo != null ? filterTypeCombo.getValue() : null;
+
+        // no filter case
+        if (type == null || "All".equals(type)) {
+            return new ArrayList<>(source);
+        }
+
+        // ----- DATE FILTER -----
+        if ("Date".equals(type)) {
+            if (dateFilterPicker == null || dateFilterPicker.getValue() == null) {
+                // no date selected → no filtering
+                return new ArrayList<>(source);
+            }
+
+            java.time.LocalDate selected = dateFilterPicker.getValue();
+            List<Game> result = new ArrayList<>();
+
+            for (Game g : source) {
+                java.time.LocalDate gameDate =
+                        java.time.LocalDate.parse(g.getDateAsString(), CSV_DATE_FORMATTER);
+                if (gameDate.equals(selected)) {
+                    result.add(g);
+                }
+            }
+            return result;
+        }
+
+        // ----- TEXT-BASED FILTERS -----
+        String text = filterValueField != null ? filterValueField.getText() : null;
+        if (text == null || text.trim().isEmpty()) {
+            return new ArrayList<>(source);
+        }
+
+        String query = text.trim().toLowerCase();
+        List<Game> result = new ArrayList<>();
+
+        for (Game g : source) {
+            switch (type) {
+                case "Player name" -> {
+                    String p1 = g.getPlayer1Nickname().toLowerCase();
+                    String p2 = g.getPlayer2Nickname().toLowerCase();
+                    if (p1.contains(query) || p2.contains(query)) {
+                        result.add(g);
+                    }
+                }
+                case "Difficulty" -> {
+                    String diff = g.getDifficulty().name().toLowerCase();
+                    if (diff.contains(query)) {
+                        result.add(g);
+                    }
+                }
+                case "Result" -> {
+                    String res = g.getResult().name().toLowerCase(); // WIN / LOSS
+                    if (res.contains(query)) {
+                        result.add(g);
+                    }
+                }
+                default -> result.add(g);
+            }
+        }
+
+        return result;
+    }
+
+    
+    private List<Game> applySort(List<Game> source) {
+        String sort = sortTypeCombo != null ? sortTypeCombo.getValue() : null;
+        List<Game> list = new ArrayList<>(source);
+
+        if (sort == null || "None".equals(sort)) {
+            return list;
+        }
+
+        switch (sort) {
+            case "Score (high → low)" ->
+                list.sort(Comparator.comparingInt(Game::getFinalScore).reversed());
+
+            case "Score (low → high)" ->
+                list.sort(Comparator.comparingInt(Game::getFinalScore));
+
+            case "Date (newest)" ->
+                list.sort(Comparator.<Game, LocalDate>comparing(
+                        g -> LocalDate.parse(g.getDateAsString(), CSV_DATE_FORMATTER)
+                ).reversed());
+
+            case "Date (oldest)" ->
+                list.sort(Comparator.<Game, LocalDate>comparing(
+                        g -> LocalDate.parse(g.getDateAsString(), CSV_DATE_FORMATTER)
+                ));
+
+            case "Duration (short → long)" ->
+                list.sort(Comparator.comparingInt(Game::getDurationSeconds));
+
+            case "Duration (long → short)" ->
+                list.sort(Comparator.comparingInt(Game::getDurationSeconds).reversed());
+        }
+
+        return list;
+    }
+
+    
+    /* =====================  BUTTON HANDLERS  ===================== */
+    
+    @FXML
+    private void onFilterApplyClicked() {
+        SoundManager.playClick();
+        refreshHistoryView();
+    }
+    
+    @FXML
+    private void onClearFilterClicked() {
+        SoundManager.playClick();
+        if (filterTypeCombo != null) {
+            filterTypeCombo.getSelectionModel().select("All");
+        }
+        if (filterValueField != null) {
+            ((List<Game>) filterValueField).clear();
+        }
+        if (dateFilterPicker != null) {
+            dateFilterPicker.setValue(null);
+        }
+        onFilterTypeChanged();
+        refreshHistoryView();
+    }
+
+    
+    @FXML
+    private void onSortBtnClicked() {
+        SoundManager.playClick();
+        refreshHistoryView();
     }
 
     @FXML

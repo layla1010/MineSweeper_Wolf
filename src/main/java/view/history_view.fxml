@@ -2,13 +2,17 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 
 <BorderPane fx:id="root"
             prefHeight="750.0" prefWidth="1200.0"
@@ -18,41 +22,108 @@
             styleClass="history-root"
             stylesheets="@../css/history.css">
 
-    <!-- ===== Top bar: Back + Title ===== -->
+    <!-- ===== TOP: title + filter + sort ===== -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="10.0"
-              BorderPane.alignment="CENTER">
-            <children>
-                <Button text="Back"
-                        onAction="#onBackBtnClicked"
-                        styleClass="history-back-button"/>
+    <VBox spacing="18.0" BorderPane.alignment="TOP_CENTER">
+        <padding>
+            <Insets top="25.0" left="40.0" right="40.0"/>
+        </padding>
 
+        <!-- Big HISTORY title -->
+        <HBox alignment="CENTER_LEFT">
+            <children>
+                <Label text="History" styleClass="history-title"/>
+            </children>
+        </HBox>
+
+        <!-- Filter + Sort row -->
+        <HBox spacing="12.0"
+              alignment="CENTER_LEFT"
+              styleClass="history-filter-bar">
+
+            <children>
+
+                <!-- FILTER SIDE -->
+                <Label text="Filter by:"
+                       styleClass="history-filter-label"
+                       minWidth="70.0"/>
+
+                <ComboBox fx:id="filterTypeCombo"
+                          prefWidth="170.0"
+                          onAction="#onFilterTypeChanged">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="All"/>
+                            <String fx:value="Player name"/>
+                            <String fx:value="Difficulty"/>
+                            <String fx:value="Result"/>
+                            <String fx:value="Date"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+
+                <!-- narrower input -->
+                <TextField fx:id="filterValueField"
+                           promptText="Enter value..."
+                           prefWidth="150.0"/>
+
+                <!-- used only when 'Date' is chosen -->
+                <DatePicker fx:id="dateFilterPicker"
+                            prefWidth="180.0"
+                            disable="true"/>
+
+                <Button text="Apply"
+                        prefWidth="80.0"
+                        onAction="#onFilterApplyClicked"
+                        styleClass="history-small-button"/>
+
+                <!-- remove CLEAR button here -->
+
+                <!-- space filler -->
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <Label text="History" styleClass="history-title">
-                    <font>
-                        <Font name="Copperplate Gothic Bold" size="40.0"/>
-                    </font>
-                </Label>
+                <!-- SORT SIDE -->
+                <Label text="Sort by:"
+                       styleClass="history-filter-label"
+                       minWidth="60.0"/>
 
-                <Region prefWidth="40.0"/>
+                <ComboBox fx:id="sortTypeCombo"
+                          prefWidth="230.0">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="None"/>
+                            <String fx:value="Score (high → low)"/>
+                            <String fx:value="Score (low → high)"/>
+                            <String fx:value="Date (newest)"/>
+                            <String fx:value="Date (oldest)"/>
+                            <String fx:value="Duration (long → short)"/>
+                            <String fx:value="Duration (short → long)"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+
+                <Button text="Sort"
+                        prefWidth="80.0"
+                        onAction="#onSortBtnClicked"
+                        styleClass="history-small-button"/>
+
             </children>
-            <padding>
-                <Insets top="15.0" right="40.0" bottom="10.0" left="20.0"/>
-            </padding>
         </HBox>
-    </top>
+    </VBox>
+</top>
 
-    <!-- ===== Center: scrollable list of cards ===== -->
+
+    <!-- ===== CENTER: scrollable list of cards ===== -->
     <center>
-        <ScrollPane fitToWidth="true" pannable="true"
-                    BorderPane.alignment="CENTER"
-                    styleClass="history-scroll">
+        <ScrollPane fitToWidth="true"
+                    pannable="true"
+                    styleClass="history-scroll"
+                    BorderPane.alignment="CENTER">
             <content>
                 <VBox fx:id="historyList"
                       spacing="15.0"
                       styleClass="history-list">
-                    <!-- cards will be added from HistoryController -->
+                    <!-- cards are added here in HistoryController -->
                 </VBox>
             </content>
         </ScrollPane>

@@ -765,24 +765,17 @@ public class GameController {
     @FXML
     private void showEndGameScreen() {
         try {
-            // 1. Decide which FXML to load
             String fxmlPath = gameWon
                     ? "/view/win_view.fxml"
                     : "/view/lose_view.fxml";
 
-            // 2. Get current stage from any node in this scene
             Stage stage = (Stage) player1Grid.getScene().getWindow();
 
-            // 3. Load the end-game view
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent endRoot = loader.load();
 
-            // 4. Optional: if your Win/Lose controller needs the stage, you can do:
-            //   WinController controller = loader.getController();
-            //   controller.setStage(stage);
-            // or similar, depending on your controller name
+            
 
-            // 5. Switch scene
             Scene endScene = new Scene(endRoot, stage.getScene().getWidth(), stage.getScene().getHeight());
             stage.setScene(endScene);
             stage.centerOnScreen();
@@ -790,7 +783,6 @@ public class GameController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            // If something goes wrong, at least don't crash silently
         }
     }
 
