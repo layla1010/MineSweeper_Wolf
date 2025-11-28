@@ -33,7 +33,7 @@
         <Image url="@/Images/logoImage.png" />
     </image>
 </ImageView>
-      <Button fx:id="questionManagementBtn" minWidth="-Infinity" mnemonicParsing="false" onAction="#onQuestionManagementClicked" prefHeight="75.0" prefWidth="550.0" style="-fx-background-color: linear-gradient(#3C8DFF, #274B8E);" text="Question management" textFill="#f6f7ff" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+      <Button fx:id="questionManagementBtn" onAction="#onQuestionsManagementClicked" minWidth="-Infinity" mnemonicParsing="false" prefHeight="75.0" prefWidth="550.0" style="-fx-background-color: linear-gradient(#3C8DFF, #274B8E);" text="Question management" textFill="#f6f7ff" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
          <font>
             <Font name="Copperplate Gothic Bold" size="36.0" />
          </font>

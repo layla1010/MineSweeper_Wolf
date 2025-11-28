@@ -166,8 +166,30 @@ public class AddQuestionController {
             showError("All four options (A, B, C, D) must be filled.");
             return false;
         }
+        //all options must be different
+        String a = optionATextField.getText().trim();
+        String b = optionBTextField.getText().trim();
+        String c = optionCTextField.getText().trim();
+        String d = optionDTextField.getText().trim();
+
+        if (!allDistinctIgnoreCase(a, b, c, d)) {
+            showError("All four options (A, B, C, D) must be different from each other.");
+            return false;
+        }
         return true;
     }
+    
+    private boolean allDistinctIgnoreCase(String... values) {
+        for (int i = 0; i < values.length; i++) {
+            for (int j = i + 1; j < values.length; j++) {
+                if (values[i].equalsIgnoreCase(values[j])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 
     private boolean isEmpty(String s) {
         return s == null || s.trim().isEmpty();

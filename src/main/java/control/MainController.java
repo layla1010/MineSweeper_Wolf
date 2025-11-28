@@ -5,8 +5,10 @@ import java.io.IOException;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
@@ -71,11 +73,30 @@ public class MainController {
         }
     }
 
-    @FXML
-    private void onQuestionManagementClicked() {
-        SoundManager.playClick();
-        // TODO: implement screen
-    }
+
+        
+      @FXML
+      private void onQuestionsManagementClicked(ActionEvent event) {
+        	SoundManager.playClick();
+            try {
+                FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/view/Questions_Management_view.fxml")
+                );
+                Parent root = loader.load();
+
+                // Get current window
+                Stage stage = (Stage) ((javafx.scene.Node) event.getSource())
+                                .getScene().getWindow();
+
+                stage.setScene(new Scene(root));
+                stage.setTitle("Questions Management");
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+     }
+    
 
     @FXML
     private void onHistoryBtnClicked() {

@@ -23,6 +23,7 @@ ID,Question,Difficulty,A,B,C,D,Correct Answer
 22,What is a key reason UML is less useful for dynamically typed languages like Python?,4,Python does not support classes,UML is optimized for static typing and compile-time structures,Python lacks diagramming tools,Python code cannot be modeled visually,B
 23,During detailed design what is the main focus?,4,Determining system boundaries,Designing test cases,Specifying module-level data structures and algorithms,Creating user stories,C
 24,What is one major indirect objective of conducting technical reviews?,4,Delivering a final product,Training team members and transferring knowledge,Reducing hardware costs,Improving GUI design,B
-25,This is another trial?,3,ss,www,wwwwww,wwwwww,C
-26,hey,3,dd,ss,aa,q,B
-27,jjjjjjj?,3,dsfa,dd,ww,rr,C
+25,hey,3,dd,ss,aa,q,B
+26,jjjjjjj?,3,dsfa,dd,ww,rr,C
+27,rt,1,t,yyyyyyyyyy,u,i,B
+28,qq,2,q,t,y,w,C
