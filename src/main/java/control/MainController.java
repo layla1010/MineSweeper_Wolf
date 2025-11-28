@@ -36,7 +36,7 @@ import util.UIAnimations;
 
 public class MainController {
 
-    @FXML private GridPane root;
+    @FXML private GridPane mainGrid;
     @FXML private ImageView logoImage;
     @FXML private Button newGameBtn;
     @FXML private Rectangle newGameShimmer;
@@ -55,8 +55,8 @@ public class MainController {
         setupEnergyRings();
         setupSparkles();
 
-        UIAnimations.applyHoverZoomToAllButtons(root);
-        UIAnimations.applyFloatingToCards(root);
+        UIAnimations.applyHoverZoomToAllButtons(mainGrid);
+        UIAnimations.applyFloatingToCards(mainGrid);
 
         setupNewGameShimmer();
     }
@@ -66,7 +66,7 @@ public class MainController {
     private void onNewGameClicked() {
         SoundManager.playClick();
         try {
-            Stage stage = (Stage) root.getScene().getWindow();
+            Stage stage = (Stage) mainGrid.getScene().getWindow();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/new_game_view.fxml"));
             Pane newRoot = loader.load();
@@ -97,7 +97,7 @@ public class MainController {
     private void onHistoryBtnClicked() {
         SoundManager.playClick();
         try {
-            Stage stage = (Stage) root.getScene().getWindow();
+            Stage stage = (Stage) mainGrid.getScene().getWindow();
 
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/view/history_view.fxml")
@@ -119,12 +119,6 @@ public class MainController {
             alert.setContentText("An unexpected error occurred:\n" + e.getMessage());
             alert.showAndWait();
         }
-    }
-
-    @FXML
-    private void onSettingsClicked() {
-        SoundManager.playClick();
-        // TODO: implement settings screen
     }
 
 
@@ -229,7 +223,7 @@ public class MainController {
         orb3.setTranslateX(280);
         orb3.setTranslateY(0);
 
-        root.getChildren().addAll(orb1, orb2, orb3);
+        mainGrid.getChildren().addAll(orb1, orb2, orb3);
 
         orb1.toBack();
         orb2.toBack();
@@ -254,10 +248,10 @@ public class MainController {
         ring.setFill(Color.TRANSPARENT);
         ring.setOpacity(0);
 
-        ring.centerXProperty().bind(root.widthProperty().divide(2));
-        ring.centerYProperty().bind(root.heightProperty().divide(2));
+        ring.centerXProperty().bind(mainGrid.widthProperty().divide(2));
+        ring.centerYProperty().bind(mainGrid.heightProperty().divide(2));
 
-        root.getChildren().add(0, ring);
+        mainGrid.getChildren().add(0, ring);
         ring.toBack();
 
         ScaleTransition scale = new ScaleTransition(Duration.seconds(3), ring);
@@ -312,7 +306,7 @@ public class MainController {
             twinkle.setDelay(Duration.seconds(rnd.nextDouble() * 4.0));
             twinkle.play();
 
-            root.getChildren().add(0, sparkle);
+            mainGrid.getChildren().add(0, sparkle);
             sparkle.toBack();
         }
     }

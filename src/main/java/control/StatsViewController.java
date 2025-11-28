@@ -5,11 +5,20 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.stage.Stage;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 
 
 public class StatsViewController {
+	
+	private Stage stage;
+	@FXML private ScrollPane mainPane;
+	
+	public ScrollPane getMainPane () {
+		return mainPane;
+	}
 
     public static class PlayerStatsData {
         public final int totalGames;
@@ -26,6 +35,7 @@ public class StatsViewController {
         public final int[] easyScores;
         public final int[] mediumScores;
         public final int[] hardScores;
+
 
         public PlayerStatsData(int totalGames,
                                int wins,
@@ -257,4 +267,13 @@ public class StatsViewController {
         int seconds = durationSeconds % 60;
         return String.format("%d:%02d", minutes, seconds);
     }
+
+
+	public void setStage(Stage stage) {
+        this.stage = stage;
+		
+	}
+
+
+	
 }

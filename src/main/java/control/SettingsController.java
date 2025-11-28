@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import util.SoundManager;
@@ -53,15 +54,18 @@ public class SettingsController {
     /** How To Play menu button (bottom-right card). */
     @FXML
     private Button howToPlayBtn;
+    
+    private Stage stage;
+    
+
 
     /**
      * Called automatically after FXML is loaded.
      * Additional initialization (if needed) can be placed here.
      */
     @FXML
-    private void initialize() {
-        // Currently no extra initialization is required.
-        // This method is kept for future extensions if needed.
+    private void initialize(Stage stage) {
+        this.stage = stage;
     }
 
     // ---------------------------------------------------------------------
@@ -130,9 +134,24 @@ public class SettingsController {
     @FXML
     private void onStatisticsClicked() {
         SoundManager.playClick();
-        showInfo("Statistics screen is not implemented yet.\n" +
-                 "In the future, this screen will display wins, losses and detailed game analytics.");
+        try {
+        	Stage stage = (Stage) rootGrid.getScene().getWindow();
+        	
+            javafx.fxml.FXMLLoader loader =
+                    new javafx.fxml.FXMLLoader(getClass().getResource("/view/stats_view.fxml"));
+            javafx.scene.Parent root = loader.load();
+
+            StatsViewController controller = loader.getController();
+            controller.setStage(stage);
+
+            Scene scene = new Scene(root, 1200,730);
+            stage.setScene(scene);
+            stage.centerOnScreen();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     /**
      * Placeholder for the How To Play screen.
