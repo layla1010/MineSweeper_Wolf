@@ -10,22 +10,15 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-/**
- * Central system data manager.
- * For now it is responsible for:
- *  - keeping the History object in memory
- *  - loading/saving History from/to a CSV file.
- */
+
 public class SysData {
 
-    // === 1) Singleton pattern ===
     private static final SysData INSTANCE = new SysData();
 
     public static SysData getInstance() {
         return INSTANCE;
     }
 
-    // === 2) Fields ===
     private final History history = new History();
 
     // You can change this path later if you want to put the CSV elsewhere
@@ -39,36 +32,23 @@ public class SysData {
         return history;
     }
 
-    /**
-     * Convenience method used by the game controller:
-     * adds a finished game to the history (in memory).
-     * Don't forget later to call saveHistoryToCsv() if you want to persist it.
-     */
+    
     public void addGameToHistory(Game game) {
         history.addGame(game);
     }
 
-    // ====================================================
-    //  CSV LOADING
-    // ====================================================
-
-    /**
-     * Loads the history from the CSV file into memory.
-     * If the file does not exist, history will just stay empty.
-     */
+    
     public void loadHistoryFromCsv() {
         history.clear();
 
         Path path = Paths.get(HISTORY_FILE_NAME);
         if (!Files.exists(path)) {
-            // No history yet, nothing to load
             return;
         }
 
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String line = reader.readLine();
 
-            // Optional: skip header if present
             if (line != null && line.startsWith("date,")) {
                 line = reader.readLine();
             }
@@ -83,46 +63,37 @@ public class SysData {
 
         } catch (IOException e) {
             e.printStackTrace();
-            // You might later show an Alert instead of just printing
         }
     }
 
-    /**
-     * Expected format:
-     * date,duration,difficulty,score,result,player1,player2
-     */
-    
     
     private Game parseGameFromCsvLine(String line) {
         if (line == null || line.trim().isEmpty()) {
             return null;
         }
 
-        String[] parts = line.split(",", -1);  // -1 -> keep empty strings if any
+        String[] parts = line.split(",", -1);  
         if (parts.length != 7) {
-            // Not in expected format
             return null;
         }
 
         try {
-            LocalDate date = LocalDate.parse(parts[0]); // "2025-11-26"
+            LocalDate date = LocalDate.parse(parts[0]); 
             int durationSeconds =  parseDuration(parts[1]); 
             Difficulty difficulty = Difficulty.valueOf(parts[2]);
             int score = Integer.parseInt(parts[3]);
-            GameResult result = GameResult.valueOf(parts[4]);   // WIN / LOSE
+            GameResult result = GameResult.valueOf(parts[4]);   
             String player1 = parts[5];
             String player2 = parts[6];
 
             return new Game(player1, player2, difficulty, score ,result , date, durationSeconds);
 
         } catch (Exception e) {
-            // If any parsing fails, skip this line
             e.printStackTrace();
             return null;
         }
     }
     
- // Accept "M:SS", "MM:SS", or pure seconds like "123"
     private int parseDuration(String text) {
         if (text == null || text.isBlank()) {
             return 0;
@@ -142,20 +113,12 @@ public class SysData {
     
     
 
-    // ====================================================
-    //  CSV SAVING
-    // ====================================================
-
-    /**
-     * Saves the current history to the CSV file.
-     * Will overwrite the existing file.
-     */
+    
     public void saveHistoryToCsv() {
         Path path = Paths.get(HISTORY_FILE_NAME);
         List<Game> games = history.getGames();
 
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-            // Header row (optional but nice for readability)
             writer.write("date,duration,difficulty,score,result,player1,player2");
             writer.newLine();
 
@@ -166,13 +129,10 @@ public class SysData {
 
         } catch (IOException e) {
             e.printStackTrace();
-            // Later you may want to show an alert to the user
         }
     }
 
-    /**
-     * Convert a Game object to a CSV line according to our agreed format.
-     */
+  
     private String formatGameAsCsvLine(Game game) {
         String dateStr = game.getDate().toString(); // "2025-11-26"
         String durationStr = game.getDurationFormatted();    // "21:15"
@@ -185,15 +145,81 @@ public class SysData {
         return String.join(",", dateStr, durationStr, difficultyStr, scoreStr, resultStr, p1, p2);
     }
 
-    /**
-     * Very simple CSV "sanitizer".
-     * For now we just replace commas with spaces to avoid breaking the CSV.
-     * (You can improve this later with proper quoting if needed.)
-     */
+   
     private String sanitizeForCsv(String text) {
         if (text == null) {
             return "";
         }
         return text.replace(",", " ");
+/*
+ * Aya Ala Deen – Settings Screen Implementation Documentation
+ */
+
+
+public class SysData {
+
+   
+    private static boolean musicEnabled = true;
+
+    /** Controls whether sound effects are enabled. */
+    private static boolean soundEnabled = true;
+
+    /** Controls whether a game timer should be shown and used. */
+    private static boolean timerEnabled = true;
+
+    /** Controls whether "smart hints" are enabled in the game. */
+    private static boolean smartHintsEnabled = false;
+
+    /** Controls whether flags are automatically removed in some situations. */
+    private static boolean autoRemoveFlagEnabled = true;
+
+
+    public static boolean isMusicEnabled() {
+        return musicEnabled;
+    }
+
+    public static void setMusicEnabled(boolean enabled) {
+        musicEnabled = enabled;
+    }
+
+    public static boolean isSoundEnabled() {
+        return soundEnabled;
+    }
+
+    public static void setSoundEnabled(boolean enabled) {
+        soundEnabled = enabled;
+    }
+
+    public static boolean isTimerEnabled() {
+        return timerEnabled;
+    }
+
+    public static void setTimerEnabled(boolean enabled) {
+        timerEnabled = enabled;
+    }
+
+    public static boolean isSmartHintsEnabled() {
+        return smartHintsEnabled;
+    }
+
+    public static void setSmartHintsEnabled(boolean enabled) {
+        smartHintsEnabled = enabled;
+    }
+
+    public static boolean isAutoRemoveFlagEnabled() {
+        return autoRemoveFlagEnabled;
+    }
+
+    public static void setAutoRemoveFlagEnabled(boolean enabled) {
+        autoRemoveFlagEnabled = enabled;
+    }
+
+    
+    public static void resetToDefaults() {
+        musicEnabled = true;
+        soundEnabled = true;
+        timerEnabled = true;
+        smartHintsEnabled = false;
+        autoRemoveFlagEnabled = true;
     }
 }

@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -315,4 +316,26 @@ public class MainController {
             sparkle.toBack();
         }
     }
+    // AYA
+    @FXML
+    private void onSettingsClicked() {
+        SoundManager.playClick();
+        try {
+            Stage stage = (Stage) mainGrid.getScene().getWindow();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/settings_view.fxml"));
+            Parent root = loader.load();
+
+            SettingsController controller = loader.getController();
+
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 }
