@@ -115,3 +115,43 @@
     -fx-text-fill: #d5e8ff;
     -fx-font-size: 13px;
 }
+
+/* Filter & sort bar */
+.history-filter-bar {
+    -fx-background-color: transparent;
+    -fx-padding: 5 10 5 10;
+    -fx-spacing: 10;
+}
+
+.history-filter-label {
+    -fx-text-fill: #E5E7EB;
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 12px;
+}
+
+/* Small pill-like buttons (Apply / Clear / Sort) */
+.history-small-button {
+    -fx-background-color: linear-gradient(#3C8DFF, #274B8E);
+    -fx-text-fill: #f6f7ff;
+    -fx-background-radius: 20;
+    -fx-padding: 4 14 4 14;
+    -fx-cursor: hand;
+    -fx-font-size: 11px;
+    -fx-font-family: "Copperplate Gothic Light";
+}
+
+.history-small-button:hover {
+    -fx-background-color: linear-gradient(#4F9BFF, #3053A0);
+}
+
+/* Inputs */
+.combo-box, .text-field {
+    -fx-background-color: #111A33;
+    -fx-text-fill: #F6F7FF;
+    -fx-prompt-text-fill: #4A537A;
+    -fx-background-radius: 20;
+    -fx-border-color: #274B8E;
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+    -fx-padding: 2 8 2 8;
+}

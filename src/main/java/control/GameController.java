@@ -65,8 +65,6 @@ public class GameController {
     @FXML private Label timeLabel;
     @FXML private Label scoreLabel;
     @FXML private HBox heartsBox;
-
-
     private Difficulty difficulty;
     private Board board1;
     private Board board2;
