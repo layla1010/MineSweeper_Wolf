@@ -51,17 +51,19 @@
     -fx-background-color: linear-gradient(#050814, #02030A);
 }
 
-/* Back button (arrow) */
-.settings-back-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #9CA3AF;
-    -fx-font-size: 20px;
-    -fx-cursor: hand;
+.back-arrow {
+    -fx-effect: dropshadow(gaussian, rgba(79,209,255,0.55), 18, 0.2, 0, 0);
+    -fx-opacity: 0.85;
 }
 
-.settings-back-button:hover {
-    -fx-text-fill: #E5F4FF;
+.back-arrow:hover {
+    -fx-effect: dropshadow(gaussian, rgba(79,209,255,1.0), 28, 0.25, 0, 0);
+    -fx-opacity: 1.0;
+    -fx-scale-x: 1.12;
+    -fx-scale-y: 1.12;
 }
+
+
 
 /* Wolf logo glow */
 .wolf-logo {
@@ -108,4 +110,46 @@
 
 .menu-card-icon {
     -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.85), 18, 0.7, 0, 0);
+}
+
+
+/* =========================
+      SWITCH TOGGLE STYLE
+   ========================= */
+
+.switch-toggle {
+    -fx-background-color: #3a3f55;
+    -fx-background-radius: 16;
+    -fx-padding: 0 0 0 0;
+    -fx-pref-width: 55;
+    -fx-pref-height: 28;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER_LEFT;
+    -fx-content-display: GRAPHIC_ONLY;
+    -fx-shape: "M0 14 Q0 0 14 0 L41 0 Q55 0 55 14 L55 14 Q55 28 41 28 L14 28 Q0 28 0 14 Z";
+}
+
+.switch-toggle:selected {
+    -fx-background-color: linear-gradient(to right, #00c6ff, #0072ff);
+}
+
+.switch-toggle .thumb {
+    -fx-background-color: white;
+    -fx-background-radius: 50%;
+    -fx-pref-width: 20;
+    -fx-pref-height: 20;
+    -fx-translate-x: 4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 6, 0.2, 0, 1);
+}
+
+.switch-toggle:selected .thumb {
+    -fx-translate-x: 31;
+}
+
+/* Animation */
+.switch-toggle {
+    -fx-transition: all 0.25s ease-in-out;
+}
+.switch-toggle .thumb {
+    -fx-transition: all 0.25s ease-in-out;
 }

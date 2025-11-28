@@ -1,146 +1,214 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Aya Ala Deen – Settings Screen Implementation Documentation -->
-
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
 <GridPane fx:id="rootGrid"
           xmlns="http://javafx.com/javafx/21"
           xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="control.FiltersController"
-          prefWidth="1200.0" prefHeight="750.0"
-          style="-fx-background-color: #050814;"
+          prefWidth="1200" prefHeight="750"
+          style="-fx-background-color:#050814;"
           stylesheets="@../css/style.css">
 
+    <!-- ======= Columns ======= -->
     <columnConstraints>
-        <ColumnConstraints prefWidth="100.0"/>
-        <ColumnConstraints prefWidth="1000.0"/>
-        <ColumnConstraints prefWidth="100.0"/>
+        <ColumnConstraints prefWidth="120"/>
+        <ColumnConstraints prefWidth="960" halignment="CENTER" hgrow="ALWAYS"/>
+        <ColumnConstraints prefWidth="120"/>
     </columnConstraints>
 
+    <!-- ======= Rows ======= -->
     <rowConstraints>
-        <RowConstraints prefHeight="80.0"/>
-        <RowConstraints prefHeight="40.0"/>
-        <RowConstraints prefHeight="520.0"/>
-        <RowConstraints prefHeight="110.0"/>
+        <RowConstraints prefHeight="80"/>
+        <RowConstraints prefHeight="120"/>
+        <RowConstraints prefHeight="520"/>
+        <RowConstraints prefHeight="70"/>
     </rowConstraints>
 
-    <children>
+    <!-- ======= BACK BUTTON ======= -->
+    <ImageView fx:id="backBtn"
+               fitHeight="45" fitWidth="45"
+               preserveRatio="true"
+               onMouseClicked="#onBackToSettingsClicked"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="0"
+               style="-fx-cursor:hand;">
+        <GridPane.margin>
+            <Insets left="25" top="25"/>
+        </GridPane.margin>
+        <image><Image url="/Images/back.png"/></image>
+    </ImageView>
 
-        <!-- Back arrow -->
-        <Button text="⬅"
-                onAction="#onBackToSettingsClicked"
-                styleClass="settings-back-button"
-                GridPane.columnIndex="0"
-                GridPane.rowIndex="0"
-                GridPane.halignment="LEFT"
-                GridPane.valignment="CENTER">
-            <GridPane.margin>
-                <Insets left="20.0" />
-            </GridPane.margin>
-        </Button>
+    <!-- ======= TITLE ======= -->
+    <VBox alignment="CENTER" spacing="10"
+          GridPane.columnIndex="1"
+          GridPane.rowIndex="1">
 
-        <!-- Title -->
-        <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0">
-            <columnConstraints>
-                <ColumnConstraints prefWidth="200.0" />
-                <ColumnConstraints prefWidth="600.0" />
-                <ColumnConstraints prefWidth="200.0" />
-            </columnConstraints>
-            <children>
-                <!-- Left icon (sliders) -->
-                <ImageView fitHeight="60.0" fitWidth="60.0"
-                           GridPane.columnIndex="0" GridPane.halignment="LEFT"
-                           GridPane.valignment="CENTER">
-                    <image>
-                        <Image url="@../Images/sliders_cyan.png" />
-                    </image>
-                </ImageView>
+        <ImageView fitHeight="90" fitWidth="90" preserveRatio="true">
+            <image><Image url="@../Images/sliders_cyan.png"/></image>
+        </ImageView>
 
-                <Label text="Filters"
-                       GridPane.columnIndex="1"
-                       GridPane.halignment="CENTER"
-                       GridPane.valignment="CENTER"
-                       textFill="#4fd1ff">
-                    <font>
-                        <Font name="Copperplate Gothic Bold" size="36.0"/>
-                    </font>
-                </Label>
+        <Label text="FILTERS" textFill="#e5f4ff">
+            <font><Font name="Copperplate Gothic Bold" size="32"/></font>
+        </Label>
 
-                <!-- Right icon (sliders) -->
-                <ImageView fitHeight="60.0" fitWidth="60.0"
-                           GridPane.columnIndex="2" GridPane.halignment="RIGHT"
-                           GridPane.valignment="CENTER">
-                    <image>
-                        <Image url="@../Images/sliders_cyan.png" />
-                    </image>
-                </ImageView>
-            </children>
-        </GridPane>
+        <Label text="Manage Music, Sound, Timer and Smart Hints"
+               textFill="#8B94C4">
+            <font><Font name="Copperplate Gothic Light" size="14"/></font>
+        </Label>
 
-        <!-- All filter rows -->
-        <VBox spacing="16.0"
-              GridPane.columnIndex="1" GridPane.rowIndex="2"
+    </VBox>
+
+    <!-- ======= CARDS AREA ======= -->
+    <GridPane GridPane.columnIndex="1"
+              GridPane.rowIndex="2"
+              hgap="40" vgap="40"
+              alignment="CENTER"
               GridPane.halignment="CENTER"
               GridPane.valignment="TOP">
-            <padding>
-                <Insets top="20.0" left="80.0" right="80.0"/>
-            </padding>
+
+        <GridPane.margin>
+            <Insets top="40"/>
+        </GridPane.margin>
+
+        <!-- 1 column centered (like daily challenges) -->
+        <columnConstraints>
+            <ColumnConstraints prefWidth="500" halignment="CENTER"/>
+        </columnConstraints>
+
+        <!-- 5 rows of cards -->
+        <rowConstraints>
+            <RowConstraints prefHeight="100"/>
+            <RowConstraints prefHeight="100"/>
+            <RowConstraints prefHeight="100"/>
+            <RowConstraints prefHeight="100"/>
+            <RowConstraints prefHeight="100"/>
+        </rowConstraints>
+
+        <!-- ===== CARD TEMPLATE =====
+             كل كارد = HBox :
+             [icon]  [label text]          [toggle]
+        -->
+
+        <!-- ========== MUSIC CARD ========== -->
+        <HBox styleClass="filter-card"
+              GridPane.rowIndex="0">
+            <padding><Insets left="20" right="20"/></padding>
+
             <children>
+                <ImageView fitHeight="55" fitWidth="55" preserveRatio="true">
+                    <image><Image url="@../Images/music.png"/></image>
+                </ImageView>
 
-                <!-- Music -->
-                <HBox styleClass="filter-row">
-                    <Label text="Music" styleClass="filter-label"/>
-                    <ToggleButton fx:id="musicToggle"
-                                  onAction="#onMusicToggled"
-                                  styleClass="switch-toggle" />
-                </HBox>
+                <Label text="Music" textFill="#E5F4FF"
+                       styleClass="filter-card-label">
+                    <font><Font name="Copperplate Gothic Bold" size="22"/></font>
+                </Label>
 
-                <!-- Sound -->
-                <HBox styleClass="filter-row">
-                    <Label text="Sound" styleClass="filter-label"/>
-                    <ToggleButton fx:id="soundToggle"
-                                  onAction="#onSoundToggled"
-                                  styleClass="switch-toggle" />
-                </HBox>
-
-                <!-- Timer -->
-                <HBox styleClass="filter-row">
-                    <Label text="Timer" styleClass="filter-label"/>
-                    <ToggleButton fx:id="timerToggle"
-                                  onAction="#onTimerToggled"
-                                  styleClass="switch-toggle" />
-                </HBox>
-
-                <!-- Smart Hints -->
-                <HBox styleClass="filter-row">
-                    <Label text="Smart Hints" styleClass="filter-label"/>
-                    <ToggleButton fx:id="smartHintsToggle"
-                                  onAction="#onSmartHintsToggled"
-                                  styleClass="switch-toggle" />
-                </HBox>
-
-                <!-- Auto Remove Flag -->
-                <HBox styleClass="filter-row">
-                    <Label text="Auto Remove Flag" styleClass="filter-label"/>
-                    <ToggleButton fx:id="autoRemoveFlagToggle"
-                                  onAction="#onAutoRemoveFlagToggled"
-                                  styleClass="switch-toggle" />
-                </HBox>
-
+                <ToggleButton fx:id="musicToggle"
+                              onAction="#onMusicToggled"
+                              styleClass="switch-toggle"/>
             </children>
-        </VBox>
+        </HBox>
 
-    </children>
+
+        <!-- ========== SOUND CARD ========== -->
+        <HBox styleClass="filter-card"
+              GridPane.rowIndex="1">
+            <padding><Insets left="20" right="20"/></padding>
+
+            <children>
+                <ImageView fitHeight="55" fitWidth="55" preserveRatio="true">
+                    <image><Image url="@../Images/sound.png"/></image>
+                </ImageView>
+
+                <Label text="Sound" textFill="#E5F4FF"
+                       styleClass="filter-card-label">
+                    <font><Font name="Copperplate Gothic Bold" size="22"/></font>
+                </Label>
+
+                <ToggleButton fx:id="soundToggle"
+                              onAction="#onSoundToggled"
+                              styleClass="switch-toggle"/>
+            </children>
+        </HBox>
+
+
+        <!-- ========== TIMER CARD ========== -->
+        <HBox styleClass="filter-card"
+              GridPane.rowIndex="2">
+            <padding><Insets left="20" right="20"/></padding>
+
+            <children>
+                <ImageView fitHeight="55" fitWidth="55" preserveRatio="true">
+                    <image><Image url="@../Images/timer.png"/></image>
+                </ImageView>
+
+                <Label text="Timer" textFill="#E5F4FF"
+                       styleClass="filter-card-label">
+                    <font><Font name="Copperplate Gothic Bold" size="22"/></font>
+                </Label>
+
+                <ToggleButton fx:id="timerToggle"
+                              onAction="#onTimerToggled"
+                              styleClass="switch-toggle"/>
+            </children>
+        </HBox>
+
+
+        <!-- ========== SMART HINTS CARD ========== -->
+        <HBox styleClass="filter-card"
+              GridPane.rowIndex="3">
+            <padding><Insets left="20" right="20"/></padding>
+
+            <children>
+                <ImageView fitHeight="55" fitWidth="55" preserveRatio="true">
+                    <image><Image url="@../Images/hint.png"/></image>
+                </ImageView>
+
+                <Label text="Smart Hints" textFill="#E5F4FF"
+                       styleClass="filter-card-label">
+                    <font><Font name="Copperplate Gothic Bold" size="22"/></font>
+                </Label>
+
+                <ToggleButton fx:id="smartHintsToggle"
+                              onAction="#onSmartHintsToggled"
+                              styleClass="switch-toggle"/>
+            </children>
+        </HBox>
+
+
+        <!-- ========== AUTO REMOVE FLAG CARD ========== -->
+        <HBox styleClass="filter-card"
+              GridPane.rowIndex="4">
+            <padding><Insets left="20" right="20"/></padding>
+
+            <children>
+                <ImageView fitHeight="55" fitWidth="55" preserveRatio="true">
+                    <image><Image url="@../Images/flag.png"/></image>
+                </ImageView>
+
+                <Label text="Auto Remove Flag" textFill="#E5F4FF"
+                       styleClass="filter-card-label">
+                    <font><Font name="Copperplate Gothic Bold" size="22"/></font>
+                </Label>
+
+                <ToggleButton fx:id="autoRemoveFlagToggle"
+                              onAction="#onAutoRemoveFlagToggled"
+                              styleClass="switch-toggle"/>
+            </children>
+        </HBox>
+
+    </GridPane>
+
 </GridPane>
