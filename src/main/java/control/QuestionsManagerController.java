@@ -36,6 +36,8 @@ public class QuestionsManagerController {
     @FXML
     private Button newQuestionButton;
     @FXML
+    private Button backButton;
+    @FXML
     private javafx.scene.control.ComboBox<String> levelFilterCombo;
     @FXML
     private javafx.scene.control.ComboBox<String> idFilterCombo;
@@ -47,6 +49,27 @@ public class QuestionsManagerController {
     
     private List<Question> questions = new ArrayList<>();
     private static final String CSV_PATH = "src/main/resources/Data/Questionsss.csv";
+    
+    
+    @FXML
+    private void onBackButtonClicked(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/view/main_view.fxml")
+            );
+            Parent root = loader.load();
+
+            // Switch the stage scene
+            Stage stage = (Stage) backButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Main Menu");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     
     
     @FXML
