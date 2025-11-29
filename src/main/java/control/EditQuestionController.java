@@ -117,7 +117,7 @@ public class EditQuestionController {
         }
     }
 
-    // === Validation ===
+    //Validation
 
     private boolean validateForm() {
         if (difficultyComboBox.getValue() == null) {

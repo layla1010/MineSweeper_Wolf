@@ -35,6 +35,15 @@ public class QuestionsManagerController {
     private VBox questionsContainerVBox;
     @FXML
     private Button newQuestionButton;
+    @FXML
+    private javafx.scene.control.ComboBox<String> levelFilterCombo;
+    @FXML
+    private javafx.scene.control.ComboBox<String> idFilterCombo;
+    @FXML
+    private javafx.scene.control.TextField searchTextField;
+    
+    //all questions here unfiltered list - to use in filtering!
+    private List<Question> allQuestions = new ArrayList<>();
     
     private List<Question> questions = new ArrayList<>();
     private static final String CSV_PATH = "src/main/resources/Data/Questionsss.csv";
@@ -72,6 +81,21 @@ public class QuestionsManagerController {
     @FXML
     public void initialize() {
         reloadQuestionsUI();
+        
+        //For filtering Task:
+        //Loading questions from CSV into allQuestions
+        allQuestions = loadQuestionsFromCsv();
+
+        //Preparing filter combo boxes
+        setupFilters();
+        
+        //Search listener: whenever user types → re-apply filters
+        if (searchTextField != null) {
+            searchTextField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+        }
+
+        //Showing all questions initially
+        applyFilters();
     }
 
     private void reloadQuestionsUI() {
@@ -83,6 +107,83 @@ public class QuestionsManagerController {
             addQuestionCard(q);
         }
     }
+    
+    private void setupFilters() {
+        //Difficulty filter
+        levelFilterCombo.getItems().clear();
+        levelFilterCombo.getItems().add("All Levels");
+        levelFilterCombo.getItems().add("Easy");
+        levelFilterCombo.getItems().add("Medium");
+        levelFilterCombo.getItems().add("Hard");
+        levelFilterCombo.getItems().add("Expert");
+        levelFilterCombo.setValue("All Levels"); // default
+
+        //ID filter
+        idFilterCombo.getItems().clear();
+        idFilterCombo.getItems().add("All IDs");
+        for (Question q : allQuestions) {
+            idFilterCombo.getItems().add(String.valueOf(q.getId()));
+        }
+        idFilterCombo.setValue("All IDs"); // default
+
+        //When user changes filter: re-apply filters:
+        levelFilterCombo.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+        idFilterCombo.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+    }
+    
+    private void applyFilters() {
+        String selectedDifficulty = levelFilterCombo.getValue();
+        String selectedId = idFilterCombo.getValue();
+        String searchQuery       = (searchTextField != null) ? searchTextField.getText() : null;
+
+        //Normalize values for null safety
+        if (selectedDifficulty == null) {
+            selectedDifficulty = "All Levels";
+        }
+        if (selectedId == null) {
+            selectedId = "All IDs";
+        }
+        if (searchQuery == null) {
+            searchQuery = "";
+        }
+        
+        String searchLower = searchQuery.trim().toLowerCase();
+
+        //Clear current cards
+        questionsContainerVBox.getChildren().clear();
+
+        //Re-add only matching questions
+        for (Question q : allQuestions) {
+
+            //Filter by difficulty
+            if (!"All Levels".equals(selectedDifficulty)) {
+                if (!q.getDifficulty().equalsIgnoreCase(selectedDifficulty)) {
+                    continue; //skip this question
+                }
+            }
+
+            //Filter by ID
+            if (!"All IDs".equals(selectedId)) {
+                String qIdStr = String.valueOf(q.getId());
+                if (!qIdStr.equals(selectedId)) {
+                    continue; //skip this question
+                }
+            }
+            
+            //filter by search text (question content) ---
+            if (!searchLower.isEmpty()) {
+                String questionTextLower = q.getText() == null ? "" : q.getText().toLowerCase();
+                if (!questionTextLower.contains(searchLower)) {
+                    continue;
+                }
+            }
+
+            //If it passed all filters then show it
+            addQuestionCard(q);
+        }
+    }
+
+
     
 //    //Method to call csv file and turn each valid row into a question object
 //    private List<Question> loadQuestionsFromCsv(String resourcePath) {
@@ -358,7 +459,7 @@ public class QuestionsManagerController {
     	public void deleteQuestion(Question q) {
     	    if (q == null) return;
 
-    	    // 1. Confirm with the user
+    	    //Confirm with the user
     	    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     	    alert.setTitle("Delete Question");
     	    alert.setHeaderText("Are you sure you want to delete this question?");
@@ -370,13 +471,13 @@ public class QuestionsManagerController {
     	        return;
     	    }
 
-    	    // 2. Remove from our in-memory list (by id)
+    	    //Remove from our in-memory list (by id)
     	    questions.removeIf(qq -> qq.getId() == q.getId());
 
-    	    // 3. Save the updated list back to the CSV (with IDs renumbered)
+    	    //Save the updated list back to the CSV (with IDs renumbered)
     	    saveQuestionsToCsv(questions);
 
-    	    // 4. Refresh the UI from the CSV
+    	    //Refresh the UI from the CSV
     	    reloadQuestionsUI();
 
     	    System.out.println("Delete requested for question id=" + q.getId());
@@ -400,8 +501,8 @@ public class QuestionsManagerController {
     	            // Renumber IDs to keep them serial after delete
     	            q.setId(newId++);
 
-    	            String difficultyNum = mapDifficultyToNumber(q.getDifficulty());       // Easy -> "1"
-    	            String correctLetter = mapCorrectNumberToLetter(q.getCorrectOption()); // 1 -> "A"
+    	            String difficultyNum = mapDifficultyToNumber(q.getDifficulty());       // Easy is "1"
+    	            String correctLetter = mapCorrectNumberToLetter(q.getCorrectOption()); // 1 is "A"
 
     	            String line = String.join(",",
     	                    String.valueOf(q.getId()),        // ID

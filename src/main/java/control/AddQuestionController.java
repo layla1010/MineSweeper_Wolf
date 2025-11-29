@@ -144,7 +144,7 @@ public class AddQuestionController {
         // If Cancel/Close → do nothing, stay on page
     }
 
-    // === Validation ===
+    //Validation
 
     private boolean validateForm() {
         if (difficultyComboBox.getValue() == null) {
@@ -203,7 +203,7 @@ public class AddQuestionController {
         alert.showAndWait();
     }
 
-    // === CSV append logic ===
+    // CSV append logic 
     // CSV headers we use (in this order):
     // A, B, C, D, Difficulty, ID, Question, Correct Answer
 
@@ -216,75 +216,75 @@ public class AddQuestionController {
             String optD,
             String correctLetter) throws IOException {
 
-Path path = Paths.get(CSV_PATH);
-String delimiter = ",";
-String[] headers;
+    	Path path = Paths.get(CSV_PATH);
+    	String delimiter = ",";
+    	String[] headers;
 
-if (Files.exists(path)) {
-// File exists → read the existing header and use its order
-try (BufferedReader reader =
-Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+    	if (Files.exists(path)) {
+    		// File exists → read the existing header and use its order
+    		try (BufferedReader reader =
+    				Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 
-String headerLine = reader.readLine();
-if (headerLine == null) {
-throw new IOException("CSV file has no header line");
-}
+    			String headerLine = reader.readLine();
+    			if (headerLine == null) {
+    				throw new IOException("CSV file has no header line");
+    			}
 
-delimiter = headerLine.contains(";") ? ";" : ",";
-String[] rawHeaders = headerLine.split(delimiter, -1);
+    			delimiter = headerLine.contains(";") ? ";" : ",";
+    			String[] rawHeaders = headerLine.split(delimiter, -1);
 
-headers = new String[rawHeaders.length];
-for (int i = 0; i < rawHeaders.length; i++) {
-headers[i] = rawHeaders[i].trim().replace("\uFEFF", "");
-}
-}
-} else {
-// File does NOT exist → create it with a sensible header order
-delimiter = ",";
-headers = new String[] {
-"ID", "Question", "Difficulty",
-"A", "B", "C", "D", "Correct Answer"
-};
+    			headers = new String[rawHeaders.length];
+    			for (int i = 0; i < rawHeaders.length; i++) {
+    				headers[i] = rawHeaders[i].trim().replace("\uFEFF", "");
+    			}
+    		}
+    	} else {
+    		// File does NOT exist → create it with a sensible header order
+    		delimiter = ",";
+    		headers = new String[] {
+    				"ID", "Question", "Difficulty",
+    				"A", "B", "C", "D", "Correct Answer"
+    		};
 
-Files.createDirectories(path.getParent());
-try (BufferedWriter writer = Files.newBufferedWriter(
-path, StandardCharsets.UTF_8,
-StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+    		Files.createDirectories(path.getParent());
+    		try (BufferedWriter writer = Files.newBufferedWriter(
+    				path, StandardCharsets.UTF_8,
+    				StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
 
-String headerLine = String.join(delimiter, headers);
-writer.write(headerLine);
-writer.newLine();
-}
-}
+    			String headerLine = String.join(delimiter, headers);
+    			writer.write(headerLine);
+    			writer.newLine();
+    		}
+    	}
 
-// Build a row that matches the header order
-String[] cells = new String[headers.length];
+    	// Build a row that matches the header order
+    	String[] cells = new String[headers.length];
 
-for (int i = 0; i < headers.length; i++) {
-String h = headers[i];
-switch (h) {
-case "ID" -> cells[i] = String.valueOf(id);
-case "Question" -> cells[i] = escape(question);
-case "Difficulty" -> cells[i] = difficultyNum;
-case "A" -> cells[i] = escape(optA);
-case "B" -> cells[i] = escape(optB);
-case "C" -> cells[i] = escape(optC);
-case "D" -> cells[i] = escape(optD);
-case "Correct Answer" -> cells[i] = correctLetter;
-default -> cells[i] = ""; // unknown column: leave empty
-}
-}
+    	for (int i = 0; i < headers.length; i++) {
+    		String h = headers[i];
+    		switch (h) {
+    		case "ID" -> cells[i] = String.valueOf(id);
+    		case "Question" -> cells[i] = escape(question);
+    		case "Difficulty" -> cells[i] = difficultyNum;
+    		case "A" -> cells[i] = escape(optA);
+    		case "B" -> cells[i] = escape(optB);
+    		case "C" -> cells[i] = escape(optC);
+    		case "D" -> cells[i] = escape(optD);
+    		case "Correct Answer" -> cells[i] = correctLetter;
+    		default -> cells[i] = ""; // unknown column: leave empty
+    		}
+    	}
 
-// Append the row
-try (BufferedWriter writer = Files.newBufferedWriter(
-path, StandardCharsets.UTF_8,
-StandardOpenOption.APPEND)) {
+    	// Append the row
+    	try (BufferedWriter writer = Files.newBufferedWriter(
+    			path, StandardCharsets.UTF_8,
+    			StandardOpenOption.APPEND)) {
 
-String line = String.join(delimiter, cells);
-writer.write(line);
-writer.newLine();
-}
-}
+    		String line = String.join(delimiter, cells);
+    		writer.write(line);
+    		writer.newLine();
+    	}
+    }
 
     private String escape(String value) {
         if (value == null) return "";
@@ -295,7 +295,7 @@ writer.newLine();
         return value;
     }
 
-    // === Navigation back to Questions_Management_view ===
+    //Navigation back to Questions_Management_view
 
     private void goBackToManager() {
         try {
