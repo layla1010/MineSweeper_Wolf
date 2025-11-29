@@ -16,6 +16,7 @@
 
     -fx-border-color: rgba(255, 255, 255, 0.18);
     -fx-border-width: 2;
+    
     -fx-background-radius: 40;
     -fx-border-radius: 40;
 
@@ -182,6 +183,8 @@
 .switch-toggle .text {
     -fx-opacity: 0;
 }
+
+/* Aya Ala Deen – WOLF Settings & Filters Design */
 
 /* Root of settings screen */
 .settings-root {
