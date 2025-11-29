@@ -527,7 +527,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S13.png" />
+                                                <Image url="@/Images/S13.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -545,7 +545,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S3.png" />
+                                                <Image url="@/Images/S3.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -563,7 +563,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S4.png" />
+                                                <Image url="@/Images/S4.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -581,7 +581,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S11.png" />
+                                                <Image url="@/Images/S11.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -599,7 +599,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S7.png" />
+                                                <Image url="@/Images/S7.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -617,7 +617,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S10.png" />
+                                                <Image url="@/Images/S10.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -635,7 +635,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S8.png" />
+                                                <Image url="@/Images/S8.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -653,7 +653,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S2.png" />
+                                                <Image url="@/Images/S2.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -671,7 +671,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S9.png" />
+                                                <Image url="@/Images/S9.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -689,7 +689,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S12.png" />
+                                                <Image url="@/Images/S12.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -707,7 +707,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S5.png" />
+                                                <Image url="@/Images/S5.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -725,7 +725,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S6.png" />
+                                                <Image url="@/Images/S6.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -743,7 +743,7 @@
                                                 <Circle centerX="30.0" centerY="30.0" radius="30.0" />
                                             </clip>
                                             <image>
-                                                <Image url="@../images/S1.png" />
+                                                <Image url="@/Images/S1.png" />
                                             </image>
                                         </ImageView>
                                     </children>
@@ -754,7 +754,7 @@
                                     <children>
                                         <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" preserveRatio="true">
                                             <image>
-                                                <Image url="@../images/plus.png" />
+                                                <Image url="@/Images/plus.png" />
                                             </image>
                                         </ImageView>
                                         <Button maxHeight="60.0" maxWidth="60.0" minHeight="60.0" minWidth="60.0" mnemonicParsing="false" onAction="#onPlus" onMouseClicked="#playClickSound" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 100;                                                        -fx-background-color: transparent;                                                        -fx-cursor: hand;" />
