@@ -27,6 +27,18 @@ public class Main extends Application {
         SoundManager.init();
         SoundManager.startMusic();
     }
+    
+    
+    
+//	public void start(Stage stage) throws Exception {
+//	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Questions_Management_view.fxml"));
+//	    Parent root = loader.load();
+//	    Scene scene = new Scene(root);
+//	    stage.setScene(scene);
+//	    stage.setTitle("Questions Management");
+//	    stage.show();
+//	}
+    
 
     public static void main(String[] args) {
         launch(args);
