@@ -5,9 +5,11 @@ import java.io.IOException;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
@@ -15,6 +17,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
@@ -22,9 +26,11 @@ import javafx.stage.Stage;
 import model.Difficulty;
 import model.GameConfig;
 import util.SoundManager;
+import util.UIAnimations;
 
 public class NewGameController {
 
+    @FXML private Parent root;
     @FXML private TextField player1Nickname;
     @FXML private TextField player2Nickname;
     @FXML private ToggleGroup difficultyGroup;
@@ -48,9 +54,12 @@ public class NewGameController {
     @FXML private ImageView img11;
     @FXML private ImageView img12;
     @FXML private ImageView img13;
+    @FXML private Button setUpmusicIsOnButton;
+
 
     private boolean player1AvatarChosen = false;
     private boolean player2AvatarChosen = false;
+    private StackPane selectedAvatarPane;
     private int selectedPlayer = 1;
 
     private Stage stage;
@@ -63,6 +72,9 @@ public class NewGameController {
     private void initialize() {
         selectPlayer(1);
         setupAvatarThumbnails();
+        UIAnimations.applyHoverZoomToAllButtons(root);
+        UIAnimations.applyFloatingToCards(root);
+        UIAnimations.applyHoverZoomToClass(root);
     }
 
     @FXML
@@ -103,13 +115,31 @@ public class NewGameController {
     private void onPlayer1AreaClicked() {
         selectPlayer(1);
         playClickSound();
+        setActivePlayerCard(recP1, recP2, player1Nickname, player2Nickname);
     }
 
     @FXML
     private void onPlayer2AreaClicked() {
         selectPlayer(2);
         playClickSound();
+        setActivePlayerCard(recP2, recP1, player2Nickname, player1Nickname);
     }
+    
+    private void setActivePlayerCard(Rectangle activeCard, Rectangle otherCard, TextField activeField, TextField otherField) {
+
+		otherCard.getStyleClass().remove("player-card-active");
+		
+		if (!activeCard.getStyleClass().contains("player-card-active")) {
+		activeCard.getStyleClass().add("player-card-active");
+		}
+		
+		if (activeField != null) {
+		activeField.requestFocus();
+		}
+		
+		activeField.positionCaret(activeField.getText().length());
+		activeField.selectAll();
+	}
 
     private void selectPlayer(int player) {
         this.selectedPlayer = player;
@@ -227,6 +257,50 @@ public class NewGameController {
             }
         }
     }
+    
+     
+    @FXML void onSoundOff() {
+        util.SoundManager.toggleMusic();
+
+        if (setUpmusicIsOnButton != null && setUpmusicIsOnButton.getGraphic() instanceof ImageView iv) {
+            String iconPath = util.SoundManager.isMusicOn()
+                    ? "/Images/volume.png"
+                    : "/Images/mute.png";
+
+            Image img = new Image(getClass().getResourceAsStream(iconPath));
+            iv.setImage(img);
+        }
+    }
+    
+    @FXML
+    private void onAvatarClicked(MouseEvent event) {
+        Object src = event.getSource();
+        StackPane avatarPane = null;
+
+        if (src instanceof StackPane) {
+            avatarPane = (StackPane) src;
+        } else if (src instanceof Node) {
+            Node node = (Node) src;
+            if (node.getParent() instanceof StackPane) {
+                avatarPane = (StackPane) node.getParent();
+            }
+        }
+
+        if (avatarPane == null) {
+            return;
+        }
+
+        if (selectedAvatarPane != null) {
+            selectedAvatarPane.getStyleClass().remove("avatar-selected");
+        }
+
+        selectedAvatarPane = avatarPane;
+        if (!avatarPane.getStyleClass().contains("avatar-selected")) {
+            avatarPane.getStyleClass().add("avatar-selected");
+        }
+        playClickSound();
+    }
+  
 
     private void showError(String message) {
         Alert alert = new Alert(AlertType.ERROR);

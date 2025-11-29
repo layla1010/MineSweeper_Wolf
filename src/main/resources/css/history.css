@@ -1,0 +1,178 @@
+/* ===== Root background ===== */
+.history-root {
+    -fx-background-color: #050814;
+}
+
+/* ===== ScrollPane tweaks ===== */
+.history-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.history-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ===== Title ===== */
+.history-title {
+    -fx-text-fill: #35E0FF;
+    -fx-font-size: 48px;
+    -fx-font-family: "Copperplate Gothic Bold", "Georgia", "Serif";
+}
+
+/* ===== List container (cards area) ===== */
+.history-list {
+    -fx-padding: 15 40 35 40; /* top right bottom left */
+}
+
+/* ===== Empty label (optional) ===== */
+.history-empty-label {
+    -fx-text-fill: #d5e8ff;
+    -fx-font-size: 16px;
+}
+
+/* ===== Cards ===== */
+.history-card {
+    -fx-background-color: #11151f;
+    -fx-background-radius: 22;
+    -fx-border-radius: 22;
+    -fx-border-color: #2a3040;
+    -fx-border-width: 1;
+    -fx-padding: 12 18 12 18;
+}
+
+.history-card:hover {
+    -fx-border-color: #35E0FF;
+    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.25), 12, 0.2, 0, 4);
+}
+
+/* top row: difficulty | players | result */
+.history-card-header {
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* bottom row: date | score | time */
+.history-card-footer {
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* ===== Pills & badges ===== */
+.pill-label {
+    -fx-padding: 4 14 4 14;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* difficulty pill */
+.difficulty-pill {
+    -fx-background-color: transparent;
+    -fx-border-color: #35E0FF;
+    -fx-text-fill: #35E0FF;
+}
+
+/* result pills */
+.result-pill-won {
+    -fx-background-color: rgba(35, 160, 90, 0.15);
+    -fx-border-color: #23a05a;
+    -fx-text-fill: #7CFFB3;
+}
+
+.result-pill-lost {
+    -fx-background-color: rgba(200, 60, 60, 0.18);
+    -fx-border-color: #c23c3c;
+    -fx-text-fill: #ff9b9b;
+}
+
+/* players text */
+.players-label {
+    -fx-text-fill: #f2f7ff;
+    -fx-font-size: 16px;
+}
+
+/* small badges: date, score, time */
+.info-badge {
+    -fx-background-color: #151a26;
+    -fx-background-radius: 16;
+    -fx-padding: 4 12 4 12;
+    -fx-text-fill: #d5e8ff;
+    -fx-font-size: 13px;
+}
+
+/* ===== Filter & sort bar ===== */
+.history-filter-bar {
+    -fx-background-color: transparent;
+    -fx-padding: 4 10 4 10;  /* smaller vertical padding */
+    -fx-spacing: 10;
+}
+
+.history-filter-label {
+    -fx-text-fill: #E5E7EB;
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 12px;
+}
+
+/* ===== Buttons (Apply / Clear / Sort) ===== */
+.history-small-button {
+    -fx-background-color: linear-gradient(#3C8DFF, #274B8E);
+    -fx-text-fill: #f6f7ff;
+    -fx-background-radius: 20;
+    -fx-padding: 4 14 4 14;
+    -fx-cursor: hand;
+    -fx-font-size: 11px;
+    -fx-font-family: "Copperplate Gothic Light";
+}
+
+.history-small-button:hover {
+    -fx-background-color: linear-gradient(#4F9BFF, #3053A0);
+}
+
+/* ===== Inputs: ComboBox, TextField, DatePicker ===== */
+.combo-box,
+.text-field,
+.date-picker {
+    -fx-background-color: #111A33;
+    -fx-text-fill: #F6F7FF;
+    -fx-prompt-text-fill: #4A537A;
+    -fx-background-radius: 20;
+    -fx-border-color: #274B8E;
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+    -fx-padding: 2 8 2 8;
+}
+
+/* visible text inside combo boxes */
+.combo-box .list-cell {
+    -fx-text-fill: #F6F7FF;
+    -fx-font-size: 12px;
+}
+
+/* dropdown items */
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: #050814;
+    -fx-text-fill: #F6F7FF;
+}
+
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: #274B8E;
+}
+
+/* DatePicker inner text field */
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: #F6F7FF;
+    -fx-prompt-text-fill: #4A537A;
+    -fx-background-radius: 20;
+    -fx-border-width: 0;
+}
+
+/* DatePicker arrow */
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 6 0 6;
+}
+
+.date-picker .arrow-button .arrow {
+    -fx-background-color: #F6F7FF;
+}

@@ -1,0 +1,95 @@
+/* Root grid – just in case, extra background definition */
+#root {
+    -fx-padding: 20;
+}
+
+/* Neon main title */
+.neon-title {
+    -fx-text-fill: #ff6ec7;
+    -fx-effect: dropshadow(gaussian, #ff6ec7, 30, 0.7, 0, 0);
+    -fx-alignment: center;
+}
+
+/* Outer stats panel (like glass card) */
+.stats-panel {
+    -fx-fill: rgba(255, 110, 199, 0.08);
+    -fx-stroke: rgba(255, 110, 199, 0.4);
+    -fx-stroke-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(255,110,199,0.5), 30, 0.6, 0, 0);
+}
+
+/* Top header bar inside panel */
+.stats-header {
+    -fx-fill: linear-gradient(from 0% 0% to 100% 100%, #2e1b4b, #4b255f);
+    -fx-stroke: rgba(255, 110, 199, 0.6);
+}
+
+/* Text styles */
+.stat-header-text {
+    -fx-fill: #c4b5fd;
+}
+
+.stat-label {
+    -fx-fill: #c4b5fd;
+    -fx-font-weight: bold;
+    -fx-opacity: 0.9;
+}
+
+.stat-value,
+.stat-value-main {
+    -fx-fill: #ff6ec7;
+}
+
+/* Smaller values vs main players text */
+.stat-value-main {
+    -fx-font-size: 16px;
+}
+
+/* Each stat card (score / time / difficulty / lives) */
+.stat-card {
+    -fx-fill: rgba(167, 139, 250, 0.2);
+    -fx-stroke: rgba(255, 110, 199, 0.5);
+    -fx-stroke-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(167,139,250,0.5), 15, 0.5, 0, 0);
+    -fx-arc-width: 25;
+    -fx-arc-height: 25;
+}
+
+/* Hover effect for stat cards – glow + slight scale */
+.stat-card:hover {
+    -fx-stroke: #ff6ec7;
+    -fx-effect: dropshadow(gaussian, #ff6ec7, 30, 0.8, 0, 0);
+}
+
+/* Buttons */
+.game-button {
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 20, 0.7, 0, 4);
+    -fx-padding: 10 20 10 20;
+}
+
+/* Retry button – pink gradient */
+.retry-button {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #ff6ec7, #ec4899);
+}
+
+/* Main menu button – purple gradient */
+.menu-button {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #a78bfa, #7c3aed);
+}
+
+/* Hover state – zoom and stronger glow */
+.game-button:hover {
+    -fx-effect: dropshadow(gaussian, #ff6ec7, 35, 0.9, 0, 4);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Pressed state – tiny shrink */
+.game-button:pressed {
+    -fx-scale-x: 0.96;
+    -fx-scale-y: 0.96;
+}

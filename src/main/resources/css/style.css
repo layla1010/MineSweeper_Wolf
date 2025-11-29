@@ -1,44 +1,251 @@
+/* =========================
+   DIFFICULTY TOGGLES
+   ========================= */
+
 .difficulty-toggle:focused {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
 
 .difficulty-toggle {
-	-fx-cursor: hand;
-    -fx-background-color: #0B1226;
+    -fx-cursor: hand;
+
+    /* new purple card color instead of navy */
+    -fx-background-color: rgba(255, 255, 255, 0.12);
     -fx-text-fill: #F6F7FF;
 
-    -fx-border-color: #274B8E;   
+    -fx-border-color: rgba(255, 255, 255, 0.18);
     -fx-border-width: 2;
+    
     -fx-background-radius: 40;
     -fx-border-radius: 40;
+
+    -fx-effect: dropshadow(gaussian, rgba(168, 85, 247, 0.25), 12, 0.25, 0, 4);
 }
 
 .difficulty-toggle:selected {
-    -fx-border-color: #35E0FF;   
+    /* brighter, more vibrant when selected */
+    -fx-border-color: #f9a8ff;
 }
 
+/* =========================
+   TEXTFIELDS: GLASS INPUT
+   (now white when idle)
+   ========================= */
 
+.glass-input {
+    /* base: white, easy to read */
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 20;
+    -fx-border-width: 0.5;
 
-.title-text {
-    -fx-font-family: "ethnocentric rg.ttf";
-    -fx-font-size: 22px;
-    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+    -fx-prompt-text-fill: #9ca3af;
+
+    -fx-padding: 0.3em 0.8em 0.3em 0.8em;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 8, 0.3, 0, 2);
 }
 
-.normal-text {
-    -fx-font-family: "PixelOperator";
-    -fx-font-size: 16px;
+.glass-input:focused {
+    /* glowing white + purple border when selected */
+    -fx-background-color: #ffffff;
+    -fx-border-color: #a855f7;
+
+    -fx-effect:
+        dropshadow(gaussian, rgba(255,255,255,0.55), 25, 0.6, 0, 0),
+        dropshadow(gaussian, rgba(88,28,135,0.75), 30, 0.7, 0, 0);
+    -fx-translate-y: -1;
 }
 
+/* =========================
+   AVATAR OPTION
+   ========================= */
 
-.split-pane-divider {
-    -fx-background-color: transparent !important;
-    -fx-border-color: transparent !important;
-    -fx-padding: 0;
+.avatar-option {
+    -fx-background-color: rgba(255, 255, 255, 0.10);
+    -fx-border-color: rgba(255, 255, 255, 0.25);
+    -fx-border-width: 3;
+    -fx-border-radius: 24;
+    -fx-background-radius: 24;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 18, 0.3, 0, 6);
+    -fx-padding: 3;
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-rotate: 0;
+    -fx-opacity: 1;
 }
 
+.avatar-option:hover {
+    -fx-scale-x: 1.18;
+    -fx-scale-y: 1.18;
+    -fx-rotate: 8;
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 22, 0.5, 0, 8);
+}
+
+.avatar-option.avatar-selected {
+    -fx-border-color: rgba(255, 255, 255, 0.85);
+    -fx-effect:
+        dropshadow(gaussian, rgba(255,255,255,0.75), 28, 0.7, 0, 0),
+        dropshadow(gaussian, rgba(0,0,0,0.7), 25, 0.6, 0, 10);
+    -fx-scale-x: 1.12;
+    -fx-scale-y: 1.12;
+}
+
+/* =========================
+   PLAYER CARDS
+   ========================= */
+
+.player-card {
+    -fx-fill: rgba(255, 255, 255, 0.12);
+    -fx-stroke: rgba(255, 255, 255, 0.18);
+    -fx-stroke-width: 2;
+    -fx-arc-width: 32;
+    -fx-arc-height: 32;
+    -fx-effect: dropshadow(gaussian, rgba(168, 85, 247, 0.25), 12, 0.25, 0, 4);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.player-card:hover {
+    -fx-stroke: rgba(255, 255, 255, 0.40);
+    -fx-effect: dropshadow(gaussian, rgba(248, 113, 182, 0.35), 16, 0.35, 0, 4);
+}
+
+/* selected state: vibrant blue / purple + permanent zoom */
+.player-card-active {
+    -fx-stroke: #f9a8ff;
+    -fx-stroke-width: 0.5;
+
+    -fx-scale-x: 1.06;
+    -fx-scale-y: 1.06;
+
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.60), 18, 0.55, 0, 0);
+}
+
+/* optional: when active AND hovered, a bit more pop */
+.player-card.player-card-active:hover {
+    -fx-scale-x: 1.08;
+    -fx-scale-y: 1.08;
+}
+
+/* =========================
+   SETTINGS / FILTERS (Aya)
+   ========================= */
+
+/* hide split pane grabber */
 .split-pane-divider .horizontal-grabber,
 .split-pane-divider .vertical-grabber {
     -fx-background-color: transparent !important;
+}
+
+/* Filters screen rows */
+.filter-row {
+    -fx-background-color: #0B1226;
+    -fx-padding: 12 20 12 20;
+    -fx-spacing: 20;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-color: #111827;
+    -fx-border-width: 1.5;
+}
+
+.filter-label {
+    -fx-text-fill: #E5E7EB;
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 20px;
+}
+
+/* Modern switch-style toggle button */
+.switch-toggle {
+    -fx-background-color: #111827;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #4B5563;
+    -fx-border-width: 2;
+    -fx-pref-width: 70;
+    -fx-pref-height: 32;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+/* On state */
+.switch-toggle:selected {
+    -fx-background-color: #22c55e;
+    -fx-border-color: #16a34a;
+}
+
+/* No text inside the toggle */
+.switch-toggle .text {
+    -fx-opacity: 0;
+}
+
+/* Aya Ala Deen – WOLF Settings & Filters Design */
+
+/* Root of settings screen */
+.settings-root {
+    -fx-background-color: linear-gradient(#050814, #02030A);
+}
+
+/* Back button (arrow) - final version */
+.settings-back-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #9CA3AF;
+    -fx-font-size: 20px;
+    -fx-cursor: hand;
+}
+
+.settings-back-button:hover {
+    -fx-text-fill: #E5F4FF;
+}
+
+/* Wolf logo glow */
+.wolf-logo {
+    -fx-effect: dropshadow(gaussian, rgba(79,209,255,0.85), 25, 0.6, 0, 0);
+}
+
+/* Title & subtitle */
+.settings-title {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.7), 20, 0.4, 0, 3);
+}
+
+.settings-subtitle {
+    -fx-text-alignment: center;
+}
+
+/* Dashboard grid */
+.settings-dashboard {
+    -fx-padding: 10 40 0 40;
+}
+
+/* Main cards */
+.menu-card {
+    -fx-background-color: linear-gradient(#0B1226, #050814);
+    -fx-background-radius: 24;
+    -fx-border-radius: 24;
+    -fx-border-color: #1F2937;
+    -fx-border-width: 2;
+    -fx-cursor: hand;
+    -fx-padding: 20;
+}
+
+.menu-card:hover {
+    -fx-background-color: linear-gradient(#111827, #070b16);
+    -fx-border-color: #3C8DFF;
+    -fx-effect: dropshadow(gaussian, rgba(60,141,255,0.7), 24, 0.6, 0, 0);
+    -fx-translate-y: -2;
+}
+
+.menu-card:pressed {
+    -fx-background-color: #020617;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+}
+
+.menu-card-icon {
+    -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.85), 18, 0.7, 0, 0);
 }
