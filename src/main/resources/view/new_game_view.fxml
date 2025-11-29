@@ -20,7 +20,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane fx:id="root" maxHeight="750.0" maxWidth="1400.0" prefHeight="750.0" prefWidth="1201.0" style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.NewGameController">
+<GridPane fx:id="root" maxHeight="750.0" maxWidth="1400.0" prefHeight="750.0" prefWidth="1201.0" style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.NewGameController">
 
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="400.0" prefWidth="400.0" />

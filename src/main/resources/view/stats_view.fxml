@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane fx:id="mainPane" maxHeight="1500.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1200.0" style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #064e3b, #115e59);" stylesheets="@../css/stats.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.StatsViewController">
+<ScrollPane fx:id="mainPane" maxHeight="1500.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1200.0" style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #064e3b, #115e59);" stylesheets="@../css/stats.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.StatsViewController">
    <content>
       <GridPane alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="730.0" prefWidth="1500.0" style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #064e3b, #115e59);" stylesheets="@../css/stats.css">
         <columnConstraints>

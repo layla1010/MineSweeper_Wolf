@@ -92,7 +92,7 @@ public class MainController {
 
         
       @FXML
-      private void onQuestionsManagementClicked(ActionEvent event) {
+      private void onQuestionManagementClicked(ActionEvent event) {
         	SoundManager.playClick();
             try {
                 FXMLLoader loader = new FXMLLoader(
