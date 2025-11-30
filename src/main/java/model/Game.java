@@ -4,17 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-/**
- * Represents a single finished game that will appear in the History screen.
- * Stores:
- *  - player1 nickname
- *  - player2 nickname
- *  - difficulty level
- *  - final score
- *  - result (WIN / LOSE)
- *  - date of the game
- *  - duration in seconds (stopwatch from start to end)
- */
+//Represents a single finished game that will appear in the History screen.
+
 public class Game {
 
     private final String player1Nickname;
@@ -22,10 +13,10 @@ public class Game {
     private final Difficulty difficulty;
     private final int finalScore;
     private final GameResult result;
-    private final LocalDate date;       // e.g. 2025-11-26
-    private final int durationSeconds;  // total duration in seconds
+    private final LocalDate date;       
+    private final int durationSeconds;  //total duration in seconds
 
-    // Can be used elsewhere if needed (for time fields, not used directly here)
+    //Can be used elsewhere if needed (for time fields, not used directly here)
     public static final DateTimeFormatter TIME_FORMATTER =
             DateTimeFormatter.ofPattern("HH:mm");
 
@@ -84,25 +75,22 @@ public class Game {
         return durationSeconds;
     }
 
-    /**
-     * Formats the duration as M:SS (e.g. "10:21").
-     */
+    
+    //Formats the duration as M:SS (for example "10:21").
+   
     public String getDurationFormatted() {
         int minutes = durationSeconds / 60;
         int seconds = durationSeconds % 60;
         return String.format("%d:%02d", minutes, seconds);
     }
 
-    /**
-     * Helper for showing the date as text (e.g. "2025-11-26").
-     */
+   //Helper for showing the date as text (for example "2025-11-26").
+ 
     public String getDateAsString() {
         return date.toString(); // ISO_LOCAL_DATE by default
     }
 
-    /**
-     * Nice text for UI ("Win" / "Lose").
-     */
+
     public String getResultAsText() {
         return (result == GameResult.WIN) ? "Win" : "Lose";
     }

@@ -90,6 +90,7 @@ public class GameController {
     private static final int TOTAL_HEART_SLOTS = 10;
 
 
+    //Initializes the game session using the given configuration
     public void init(GameConfig config) {
         this.config = config;
         this.difficulty = config.getDifficulty();
@@ -128,7 +129,7 @@ public class GameController {
         startTimer();
     }
 
-  
+    //Builds the hearts bar UI based on the current number of shared lives. Fills up to TOTAL_HEART_SLOTS with full or empty heart icons.
     private void buildHeartsBar() {
         if (heartsBox == null) return;
 
@@ -155,6 +156,7 @@ public class GameController {
         }
     }
 
+    //Initializes labels with difficulty name, starting time, mines left for both players, and initial score.
     private void initLabels() {
         difficultyLabel.setText(
                 "Difficulty: " +
@@ -173,7 +175,8 @@ public class GameController {
 
         scoreLabel.setText("Score: " + score);
     }
-
+    
+    //Loads the "forbidden" cursor image used when a board is inactive. If it fails, falls back to null (default cursor).
     private void initForbiddenCursor() {
         try {
             Image img = new Image(getClass().getResourceAsStream("/Images/cursor_forbidden.png"));
@@ -183,7 +186,8 @@ public class GameController {
         }
     }
 
-  
+    //Builds the minefield grid for a player.
+    //Configures rows/columns in the GridPane and fills it with clickable tiles.
     private void buildGridForPlayer(GridPane grid, Board board, boolean isPlayer1) {
         grid.getChildren().clear();
         grid.getColumnConstraints().clear();
@@ -225,7 +229,8 @@ public class GameController {
             p2Buttons = buttons;
         }
     }
-
+    
+    //Creates a single clickable tile for a given cell, sets up mouse handlers for left/right clicks, turn checking, and calls the logic to reveal cells or toggle flags.
     private StackPane createCellTile(Board board, int row, int col, boolean isPlayer1) {
         Button button = new Button();
         button.setMinSize(0, 0);
@@ -289,6 +294,7 @@ public class GameController {
         return tile;
     }
 
+    //Toggles a flag icon on a covered cell. If a flag is present, removes it; otherwise adds a flag graphic or emoji.
     private void toggleFlag(Button button) {
         if (button.getGraphic() instanceof ImageView) {
             button.setGraphic(null);
@@ -310,7 +316,9 @@ public class GameController {
             button.getStyleClass().add("cell-flagged");
         }
     }
-
+    
+    //Reveals a single cell and updates hearts, score, and game state according to the cell type (MINE, QUESTION, SURPRISE, NUMBER, EMPTY).
+    //Also checks for win/lose conditions.
     private void revealSingleCell(Board board,
                                   int row,
                                   int col,
@@ -400,7 +408,7 @@ public class GameController {
                 score += 1;
             }
         }
-
+        //Update remaining safe cells and check for win
         if (cell.getType() != CellType.MINE) {
             if (isPlayer1) {
                 safeCellsRemaining1 = Math.max(0, safeCellsRemaining1 - 1);
@@ -417,7 +425,8 @@ public class GameController {
 
         updateScoreAndMineLabels();
     }
-
+    
+    //Handles a cell click by revealing it and triggering cascade reveal if the cell is empty. Returns true to indicate the turn was used.
     private boolean handleCellClick(Board board,
                                     int row,
                                     int col,
@@ -435,7 +444,8 @@ public class GameController {
 
         return true;
     }
-
+    
+    //Performs a flood-fill style reveal of neighboring cells starting from the given position, for empty areas.
     private void cascadeReveal(Board board, int startRow, int startCol, boolean isPlayer1) {
 
         StackPane[][] buttons = isPlayer1 ? p1Buttons : p2Buttons;
@@ -485,6 +495,7 @@ public class GameController {
         }
     }
 
+    //Updates the score label and "mines left" labels for both players
     private void updateScoreAndMineLabels() {
         scoreLabel.setText("Score: " + score);
 
@@ -496,12 +507,13 @@ public class GameController {
         );
     }
 
-   
+    //Switches the active player turn and refreshes the board states
     private void switchTurn() {
         isPlayer1Turn = !isPlayer1Turn;
         applyTurnStateToBoards();
     }
 
+    //Applies active/inactive state styles and interactivity to both boards based on whose turn it is.
     private void applyTurnStateToBoards() {
         if (player1Grid == null || player2Grid == null) return;
 
@@ -513,7 +525,8 @@ public class GameController {
             setBoardActive(player2Grid, player2BombsLeftLabel);
         }
     }
-
+    
+    //Marks a board as active: enables it, sets styles, and updates the player label style
     private void setBoardActive(GridPane grid, Label label) {
         grid.setDisable(false);
 
@@ -529,7 +542,8 @@ public class GameController {
             label.getStyleClass().add("active-player-label");
         }
     }
-
+    
+    //Marks a board as inactive: disables it, applies "forbidden" cursor or default, and updates styles
     private void setBoardInactive(GridPane grid, Label label) {
         grid.setDisable(true);
 
@@ -550,7 +564,7 @@ public class GameController {
         }
     }
 
-   
+    //Starts the game timer that updates every second and stops any existing timer before creating a new one.
     private void startTimer() {
         if (timer != null) {
             timer.stop();
@@ -568,42 +582,48 @@ public class GameController {
         timer.play();
     }
 
+    //Pauses the timer without resetting elapsed time
     private void pauseTimer() {
         if (timer != null) {
             timer.pause();
         }
     }
 
+    //Resumes the timer after it has been paused
     private void resumeTimer() {
         if (timer != null) {
             timer.play();
         }
     }
 
+    //Completely stops the timer
     private void stopTimer() {
         if (timer != null) {
             timer.stop();
         }
     }
 
+    //Updates the time label using the current number of elapsed seconds in "Time: mm:ss" format.
     private void updateTimeLabel() {
         int minutes = elapsedSeconds / 60;
         int seconds = elapsedSeconds % 60;
         timeLabel.setText(String.format("Time: %02d:%02d", minutes, seconds));
     }
 
- 
+    //Once clicking on exit button: Stops the timer and closes the application
     @FXML
     private void onExitBtnClicked() {
         stopTimer();
         System.exit(0);
     }
-
+    
+    //Clicking on help button: Currently just logs a message to the console (placeholder for future screen)
     @FXML
     private void onHelpBtnClicked() {
         System.out.println("Help clicked but screen not created yet!");
     }
-
+    
+    //Clicking on back button: Stops the timer and returns to the main menu screen
     @FXML
     private void onBackBtnClicked() throws IOException {
         stopTimer();
@@ -621,6 +641,7 @@ public class GameController {
         stage.centerOnScreen();
     }
 
+    //Handles the Pause/Play button: Toggles paused state, updates button icon and board opacity, and pauses/resumes the timer accordingly.
     @FXML
     private void onPauseGame() {
         isPaused = !isPaused;
@@ -642,7 +663,8 @@ public class GameController {
             resumeTimer();
         }
     }
-
+    
+    //Handling the sound/music button: Toggles background music using SoundManager and updates the icon.
     @FXML
     private void onSoundOff() {
         util.SoundManager.toggleMusic();
@@ -662,7 +684,8 @@ public class GameController {
     
     }
 
-   
+    //Triggers a small explosion animation on a tile when a mine is hit.
+    //Creates flash, shockwave, and debris animations and removes them after completion.
     private void triggerExplosion(StackPane tilePane) {
         double centerX = tilePane.getWidth() / 2.0;
         double centerY = tilePane.getHeight() / 2.0;
@@ -719,7 +742,7 @@ public class GameController {
         });
     }
 
-  
+    //Main game-over handler: Prevents duplicate handling, stops the timer, saves the game result, and opens the end-game screen
     private void onGameOver() {
         if (gameOver) {
             return;
@@ -737,7 +760,7 @@ public class GameController {
         System.out.println("Game over! Saved to history.");
     }
 
-   
+    //Saves the current game session (result, score, time..) into SysData's history and writes it to CSV.
     private void saveCurrentGameToHistory() {
         if (config == null) {
             return;
@@ -762,6 +785,7 @@ public class GameController {
         System.out.println("Saved game: " + gameRecord);
     }
     
+    //Shows the appropriate end game screen (win or lose view), passes the game data into EndGameController, and switches the scene.
     @FXML
     private void showEndGameScreen() {
         try {

@@ -33,11 +33,12 @@ public class EditQuestionController {
 
     @FXML
     public void initialize() {
-        // ID is not editable in edit mode
+        //ID is not editable in edit mode
         idTextField.setEditable(false);
     }
 
-    // Called from QuestionsManagerController.openEditScreen
+    //Called from QuestionsManagerController.openEditScreen
+    //Receives the Question object selected in the manager screen and fills all the UI fields with its data so it can be edited
     public void setQuestion(Question q) {
         this.originalQuestion = q;
 
@@ -48,13 +49,14 @@ public class EditQuestionController {
         optionCTextField.setText(q.getOptC());
         optionDTextField.setText(q.getOptD());
 
-        // convert difficulty text ("Easy") back to number ("1")
+        //convert difficulty text ("Easy") back to number ("1")
         difficultyComboBox.setValue(difficultyTextToNum(q.getDifficulty()));
 
-        // convert correctOption int (1-4) to letter ("A"-"D")
+        //convert correctOption int (1-4) to letter ("A"-"D")
         correctAnswerComboBox.setValue(correctOptionToLetter(q.getCorrectOption()));
     }
 
+    //Converts a difficulty text value from the Question model to the numeric representation used in the ComboBox and CSV
     private String difficultyTextToNum(String text) {
         return switch (text) {
             case "Easy" -> "1";
@@ -65,6 +67,7 @@ public class EditQuestionController {
         };
     }
 
+    //converts the correct option index from the Question model, to the answer letter for the ComboBox
     private String correctOptionToLetter(int c) {
         return switch (c) {
             case 1 -> "A";
@@ -75,8 +78,8 @@ public class EditQuestionController {
         };
     }
 
-    // === Button handlers ===
 
+    //Handling save button in edit view: Validates the form, Reads updated values from the UI, Updates the matching row in the CSV file, Returns to the Questions Management screen if successful
     @FXML
     private void onSaveButtonClicked(ActionEvent event) {
         if (!validateForm()) {
@@ -84,13 +87,13 @@ public class EditQuestionController {
         }
 
         int id = Integer.parseInt(idTextField.getText().trim());
-        String difficultyNum = difficultyComboBox.getValue();   // "1"-"4"
+        String difficultyNum = difficultyComboBox.getValue();   
         String question = questionTextArea.getText().trim();
         String optA = optionATextField.getText().trim();
         String optB = optionBTextField.getText().trim();
         String optC = optionCTextField.getText().trim();
         String optD = optionDTextField.getText().trim();
-        String correctLetter = correctAnswerComboBox.getValue(); // "A"-"D"
+        String correctLetter = correctAnswerComboBox.getValue();
 
         try {
             updateQuestionInCsv(id, difficultyNum, question,
@@ -104,6 +107,7 @@ public class EditQuestionController {
         goBackToManager();
     }
 
+    //Handling click button: Shows a confirmation dialog, and if the user agrees, discards changes and navigates back to the manager screen.
     @FXML
     private void onCancelButtonClicked(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -117,7 +121,8 @@ public class EditQuestionController {
         }
     }
 
-    //Validation
+    //Validation, Checks: Difficulty is selected, Correct answer is selected, Question text is not empty, All four options are filled and All four options are different
+    //Shows an error alert if any rule is broken
 
     private boolean validateForm() {
         if (difficultyComboBox.getValue() == null) {
@@ -151,6 +156,7 @@ public class EditQuestionController {
         return true;
     }
     
+    //Helper method that Checks that all given strings are distinct, ignoring case
     private boolean allDistinctIgnoreCase(String... values) {
         for (int i = 0; i < values.length; i++) {
             for (int j = i + 1; j < values.length; j++) {
@@ -165,7 +171,8 @@ public class EditQuestionController {
     private boolean isEmpty(String s) {
         return s == null || s.trim().isEmpty();
     }
-
+    
+    //Shows a simple error alert dialog with the given message
     private void showError(String msg) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Validation Error");
@@ -174,8 +181,8 @@ public class EditQuestionController {
         alert.showAndWait();
     }
 
-    // === CSV update logic ===
-    // We respect the existing header order, just like in AddQuestionController
+
+    //CSV update logic: We respect the existing header order, just like in AddQuestionController
 
     private void updateQuestionInCsv(int id,
                                      String difficultyNum,
@@ -226,7 +233,7 @@ public class EditQuestionController {
             int rowId = Integer.parseInt(idStr);
             if (rowId != id) continue; // not the row we want
 
-            // We found the row to update – build new cells array based on header names
+            //We found the row to update – build new cells array based on header names
             String[] newCells = Arrays.copyOf(cells, cells.length);
 
             for (int i = 0; i < headers.length; i++) {
@@ -260,8 +267,8 @@ public class EditQuestionController {
         return value;
     }
 
-    // === Go back to manager screen ===
-
+ 
+    //Navigates back to the Questions Management view.
     private void goBackToManager() {
         try {
             FXMLLoader loader = new FXMLLoader(

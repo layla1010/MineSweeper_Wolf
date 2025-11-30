@@ -1,10 +1,6 @@
 package model;
 
-/**
-* Represents a surprise cell.
-* According to the game rules this cell can cause a good or bad surprise
-* (extra points, extra life, losing points, etc.).
-*/
+//Represents a surprise cell. According to the game rules this cell can cause a good or bad surprise
 
 public class SurpriseCell extends Cell {
 

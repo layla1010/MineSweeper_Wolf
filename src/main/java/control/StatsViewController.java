@@ -10,7 +10,8 @@ import javafx.stage.Stage;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 
-
+//Controller for the statistics screen it display statistics for Player 1 and Player 2: Wins / Losses / Give ups / Wins with no mistakes,
+//total games, best score, best time, and opponent labels, and Score progression over time by difficulty 
 public class StatsViewController {
 	
 	private Stage stage;
@@ -32,11 +33,12 @@ public class StatsViewController {
 
         public final int bestTimeSeconds;      
         public final String bestTimeOpponent;
+        //Arrays of scores to show progression by difficulty
         public final int[] easyScores;
         public final int[] mediumScores;
         public final int[] hardScores;
 
-
+        //Creates a new PlayerStatsData object were all counts are clamped to be at least 0.
         public PlayerStatsData(int totalGames,
                                int wins,
                                int losses,
@@ -64,48 +66,48 @@ public class StatsViewController {
             this.hardScores   = hardScores != null ? hardScores : new int[0];
         }
     }
-
+    //Pie charts for Player 1
     @FXML private PieChart p1winsChart;
     @FXML private PieChart p1lossesChart;
     @FXML private PieChart p1giveUpsChart;
     @FXML private PieChart p1winsWithNoMistakesChart;
 
-
+    //Pie charts for Player 2
     @FXML private PieChart p2winsChart;
     @FXML private PieChart p2lossesChart;
     @FXML private PieChart p2giveUpsChart;
     @FXML private PieChart p2winsWithNoMistakesChart;
 
-
+    //Text labels for Player 1 pie charts
     @FXML private Label p1winsLabel;
     @FXML private Label p1lossesLabel;
     @FXML private Label p1giveUpsLabel;
     @FXML private Label p1winsWithNoMistakesLabel;
 
-
+    //Text labels for Player 2 pie charts
     @FXML private Label p2winsLabel;
     @FXML private Label p2lossesLabel;
     @FXML private Label p2giveUpsLabel;
     @FXML private Label p2winsWithNoMistakesLabel;
 
-
+    //Summary labels for Player 1
     @FXML private Label p1TotalGamesLabel;
     @FXML private Label p1BestScoreLabel;       
     @FXML private Label p1BestScoreWithLabel;   
     @FXML private Label p1BestTimeLabel;
     @FXML private Label p1BestTimeWithLabel;
 
-
+    //Summary labels for Player 2
     @FXML private Label p2TotalGamesLabel;
     @FXML private Label p2BestScoreLabel;
     @FXML private Label p2BestScoreWithLabel;
     @FXML private Label p2BestTimeLabel;        
     @FXML private Label p2BestTimeWithLabel;   
-    
+    //Line charts for progression of scores
     @FXML private LineChart<Number, Number> p1ProgressChart;
     @FXML private LineChart<Number, Number> p2ProgressChart;
 
-    // Dummy:
+    //Dummy:
     private static final boolean USE_DUMMY_DATA = true;
 
     @FXML
@@ -134,7 +136,7 @@ public class StatsViewController {
         }
     }
 
-
+    //Applies Player 1 statistics to all Player 1 UI controls
     public void setPlayer1Stats(PlayerStatsData stats) {
         applyStatsToUi(
                 stats,
@@ -147,7 +149,7 @@ public class StatsViewController {
                 p1BestTimeLabel, p1BestTimeWithLabel
         );
     }
-
+    //Applies Player 2 statistics to all Player 2 UI controls
     public void setPlayer2Stats(PlayerStatsData stats) {
         applyStatsToUi(
                 stats,
@@ -161,7 +163,7 @@ public class StatsViewController {
         );
     }
 
-
+    //Shared method that binds a PlayerStatsData object to the UI 
     private void applyStatsToUi(PlayerStatsData stats,
                                 PieChart winsChart,   Label winsLabel,
                                 PieChart lossesChart, Label lossesLabel,
@@ -184,19 +186,20 @@ public class StatsViewController {
             giveUpsPercent        = stats.giveUps            * 100.0 / totalOutcomes;
             winsNoMistakesPercent = stats.winsWithNoMistakes * 100.0 / totalOutcomes;
         }
-
+        //Update donut charts and their percentage labels
         setupDonut(winsChart,            winsLabel,            winPercent);
         setupDonut(lossesChart,          lossesLabel,          lossesPercent);
         setupDonut(giveUpsChart,         giveUpsLabel,         giveUpsPercent);
         setupDonut(winsNoMistakesChart,  winsNoMistakesLabel,  winsNoMistakesPercent);
-
+        //Total games
         if (totalGamesLabel != null) {
             totalGamesLabel.setText(String.valueOf(stats.totalGames));
         }
-
+        //Best score and opponent
         if (bestScoreLabel != null) {
             bestScoreLabel.setText("best score:    " + String.valueOf(stats.bestScore));
         }
+        //Best time and opponent
         if (bestScoreWithLabel != null) {
             String opponent = (stats.bestScoreOpponent == null || stats.bestScoreOpponent.isBlank())
                     ? "-"
@@ -213,13 +216,14 @@ public class StatsViewController {
                     : stats.bestTimeOpponent;
             bestTimeWithLabel.setText("With:      " + opponent);
         }
+        //Decide which progress chart to update depending on which chart we got
         if (winsChart == p1winsChart && p1ProgressChart != null) {
             updateProgressChart(p1ProgressChart, stats);
         } else if (winsChart == p2winsChart && p2ProgressChart != null) {
             updateProgressChart(p2ProgressChart, stats);
         }
     }
-    
+    //Updates the given LineChart with three series: Easy, Medium, and Hard scores over time 
     private void updateProgressChart(LineChart<Number, Number> chart, PlayerStatsData stats) {
         chart.getData().clear();
 
@@ -237,7 +241,7 @@ public class StatsViewController {
 
         chart.getData().addAll(easySeries, medSeries, hardSeries);
     }
-
+    //Helper method to add all scores from an array into a LineChart series.
     private void addSeriesData(XYChart.Series<Number, Number> series, int[] scores) {
         if (scores == null) return;
         for (int i = 0; i < scores.length; i++) {
@@ -245,7 +249,7 @@ public class StatsViewController {
         }
     }
 
-
+    //Configures a "donut style" PieChart
     private void setupDonut(PieChart chart, Label label, double percent) {
         if (chart == null || label == null) {
             return;
@@ -261,7 +265,7 @@ public class StatsViewController {
         chart.setData(data);
         label.setText(String.format("%.0f%%", percent));
     }
-
+    //Formats a duration in seconds as "m:ss".
     private String formatDuration(int durationSeconds) {
         int minutes = durationSeconds / 60;
         int seconds = durationSeconds % 60;

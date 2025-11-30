@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+//Represents the Minesweeper board for a single game.
 public class Board {
 
     private final Difficulty difficulty;
@@ -27,7 +28,7 @@ public class Board {
         placeRandomSpecialCells();
         computeNeighborNumbers();
     }
-
+    // Creates an EMPTY board 
     private void initEmpty() {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -35,7 +36,7 @@ public class Board {
             }
         }
     }
-
+    //Randomly places all special cells - Ensures special cells never overlap
     private void placeRandomSpecialCells() {
         List<int[]> positions = new ArrayList<>();
         for (int r = 0; r < rows; r++) {
@@ -76,7 +77,7 @@ public class Board {
             }
         }
     }
-
+    //Converts empty cells into NumberCell if they have mine neighbors.
     private void computeNeighborNumbers() {
         int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
         int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};

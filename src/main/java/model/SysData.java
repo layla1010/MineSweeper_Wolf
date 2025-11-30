@@ -11,48 +11,48 @@ import java.util.List;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-
+//This is a singleton class "SysData" that Stores the global game history, loads and saves history to a CSV file and holds global settings (music, sound, timer, smart hints, auto-remove flag).
 public class SysData {
 
-    // ===== Singleton instance =====
+    //Singleton instance
     private static final SysData INSTANCE = new SysData();
 
     public static SysData getInstance() {
         return INSTANCE;
     }
 
-    // ===== History storage =====
+    //History storage
     private final History history = new History();
 
-    // CSV file name (you can change location if needed)
+    //CSV file name (you can change location if needed)
     private static final String HISTORY_FILE_NAME = "/data/history.csv";
 
-    // ===== Global settings (Aya) =====
-    /** Controls whether background music is enabled. */
+
+    //Controls whether background music is enabled.
     private static boolean musicEnabled = true;
 
-    /** Controls whether sound effects are enabled. */
+    //Controls whether sound effects are enabled. 
     private static boolean soundEnabled = true;
 
-    /** Controls whether a game timer should be shown and used. */
+    //Controls whether a game timer should be shown and used.
     private static boolean timerEnabled = true;
 
-    /** Controls whether "smart hints" are enabled in the game. */
+    //Controls whether "smart hints" are enabled in the game.
     private static boolean smartHintsEnabled = false;
 
-    /** Controls whether flags are automatically removed in some situations. */
+    //Controls whether flags are automatically removed in some situations.
     private static boolean autoRemoveFlagEnabled = true;
 
     // Private constructor (singleton)
     private SysData() {
     }
 
-
+    //Returns the History object that holds all Game records.
     public History getHistory() {
         return history;
     }
     
-    
+    //Resolves the full path to the history CSV file.
     private static String getHistoryCsvPath() {
         try {
             String path = SysData.class
@@ -92,11 +92,11 @@ public class SysData {
     }
 
 
-
+    //Adds a single Game record to the history.
     public void addGameToHistory(Game game) {
         history.addGame(game);
     }
-
+    //Loads all game history from the history CSV file into memory.
     public void loadHistoryFromCsv() {
         history.clear();
 
@@ -129,7 +129,7 @@ public class SysData {
             e.printStackTrace();
         }
     }
-
+    //Parses a single CSV line into a Game object.
     private Game parseGameFromCsvLine(String line) {
         if (line == null || line.trim().isEmpty()) {
             return null;
@@ -174,7 +174,7 @@ public class SysData {
             return Integer.parseInt(text);
         }
     }
-
+    //Saves the current in-memory history list to the CSV file.
     public void saveHistoryToCsv() {
         String csvPath = getHistoryCsvPath();
         System.out.println("Saving history to: " + csvPath);
@@ -197,7 +197,7 @@ public class SysData {
         }
     }
 
-
+    //Converts a Game object into a CSV line string.
     private String formatGameAsCsvLine(Game game) {
         String dateStr = game.getDate().toString();               // "2025-11-26"
         String durationStr = game.getDurationFormatted();         // "21:15"
@@ -210,7 +210,7 @@ public class SysData {
         return String.join(",", dateStr, durationStr, difficultyStr,
                 scoreStr, resultStr, p1, p2);
     }
-
+    //Sanitizes a text field for safe CSV storage.
     private String sanitizeForCsv(String text) {
         if (text == null) {
             return "";
@@ -219,7 +219,6 @@ public class SysData {
         return text.replace(",", " ");
     }
 
-    // ===== Global settings API (used by Settings screen / game) =====
 
     public static boolean isMusicEnabled() {
         return musicEnabled;

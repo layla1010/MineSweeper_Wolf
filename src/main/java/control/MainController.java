@@ -44,6 +44,7 @@ public class MainController {
 
     private Stage stage;
 
+    //Sets the Stage reference for this controller.
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -62,7 +63,7 @@ public class MainController {
         setupNewGameShimmer();
     }
 
-    
+    //Handles the "New Game" button click: Plays click sound, loads new_game_view.fxml, and navigates to the New Game setup screen.
     @FXML
     private void onNewGameClicked() {
         SoundManager.playClick();
@@ -90,7 +91,7 @@ public class MainController {
 
 
 
-        
+      //Handles Question MANAGER BUTTON: Opens the Questions Management screen (Questions_Management_view.fxml).  
       @FXML
       private void onQuestionManagementClicked(ActionEvent event) {
         	SoundManager.playClick();
@@ -113,6 +114,7 @@ public class MainController {
             }
      }
 
+      //Handles the History button click: Plays click sound and opens the History screen (history_view.fxml).
     @FXML
     private void onHistoryBtnClicked() {
         SoundManager.playClick();
@@ -141,7 +143,7 @@ public class MainController {
         }
     }
 
-
+    //Plays the entrance animation for the logo and slides it in from the left and fades it in.
     private void playLogoAnimation() {
         TranslateTransition slide = new TranslateTransition(Duration.millis(1200), logoImage);
         slide.setFromX(-600);
@@ -156,7 +158,7 @@ public class MainController {
         fade.play();
     }
 
-  
+    //Sets up a shimmering highlight that moves across the "New Game" button in an infinite loop.
     private void setupNewGameShimmer() {
         LinearGradient lg = new LinearGradient(
                 0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
@@ -198,7 +200,7 @@ public class MainController {
         });
     }
 
-   
+   //Creates a glowing orb circle with a radial gradient and blur effect.
     private Circle createOrb(double radius, String centerColor, String edgeColor) {
         RadialGradient grad = new RadialGradient(
                 0, 0,
@@ -216,7 +218,7 @@ public class MainController {
         orb.setEffect(new GaussianBlur(60));
         return orb;
     }
-
+    //Animates a glowing orb with a slow, looping movement.
     private void animateOrb(Circle orb, double dx, double dy, double seconds, double delay) {
         TranslateTransition tt = new TranslateTransition(Duration.seconds(seconds), orb);
         tt.setFromX(0);
@@ -230,6 +232,7 @@ public class MainController {
         tt.play();
     }
 
+    //Creates and animates several large glowing orbs in the background to give the main menu a dynamic, colorful look.
     private void setupBackgroundOrbs() {
         Circle orb1 = createOrb(220, "#ff6ec7", "#ff1493");
         orb1.setTranslateX(-300);
@@ -254,13 +257,14 @@ public class MainController {
         animateOrb(orb3, 40, -30, 13, 6);
     }
 
-   
+    //Creates multiple "energy ring" animations that expand outwards from the center of the screen, giving a pulse effect behind the UI.
     private void setupEnergyRings() {
         createEnergyRing(0);
         createEnergyRing(1);
         createEnergyRing(2);
     }
 
+    //Creates and animates a single expanding ring
     private void createEnergyRing(double delaySeconds) {
         Circle ring = new Circle(120);
         ring.setStroke(Color.rgb(255, 255, 255, 0.4));
@@ -293,7 +297,7 @@ public class MainController {
         fade.play();
     }
 
-   
+   //Generates small twinkling "sparkle" circles across the background were each sparkle fades in and out on a loop, at random positions and timings.
     private void setupSparkles() {
         Random rnd = new Random();
         int count = 45;
@@ -330,7 +334,9 @@ public class MainController {
             sparkle.toBack();
         }
     }
-    // AYA
+
+
+    //Once sittings button is clicked: Plays click sound and opens the Settings screen (settings_view.fxml).
     @FXML
     private void onSettingsClicked() {
         SoundManager.playClick();

@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class AddQuestionController {
 
-    // === FXML fields ===
+
     @FXML private TextField idTextField;
     @FXML private ComboBox<String> difficultyComboBox;
     @FXML private TextArea questionTextArea;
@@ -27,9 +27,10 @@ public class AddQuestionController {
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
 
-    // Path to your CSV file (relative to project root)
+    //Path to your CSV file (relative to project root)
     private static final String CSV_PATH = "src/main/resources/Data/Questionsss.csv";
-
+    
+    //Called automatically by JavaFX after the FXML is loaded, Sets the next available question ID and makes the ID field read-only
     @FXML
     public void initialize() {
         // ID is serial and should be auto-filled, not editable
@@ -38,14 +39,14 @@ public class AddQuestionController {
         idTextField.setEditable(false);
     }
 
-    /**
-     * Compute the next ID based on the current CSV contents.
-     * It finds the max existing ID and returns max + 1.
-     */
+  
+    //Computes the next question ID based on the existing IDs in the CSV file.
+    //Reads all rows, finds the maximum ID, and returns max + 1.
+    //If the file does not exist or is empty, returns 1.
     private int computeNextId() {
         Path path = Paths.get(CSV_PATH);
         if (!Files.exists(path)) {
-            // If file doesn't exist yet, start from 1
+            //If file doesn't exist yet, start from 1
             return 1;
         }
 
@@ -59,10 +60,10 @@ public class AddQuestionController {
                 return 1;
             }
 
-            // detect delimiter: ; or ,
+            //detect delimiter: ; or ,
             String delimiter = header.contains(";") ? ";" : ",";
 
-            // find "ID" column index
+            //find "ID" column index
             String[] headers = header.split(delimiter, -1);
             int idIndex = -1;
             for (int i = 0; i < headers.length; i++) {
@@ -97,26 +98,27 @@ public class AddQuestionController {
         return maxId + 1;
     }
 
-    // === Handlers for buttons ===
-
+    //Here we can see Handlers for buttons:
+    //Save button: Validates the form, Collects all the question data from the UI, Appends a new row to the CSV file
+    //and Navigates back to the Questions Management screen if successful.
     @FXML
     private void onSaveButtonClicked(ActionEvent event) {
-        // 1) Validate
+        //Validate
         if (!validateForm()) {
-            return; // stop if invalid
+            return; //stop if invalid
         }
 
-        // 2) Collect data
+        //Collect data
         int id = Integer.parseInt(idTextField.getText().trim());
-        String difficultyNum = difficultyComboBox.getValue();  // "1","2","3","4"
+        String difficultyNum = difficultyComboBox.getValue(); 
         String question = questionTextArea.getText().trim();
         String optA = optionATextField.getText().trim();
         String optB = optionBTextField.getText().trim();
         String optC = optionCTextField.getText().trim();
         String optD = optionDTextField.getText().trim();
-        String correctLetter = correctAnswerComboBox.getValue(); // "A","B","C","D"
+        String correctLetter = correctAnswerComboBox.getValue(); 
 
-        // 3) Append to CSV
+        //Append to CSV
         try {
             appendQuestionToCsv(id, difficultyNum, question,
                     optA, optB, optC, optD, correctLetter);
@@ -126,10 +128,13 @@ public class AddQuestionController {
             return;
         }
 
-        // 4) Go back to Questions Management screen
+        //Go back to Questions Management screen
         goBackToManager();
     }
-
+    
+    
+    //Here we handle the cancel button: Shows a confirmation dialog, and if the user confirms,
+    //discards changes and returns to the Questions Management screen
     @FXML
     private void onCancelButtonClicked(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -141,11 +146,12 @@ public class AddQuestionController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             goBackToManager();
         }
-        // If Cancel/Close → do nothing, stay on page
     }
 
-    //Validation
-
+    //Validation: Validates all form fields before saving
+    //Checks: Difficulty selected, Correct answer selected, Question text not empty,
+    //All four options (A, B, C, D) filled, All four options are different (case-insensitive), and
+    //Shows an error alert and returns false if any check fails
     private boolean validateForm() {
         if (difficultyComboBox.getValue() == null) {
             showError("Please select a difficulty.");
@@ -179,6 +185,7 @@ public class AddQuestionController {
         return true;
     }
     
+    //Helper method: Checks that all given strings are distinct, ignoring case
     private boolean allDistinctIgnoreCase(String... values) {
         for (int i = 0; i < values.length; i++) {
             for (int j = i + 1; j < values.length; j++) {
@@ -194,7 +201,8 @@ public class AddQuestionController {
     private boolean isEmpty(String s) {
         return s == null || s.trim().isEmpty();
     }
-
+    
+    //Shows a simple error alert with a given message
     private void showError(String msg) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Validation Error");
@@ -203,9 +211,11 @@ public class AddQuestionController {
         alert.showAndWait();
     }
 
-    // CSV append logic 
-    // CSV headers we use (in this order):
-    // A, B, C, D, Difficulty, ID, Question, Correct Answer
+    //CSV append logic : Appends a new question row to the CSV file
+    //Behaviour:
+    //If the file exists: reads its header and uses the existing column order.
+    //If the file does not exist: creates it with a default header.
+    //Builds a row that matches the header order and writes it to the end of the file.
 
     private void appendQuestionToCsv(int id,
             String difficultyNum,
@@ -221,7 +231,7 @@ public class AddQuestionController {
     	String[] headers;
 
     	if (Files.exists(path)) {
-    		// File exists → read the existing header and use its order
+    		//File exists then read the existing header and use its order
     		try (BufferedReader reader =
     				Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 
@@ -239,7 +249,7 @@ public class AddQuestionController {
     			}
     		}
     	} else {
-    		// File does NOT exist → create it with a sensible header order
+    		//File does NOT exist then create it with a sensible header order
     		delimiter = ",";
     		headers = new String[] {
     				"ID", "Question", "Difficulty",
@@ -257,7 +267,7 @@ public class AddQuestionController {
     		}
     	}
 
-    	// Build a row that matches the header order
+    	//Build a row that matches the header order
     	String[] cells = new String[headers.length];
 
     	for (int i = 0; i < headers.length; i++) {
@@ -271,11 +281,11 @@ public class AddQuestionController {
     		case "C" -> cells[i] = escape(optC);
     		case "D" -> cells[i] = escape(optD);
     		case "Correct Answer" -> cells[i] = correctLetter;
-    		default -> cells[i] = ""; // unknown column: leave empty
+    		default -> cells[i] = ""; //unknown column: leave empty
     		}
     	}
 
-    	// Append the row
+    	//Append the row
     	try (BufferedWriter writer = Files.newBufferedWriter(
     			path, StandardCharsets.UTF_8,
     			StandardOpenOption.APPEND)) {
@@ -286,17 +296,20 @@ public class AddQuestionController {
     	}
     }
 
+    //Escapes a value for safe CSV storage.
+    //If the value contains a comma, semicolon, or quote,
+    //wraps it in quotes and doubles any existing quotes.
     private String escape(String value) {
         if (value == null) return "";
-        // Wrap in quotes only if needed
+        //Wrap in quotes only if needed
         if (value.contains(",") || value.contains(";") || value.contains("\"")) {
             return "\"" + value.replace("\"", "\"\"") + "\"";
         }
         return value;
     }
 
+    
     //Navigation back to Questions_Management_view
-
     private void goBackToManager() {
         try {
             FXMLLoader loader = new FXMLLoader(

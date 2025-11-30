@@ -1,10 +1,7 @@
 package model;
 
-/**
-* Represents a mine cell.
-* When revealed, it usually causes losing a life / ending the game,
-* depending on the game rules.
-*/
+//Represents a mine cell. When revealed, it usually causes losing a life / ending the game, depending on the game rules.
+
 
 public class MineCell extends Cell {
 

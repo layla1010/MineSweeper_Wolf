@@ -30,12 +30,14 @@ public class EndGameController {
     @FXML
 	private GridPane root;
 
+    //Called automatically when the End Game screen is loaded
 	@FXML
 	private void initialize() {
 	    util.UIAnimations.applyHoverZoomToAllButtons(root);
 	    util.UIAnimations.applyFloatingToCards(root);
 	}
-
+	
+	//Initialises the End Game screen with the results of the match. This method receives all game result data from the GameController
     public void init(Stage stage,
                      GameConfig config,
                      int score,
@@ -50,7 +52,7 @@ public class EndGameController {
         this.remainingLives = remainingLives;
         this.gameWon = gameWon;
 
-        // Fill the text fields
+        // Fill the text fields - Populate UI labels with actual game data
         if (config != null) {
             playersName.setText(config.getPlayer1Nickname() + " & " + config.getPlayer2Nickname());
             Difficulty diff = config.getDifficulty();
@@ -60,14 +62,15 @@ public class EndGameController {
         }
 
         FinalScore.setText(String.valueOf(score));
-
+        //Format total seconds into mm:ss form
         int minutes = elapsedSeconds / 60;
         int seconds = elapsedSeconds % 60;
         timeSurvived.setText(String.format("%02d:%02d", minutes, seconds));
 
         livesLeft.setText(String.valueOf(remainingLives));
     }
-
+    
+    //Handles the "Main Menu" button: Loads the main menu screen (main_view.fxml) and replaces the current scene
     @FXML
     private void onMainMenu() {
         try {
@@ -85,7 +88,8 @@ public class EndGameController {
             e.printStackTrace();
         }
     }
-
+    
+    //Handles the "Play Again" button: Loads the new game setup screen (new_game_view.fxml), allowing the players to start a completely new match
     @FXML
     private void onPlayAgain() {
         try {

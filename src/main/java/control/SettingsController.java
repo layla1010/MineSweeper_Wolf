@@ -1,9 +1,5 @@
 package control;
 
-/*
- * Aya Ala Deen – Settings Screen Implementation Documentation
- */
-
 import java.io.IOException;
 
 import javafx.fxml.FXML;
@@ -17,41 +13,17 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import util.SoundManager;
 
-/**
- * Controller for the WOLF Settings dashboard screen.
- *
- * Responsibilities:
- *  - Display the main settings menu as a 2x2 dashboard:
- *      * Filters
- *      * Customize
- *      * Statistics
- *      * How To Play
- *  - Navigate to the Filters screen.
- *  - Provide placeholders (stubs) for future screens:
- *      * Customize
- *      * Statistics
- *      * How To Play
- *  - Navigate back to the main menu when the back arrow is clicked.
- */
 public class SettingsController {
 
-    /** Root grid of the Settings screen (defined in settings_view.fxml). */
+   
     @FXML
     private GridPane rootGrid;
-
-    /** Filters menu button (top-left card). */
     @FXML
     private Button filtersBtn;
-
-    /** Customize menu button (top-right card). */
     @FXML
     private Button customizeBtn;
-
-    /** Statistics menu button (bottom-left card). */
     @FXML
     private Button statisticsBtn;
-
-    /** How To Play menu button (bottom-right card). */
     @FXML
     private Button howToPlayBtn;
     
@@ -59,23 +31,12 @@ public class SettingsController {
     
 
 
-    /**
-     * Called automatically after FXML is loaded.
-     * Additional initialization (if needed) can be placed here.
-     */
+
     @FXML
     private void initialize(Stage stage) {
         this.stage = stage;
     }
-
-    // ---------------------------------------------------------------------
-    // Navigation handlers
-    // ---------------------------------------------------------------------
-
-    /**
-     * Navigates back to the main menu screen.
-     * Triggered when the back arrow button is clicked.
-     */
+    //Navigates back to the main menu
     @FXML
     private void onBackToMainClicked() {
         SoundManager.playClick();
@@ -94,10 +55,8 @@ public class SettingsController {
         }
     }
 
-    /**
-     * Opens the Filters screen (filters_view.fxml).
-     * This screen is already implemented and connected to SysData.
-     */
+    
+     //Opens the Filters screen (filters_view.fxml).
     @FXML
     private void onFiltersClicked() {
         SoundManager.playClick();
@@ -116,10 +75,9 @@ public class SettingsController {
         }
     }
 
-    /**
-     * Placeholder for the Customize screen.
-     * Currently not implemented. Shows an informational dialog.
-     */
+  
+    //Handles the "Customize" card/button. Currently not implemented. Shows an informational dialog.
+    //In the future this will allow changing themes, colors, avatars, etc.
     @FXML
     private void onCustomizeClicked() {
         SoundManager.playClick();
@@ -127,10 +85,7 @@ public class SettingsController {
                  "In the future, this screen will allow changing themes, colors and avatars.");
     }
 
-    /**
-     * Placeholder for the Statistics screen.
-     * Currently not implemented. Shows an informational dialog.
-     */
+    //Opens the statistics view
     @FXML
     private void onStatisticsClicked() {
         SoundManager.playClick();
@@ -153,26 +108,17 @@ public class SettingsController {
     }
 
 
-    /**
-     * Placeholder for the How To Play screen.
-     * Currently not implemented. Shows an informational dialog.
-     */
+   
+     //Placeholder for the How To Play screen.
+    	//Currently not implemented. Shows an informational dialog.
     @FXML
     private void onHowToPlayClicked() {
         SoundManager.playClick();
         showInfo("How To Play screen is not implemented yet.\n" +
                  "In the future, this screen will explain Minesweeper WOLF rules and strategies.");
     }
-
-    // ---------------------------------------------------------------------
-    // Helper methods for dialogs
-    // ---------------------------------------------------------------------
-
-    /**
-     * Shows an error dialog with the given message.
-     *
-     * @param message The message to display.
-     */
+    
+    //Shows an error dialog with the given message.
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Navigation Error");
@@ -181,11 +127,7 @@ public class SettingsController {
         alert.showAndWait();
     }
 
-    /**
-     * Shows an informational dialog with the given message.
-     *
-     * @param message The message to display.
-     */
+    //Shows an informational dialog with the given message.
     private void showInfo(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Not Implemented Yet");

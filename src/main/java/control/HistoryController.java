@@ -31,7 +31,7 @@ public class HistoryController {
     @FXML private VBox historyList;
 
     
-   // filter + sort controls
+    //filter + sort controls
     @FXML private ComboBox<String> filterTypeCombo;
     @FXML private TextField filterValueField;
     @FXML private ComboBox<String> sortTypeCombo;
@@ -39,17 +39,20 @@ public class HistoryController {
     
     private Stage stage;
 
-    
+    //Holds all games loaded from SysData (unfiltered)
     private final List<Game> allGames = new ArrayList<>();
 
+    //Date format used in the CSV history file
     private static final DateTimeFormatter CSV_DATE_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd"); // how it is stored in CSV
     
-    
+    //Sets the primary stage reference for this controller
+    //Called from the main screen when navigating to history
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-
+    
+    //Called automatically when the History screen loads, Loads the game history from SysData, initializes default filter/sort values, hooks filter-type change handler, and populates the view.
     @FXML
     private void initialize() {
         // load history once when screen opens
@@ -72,13 +75,14 @@ public class HistoryController {
         refreshHistoryView();
     }
     
+    //Rebuilds the history list based on current filter and sort settings
     private void refreshHistoryView() {
         List<Game> filtered = applyFilter(allGames);
         List<Game> sorted = applySort(filtered);
         populateHistory(sorted);
     }
     
-    
+    //Fills the history VBox with game cards. If the list is empty, shows a "No games found" label instead.
     private void populateHistory(List<Game> games) {
         historyList.getChildren().clear();
 
@@ -95,12 +99,13 @@ public class HistoryController {
         }
     }
 
+    //Creates a single history card for one game session.
     private HBox createCardForGame(Game game) {
         HBox card = new HBox();
         card.getStyleClass().add("history-card");
         card.setSpacing(10);
 
-        // ===== top row: difficulty | players | result =====
+        //top row: difficulty, players and result
         HBox header = new HBox();
         header.getStyleClass().add("history-card-header");
         header.setSpacing(10);
@@ -131,7 +136,7 @@ public class HistoryController {
 
         header.getChildren().addAll(difficultyLabel, playersLabel, spacer, resultLabel);
 
-        // ===== bottom row: date | score | time =====
+        //bottom row: date, score and time
         HBox footer = new HBox();
         footer.getStyleClass().add("history-card-footer");
         footer.setSpacing(15);
@@ -154,8 +159,8 @@ public class HistoryController {
         return card;
     }
     
-    /* =====================  FILTER & SORT  ===================== */
     
+    //Called when the filter-type ComboBox changes. Switches between text-based filters and date-based filter
     @FXML
     private void onFilterTypeChanged() {
         if (filterTypeCombo == null) return;
@@ -163,7 +168,7 @@ public class HistoryController {
         String type = filterTypeCombo.getValue();
         boolean isDate = "Date".equals(type);
 
-        // If DATE is selected → enable DatePicker, disable text field
+        // If DATE is selected then enable DatePicker, disable text field
         if (dateFilterPicker != null) {
             dateFilterPicker.setDisable(!isDate);
             if (!isDate) {
@@ -181,7 +186,7 @@ public class HistoryController {
 
 
 
-    
+    //Applies the current filter to the given list of games.
     private List<Game> applyFilter(List<Game> source) {
         String type = filterTypeCombo != null ? filterTypeCombo.getValue() : null;
 
@@ -190,7 +195,7 @@ public class HistoryController {
             return new ArrayList<>(source);
         }
 
-        // ----- DATE FILTER -----
+        //DATE FILTER
         if ("Date".equals(type)) {
             if (dateFilterPicker == null || dateFilterPicker.getValue() == null) {
                 // no date selected → no filtering
@@ -210,7 +215,7 @@ public class HistoryController {
             return result;
         }
 
-        // ----- TEXT-BASED FILTERS -----
+        //TEXT-BASED FILTERS
         String text = filterValueField != null ? filterValueField.getText() : null;
         if (text == null || text.trim().isEmpty()) {
             return new ArrayList<>(source);
@@ -247,7 +252,7 @@ public class HistoryController {
         return result;
     }
 
-    
+    //Applies sorting to the given list of games based on the selected sort option.
     private List<Game> applySort(List<Game> source) {
         String sort = sortTypeCombo != null ? sortTypeCombo.getValue() : null;
         List<Game> list = new ArrayList<>(source);
@@ -284,14 +289,15 @@ public class HistoryController {
     }
 
     
-    /* =====================  BUTTON HANDLERS  ===================== */
-    
+   
+    //Plays click sound and refreshes the history view with current filters.
     @FXML
     private void onFilterApplyClicked() {
         SoundManager.playClick();
         refreshHistoryView();
     }
     
+    //Resets all filter controls to default (All / empty / no date) and reloads the full, unsorted history.
     @FXML
     private void onClearFilterClicked() {
         SoundManager.playClick();
@@ -308,13 +314,14 @@ public class HistoryController {
         refreshHistoryView();
     }
 
-    
+    //Plays click sound and refreshes the history view using the current sort selection.
     @FXML
     private void onSortBtnClicked() {
         SoundManager.playClick();
         refreshHistoryView();
     }
 
+    //Navigates back to the main menu screen and passes the stage to MainController.
     @FXML
     private void onBackBtnClicked() throws IOException {
         SoundManager.playClick();
