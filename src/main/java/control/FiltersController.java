@@ -101,12 +101,23 @@ public class FiltersController {
 
     /**
      * Called when the Music toggle is pressed.
-     * Updates {@link SysData} and plays a click sound.
+     * Updates {@link SysData} and keeps the real background music
+     * in sync with the chosen option.
      */
     @FXML
     private void onMusicToggled() {
         SoundManager.playClick();
-        SysData.setMusicEnabled(musicToggle.isSelected());
+
+        boolean enabled = musicToggle.isSelected();
+        SysData.setMusicEnabled(enabled);
+
+        // Make sure actual background music state matches the filter
+        boolean currentlyOn = SoundManager.isMusicOn();
+        if (enabled && !currentlyOn) {
+            SoundManager.toggleMusic();
+        } else if (!enabled && currentlyOn) {
+            SoundManager.toggleMusic();
+        }
     }
 
     /**

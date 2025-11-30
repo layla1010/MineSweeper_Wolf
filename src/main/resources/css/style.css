@@ -249,3 +249,22 @@
 .menu-card-icon {
     -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.85), 18, 0.7, 0, 0);
 }
+
+.smart-hint-cell {
+    -fx-background-color: #4fc3f7, #1e88e5;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 5;
+    -fx-border-color: #82b1ff;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(130,181,255,0.6), 10, 0.3, 0, 0);
+}
+
+.smart-hint {
+    -fx-background-color: rgba(0, 255, 120, 0.6) !important;
+    -fx-border-color: #00ff88 !important;
+    -fx-border-width: 2px;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-effect: dropshadow(gaussian, #00ff88, 15, 0.7, 0, 0);
+}

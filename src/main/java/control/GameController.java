@@ -9,6 +9,7 @@ import model.Game;
 import model.SysData;
 import model.GameResult;
 import util.UIAnimations;
+import util.SoundManager;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -124,11 +126,17 @@ public class GameController {
         applyTurnStateToBoards();
 
         elapsedSeconds = 0;
-        updateTimeLabel();
-        startTimer();
+        if (SysData.isTimerEnabled()) {
+            updateTimeLabel();
+            startTimer();
+        } else {
+            if (timeLabel != null) {
+                timeLabel.setText("Timer: OFF");
+            }
+            timer = null;
+        }
     }
 
-  
     private void buildHeartsBar() {
         if (heartsBox == null) return;
 
@@ -162,7 +170,11 @@ public class GameController {
                         difficulty.name().substring(1).toLowerCase()
         );
 
-        timeLabel.setText("Time: 00:00");
+        if (SysData.isTimerEnabled()) {
+            timeLabel.setText("Time: 00:00");
+        } else {
+            timeLabel.setText("Timer: OFF");
+        }
 
         player1BombsLeftLabel.setText(
                 config.getPlayer1Nickname() + ", Mines left: " + board1.getMineCount()
@@ -183,7 +195,6 @@ public class GameController {
         }
     }
 
-  
     private void buildGridForPlayer(GridPane grid, Board board, boolean isPlayer1) {
         grid.getChildren().clear();
         grid.getColumnConstraints().clear();
@@ -290,6 +301,8 @@ public class GameController {
     }
 
     private void toggleFlag(Button button) {
+        // משתמש עדיין יכול לשים / להסיר דגלים ידנית.
+        // ההגדרה "Auto Remove Flag" שולטת רק מה קורה כשחושפים את התא.
         if (button.getGraphic() instanceof ImageView) {
             button.setGraphic(null);
             button.getStyleClass().remove("cell-flagged");
@@ -324,10 +337,13 @@ public class GameController {
             return;
         }
 
-        if (button.getGraphic() instanceof ImageView) {
-            button.setGraphic(null);
+        // Auto Remove Flag – אם פועל, מסיר את הדגל כשחושפים תא
+        if (SysData.isAutoRemoveFlagEnabled()) {
+            if (button.getGraphic() instanceof ImageView) {
+                button.setGraphic(null);
+            }
+            button.getStyleClass().remove("cell-flagged");
         }
-        button.getStyleClass().remove("cell-flagged");
 
         button.getStyleClass().removeAll(
                 "cell-hidden", "cell-revealed",
@@ -401,6 +417,13 @@ public class GameController {
             }
         }
 
+        // Smart Hints – אם מופעל, מסמן תאי שאלה ב־CSS מיוחד
+        if (SysData.isSmartHintsEnabled() && cell.getType() == CellType.QUESTION) {
+            if (!button.getStyleClass().contains("smart-hint-cell")) {
+                button.getStyleClass().add("smart-hint-cell");
+            }
+        }
+
         if (cell.getType() != CellType.MINE) {
             if (isPlayer1) {
                 safeCellsRemaining1 = Math.max(0, safeCellsRemaining1 - 1);
@@ -426,8 +449,19 @@ public class GameController {
                                     boolean isPlayer1) {
 
         Cell cell = board.getCell(row, col);
+     // AUTO REMOVE FLAG LOGIC
+        if (SysData.isAutoRemoveFlagEnabled()) {
+            // אם יש דגל – להסיר אותו
+            if (button.getGraphic() instanceof ImageView || 
+                button.getStyleClass().contains("cell-flagged")) {
+
+                button.setGraphic(null);
+                button.getStyleClass().remove("cell-flagged");
+            }
+        }
 
         revealSingleCell(board, row, col, button, tile, isPlayer1);
+        applySmartHint(board, row, col, isPlayer1);
 
         if (cell.getType() == CellType.EMPTY) {
             cascadeReveal(board, row, col, isPlayer1);
@@ -496,7 +530,6 @@ public class GameController {
         );
     }
 
-   
     private void switchTurn() {
         isPlayer1Turn = !isPlayer1Turn;
         applyTurnStateToBoards();
@@ -550,7 +583,6 @@ public class GameController {
         }
     }
 
-   
     private void startTimer() {
         if (timer != null) {
             timer.stop();
@@ -592,7 +624,6 @@ public class GameController {
         timeLabel.setText(String.format("Time: %02d:%02d", minutes, seconds));
     }
 
- 
     @FXML
     private void onExitBtnClicked() {
         stopTimer();
@@ -623,7 +654,7 @@ public class GameController {
 
     @FXML
     private void onPauseGame() {
-        isPaused = !isPaused;
+        isPaused = !isPaused();
 
         if (pauseBtn != null && pauseBtn.getGraphic() instanceof ImageView iv) {
             String iconPath = isPaused ? "/Images/play-button.png"
@@ -639,16 +670,25 @@ public class GameController {
         if (isPaused) {
             pauseTimer();
         } else {
-            resumeTimer();
+            if (SysData.isTimerEnabled()) {
+                resumeTimer();
+            }
         }
+    }
+
+    private boolean isPaused() {
+        return isPaused;
     }
 
     @FXML
     private void onSoundOff() {
-        util.SoundManager.toggleMusic();
+        SoundManager.toggleMusic();
 
         if (musicIsOnButton != null && musicIsOnButton.getGraphic() instanceof ImageView iv) {
-            String iconPath = util.SoundManager.isMusicOn()
+            boolean musicOn = SoundManager.isMusicOn();
+            SysData.setMusicEnabled(musicOn);
+
+            String iconPath = musicOn
                     ? "/Images/volume.png"
                     : "/Images/mute.png";
 
@@ -656,13 +696,12 @@ public class GameController {
             iv.setImage(img);
         }
     }
-    
+
     @FXML
     private void onMainMenu() {
-    
+
     }
 
-   
     private void triggerExplosion(StackPane tilePane) {
         double centerX = tilePane.getWidth() / 2.0;
         double centerY = tilePane.getHeight() / 2.0;
@@ -719,25 +758,21 @@ public class GameController {
         });
     }
 
-  
     private void onGameOver() {
         if (gameOver) {
             return;
         }
         gameOver = true;
 
-       
         stopTimer();
 
         saveCurrentGameToHistory();
-        
-        showEndGameScreen();
 
+        showEndGameScreen();
 
         System.out.println("Game over! Saved to history.");
     }
 
-   
     private void saveCurrentGameToHistory() {
         if (config == null) {
             return;
@@ -761,7 +796,7 @@ public class GameController {
 
         System.out.println("Saved game: " + gameRecord);
     }
-    
+
     @FXML
     private void showEndGameScreen() {
         try {
@@ -793,6 +828,73 @@ public class GameController {
             e.printStackTrace();
         }
     }
+    private void applySmartHint(Board board, int row, int col, boolean isPlayer1) {
+        // feature disabled → do nothing
+        if (!SysData.isSmartHintsEnabled()) return;
+
+        Cell cell = board.getCell(row, col);
+
+        // smart hint applies only to NUMBER cells
+        if (cell.getType() != CellType.NUMBER) return;
+
+        int needed = cell.getAdjacentMines();
+        int flagged = 0;
+
+        StackPane[][] buttons = isPlayer1 ? p1Buttons : p2Buttons;
+
+        // 1) count flagged neighbors
+        for (int dr = -1; dr <= 1; dr++) {
+            for (int dc = -1; dc <= 1; dc++) {
+                if (dr == 0 && dc == 0) continue;
+
+                int nr = row + dr;
+                int nc = col + dc;
+
+                if (nr < 0 || nc < 0 || nr >= board.getRows() || nc >= board.getCols()) continue;
+
+                StackPane tile = buttons[nr][nc];
+                if (tile == null || tile.getChildren().isEmpty()) continue;
+
+                Button b = (Button) tile.getChildren().get(0);
+
+                if (b.getStyleClass().contains("cell-flagged")) {
+                    flagged++;
+                }
+            }
+        }
+
+        // 2) if all needed mines are flagged → highlight remaining safe cells
+        if (flagged == needed) {
+
+            for (int dr = -1; dr <= 1; dr++) {
+                for (int dc = -1; dc <= 1; dc++) {
+                    if (dr == 0 && dc == 0) continue;
+
+                    int nr = row + dr;
+                    int nc = col + dc;
+
+                    if (nr < 0 || nc < 0 || nr >= board.getRows() || nc >= board.getCols()) continue;
+
+                    StackPane tile = buttons[nr][nc];
+                    if (tile == null || tile.getChildren().isEmpty()) continue;
+
+                    Button b = (Button) tile.getChildren().get(0);
+
+                    // highlight only clickable, un-flagged cells
+                    if (!b.isDisable() && !b.getStyleClass().contains("cell-flagged")) {
+
+                        b.getStyleClass().add("smart-hint");
+
+                        // 3) highlight disappears after 2 seconds
+                        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+                        pause.setOnFinished(e -> b.getStyleClass().remove("smart-hint"));
+                        pause.play();
+                    }
+                }
+            }
+        }
+    }
 
 
+    
 }
