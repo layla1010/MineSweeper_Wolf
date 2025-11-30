@@ -495,7 +495,7 @@
                         <Circle centerX="30" centerY="30" radius="30" />
                     </clip>
                     <image>
-                        <Image url="@../images/plus.png" />
+                        <Image url="@/Images/plus.png" />
                     </image>
                 </ImageView>
 
@@ -505,7 +505,7 @@
                         <Circle centerX="30" centerY="30" radius="30" />
                     </clip>
                     <image>
-                        <Image url="@../images/plus.png" />
+                        <Image url="@/Images/plus.png" />
                     </image>
                 </ImageView>
 
