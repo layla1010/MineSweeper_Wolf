@@ -47,6 +47,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 
 public class GameController {
 
@@ -550,24 +553,59 @@ public class GameController {
         updateScoreAndMineLabels();
     }
     
-    //Handles a cell click by revealing it and triggering cascade reveal if the cell is empty. Returns true to indicate the turn was used.
+//    //Handles a cell click by revealing it and triggering cascade reveal if the cell is empty. Returns true to indicate the turn was used.
+//    private boolean handleCellClick(Board board,
+//                                    int row,
+//                                    int col,
+//                                    Button button,
+//                                    StackPane tile,
+//                                    boolean isPlayer1) {
+//
+//        Cell cell = board.getCell(row, col);
+//
+//        revealSingleCell(board, row, col, button, tile, isPlayer1);
+//
+//        if (cell.getType() == CellType.EMPTY) {
+//            cascadeReveal(board, row, col, isPlayer1);
+//        }
+//
+//        return true;
+//    }
+    //Changed by Jihad:
     private boolean handleCellClick(Board board,
-                                    int row,
-                                    int col,
-                                    Button button,
-                                    StackPane tile,
-                                    boolean isPlayer1) {
+            int row,
+            int col,
+            Button button,
+            StackPane tile,
+            boolean isPlayer1) {
 
-        Cell cell = board.getCell(row, col);
+    	Cell cell = board.getCell(row, col);
 
-        revealSingleCell(board, row, col, button, tile, isPlayer1);
+    	//Determine which revealed-array to use
+    	boolean[][] revealedArray = isPlayer1 ? revealedCellsP1 : revealedCellsP2;
 
-        if (cell.getType() == CellType.EMPTY) {
-            cascadeReveal(board, row, col, isPlayer1);
-        }
+    	//If this is a SURPRISE cell and it was already revealed before,
+    	//this click is an ACTIVATION (second click).
+    	if (cell.getType() == CellType.SURPRISE &&
+    			revealedArray != null &&
+    			revealedArray[row][col]) {
 
-        return true;
+    		activateSurprise(board, row, col, button, tile, isPlayer1);
+    		return true;
+    	}
+
+    	//Otherwise, normal reveal (first time or other types)
+    	revealSingleCell(board, row, col, button, tile, isPlayer1);
+
+    	//Cascade for EMPTY cells
+    	if (cell.getType() == CellType.EMPTY) {
+    		cascadeReveal(board, row, col, isPlayer1);
+    	}
+
+    	return true;
     }
+
+    
     
     //Performs a flood-fill style reveal of neighboring cells starting from the given position, for empty areas.
     private void cascadeReveal(Board board, int startRow, int startCol, boolean isPlayer1) {
@@ -992,6 +1030,121 @@ public class GameController {
         }
         System.out.println();
     }
+    
+    //Activation Surprise cell method:
+    //Activates a surprise cell on second click: base activation score + random good/bad effect.
+    //Good: extra points +1 life (or convert heart to points if at max).
+    //Bad: extra negative points -1 life.
+    //After activation, the cell is disabled (cannot be clicked again).
+    private void activateSurprise(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
+
+    	int livesBefore = sharedHearts;
+    	int scoreBefore = score;
+
+    	int activationPoints = getSurpriseActivationPoints();
+    	int goodBonus = getSurpriseGoodBonusPoints();
+    	int badPenalty = getSurpriseBadPenaltyPoints();
+
+    	//Always get activation points
+    	int scoreChange = activationPoints;
+
+    	//50% chance good / bad
+    	boolean good = Math.random() < 0.5;
+
+    	if (good) {
+    		//Good surprise: extra positive points + possibly +1 life
+    		scoreChange += goodBonus;
+
+    		if (sharedHearts < TOTAL_HEART_SLOTS) {
+    			//Gain 1 life
+    			sharedHearts += 1;
+    		} else {
+    			//Hearts already max then convert the extra life into points
+    			//Conversion equals activation cost per mode
+    			scoreChange += activationPoints;
+    		}
+    	} else {
+    		//Bad surprise: extra negative points and -1 life
+    		scoreChange -= badPenalty;
+    		sharedHearts = Math.max(0, sharedHearts - 1);
+    	}
+
+    	//Apply the total score change
+    	score += scoreChange;
+
+    	// Update hearts bar
+    	buildHeartsBar();
+
+    	//If lives hit zero → game over, same as stepping on mines
+    	if (sharedHearts == 0 && !gameOver) {
+    		gameWon = false;
+    		onGameOver();
+    	}
+
+    	//Disable this surprise cell so it cannot be activated again
+    	button.setDisable(true);
+
+    	//Refresh score / mines labels
+    	updateScoreAndMineLabels();
+
+    	//Show popup with result
+    	int livesAfter = sharedHearts;
+    	int netScoreChange = score - scoreBefore;
+    	showSurprisePopup(good, netScoreChange, livesBefore, livesAfter);
+    }
+
+    	
+    
+    //Helper methods for activating surprise cell:
+    //Base score for activating a surprise (second click) per difficulty
+    private int getSurpriseActivationPoints() {
+        return switch (difficulty) {
+            case EASY -> 5;
+            case MEDIUM -> 8;
+            case HARD -> 12;
+        };
+    }
+
+    //Extra score for GOOD surprise (on top of activation)
+    private int getSurpriseGoodBonusPoints() {
+        return switch (difficulty) {
+            case EASY -> 8;
+            case MEDIUM -> 12;
+            case HARD -> 16;
+        };
+    }
+
+    //Extra score (negative) for BAD surprise (on top of activation)
+    private int getSurpriseBadPenaltyPoints() {
+        return switch (difficulty) {
+            case EASY -> 8;
+            case MEDIUM -> 12;
+            case HARD -> 16;
+        };
+    }
+    // Shows a popup describing the surprise result and changes
+    private void showSurprisePopup(boolean good, int netScoreChange, int livesBefore, int livesAfter) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Surprise Result");
+
+        String typeText = good ? "GOOD surprise!" : "BAD surprise!";
+        int livesDelta = livesAfter - livesBefore;
+        String scoreChangeText = (netScoreChange >= 0 ? "+" : "") + netScoreChange;
+        String livesChangeText = (livesDelta > 0 ? "+" : "") + livesDelta;
+
+        StringBuilder msg = new StringBuilder();
+        msg.append(typeText).append("\n\n");
+        msg.append("Score change: ").append(scoreChangeText).append("\n");
+        msg.append("Lives change: ").append(livesChangeText).append("\n");
+        msg.append("\nNew score: ").append(score).append("\n");
+        msg.append("New lives: ").append(sharedHearts).append("/").append(TOTAL_HEART_SLOTS);
+
+        alert.setHeaderText(null);
+        alert.setContentText(msg.toString());
+        alert.showAndWait();
+    }
+
+
 
 
 
