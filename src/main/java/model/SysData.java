@@ -8,6 +8,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 
 public class SysData {
 
@@ -22,7 +25,7 @@ public class SysData {
     private final History history = new History();
 
     // CSV file name (you can change location if needed)
-    private static final String HISTORY_FILE_NAME = "history.csv";
+    private static final String HISTORY_FILE_NAME = "/data/history.csv";
 
     // ===== Global settings (Aya) =====
     /** Controls whether background music is enabled. */
@@ -44,11 +47,51 @@ public class SysData {
     private SysData() {
     }
 
-    // ===== History API =====
 
     public History getHistory() {
         return history;
     }
+    
+    
+    private static String getHistoryCsvPath() {
+        try {
+            String path = SysData.class
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .getPath();
+
+            String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
+
+            if (decoded.length() > 2
+                    && decoded.charAt(0) == '/'
+                    && Character.isLetter(decoded.charAt(1))
+                    && decoded.charAt(2) == ':') {
+                decoded = decoded.substring(1);  
+            }
+
+            if (decoded.contains(".jar")) {
+                decoded = decoded.substring(0, decoded.lastIndexOf('/'));
+                return decoded + "/Data/history.csv";
+            } 
+            else {
+                if (decoded.contains("target/classes/")) {
+                    decoded = decoded.substring(0, decoded.lastIndexOf("target/classes/"));
+                } else if (decoded.contains("bin/")) {
+                    decoded = decoded.substring(0, decoded.lastIndexOf("bin/"));
+                } else {
+                    return "Data/history.csv";
+                }
+
+                return decoded + "src/main/resources/Data/history.csv";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Data/history.csv";
+        }
+    }
+
+
 
     public void addGameToHistory(Game game) {
         history.addGame(game);
@@ -57,8 +100,12 @@ public class SysData {
     public void loadHistoryFromCsv() {
         history.clear();
 
-        Path path = Paths.get(HISTORY_FILE_NAME);
+        String csvPath = getHistoryCsvPath();
+        System.out.println("Loading history from: " + csvPath);
+
+        Path path = Paths.get(csvPath);
         if (!Files.exists(path)) {
+            System.out.println("History file not found, skipping load.");
             return;
         }
 
@@ -129,7 +176,10 @@ public class SysData {
     }
 
     public void saveHistoryToCsv() {
-        Path path = Paths.get(HISTORY_FILE_NAME);
+        String csvPath = getHistoryCsvPath();
+        System.out.println("Saving history to: " + csvPath);
+
+        Path path = Paths.get(csvPath);
         List<Game> games = history.getGames();
 
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
@@ -146,6 +196,7 @@ public class SysData {
             e.printStackTrace();
         }
     }
+
 
     private String formatGameAsCsvLine(Game game) {
         String dateStr = game.getDate().toString();               // "2025-11-26"

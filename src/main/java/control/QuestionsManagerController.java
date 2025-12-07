@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Optional;
+import java.net.URLDecoder;
 
 public class QuestionsManagerController {
 
@@ -48,7 +49,6 @@ public class QuestionsManagerController {
     private List<Question> allQuestions = new ArrayList<>();
     
     private List<Question> questions = new ArrayList<>();
-    private static final String CSV_PATH = "src/main/resources/Data/Questionsss.csv";
     
     
     @FXML
@@ -319,12 +319,48 @@ public class QuestionsManagerController {
 //
 //        return result;
 //    }
+   
+
+    private static String getQuestionsCsvPath() {
+        try {
+            String path = QuestionsManagerController.class
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .getPath();
+
+            String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
+
+            if (decoded.contains(".jar")) {
+                decoded = decoded.substring(0, decoded.lastIndexOf('/'));   // folder of jar
+                return decoded + "/Data/Questionsss.csv";
+            } 
+            else {
+                if (decoded.contains("target/classes/")) {
+                    decoded = decoded.substring(0, decoded.lastIndexOf("target/classes/"));
+                } else if (decoded.contains("bin/")) {
+                    decoded = decoded.substring(0, decoded.lastIndexOf("bin/"));
+                } else {
+                    return "Data/Questionsss.csv";
+                }
+
+                return decoded + "src/main/resources/Data/Questionsss.csv";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Data/Questionsss.csv"; 
+        }
+    }
+
     
     private List<Question> loadQuestionsFromCsv() {
         List<Question> result = new ArrayList<>();
+        
+        String csvPath = getQuestionsCsvPath();
+        System.out.println("Loading questions from: " + csvPath);
 
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(CSV_PATH), StandardCharsets.UTF_8))) {
+                new InputStreamReader(new FileInputStream(csvPath), StandardCharsets.UTF_8))) {
 
             String headerLine = reader.readLine();
             if (headerLine == null) {
@@ -511,7 +547,9 @@ public class QuestionsManagerController {
     	private void saveQuestionsToCsv(List<Question> questions) {
     	    // adjust path if your file is elsewhere
     	    //String filePath = "src/main/resources/Data/Questionsss.csv";
-    		String filePath = CSV_PATH;
+    		String filePath = getQuestionsCsvPath();
+    		System.out.println("Saving questions to: " + filePath);
+
     	    try (PrintWriter pw = new PrintWriter(
     	            new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
 
