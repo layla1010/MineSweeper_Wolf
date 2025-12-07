@@ -52,14 +52,14 @@
                         <RowConstraints maxHeight="113.60000000000002" minHeight="10.0" prefHeight="51.599999999999994" vgrow="SOMETIMES" />
                     </rowConstraints>
 
-                        <Text fx:id="forgotPasswordText" onMouseClicked="#onForgotPasswordClicked" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-cursor: hand;" text="forgot password?" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                        <Text fx:id="forgotPasswordText" onMouseClicked="#onForgotPasswordClicked" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-cursor: hand; -fx-fill: white;" text="forgot password?" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
 						    <font>
 						        <Font name="Copperplate Gothic Light" size="18.0" />
 						    </font>
 						</Text>
 
 
-                        <Button mnemonicParsing="false" onAction="#onPlayersLoginClicked" prefHeight="33.0" prefWidth="138.0" text="Login" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                        <Button mnemonicParsing="false" onAction="#onPlayersLoginClicked" prefHeight="33.0" prefWidth="138.0" style="-fx-cursor: hand;" text="Login" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="18.0" />
                             </font>
@@ -68,7 +68,7 @@
                             </GridPane.margin>
                         </Button>
 
-                        <Button mnemonicParsing="false" onAction="#onSkipLoginClicked" prefHeight="33.0" prefWidth="138.0" text="Skip" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <Button mnemonicParsing="false" onAction="#onSkipLoginClicked" prefHeight="33.0" prefWidth="138.0" style="-fx-cursor: hand;" text="Skip" GridPane.columnIndex="1" GridPane.rowIndex="2">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="18.0" />
                             </font>
@@ -95,7 +95,7 @@
 
                         <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                             <children>
-                                <Text layoutX="140.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player 1">
+                                <Text fill="WHITE" layoutX="140.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player 1">
                                     <font>
                                         <Font name="Copperplate Gothic Bold" size="24.0" />
                                     </font>
@@ -107,7 +107,7 @@
 
                                 <TextField fx:id="p1PasswordVisibleField" layoutX="74.0" layoutY="129.0" managed="false" prefHeight="26.0" prefWidth="250.0" promptText="Enter Player 1's Password" visible="false" />
 
-                                <Button fx:id="p1TogglePasswordButton" layoutX="328.0" layoutY="129.0" mnemonicParsing="false" onAction="#onToggleP1Password" prefHeight="26.0" prefWidth="30.0" style="-fx-background-color: transparent;">
+								<Button fx:id="p1TogglePasswordButton" layoutX="328.0" layoutY="129.0" mnemonicParsing="false" onMousePressed="#onP1PasswordPress" onMouseReleased="#onP1PasswordRelease" prefHeight="26.0" prefWidth="30.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
                                     <graphic>
                                         <ImageView fx:id="p1EyeIcon" fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
                                             <image>
@@ -121,7 +121,7 @@
 
                         <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                             <children>
-                                <Text layoutX="141.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player 2">
+                                <Text fill="WHITE" layoutX="141.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player 2">
                                     <font>
                                         <Font name="Copperplate Gothic Bold" size="24.0" />
                                     </font>
@@ -133,7 +133,7 @@
 
                                 <TextField fx:id="p2PasswordVisibleField" layoutX="75.0" layoutY="129.0" managed="false" prefHeight="26.0" prefWidth="250.0" promptText="Enter Player 2's Password" visible="false" />
 
-                                <Button fx:id="p2TogglePasswordButton" layoutX="328.0" layoutY="129.0" mnemonicParsing="false" onAction="#onToggleP2Password" prefHeight="26.0" prefWidth="30.0" style="-fx-background-color: transparent;">
+								<Button fx:id="p2TogglePasswordButton" layoutX="328.0" layoutY="129.0" mnemonicParsing="false" onMousePressed="#onP2PasswordPress" onMouseReleased="#onP2PasswordRelease" prefHeight="26.0" prefWidth="30.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
                                     <graphic>
                                         <ImageView fx:id="p2EyeIcon" fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
                                             <image>
@@ -150,25 +150,25 @@
 				
                 <AnchorPane fx:id="adminLoginCard" managed="false" prefHeight="400.0" prefWidth="800.0" visible="false">
                     <children>
-                        <Text layoutX="325.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Admin Login">
+                        <Text fill="WHITE" layoutX="320.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Admin Login" textOrigin="CENTER">
                             <font>
                                 <Font name="Copperplate Gothic Bold" size="26.0" />
                             </font>
                         </Text>
                         
-                         <Text fx:id="forgotPasswordTextAdmin" layoutX="320.0" layoutY="250.0" onMouseClicked="#onForgotPasswordClicked" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-cursor: hand;" text="forgot password?" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                         <Text fx:id="forgotPasswordTextAdmin" fill="WHITE" layoutX="320.0" layoutY="250.0" onMouseClicked="#onForgotPasswordClicked" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-cursor: hand;" text="forgot password?" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
 						    <font>
 						        <Font name="Copperplate Gothic Light" size="18.0" />
 						    </font>
 						</Text>
 
-                        <TextField fx:id="adminNameField" layoutX="250.0" layoutY="130.0" prefHeight="30.0" prefWidth="300.0" promptText="Admin Name" />
+                        <TextField fx:id="adminNameField" layoutX="257.0" layoutY="130.0" prefHeight="30.0" prefWidth="300.0" promptText="Admin Name" />
 
-                        <PasswordField fx:id="adminPasswordField" layoutX="250.0" layoutY="180.0" prefHeight="30.0" prefWidth="300.0" promptText="Password" />
+                        <PasswordField fx:id="adminPasswordField" layoutX="255.0" layoutY="180.0" prefHeight="30.0" prefWidth="300.0" promptText="Password" />
 
-                        <TextField fx:id="adminPasswordVisibleField" layoutX="250.0" layoutY="180.0" managed="false" prefHeight="30.0" prefWidth="300.0" promptText="Password" visible="false" />
+                        <TextField fx:id="adminPasswordVisibleField" layoutX="255.0" layoutY="180.0" managed="false" prefHeight="30.0" prefWidth="300.0" promptText="Password" visible="false" />
 
-                        <Button fx:id="adminTogglePasswordButton" layoutX="560.0" layoutY="180.0" mnemonicParsing="false" onAction="#onToggleAdminPassword" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: transparent;">
+						<Button fx:id="adminTogglePasswordButton" layoutX="560.0" layoutY="180.0" mnemonicParsing="false" onMousePressed="#onAdminPasswordPress" onMouseReleased="#onAdminPasswordRelease" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
                             <graphic>
                                 <ImageView fx:id="adminEyeIcon" fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
                                     <image>
@@ -178,7 +178,7 @@
                             </graphic>
                         </Button>
 
-                        <Button fx:id="adminLoginButton" layoutX="325.0" layoutY="270.0" mnemonicParsing="false" onAction="#onAdminLogin" prefHeight="33.0" prefWidth="160.0" text="Login">
+                        <Button fx:id="adminLoginButton" layoutX="325.0" layoutY="270.0" mnemonicParsing="false" onAction="#onAdminLogin" prefHeight="33.0" prefWidth="160.0" style="-fx-cursor: hand;" text="Login">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="18.0" />
                             </font>
