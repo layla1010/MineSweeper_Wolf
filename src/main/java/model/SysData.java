@@ -228,6 +228,7 @@ public class SysData {
         String email        = parts[1].trim();
         String password     = parts[2].trim();
         String roleStr      = parts[3].trim();
+        String avatarId     = (parts.length >= 5) ? parts[4].trim() : null;
 
         Role role;
         
@@ -238,7 +239,7 @@ public class SysData {
             role = Role.PLAYER;
         }
         try {
-            return new Player(officialName, email, password, role);
+            return new Player(officialName, email, password, role, avatarId);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -330,7 +331,7 @@ public class SysData {
 
         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
             // header
-            writer.write("officialName,email,password,Role");
+            writer.write("officialName,email,password,Role, Avatar");
             writer.newLine();
 
             for (Player p : playersByEmail.values()) {
@@ -346,11 +347,11 @@ public class SysData {
 
     //Converts a Game object into a CSV line string.
     private String formatGameAsCsvLine(Game game) {
-        String dateStr = game.getDate().toString();               // "2025-11-26"
-        String durationStr = game.getDurationFormatted();         // "21:15"
+        String dateStr = game.getDate().toString();               
+        String durationStr = game.getDurationFormatted();         
         String difficultyStr = game.getDifficulty().name();
         String scoreStr = Integer.toString(game.getFinalScore());
-        String resultStr = game.getResult().name();               // WIN / LOSE
+        String resultStr = game.getResult().name();               
         String p1Nick = sanitizeForCsv(game.getPlayer1Nickname());
         String p2Nick = sanitizeForCsv(game.getPlayer2Nickname());
         String p1Off  = sanitizeForCsvOrEmpty(game.getPlayer1OfficialName());
@@ -367,8 +368,9 @@ public class SysData {
         String email        = sanitizeForCsv(p.getEmail());
         String password     = sanitizeForCsv(p.getPassword()); 
         String role         = p.getRole().name();
+        String avatarId = p.getAvatarId();
         
-        return String.join(",", officialName, email, password, role);
+        return String.join(",", officialName, email, password, role, avatarId);
     }
 
     
@@ -456,7 +458,7 @@ public class SysData {
         return p.checkPassword(attemptedPassword);
     }
     
-    public Player createPlayer(String officialName, String email, String password, Role role) {
+    public Player createPlayer(String officialName, String email, String password, Role role, String avatarId) {
         if (email == null) {
             throw new IllegalArgumentException("Email cannot be null");
         }
@@ -466,7 +468,7 @@ public class SysData {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        Player p = new Player(officialName, email, password, role);
+        Player p = new Player(officialName, email, password, role, avatarId);
 
         playersByEmail.put(emailKey, p);
         playersByName.put(officialName.trim().toLowerCase(), p);

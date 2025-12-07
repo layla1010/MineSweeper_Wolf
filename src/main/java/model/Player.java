@@ -7,8 +7,10 @@ public class Player {
     private final String email;
     private String password;
     private Role role;
+    private String avatarId;
     
-    public Player(String officialName, String email, String password, Role role) {
+    
+    public Player(String officialName, String email, String password, Role role, String avatarId) {
         if (officialName == null || officialName.trim().isEmpty()) {
             throw new IllegalArgumentException("Official Name cannot be empty");
         }
@@ -25,9 +27,19 @@ public class Player {
         this.email = email.trim();
         this.password = password.trim();
         this.role = role;
+        this.avatarId = avatarId;
 
     }
     
+    
+	public String getAvatarId() {
+        return avatarId;
+    }
+
+    public void setAvatarId(String avatarId) {
+        this.avatarId = avatarId;
+    }
+
     
     public String getOfficialName() {
 		return officialName;

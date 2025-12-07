@@ -16,6 +16,7 @@ public class AvatarManager {
 
     private ImageView player1Avatar;
     private ImageView player2Avatar;
+    private String selectedAvatarIdP1 = "S4.png";
 
     private ImageView singlePlayerAvatar;
 
@@ -142,5 +143,9 @@ public class AvatarManager {
             alert.setContentText("Please select an avatar for both players.");
             alert.showAndWait();
         }
+    }
+    
+    public String getSelectedAvatarIdForPlayer1() {
+        return selectedAvatarIdP1;
     }
 }
