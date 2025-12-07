@@ -8,6 +8,8 @@ import model.GameConfig;
 import model.Game;
 import model.SysData;
 import model.GameResult;
+import model.Player;
+import util.SessionManager;
 import util.UIAnimations;
 
 import java.io.IOException;
@@ -777,11 +779,22 @@ public class GameController {
 
         GameResult result = gameWon ? GameResult.WIN : GameResult.LOSE;
 
+        // Get the logged-in players from the session
+        Player p1 = SessionManager.getPlayer1();
+        Player p2 = SessionManager.getPlayer2();
+
+        String player1Official = (p1 != null) ? p1.getOfficialName() : null;
+        String player2Official = (p2 != null) ? p2.getOfficialName() : null;
+
+        // Nicknames still come from GameConfig
+        String player1Nick = config.getPlayer1Nickname();
+        String player2Nick = config.getPlayer2Nickname();
+
         Game gameRecord = new Game(
-        		player1OfficialName,
-        		player2OfficialName,
-                config.getPlayer1Nickname(),
-                config.getPlayer2Nickname(),
+                player1Official,    
+                player2Official,    
+                player1Nick,        
+                player2Nick,        
                 difficulty,
                 score,
                 result,
@@ -795,6 +808,7 @@ public class GameController {
 
         System.out.println("Saved game: " + gameRecord);
     }
+
     
     //Shows the appropriate end game screen (win or lose view), passes the game data into EndGameController, and switches the scene.
     @FXML

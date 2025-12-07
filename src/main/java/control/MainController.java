@@ -32,6 +32,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import util.SessionManager;
 import util.SoundManager;
 import util.UIAnimations;
 
@@ -63,6 +64,7 @@ public class MainController {
         UIAnimations.applyFloatingToCards(mainGrid);
 
         setupNewGameShimmer();
+        
     }
 
     
@@ -78,10 +80,10 @@ public class MainController {
         try {
             Stage stage = (Stage) mainGrid.getScene().getWindow();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/new_game_view.fxml"));
             Pane newRoot = loader.load();
 
-            PlayLoginController controller = loader.getController();
+            NewGameController controller = loader.getController();
             controller.setStage(stage);
 
             stage.setScene(new Scene(newRoot));
@@ -103,6 +105,16 @@ public class MainController {
       @FXML
       private void onQuestionManagementClicked(ActionEvent event) {
         	SoundManager.playClick();
+        	
+        	 if (!SessionManager.isAdminLoggedIn()) {
+        	        Alert alert = new Alert(AlertType.ERROR);
+        	        alert.setTitle("Access Denied");
+        	        alert.setHeaderText(null);
+        	        alert.setContentText("Only admins can access Question Management.");
+        	        alert.showAndWait();
+        	        return;
+        	    }
+        	 
             try {
                 FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/view/Questions_Management_view.fxml")

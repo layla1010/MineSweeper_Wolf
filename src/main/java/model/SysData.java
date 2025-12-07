@@ -28,6 +28,8 @@ public class SysData {
     private final History history = new History();
     
     private final Map<String, Player> playersByEmail = new HashMap<>();
+    private final Map<String, Player> playersByName = new HashMap<>();
+    
 
 
     //CSV file name (you can change location if needed)
@@ -117,21 +119,21 @@ public class SysData {
 
             if (decoded.contains(".jar")) {
                 decoded = decoded.substring(0, decoded.lastIndexOf('/'));
-                return decoded + "/Data/players.csv";
+                return decoded + "/Data/Users.csv";
             } else {
                 if (decoded.contains("target/classes/")) {
                     decoded = decoded.substring(0, decoded.lastIndexOf("target/classes/"));
                 } else if (decoded.contains("bin/")) {
                     decoded = decoded.substring(0, decoded.lastIndexOf("bin/"));
                 } else {
-                    return "Data/players.csv";
+                    return "Data/Users.csv";
                 }
 
-                return decoded + "src/main/resources/Data/players.csv";
+                return decoded + "src/main/resources/Data/Users.csv";
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "Data/players.csv";
+            return "Data/Users.csv";
         }
     }
 
@@ -180,6 +182,7 @@ public class SysData {
     //Loads all Players data from the Player CSV file into memory.
     public void loadPlayersFromCsv() {
         playersByEmail.clear();
+        playersByName.clear();
 
         String csvPath = getPlayersCsvPath();
         System.out.println("Loading players from: " + csvPath);
@@ -190,20 +193,19 @@ public class SysData {
             return;
         }
 
-        try (BufferedReader reader = Files.newBufferedReader(path)) {
-            String line = reader.readLine();
+        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+        	String header = reader.readLine();
 
-            if (line != null && line.toLowerCase().startsWith("officialname")) {
-                line = reader.readLine();
-            }
-
-            while (line != null) {
+        	
+        	String line;
+        	while ((line = reader.readLine()) != null) {
                 Player p = parsePlayerFromCsvLine(line);
                 if (p != null) {
-                    String key = p.getEmail().toLowerCase();
-                    playersByEmail.put(key, p);
+                    String keyEmail = p.getEmail().toLowerCase();
+                    String keyName  = p.getOfficialName().toLowerCase();
+                    playersByEmail.put(keyEmail, p);
+                    playersByName.put(keyName, p);
                 }
-                line = reader.readLine();
             }
 
         } catch (IOException e) {
@@ -218,16 +220,25 @@ public class SysData {
         }
 
         String[] parts = line.split(",", -1); 
-        if (parts.length < 3) {
+        if (parts.length < 4) {
             return null;
         }
 
         String officialName = parts[0].trim();
         String email        = parts[1].trim();
         String password     = parts[2].trim();
+        String roleStr      = parts[3].trim();
 
+        Role role;
+        
         try {
-            return new Player(officialName, email, password);
+            role = Role.valueOf(roleStr.toUpperCase());  
+        } catch (IllegalArgumentException e) {
+            System.err.println("Unknown role '" + roleStr + "', defaulting to PLAYER");
+            role = Role.PLAYER;
+        }
+        try {
+            return new Player(officialName, email, password, role);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -317,9 +328,9 @@ public class SysData {
 
         Path path = Paths.get(csvPath);
 
-        try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
             // header
-            writer.write("officialName,email,password");
+            writer.write("officialName,email,password,Role");
             writer.newLine();
 
             for (Player p : playersByEmail.values()) {
@@ -354,10 +365,10 @@ public class SysData {
     private String formatPlayerAsCsvLine(Player p) {
         String officialName = sanitizeForCsv(p.getOfficialName());
         String email        = sanitizeForCsv(p.getEmail());
-        // here we store the password as is (for this project)
-        String password     = sanitizeForCsv(p.getPassword()); // you need getPassword()
-
-        return String.join(",", officialName, email, password);
+        String password     = sanitizeForCsv(p.getPassword()); 
+        String role         = p.getRole().name();
+        
+        return String.join(",", officialName, email, password, role);
     }
 
     
@@ -434,26 +445,36 @@ public class SysData {
         return playersByEmail.get(email.trim().toLowerCase());
     }
     
+    public Player findPlayerByOfficialName(String name) {
+        if (name == null) return null;
+        return playersByName.get(name.trim().toLowerCase());
+    }
+    
     public boolean checkPlayerLogin(String email, String attemptedPassword) {
         Player p = findPlayerByEmail(email);
         if (p == null) return false;
         return p.checkPassword(attemptedPassword);
     }
     
-    public Player createPlayer(String officialName, String email, String password) {
+    public Player createPlayer(String officialName, String email, String password, Role role) {
         if (email == null) {
             throw new IllegalArgumentException("Email cannot be null");
         }
-        String key = email.trim().toLowerCase();
-        if (playersByEmail.containsKey(key)) {
+
+        String emailKey = email.trim().toLowerCase();
+        if (playersByEmail.containsKey(emailKey)) {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        Player p = new Player(officialName, email, password);
-        playersByEmail.put(key, p);
-        savePlayersToCsv();  // persist immediately (you can decide when to save)
+        Player p = new Player(officialName, email, password, role);
+
+        playersByEmail.put(emailKey, p);
+        playersByName.put(officialName.trim().toLowerCase(), p);
+
+        savePlayersToCsv();
         return p;
     }
+
 
     
     public void updatePlayerPassword(String email, String newPassword) {

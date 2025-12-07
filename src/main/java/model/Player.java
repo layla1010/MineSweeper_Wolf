@@ -6,8 +6,9 @@ public class Player {
     private String officialName;
     private final String email;
     private String password;
+    private Role role;
     
-    public Player(String officialName, String email, String password) {
+    public Player(String officialName, String email, String password, Role role) {
         if (officialName == null || officialName.trim().isEmpty()) {
             throw new IllegalArgumentException("Official Name cannot be empty");
         }
@@ -16,11 +17,15 @@ public class Player {
         }
         if (password == null || password.trim().isEmpty()) {
             throw new IllegalArgumentException("Password cannot be empty");
+        }if (role == null) {
+            throw new IllegalArgumentException("Role cannot be null");
         }
 
         this.officialName = officialName.trim();
         this.email = email.trim();
         this.password = password.trim();
+        this.role = role;
+
     }
     
     
@@ -56,6 +61,20 @@ public class Player {
     	this.password = password.trim();
     }
 
+    public Role getRole() {
+        return role;
+    }
+    
+    public void setRole(Role role) {
+        if (role == null) {
+            throw new IllegalArgumentException("Role cannot be null");
+        }
+        this.role = role;
+    }
+
+    public boolean isAdmin() {
+        return role == Role.ADMIN;
+    }
 	
     
 	
