@@ -1,6 +1,8 @@
 package model;
 
 import java.io.BufferedReader;
+import java.util.ArrayList;
+import model.PlayerStats;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -487,5 +489,206 @@ public class SysData {
         p.setPassword(newPassword);
         savePlayersToCsv();
     }
+    
+    public PlayerStats computeStatsForPlayer(Player player) {
+        if (player == null) {
+            return new PlayerStats(
+                    "-", null,
+                    0, 0, 0, 0, 0,
+                    0, "-",
+                    0, "-",
+                    new int[0], new int[0], new int[0]
+            );
+        }
+        return computeStatsForOfficialName(player.getOfficialName(), player.getAvatarId());
+    }
+    
+    
+    
+    public PlayerStats computeStatsForOfficialName(String officialName, String avatarId) {
+        if (officialName == null || officialName.isBlank()) {
+        	
+        	//instead maybe i will make the button unclickable for guest users
+            return new PlayerStats(
+                    "-", avatarId,
+                    0, 0, 0, 0, 0,
+                    0, "-",
+                    0, "-",
+                    new int[0], new int[0], new int[0]
+            );
+        }
+
+        String targetName = officialName.trim();
+
+        int totalGames = 0;
+        int wins = 0;
+        int losses = 0;
+        int giveUps = 0;
+        int winsWithNoMistakes = 0; // when i store mistakes per game, update this, not now i will go to sleep
+
+        int bestScore = Integer.MIN_VALUE;
+        String bestScoreOpponent = "-";
+
+        int bestTimeSeconds = Integer.MAX_VALUE;
+        String bestTimeOpponent = "-";
+
+        var easyScoresList = new ArrayList<Integer>();
+        var medScoresList  = new ArrayList<Integer>();
+        var hardScoresList = new ArrayList<Integer>();
+
+        for (Game game : history.getGames()) {
+
+            if (!isPlayerInGame(game, targetName)) {
+                continue;
+            }
+
+            totalGames++;
+
+            Difficulty diff = game.getDifficulty();
+            int score = game.getFinalScore();
+
+            // progression by difficulty
+            if (diff == Difficulty.EASY) {
+                easyScoresList.add(score);
+            } else if (diff == Difficulty.MEDIUM) {
+                medScoresList.add(score);
+            } else if (diff == Difficulty.HARD) {
+                hardScoresList.add(score);
+            }
+
+            // result-based counters
+            GameResult res = game.getResult();
+            switch (res) {
+                case WIN:
+                    wins++;
+                    // i need to use this for wins with no mistake, if a game was with no mines revealed then winsWithNoMistakes++;
+                    break;
+                case LOSE:
+                    losses++;
+                    break;
+                
+                case GIVE_UP:
+                    giveUps++;
+                    break;
+                default:
+                    break;
+            }
+
+            // Opponent
+            String opponent = getOpponentName(game, targetName);
+
+            // best score (max)
+            if (score > bestScore) {
+                bestScore = score;
+                bestScoreOpponent = opponent;
+            }
+
+            // best time (min duration)
+            int durationSeconds = parseDuration(game.getDurationFormatted());
+            if (durationSeconds > 0 && durationSeconds < bestTimeSeconds) {
+                bestTimeSeconds = durationSeconds;
+                bestTimeOpponent = opponent;
+            }
+        }
+
+        // Normalize for "no games"
+        if (totalGames == 0) {
+            bestScore = 0;
+            bestTimeSeconds = 0;
+            bestScoreOpponent = "-";
+            bestTimeOpponent = "-";
+        }
+
+        int[] easyScores = easyScoresList.stream().mapToInt(Integer::intValue).toArray();
+        int[] medScores  = medScoresList.stream().mapToInt(Integer::intValue).toArray();
+        int[] hardScores = hardScoresList.stream().mapToInt(Integer::intValue).toArray();
+
+        return new PlayerStats(
+                targetName,
+                avatarId,
+                totalGames,
+                wins,
+                losses,
+                giveUps,
+                winsWithNoMistakes,
+                bestScore,
+                bestScoreOpponent,
+                bestTimeSeconds,
+                bestTimeOpponent,
+                easyScores,
+                medScores,
+                hardScores
+        );
+    }
+
+    private boolean isPlayerInGame(Game game, String officialName) {
+        if (officialName == null || officialName.isBlank()) {
+            return false;
+        }
+        String target = officialName.trim();
+
+        String p1Off = game.getPlayer1OfficialName();
+        String p2Off = game.getPlayer2OfficialName();
+
+        if (p1Off != null && p1Off.trim().equalsIgnoreCase(target)) {
+            return true;
+        }
+        if (p2Off != null && p2Off.trim().equalsIgnoreCase(target)) {
+            return true;
+        }
+
+        // this: match by nickname if official name is missing, is optional, and i might remove it later
+        String p1Nick = game.getPlayer1Nickname();
+        String p2Nick = game.getPlayer2Nickname();
+
+        if (p1Nick != null && p1Nick.trim().equalsIgnoreCase(target)) {
+            return true;
+        }
+        if (p2Nick != null && p2Nick.trim().equalsIgnoreCase(target)) {
+            return true;
+        }
+
+        return false;
+    }
+    
+    private String getOpponentName(Game game, String officialName) {
+        if (officialName == null) {
+            return "-";
+        }
+        String target = officialName.trim();
+
+        String p1Off = game.getPlayer1OfficialName();
+        String p2Off = game.getPlayer2OfficialName();
+        String p1Nick = game.getPlayer1Nickname();
+        String p2Nick = game.getPlayer2Nickname();
+
+        // If target is P1
+        if (p1Off != null && p1Off.trim().equalsIgnoreCase(target)) {
+            if (p2Off != null && !p2Off.isBlank()) return p2Off;
+            if (p2Nick != null && !p2Nick.isBlank()) return p2Nick;
+            return "-";
+        }
+
+        // If target is P2
+        if (p2Off != null && p2Off.trim().equalsIgnoreCase(target)) {
+            if (p1Off != null && !p1Off.isBlank()) return p1Off;
+            if (p1Nick != null && !p1Nick.isBlank()) return p1Nick;
+            return "-";
+        }
+
+        // Maybe we matched by nickname:
+        if (p1Nick != null && p1Nick.trim().equalsIgnoreCase(target)) {
+            if (p2Off != null && !p2Off.isBlank()) return p2Off;
+            if (p2Nick != null && !p2Nick.isBlank()) return p2Nick;
+        }
+
+        if (p2Nick != null && p2Nick.trim().equalsIgnoreCase(target)) {
+            if (p1Off != null && !p1Off.isBlank()) return p1Off;
+            if (p1Nick != null && !p1Nick.isBlank()) return p1Nick;
+        }
+
+        return "-";
+    }
+
 
 }

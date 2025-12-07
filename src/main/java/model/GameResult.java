@@ -5,5 +5,6 @@ package model;
  */
 public enum GameResult {
     WIN,
-    LOSE
+    LOSE,
+    GIVE_UP
 }

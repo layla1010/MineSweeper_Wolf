@@ -53,11 +53,12 @@
                      </children></StackPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Text fill="#cfb7b7" layoutX="162.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Official Name" wrappingWidth="193.33668518066406">
-                           <font>
-                              <Font name="Copperplate Gothic Bold" size="24.0" />
-                           </font>
-                        </Text>
+                        <Text fx:id="p1OfficialNameText" fill="#cfb7b7" layoutX="162.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Official Name" wrappingWidth="193.33668518066406">
+						    <font>
+						        <Font name="Copperplate Gothic Bold" size="24.0" />
+						    </font>
+						</Text>
+
                         <StackPane layoutX="116.0" layoutY="69.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="15.0" prefWidth="300.0" style="-fx-background-color: white; -fx-background-radius: 50;" />
                         <Label layoutX="451.0" layoutY="59.0" prefHeight="18.0" prefWidth="38.0" text="wins" textFill="#e1d9d9">
                            <font>
@@ -267,11 +268,12 @@
                   </StackPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Text fill="#cfb7b7" layoutX="162.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Official Name" wrappingWidth="193.33668518066406">
-                           <font>
-                              <Font name="Copperplate Gothic Bold" size="24.0" />
-                           </font>
-                        </Text>
+                        <Text fx:id="p2OfficialNameText" fill="#cfb7b7" layoutX="162.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Official Name" wrappingWidth="193.33668518066406">
+						    <font>
+						        <Font name="Copperplate Gothic Bold" size="24.0" />
+						    </font>
+						</Text>
+
                         <StackPane layoutX="116.0" layoutY="69.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="15.0" prefWidth="300.0" style="-fx-background-color: white; -fx-background-radius: 50;" />
                         <Label layoutX="451.0" layoutY="59.0" prefHeight="18.0" prefWidth="38.0" text="wins" textFill="#e1d9d9">
                            <font>
