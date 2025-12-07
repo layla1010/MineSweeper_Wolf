@@ -17,7 +17,16 @@
 	import javafx.scene.text.Text;
 	import javafx.stage.Stage;
 	import util.AvatarManager;
-	import util.SoundManager;
+import util.EmailService;
+import util.SoundManager;
+	import java.util.Optional;
+	import javafx.scene.control.Alert;
+	import javafx.scene.control.Alert.AlertType;
+	import javafx.scene.control.TextInputDialog;
+	import javafx.scene.text.Text;
+	import model.Player;
+	import model.SysData;
+
 	
 	public class PlayLoginController {
 		
@@ -56,6 +65,9 @@
 	    @FXML private Button        adminTogglePasswordButton;
 	    @FXML private ImageView     adminEyeIcon;
 	    private boolean adminPasswordVisible = false;
+	    
+	    @FXML private Text forgotPasswordText;
+
 	    
 	    private Stage stage;
 	
@@ -292,4 +304,73 @@
 	    public void onSkipLoginClicked () {
 	    	
 	    }
+	    
+	    
+	    @FXML
+	    private void onForgotPasswordClicked() {
+	        playClickSound();  // optional sound
+
+	        // 1. Ask for email
+	        TextInputDialog dialog = new TextInputDialog();
+	        dialog.setTitle("Forgot Password");
+	        dialog.setHeaderText("Reset your password");
+	        dialog.setContentText("Please enter your email:");
+
+	        Optional<String> result = dialog.showAndWait();
+	        if (!result.isPresent()) {
+	            // user cancelled
+	            return;
+	        }
+
+	        String email = result.get().trim();
+	        if (email.isEmpty()) {
+	            Alert alert = new Alert(AlertType.ERROR);
+	            alert.setTitle("Error");
+	            alert.setHeaderText(null);
+	            alert.setContentText("Email cannot be empty.");
+	            alert.showAndWait();
+	            return;
+	        }
+
+	        // 2. Look up player by email (SysData must have this method)
+	        SysData sysData = SysData.getInstance();
+	        Player player = sysData.findPlayerByEmail(email);
+
+	        if (player == null) {
+	            // email is NOT for a player
+	            Alert alert = new Alert(AlertType.ERROR);
+	            alert.setTitle("Unknown Email");
+	            alert.setHeaderText(null);
+	            alert.setContentText("No player found for this email.");
+	            alert.showAndWait();
+	            return;
+	        }
+
+	        // 3. Generate one-time password (6-digit code)
+	        String otp = generateOneTimePassword();
+
+	        // 4. "Send" the OTP to the email (real email sending not implemented here)
+	        //    For now, we just print it in console so you can see it while testing.
+	        try {
+	            EmailService.sendOtpEmail(email, otp);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+
+	        // 5. Inform the user
+	        Alert info = new Alert(AlertType.INFORMATION);
+	        info.setTitle("Password Reset");
+	        info.setHeaderText("One-time password sent");
+	        info.setContentText("If an account exists for " + email + ", a one-time password has been sent.");
+	        info.showAndWait();
+
+	        // TODO LATER: you can open another dialog to enter the OTP and new password,
+	        // and then call player.setPassword(newPassword) and save to CSV.
+	    }
+
+	    private String generateOneTimePassword() {
+	        int code = (int) (Math.random() * 900_000) + 100_000; // 100000–999999
+	        return Integer.toString(code);
+	    }
+
 	}

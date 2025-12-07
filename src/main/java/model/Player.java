@@ -42,6 +42,11 @@ public class Player {
     public boolean checkPassword(String attemptedPassword) {
         return this.password.equals(attemptedPassword);
     }
+    
+    public String getPassword() {
+        return password;
+    }
+
 
     
     public void setPassword (String password) {

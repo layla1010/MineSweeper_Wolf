@@ -61,13 +61,18 @@
                         <RowConstraints maxHeight="113.60000000000002" minHeight="10.0" prefHeight="51.599999999999994" vgrow="SOMETIMES" />
                     </rowConstraints>
 
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="forgot password?" underline="true"
-                              GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="18.0" />
-                            </font>
-                        </Text>
+                        <Text fx:id="forgotPasswordText"
+						      text="forgot password?"
+						      underline="true"
+						      onMouseClicked="#onForgotPasswordClicked"
+						      style="-fx-cursor: hand;"
+						      strokeType="OUTSIDE" strokeWidth="0.0"
+						      GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+						    <font>
+						        <Font name="Copperplate Gothic Light" size="18.0" />
+						    </font>
+						</Text>
+
 
                         <Button mnemonicParsing="false"
                                 onAction="#onPlayersLoginClicked"
@@ -190,7 +195,7 @@
                                                promptText="Enter Player 2's Password" />
 
                                 <TextField fx:id="p2PasswordVisibleField"
-                                           layoutX="74.0" layoutY="129.0"
+                                           layoutX="75.0" layoutY="129.0"
                                            managed="false"
                                            prefHeight="26.0" prefWidth="250.0"
                                            promptText="Enter Player 2's Password"

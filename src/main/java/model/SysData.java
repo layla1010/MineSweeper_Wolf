@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -17,12 +19,16 @@ public class SysData {
     //Singleton instance
     private static final SysData INSTANCE = new SysData();
 
+
     public static SysData getInstance() {
         return INSTANCE;
     }
 
     //History storage
     private final History history = new History();
+    
+    private final Map<String, Player> playersByEmail = new HashMap<>();
+
 
     //CSV file name (you can change location if needed)
     private static final String HISTORY_FILE_NAME = "/data/history.csv";
@@ -90,12 +96,52 @@ public class SysData {
             return "Data/history.csv";
         }
     }
+    
+ // Resolves the full path to the players CSV file.
+    private static String getPlayersCsvPath() {
+        try {
+            String path = SysData.class
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .getPath();
+
+            String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
+
+            if (decoded.length() > 2
+                    && decoded.charAt(0) == '/'
+                    && Character.isLetter(decoded.charAt(1))
+                    && decoded.charAt(2) == ':') {
+                decoded = decoded.substring(1);  
+            }
+
+            if (decoded.contains(".jar")) {
+                decoded = decoded.substring(0, decoded.lastIndexOf('/'));
+                return decoded + "/Data/players.csv";
+            } else {
+                if (decoded.contains("target/classes/")) {
+                    decoded = decoded.substring(0, decoded.lastIndexOf("target/classes/"));
+                } else if (decoded.contains("bin/")) {
+                    decoded = decoded.substring(0, decoded.lastIndexOf("bin/"));
+                } else {
+                    return "Data/players.csv";
+                }
+
+                return decoded + "src/main/resources/Data/players.csv";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Data/players.csv";
+        }
+    }
 
 
     //Adds a single Game record to the history.
     public void addGameToHistory(Game game) {
         history.addGame(game);
     }
+    
+    
     //Loads all game history from the history CSV file into memory.
     public void loadHistoryFromCsv() {
         history.clear();
@@ -129,6 +175,66 @@ public class SysData {
             e.printStackTrace();
         }
     }
+    
+    
+    //Loads all Players data from the Player CSV file into memory.
+    public void loadPlayersFromCsv() {
+        playersByEmail.clear();
+
+        String csvPath = getPlayersCsvPath();
+        System.out.println("Loading players from: " + csvPath);
+
+        Path path = Paths.get(csvPath);
+        if (!Files.exists(path)) {
+            System.out.println("Players file not found, skipping load.");
+            return;
+        }
+
+        try (BufferedReader reader = Files.newBufferedReader(path)) {
+            String line = reader.readLine();
+
+            if (line != null && line.toLowerCase().startsWith("officialname")) {
+                line = reader.readLine();
+            }
+
+            while (line != null) {
+                Player p = parsePlayerFromCsvLine(line);
+                if (p != null) {
+                    String key = p.getEmail().toLowerCase();
+                    playersByEmail.put(key, p);
+                }
+                line = reader.readLine();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    //Parses a single CSV line into a Player object.
+    private Player parsePlayerFromCsvLine(String line) {
+        if (line == null || line.trim().isEmpty()) {
+            return null;
+        }
+
+        String[] parts = line.split(",", -1); 
+        if (parts.length < 3) {
+            return null;
+        }
+
+        String officialName = parts[0].trim();
+        String email        = parts[1].trim();
+        String password     = parts[2].trim();
+
+        try {
+            return new Player(officialName, email, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     //Parses a single CSV line into a Game object.
     private Game parseGameFromCsvLine(String line) {
         if (line == null || line.trim().isEmpty()) {
@@ -202,6 +308,30 @@ public class SysData {
             e.printStackTrace();
         }
     }
+    
+    
+    //Saves the current in-memory players list to the CSV file.
+    public void savePlayersToCsv() {
+        String csvPath = getPlayersCsvPath();
+        System.out.println("Saving players to: " + csvPath);
+
+        Path path = Paths.get(csvPath);
+
+        try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+            // header
+            writer.write("officialName,email,password");
+            writer.newLine();
+
+            for (Player p : playersByEmail.values()) {
+                writer.write(formatPlayerAsCsvLine(p));
+                writer.newLine();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     //Converts a Game object into a CSV line string.
     private String formatGameAsCsvLine(Game game) {
@@ -218,6 +348,20 @@ public class SysData {
         return String.join(",", dateStr, durationStr, difficultyStr, scoreStr, resultStr, p1Nick, p2Nick, p1Off, p2Off
         );
     }
+    
+    
+    //Converts a Player object into a CSV line string.
+    private String formatPlayerAsCsvLine(Player p) {
+        String officialName = sanitizeForCsv(p.getOfficialName());
+        String email        = sanitizeForCsv(p.getEmail());
+        // here we store the password as is (for this project)
+        String password     = sanitizeForCsv(p.getPassword()); // you need getPassword()
+
+        return String.join(",", officialName, email, password);
+    }
+
+    
+    
     //Sanitizes a text field for safe CSV storage.
     private String sanitizeForCsv(String text) {
         if (text == null) {
@@ -284,4 +428,41 @@ public class SysData {
         smartHintsEnabled = false;
         autoRemoveFlagEnabled = true;
     }
+    
+    public Player findPlayerByEmail(String email) {
+        if (email == null) return null;
+        return playersByEmail.get(email.trim().toLowerCase());
+    }
+    
+    public boolean checkPlayerLogin(String email, String attemptedPassword) {
+        Player p = findPlayerByEmail(email);
+        if (p == null) return false;
+        return p.checkPassword(attemptedPassword);
+    }
+    
+    public Player createPlayer(String officialName, String email, String password) {
+        if (email == null) {
+            throw new IllegalArgumentException("Email cannot be null");
+        }
+        String key = email.trim().toLowerCase();
+        if (playersByEmail.containsKey(key)) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        Player p = new Player(officialName, email, password);
+        playersByEmail.put(key, p);
+        savePlayersToCsv();  // persist immediately (you can decide when to save)
+        return p;
+    }
+
+    
+    public void updatePlayerPassword(String email, String newPassword) {
+        Player p = findPlayerByEmail(email);
+        if (p == null) {
+            throw new IllegalArgumentException("No such player for email: " + email);
+        }
+        p.setPassword(newPassword);
+        savePlayersToCsv();
+    }
+
 }
