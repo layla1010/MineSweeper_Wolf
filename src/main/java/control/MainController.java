@@ -43,6 +43,8 @@ public class MainController {
     @FXML private Rectangle newGameShimmer;
 
     private Stage stage;
+    private boolean adminMode = false;
+
 
     //Sets the Stage reference for this controller.
     public void setStage(Stage stage) {
@@ -63,6 +65,12 @@ public class MainController {
         setupNewGameShimmer();
     }
 
+    
+    public void setAdminMode(boolean adminMode) {
+        this.adminMode = adminMode;
+    }
+    
+    
     //Handles the "New Game" button click: Plays click sound, loads new_game_view.fxml, and navigates to the New Game setup screen.
     @FXML
     private void onNewGameClicked() {
@@ -70,11 +78,11 @@ public class MainController {
         try {
             Stage stage = (Stage) mainGrid.getScene().getWindow();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/new_game_view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));
             Pane newRoot = loader.load();
 
-            NewGameController newGameController = loader.getController();
-            newGameController.setStage(stage);
+            PlayLoginController controller = loader.getController();
+            controller.setStage(stage);
 
             stage.setScene(new Scene(newRoot));
             stage.show();

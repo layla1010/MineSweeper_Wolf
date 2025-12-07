@@ -136,7 +136,7 @@ public class SysData {
         }
 
         String[] parts = line.split(",", -1);  // keep empty columns
-        if (parts.length != 7) {
+        if (parts.length != 9) {
             return null;
         }
 
@@ -146,10 +146,12 @@ public class SysData {
             Difficulty difficulty = Difficulty.valueOf(parts[2]);
             int score = Integer.parseInt(parts[3]);
             GameResult result = GameResult.valueOf(parts[4]); // WIN / LOSE
-            String player1 = parts[5];
-            String player2 = parts[6];
+            String nick_player1 = parts[5];
+            String nick_player2 = parts[6];
+            String off_player1 = toNullIfBlank(parts[7]);
+            String off_player2 = toNullIfBlank(parts[8]);
 
-            return new Game(player1, player2, difficulty, score, result, date, durationSeconds);
+            return new Game(off_player1, off_player2,nick_player1, nick_player2, difficulty, score, result, date, durationSeconds);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -157,6 +159,10 @@ public class SysData {
         }
     }
 
+    private String toNullIfBlank(String s) {
+        return (s == null || s.trim().isEmpty()) ? null : s.trim();
+    }
+    
     private int parseDuration(String text) {
         if (text == null || text.isBlank()) {
             return 0;
@@ -184,7 +190,7 @@ public class SysData {
 
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             // header
-            writer.write("date,duration,difficulty,score,result,player1,player2");
+        	writer.write("date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Official,player2Official");
             writer.newLine();
 
             for (Game game : games) {
@@ -204,11 +210,13 @@ public class SysData {
         String difficultyStr = game.getDifficulty().name();
         String scoreStr = Integer.toString(game.getFinalScore());
         String resultStr = game.getResult().name();               // WIN / LOSE
-        String p1 = sanitizeForCsv(game.getPlayer1Nickname());
-        String p2 = sanitizeForCsv(game.getPlayer2Nickname());
+        String p1Nick = sanitizeForCsv(game.getPlayer1Nickname());
+        String p2Nick = sanitizeForCsv(game.getPlayer2Nickname());
+        String p1Off  = sanitizeForCsvOrEmpty(game.getPlayer1OfficialName());
+        String p2Off  = sanitizeForCsvOrEmpty(game.getPlayer2OfficialName());
 
-        return String.join(",", dateStr, durationStr, difficultyStr,
-                scoreStr, resultStr, p1, p2);
+        return String.join(",", dateStr, durationStr, difficultyStr, scoreStr, resultStr, p1Nick, p2Nick, p1Off, p2Off
+        );
     }
     //Sanitizes a text field for safe CSV storage.
     private String sanitizeForCsv(String text) {
@@ -218,6 +226,14 @@ public class SysData {
         // Remove commas so they don't break CSV columns
         return text.replace(",", " ");
     }
+    
+    private String sanitizeForCsvOrEmpty(String text) {
+        if (text == null) {
+            return "";
+        }
+        return sanitizeForCsv(text);
+    }
+
 
 
     public static boolean isMusicEnabled() {

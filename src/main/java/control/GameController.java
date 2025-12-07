@@ -74,6 +74,9 @@ public class GameController {
     private int minesLeft1;
     private int minesLeft2;
 
+    private String player1OfficialName;
+    private String player2OfficialName;
+    
     private boolean isPlayer1Turn = true;
     private boolean isPaused = false;
 
@@ -175,6 +178,12 @@ public class GameController {
 
         scoreLabel.setText("Score: " + score);
     }
+    
+    public void setOfficialPlayerNames(String player1OfficialName, String player2OfficialName) {
+        this.player1OfficialName = player1OfficialName;
+        this.player2OfficialName = player2OfficialName;
+    }
+
     
     //Loads the "forbidden" cursor image used when a board is inactive. If it fails, falls back to null (default cursor).
     private void initForbiddenCursor() {
@@ -769,6 +778,8 @@ public class GameController {
         GameResult result = gameWon ? GameResult.WIN : GameResult.LOSE;
 
         Game gameRecord = new Game(
+        		player1OfficialName,
+        		player2OfficialName,
                 config.getPlayer1Nickname(),
                 config.getPlayer2Nickname(),
                 difficulty,

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" style="-fx-background-color: purple;" stylesheets="@../css/login.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.PlayLoginController">
+
+    <children>
+
+        <HBox alignment="CENTER" layoutX="0.0" layoutY="10.0" prefWidth="800.0" spacing="40.0">
+            <children>
+                <Text fx:id="playersTab"
+                      onMouseClicked="#showPlayersLogin"
+                      style="-fx-fill: white; -fx-underline: true; -fx-cursor: hand;"
+                      text="Players">
+                    <font>
+                        <Font name="Copperplate Gothic Light" size="22.0" />
+                    </font>
+                </Text>
+
+                <Text fx:id="adminTab"
+                      onMouseClicked="#showAdminLogin"
+                      style="-fx-fill: #7dd3fc; -fx-underline: false; -fx-cursor: hand;"
+                      text="Admin">
+                    <font>
+                        <Font name="Copperplate Gothic Light" size="20.0" />
+                    </font>
+                </Text>
+            </children>
+        </HBox>
+
+        <StackPane layoutY="60.0" prefHeight="340.0" prefWidth="800.0">
+            <children>
+
+                <GridPane fx:id="playerLoginCard"
+                          maxHeight="-Infinity" maxWidth="-Infinity"
+                          minHeight="-Infinity" minWidth="-Infinity"
+                          prefHeight="296.0" prefWidth="800.0">
+
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="10.0" prefWidth="400.0" />
+                    </columnConstraints>
+
+                    <rowConstraints>
+                        <RowConstraints maxHeight="282.0000061035156" minHeight="10.0" prefHeight="187.0000457763672" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="142.40001525878904" minHeight="10.0" prefHeight="40.600018310546886" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="122.19998168945312" minHeight="10.0" prefHeight="68.4" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="113.60000000000002" minHeight="10.0" prefHeight="51.599999999999994" vgrow="SOMETIMES" />
+                    </rowConstraints>
+
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0"
+                              text="forgot password?" underline="true"
+                              GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                            <font>
+                                <Font name="Copperplate Gothic Light" size="18.0" />
+                            </font>
+                        </Text>
+
+                        <Button mnemonicParsing="false"
+                                onAction="#onPlayersLoginClicked"
+                                prefHeight="33.0" prefWidth="138.0"
+                                text="Login"
+                                GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                            <font>
+                                <Font name="Copperplate Gothic Light" size="18.0" />
+                            </font>
+                            <GridPane.margin>
+                                <Insets right="10.0" />
+                            </GridPane.margin>
+                        </Button>
+
+                        <Button mnemonicParsing="false"
+                                onAction="#onSkipLoginClicked"
+                                prefHeight="33.0" prefWidth="138.0"
+                                text="Skip"
+                                GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <font>
+                                <Font name="Copperplate Gothic Light" size="18.0" />
+                            </font>
+                            <GridPane.margin>
+                                <Insets left="10.0" />
+                            </GridPane.margin>
+                        </Button>
+
+                        <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="3">
+						    <children>
+						        <Text text="New Player? Sign Up " style="-fx-fill: white;">
+						            <font>
+						                <Font name="Copperplate Gothic Light" size="18.0" />
+						            </font>
+						        </Text>
+						
+						        <Text fx:id="signUpHereText" text="Here!" 
+						              onMouseClicked="#onSignUpClicked"
+						              style="-fx-fill: #00ccff; -fx-underline: true; -fx-cursor: hand;">
+						            <font>
+						                <Font name="Copperplate Gothic Bold" size="18.0" />
+						            </font>
+						        </Text>
+						    </children>
+						</HBox>
+
+                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
+                                    minHeight="-Infinity" minWidth="-Infinity"
+                                    prefHeight="200.0" prefWidth="400.0"
+                                    GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                            <children>
+                                <Text layoutX="140.0" layoutY="42.0"
+                                      strokeType="OUTSIDE" strokeWidth="0.0"
+                                      text="Player 1">
+                                    <font>
+                                        <Font name="Copperplate Gothic Bold" size="24.0" />
+                                    </font>
+                                </Text>
+
+                                <TextField fx:id="p1NameField"
+                                           layoutX="75.0" layoutY="73.0"
+                                           maxHeight="-Infinity" maxWidth="-Infinity"
+                                           minHeight="-Infinity" minWidth="-Infinity"                                           prefHeight="26.0" prefWidth="250.0"
+                                           promptText="Enter Player 1's Name" />
+
+                                <PasswordField fx:id="p1PasswordField"
+                                               layoutX="74.0" layoutY="129.0"
+                                               prefHeight="26.0" prefWidth="250.0"
+                                               promptText="Enter Player 1's Password" />
+
+                                <TextField fx:id="p1PasswordVisibleField"
+                                           layoutX="74.0" layoutY="129.0"
+                                           managed="false"
+                                           prefHeight="26.0" prefWidth="250.0"
+                                           promptText="Enter Player 1's Password"
+                                           visible="false" />
+
+                                <Button fx:id="p1TogglePasswordButton"
+                                        layoutX="328.0" layoutY="129.0"
+                                        mnemonicParsing="false"
+                                        onAction="#onToggleP1Password"
+                                        prefHeight="26.0" prefWidth="30.0"
+                                        style="-fx-background-color: transparent;">
+                                    <graphic>
+                                        <ImageView fx:id="p1EyeIcon"
+                                                   fitHeight="20.0" fitWidth="20.0"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@/Images/view.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </AnchorPane>
+
+                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
+                                    minHeight="-Infinity" minWidth="-Infinity"
+                                    prefHeight="200.0" prefWidth="400.0"
+                                    GridPane.columnIndex="1"
+                                    GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                            <children>
+                                <Text layoutX="141.0" layoutY="51.0"
+                                      strokeType="OUTSIDE" strokeWidth="0.0"
+                                      text="Player 2">
+                                    <font>
+                                        <Font name="Copperplate Gothic Bold" size="24.0" />
+                                    </font>
+                                </Text>
+
+                                <TextField fx:id="p2NameField"
+                                           layoutX="75.0" layoutY="73.0"
+                                           maxHeight="-Infinity" maxWidth="-Infinity"
+                                           minHeight="-Infinity" minWidth="-Infinity"
+                                           prefHeight="26.0" prefWidth="250.0"
+                                           promptText="Enter Player 2's Name" />
+
+                                <PasswordField fx:id="p2PasswordField"
+                                               layoutX="75.0" layoutY="129.0"
+                                               prefHeight="26.0" prefWidth="250.0"
+                                               promptText="Enter Player 2's Password" />
+
+                                <TextField fx:id="p2PasswordVisibleField"
+                                           layoutX="74.0" layoutY="129.0"
+                                           managed="false"
+                                           prefHeight="26.0" prefWidth="250.0"
+                                           promptText="Enter Player 2's Password"
+                                           visible="false" />
+
+                                <Button fx:id="p2TogglePasswordButton"
+                                        layoutX="328.0" layoutY="129.0"
+                                        mnemonicParsing="false"
+                                        onAction="#onToggleP2Password"
+                                        prefHeight="26.0" prefWidth="30.0"
+                                        style="-fx-background-color: transparent;">
+                                    <graphic>
+                                        <ImageView fx:id="p2EyeIcon"
+                                                   fitHeight="20.0" fitWidth="20.0"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@/Images/view.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </AnchorPane>
+                        
+                        
+                    </GridPane>
+				
+                <AnchorPane fx:id="adminLoginCard"
+                            managed="false"
+                            prefHeight="400.0" prefWidth="800.0"
+                            visible="false">
+                    <children>
+                        <Text layoutX="325.0" layoutY="80.0"
+                              strokeType="OUTSIDE" strokeWidth="0.0"
+                              text="Admin Login">
+                            <font>
+                                <Font name="Copperplate Gothic Bold" size="26.0" />
+                            </font>
+                        </Text>
+
+                        <TextField fx:id="adminNameField"
+                                   layoutX="250.0" layoutY="130.0"
+                                   prefHeight="30.0" prefWidth="300.0"
+                                   promptText="Admin Name" />
+
+                        <PasswordField fx:id="adminPasswordField"
+                                       layoutX="250.0" layoutY="180.0"
+                                       prefHeight="30.0" prefWidth="300.0"
+                                       promptText="Password" />
+
+                        <TextField fx:id="adminPasswordVisibleField"
+                                   layoutX="250.0" layoutY="180.0"
+                                   managed="false"
+                                   prefHeight="30.0" prefWidth="300.0"
+                                   promptText="Password"
+                                   visible="false" />
+
+                        <Button fx:id="adminTogglePasswordButton"
+                                layoutX="560.0" layoutY="180.0"
+                                mnemonicParsing="false"
+                                onAction="#onToggleAdminPassword"
+                                prefHeight="30.0" prefWidth="30.0"
+                                style="-fx-background-color: transparent;">
+                            <graphic>
+                                <ImageView fx:id="adminEyeIcon"
+                                           fitHeight="20.0" fitWidth="20.0"
+                                           preserveRatio="true">
+                                    <image>
+                                        <Image url="@/Images/view.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+
+                        <Button fx:id="adminLoginButton"
+                                layoutX="325.0" layoutY="240.0"
+                                mnemonicParsing="false"
+                                onAction="#onAdminLogin"
+                                prefHeight="33.0" prefWidth="160.0"
+                                text="Login">
+                            <font>
+                                <Font name="Copperplate Gothic Light" size="18.0" />
+                            </font>
+                        </Button>
+                    </children>
+                </AnchorPane>
+
+            </children>
+        </StackPane>
+
+    </children>
+</AnchorPane>

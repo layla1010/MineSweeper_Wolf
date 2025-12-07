@@ -1,11 +1,9 @@
 package control;
 
-import java.io.File;
 import java.io.IOException;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -18,13 +16,12 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Difficulty;
 import model.GameConfig;
+import util.AvatarManager;
 import util.SoundManager;
 import util.UIAnimations;
 
@@ -56,15 +53,10 @@ public class NewGameController {
     @FXML private ImageView img13;
     @FXML private Button setUpmusicIsOnButton;
 
-    //Tracks whether each player has chosen an avatar
-    private boolean player1AvatarChosen = false;
-    private boolean player2AvatarChosen = false;
-    //Currently selected avatar tile (for CSS highlighting)
-    private StackPane selectedAvatarPane;
-    //Which player is currently "active" for avatar picking (1 or 2)
-    private int selectedPlayer = 1;
-
+ 
     private Stage stage;
+    private AvatarManager avatarManager;
+
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -73,7 +65,11 @@ public class NewGameController {
     @FXML
     private void initialize() {
         selectPlayer(1);
-        setupAvatarThumbnails();
+        avatarManager = new AvatarManager(player1avatar, player2avatar);
+        avatarManager.setupThumbnails(
+                img1, img2, img3, img4, img5, img6,
+                img7, img8, img9, img10, img11, img12, img13
+        );
         UIAnimations.applyHoverZoomToAllButtons(root);
         UIAnimations.applyFloatingToCards(root);
         UIAnimations.applyHoverZoomToClass(root);
@@ -83,39 +79,13 @@ public class NewGameController {
     private void playClickSound() {
         SoundManager.playClick();
     }
-    //Connects all predefined avatar thumbnails (img1..img13) to the click handler so that clicking one will set the avatar for the currently active player.
-    private void setupAvatarThumbnails() {
-        ImageView[] thumbs = {
-            img1, img2, img3, img4, img5, img6,
-            img7, img8, img9, img10, img11, img12, img13
-        };
-
-        for (ImageView iv : thumbs) {
-            if (iv != null) {
-                iv.setOnMouseClicked(e -> {
-                    playClickSound();
-                    setAvatarFromImageView(iv);
-                });
-            }
-        }
-    }
-    //Assigns the image from a clicked thumbnail to the active player's avatar.
-    private void setAvatarFromImageView(ImageView source) {
-        Image image = source.getImage();
-        if (image == null) return;
-
-        if (selectedPlayer == 1) {
-            player1avatar.setImage(image);
-            player1AvatarChosen = true;
-        } else {
-            player2avatar.setImage(image);
-            player2AvatarChosen = true;
-        }
-    }
+   
+   
     //Called when player 1's card/area is clicked. Marks player 1 as the active player for avatar picking and focus.
     @FXML
     private void onPlayer1AreaClicked() {
         selectPlayer(1);
+        avatarManager.selectPlayer(1);
         playClickSound();
         setActivePlayerCard(recP1, recP2, player1Nickname, player2Nickname);
     }
@@ -123,6 +93,7 @@ public class NewGameController {
     @FXML
     private void onPlayer2AreaClicked() {
         selectPlayer(2);
+        avatarManager.selectPlayer(2);
         playClickSound();
         setActivePlayerCard(recP2, recP1, player2Nickname, player1Nickname);
     }
@@ -144,7 +115,6 @@ public class NewGameController {
 	}
     //Internally sets which player is currently active (1 or 2), and updates the stroke color on the player rectangles as a hint.
     private void selectPlayer(int player) {
-        this.selectedPlayer = player;
         if (recP1 != null && recP2 != null) {
             if (player == 1) {
                 recP1.setStroke(Color.web("#35E0FF"));
@@ -193,8 +163,8 @@ public class NewGameController {
             return;
         }
 
-        if (!player1AvatarChosen || !player2AvatarChosen) {
-            showError("Please select an avatar for both players.");
+        if (!avatarManager.areBothAvatarsChosen()) {
+            avatarManager.showAvatarErrorIfNeeded();
             return;
         }
 
@@ -233,39 +203,17 @@ public class NewGameController {
     @FXML
     private void onPlus() {
         playClickSound();
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose Avatar Image");
-        fileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
-        );
-
-        Stage stage = null;
-        if (player1avatar != null && player1avatar.getScene() != null) {
-            stage = (Stage) player1avatar.getScene().getWindow();
-        }
-
-        File file = (stage == null)
-            ? fileChooser.showOpenDialog(null)
-            : fileChooser.showOpenDialog(stage);
-
-        if (file != null) {
-            Image img = new Image(file.toURI().toString());
-            if (selectedPlayer == 1) {
-                player1avatar.setImage(img);
-                player1AvatarChosen = true;
-            } else {
-                player2avatar.setImage(img);
-                player2AvatarChosen = true;
-            }
-        }
+        Stage stage = (Stage) player1avatar.getScene().getWindow();
+        avatarManager.handlePlus(stage);
     }
     
      //Handles the sound toggle button - the speaker icon: Toggles background music on/off using SoundManager and updates the icon accordingly.
-    @FXML void onSoundOff() {
-        util.SoundManager.toggleMusic();
+    @FXML
+    void onSoundOff() {
+        SoundManager.toggleMusic();
 
         if (setUpmusicIsOnButton != null && setUpmusicIsOnButton.getGraphic() instanceof ImageView iv) {
-            String iconPath = util.SoundManager.isMusicOn()
+            String iconPath = SoundManager.isMusicOn()
                     ? "/Images/volume.png"
                     : "/Images/mute.png";
 
@@ -276,32 +224,10 @@ public class NewGameController {
     //Handles clicks on any avatar StackPane, adds/removes the "avatar-selected" CSS class from the clicked avatar.
     @FXML
     private void onAvatarClicked(MouseEvent event) {
-        Object src = event.getSource();
-        StackPane avatarPane = null;
-
-        if (src instanceof StackPane) {
-            avatarPane = (StackPane) src;
-        } else if (src instanceof Node) {
-            Node node = (Node) src;
-            if (node.getParent() instanceof StackPane) {
-                avatarPane = (StackPane) node.getParent();
-            }
-        }
-
-        if (avatarPane == null) {
-            return;
-        }
-
-        if (selectedAvatarPane != null) {
-            selectedAvatarPane.getStyleClass().remove("avatar-selected");
-        }
-
-        selectedAvatarPane = avatarPane;
-        if (!avatarPane.getStyleClass().contains("avatar-selected")) {
-            avatarPane.getStyleClass().add("avatar-selected");
-        }
         playClickSound();
+        avatarManager.handleAvatarPaneClick(event);
     }
+    
   
     //Shows an error dialog with a given message and it is used for input validation failures.
     private void showError(String message) {

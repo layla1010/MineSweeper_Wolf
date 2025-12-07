@@ -13,7 +13,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -305,7 +304,7 @@ public class HistoryController {
             filterTypeCombo.getSelectionModel().select("All");
         }
         if (filterValueField != null) {
-            ((List<Game>) filterValueField).clear();
+        	filterValueField.clear();
         }
         if (dateFilterPicker != null) {
             dateFilterPicker.setValue(null);

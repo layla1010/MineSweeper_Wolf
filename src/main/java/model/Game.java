@@ -7,7 +7,8 @@ import java.util.Objects;
 //Represents a single finished game that will appear in the History screen.
 
 public class Game {
-
+	private final String player1OfficialName;
+	private final String player2OfficialName;
     private final String player1Nickname;
     private final String player2Nickname;
     private final Difficulty difficulty;
@@ -20,13 +21,7 @@ public class Game {
     public static final DateTimeFormatter TIME_FORMATTER =
             DateTimeFormatter.ofPattern("HH:mm");
 
-    public Game(String player1Nickname,
-                String player2Nickname,
-                Difficulty difficulty,
-                int finalScore,
-                GameResult result,
-                LocalDate date,
-                int durationSeconds) {
+    public Game(String player1OfficialName, String player2OfficialName, String player1Nickname,String player2Nickname, Difficulty difficulty, int finalScore, GameResult result, LocalDate date, int durationSeconds) {
 
         if (player1Nickname == null || player1Nickname.trim().isEmpty()) {
             throw new IllegalArgumentException("player1Nickname cannot be null or empty");
@@ -38,6 +33,8 @@ public class Game {
             throw new IllegalArgumentException("durationSeconds cannot be negative");
         }
 
+        this.player1OfficialName = (player1OfficialName == null || player1OfficialName.isBlank()) ? null : player1OfficialName.trim();
+        this.player2OfficialName = (player2OfficialName == null || player2OfficialName.isBlank()) ? null : player2OfficialName.trim();
         this.player1Nickname = player1Nickname.trim();
         this.player2Nickname = player2Nickname.trim();
         this.difficulty = Objects.requireNonNull(difficulty, "difficulty cannot be null");
@@ -47,6 +44,14 @@ public class Game {
         this.durationSeconds = durationSeconds;
     }
 
+    public String getPlayer1OfficialName() {
+        return player1OfficialName;
+    }
+
+    public String getPlayer2OfficialName() {
+        return player2OfficialName;
+    }
+    
     public String getPlayer1Nickname() {
         return player1Nickname;
     }

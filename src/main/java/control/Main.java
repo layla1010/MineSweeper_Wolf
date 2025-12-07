@@ -15,10 +15,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         SysData.getInstance().loadHistoryFromCsv();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));
         Parent root = loader.load();
 
-        Scene scene = new Scene(root, 1200, 740);
+        Scene scene = new Scene(root);//, 1200, 740);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Mine Sweeper Smart");
         primaryStage.setResizable(false);

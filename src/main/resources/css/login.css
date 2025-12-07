@@ -1,0 +1,32 @@
+.avatar-option {
+    -fx-background-color: rgba(255, 255, 255, 0.10);
+    -fx-border-color: rgba(255, 255, 255, 0.25);
+    -fx-border-width: 3;
+    -fx-border-radius: 24;
+    -fx-background-radius: 24;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 18, 0.3, 0, 6);
+    -fx-padding: 3;
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-rotate: 0;
+    -fx-opacity: 1;
+}
+
+.avatar-option:hover {
+    -fx-scale-x: 1.18;
+    -fx-scale-y: 1.18;
+    -fx-rotate: 8;
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 22, 0.5, 0, 8);
+}
+
+.avatar-option.avatar-selected {
+    -fx-border-color: rgba(255, 255, 255, 0.85);
+    -fx-effect:
+        dropshadow(gaussian, rgba(255,255,255,0.75), 28, 0.7, 0, 0),
+        dropshadow(gaussian, rgba(0,0,0,0.7), 25, 0.6, 0, 10);
+    -fx-scale-x: 1.12;
+    -fx-scale-y: 1.12;
+}
