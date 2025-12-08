@@ -9,48 +9,68 @@ import javafx.stage.Stage;
 import model.Question;
 
 import javafx.scene.control.Button;
-import javafx.event.ActionEvent; 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.event.ActionEvent;
+
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.Optional;
-import java.net.URLDecoder;
 
+/**
+ * Controller for the Questions Management screen.
+ *
+ * Responsibilities:
+ *  - Load all questions from the CSV file.
+ *  - Display each question as a "card" in a VBox.
+ *  - Support filters by difficulty, question ID, and text search.
+ *  - Navigate to "Add Question" and "Edit Question" screens.
+ *  - Delete questions and save the updated list back to CSV.
+ */
 public class QuestionsManagerController {
 
     @FXML
     private VBox questionsContainerVBox;
+
     @FXML
     private Button newQuestionButton;
+
     @FXML
     private Button backButton;
+
     @FXML
-    private javafx.scene.control.ComboBox<String> levelFilterCombo;
+    private ComboBox<String> levelFilterCombo;
+
     @FXML
-    private javafx.scene.control.ComboBox<String> idFilterCombo;
+    private ComboBox<String> idFilterCombo;
+
     @FXML
-    private javafx.scene.control.TextField searchTextField;
-    
-    //all questions here unfiltered list - to use in filtering!
+    private TextField searchTextField;
+
+    /** Unfiltered list of all questions (used as the base for filtering). */
     private List<Question> allQuestions = new ArrayList<>();
-    //Current working list of questions
+
+    /** Current working list of questions (e.g. after delete). */
     private List<Question> questions = new ArrayList<>();
-    
-    //Returns to the main menu screen (main_view.fxml).
+
+    // ================== Navigation ==================
+
+    /**
+     * Returns to the main menu screen (main_view.fxml).
+     */
     @FXML
     private void onBackButtonClicked(ActionEvent event) {
         try {
@@ -59,7 +79,6 @@ public class QuestionsManagerController {
             );
             Parent root = loader.load();
 
-            // Switch the stage scene
             Stage stage = (Stage) backButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Main Menu");
@@ -70,13 +89,15 @@ public class QuestionsManagerController {
         }
     }
 
-    
-    //Once clicked: Navigates to the Add Question screen (Add_Question_view.fxml).
+    /**
+     * Navigates to the Add Question screen (Add_Question_view.fxml).
+     */
     @FXML
     private void onNewQuestionButtonClicked(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/view/Add_Question_view.fxml"));
+                    getClass().getResource("/view/Add_Question_view.fxml")
+            );
             Parent root = loader.load();
 
             Stage stage = (Stage) newQuestionButton.getScene().getWindow();
@@ -88,39 +109,54 @@ public class QuestionsManagerController {
             e.printStackTrace();
         }
     }
-    
-    //Called automatically when Questions_Management_view.fxml is loaded.
+
+    // ================== Initialization ==================
+
+    /**
+     * Called automatically when Questions_Management_view.fxml is loaded.
+     */
     @FXML
     public void initialize() {
-        reloadQuestionsUI();
-        
-        //For filtering Task:
-        //Loading questions from CSV into allQuestions
-        allQuestions = loadQuestionsFromCsv();
+        // First load questions from CSV into both allQuestions and questions
+        questions.clear();
+        questions.addAll(loadQuestionsFromCsv());
+        allQuestions.clear();
+        allQuestions.addAll(questions);
 
-        //Preparing filter combo boxes
+        // Build initial UI from the list
+        reloadQuestionsUI();
+
+        // Prepare filter combo boxes (difficulty + ID)
         setupFilters();
-        
-        //Search listener: whenever user types → re-apply filters
+
+        // Search listener: whenever user types → re-apply filters
         if (searchTextField != null) {
             searchTextField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
         }
 
-        //Showing all questions initially
+        // Show all questions initially with filters applied
         applyFilters();
     }
-    //Reloads the questions UI from CSV, clears the current list and VBox, then re-adds all cards.
+
+    /**
+     * Reloads the questions UI from the current allQuestions list.
+     * Clears the VBox and re-adds all question cards.
+     */
     private void reloadQuestionsUI() {
-        questions.clear();
-        questions.addAll(loadQuestionsFromCsv());
         questionsContainerVBox.getChildren().clear();
-        for (Question q : questions) {
+        for (Question q : allQuestions) {
             addQuestionCard(q);
         }
     }
-    //Sets up the filter combo boxes (difficulty and ID), including default values and change listeners.
+
+    // ================== Filters & Search ==================
+
+    /**
+     * Sets up the filter combo boxes (difficulty and ID), including default values
+     * and change listeners.
+     */
     private void setupFilters() {
-        //Difficulty filter
+        // Difficulty filter
         levelFilterCombo.getItems().clear();
         levelFilterCombo.getItems().add("All Levels");
         levelFilterCombo.getItems().add("Easy");
@@ -129,7 +165,7 @@ public class QuestionsManagerController {
         levelFilterCombo.getItems().add("Expert");
         levelFilterCombo.setValue("All Levels"); // default
 
-        //ID filter
+        // ID filter
         idFilterCombo.getItems().clear();
         idFilterCombo.getItems().add("All IDs");
         for (Question q : allQuestions) {
@@ -137,17 +173,21 @@ public class QuestionsManagerController {
         }
         idFilterCombo.setValue("All IDs"); // default
 
-        //When user changes filter: re-apply filters:
+        // When user changes filter: re-apply filters
         levelFilterCombo.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
         idFilterCombo.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
     }
-    //Applies all active filters (difficulty, ID, search text) to the allQuestions list and updates the UI with the matching questions.
+
+    /**
+     * Applies all active filters (difficulty, ID, search text) to the allQuestions list
+     * and updates the UI with the matching questions.
+     */
     private void applyFilters() {
         String selectedDifficulty = levelFilterCombo.getValue();
         String selectedId = idFilterCombo.getValue();
-        String searchQuery       = (searchTextField != null) ? searchTextField.getText() : null;
+        String searchQuery = (searchTextField != null) ? searchTextField.getText() : null;
 
-        //Normalize values for null safety
+        // Normalize values for null safety
         if (selectedDifficulty == null) {
             selectedDifficulty = "All Levels";
         }
@@ -157,43 +197,49 @@ public class QuestionsManagerController {
         if (searchQuery == null) {
             searchQuery = "";
         }
-        
+
         String searchLower = searchQuery.trim().toLowerCase();
 
-        //Clear current cards
+        // Clear current cards
         questionsContainerVBox.getChildren().clear();
 
-        //Re-add only matching questions
+        // Re-add only matching questions
         for (Question q : allQuestions) {
 
-            //Filter by difficulty
+            // Filter by difficulty
             if (!"All Levels".equals(selectedDifficulty)) {
                 if (!q.getDifficulty().equalsIgnoreCase(selectedDifficulty)) {
-                    continue; //skip this question
+                    continue; // skip this question
                 }
             }
 
-            //Filter by ID
+            // Filter by ID
             if (!"All IDs".equals(selectedId)) {
                 String qIdStr = String.valueOf(q.getId());
                 if (!qIdStr.equals(selectedId)) {
-                    continue; //skip this question
+                    continue; // skip this question
                 }
             }
-            
-            //filter by search text (question content)
+
+            // Filter by search text (question content)
             if (!searchLower.isEmpty()) {
-                String questionTextLower = q.getText() == null ? "" : q.getText().toLowerCase();
+                String questionTextLower = (q.getText() == null) ? "" : q.getText().toLowerCase();
                 if (!questionTextLower.contains(searchLower)) {
                     continue;
                 }
             }
 
-            //If it passed all filters then show it
+            // If it passed all filters, show it
             addQuestionCard(q);
         }
     }
-    //Resolves the actual CSV file path for Questionsss.csv.
+
+    // ================== CSV Path & Loading ==================
+
+    /**
+     * Resolves the actual CSV file path for Data/Questionsss.csv.
+     * Works both from IDE (classes folder) and from the JAR.
+     */
     private static String getQuestionsCsvPath() {
         try {
             String path = QuestionsManagerController.class
@@ -204,16 +250,18 @@ public class QuestionsManagerController {
 
             String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
 
+            // Running from a JAR
             if (decoded.contains(".jar")) {
                 decoded = decoded.substring(0, decoded.lastIndexOf('/'));   // folder of jar
                 return decoded + "/Data/Questionsss.csv";
-            } 
-            else {
+            } else {
+                // Running from IDE - strip build folder and point to src/main/resources
                 if (decoded.contains("target/classes/")) {
                     decoded = decoded.substring(0, decoded.lastIndexOf("target/classes/"));
                 } else if (decoded.contains("bin/")) {
                     decoded = decoded.substring(0, decoded.lastIndexOf("bin/"));
                 } else {
+                    // fallback, relative path
                     return "Data/Questionsss.csv";
                 }
 
@@ -221,14 +269,17 @@ public class QuestionsManagerController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "Data/Questionsss.csv"; 
+            return "Data/Questionsss.csv";
         }
     }
 
-    //Loads questions from the CSV file into a List<Question> and validates rows and logs any invalid entries to stderr.
+    /**
+     * Loads questions from the CSV file into a List<Question>.
+     * Validates each row and logs invalid entries to stderr.
+     */
     private List<Question> loadQuestionsFromCsv() {
         List<Question> result = new ArrayList<>();
-        
+
         String csvPath = getQuestionsCsvPath();
         System.out.println("Loading questions from: " + csvPath);
 
@@ -268,9 +319,14 @@ public class QuestionsManagerController {
                 Integer iId         = col.get("ID");
                 Integer iQuestion   = col.get("Question");
                 Integer iCorrect    = col.get("Correct Answer");
-                //Basic safety check: enough columns
-                if (cells.length <= Math.max(Math.max(iA, iB), Math.max(iC, Math.max(iD,
-                        Math.max(iDifficulty, Math.max(iId, Math.max(iQuestion, iCorrect))))))) {
+
+                // Basic safety check: enough columns
+                int maxIndex = Math.max(Math.max(iA, iB),
+                        Math.max(iC, Math.max(iD,
+                        Math.max(iDifficulty, Math.max(iId,
+                        Math.max(iQuestion, iCorrect))))));
+
+                if (cells.length <= maxIndex) {
                     System.err.println("Skipping row " + rowNumber + " – not enough columns: " + line);
                     continue;
                 }
@@ -283,7 +339,8 @@ public class QuestionsManagerController {
                 String idStr         = cells[iId].trim();
                 String questionText  = cells[iQuestion].trim();
                 String correctLetter = cells[iCorrect].trim();
-                //Validation checks
+
+                // Validation checks
                 if (!idStr.matches("\\d+")) {
                     System.err.println("Skipping row " + rowNumber + " – invalid ID: '" + idStr + "'");
                     continue;
@@ -305,8 +362,16 @@ public class QuestionsManagerController {
                 String difficultyText = mapDifficulty(difficultyNum);
                 int correctOption     = mapCorrectLetter(correctLetter);
 
-                Question q = new Question(id, difficultyText, questionText,
-                        optA, optB, optC, optD, correctOption);
+                Question q = new Question(
+                        id,
+                        difficultyText,
+                        questionText,
+                        optA,
+                        optB,
+                        optC,
+                        optD,
+                        correctOption
+                );
                 result.add(q);
             }
 
@@ -317,9 +382,9 @@ public class QuestionsManagerController {
         return result;
     }
 
-
-
-    //Helper method that converts difficulty number to text
+    /**
+     * Converts difficulty number to text.
+     */
     private String mapDifficulty(String num) {
         return switch (num) {
             case "1" -> "Easy";
@@ -330,7 +395,9 @@ public class QuestionsManagerController {
         };
     }
 
-    //Helper method to convert correct answer option A/B/C/D to 1/2/3/4
+    /**
+     * Converts correct answer letter A/B/C/D to index 1..4.
+     */
     private int mapCorrectLetter(String letter) {
         return switch (letter.toUpperCase()) {
             case "A" -> 1;
@@ -340,7 +407,12 @@ public class QuestionsManagerController {
             default -> 1; // fallback
         };
     }
-    //Creates a visual Question card from FXML and adds it to the container VBox.
+
+    // ================== UI Cards ==================
+
+    /**
+     * Creates a visual Question card from FXML and adds it to the container VBox.
+     */
     private void addQuestionCard(Question q) {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -350,25 +422,28 @@ public class QuestionsManagerController {
 
             QuestionCardController cardController = loader.getController();
             cardController.setData(q);
-            card.setMaxWidth(Double.MAX_VALUE);
             cardController.setParentController(this);
 
+            card.setMaxWidth(Double.MAX_VALUE);
             questionsContainerVBox.getChildren().add(card);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    //Opens the Edit Question screen for a specific Question.
+
+    /**
+     * Opens the Edit Question screen for a specific Question.
+     */
     public void openEditScreen(Question q) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/view/Edit_Question_view.fxml"));
+                    getClass().getResource("/view/Edit_Question_view.fxml")
+            );
             Parent root = loader.load();
 
-            // Get the edit screen controller and pass the question to it
             EditQuestionController editController = loader.getController();
-            editController.setQuestion(q);  // we'll implement this next
+            editController.setQuestion(q);
 
             Stage stage = (Stage) questionsContainerVBox.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -379,108 +454,120 @@ public class QuestionsManagerController {
             e.printStackTrace();
         }
     }
-    
-    //Deletes a question after user confirmation
-    	public void deleteQuestion(Question q) {
-    	    if (q == null) return;
 
-    	    //Confirm with the user
-    	    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    	    alert.setTitle("Delete Question");
-    	    alert.setHeaderText("Are you sure you want to delete this question?");
-    	    alert.setContentText("ID #" + q.getId() + " – " + q.getText());
+    // ================== Delete & Save ==================
 
-    	    Optional<ButtonType> result = alert.showAndWait();
-    	    if (result.isEmpty() || result.get() != ButtonType.OK) {
-    	        // user cancelled -> do nothing
-    	        return;
-    	    }
+    /**
+     * Deletes a question after user confirmation and saves the updated list
+     * back to the CSV file.
+     */
+    public void deleteQuestion(Question q) {
+        if (q == null) return;
 
-    	    //Remove from our in-memory list (by id)
-    	    questions.removeIf(qq -> qq.getId() == q.getId());
+        // Confirm with the user
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Question");
+        alert.setHeaderText("Are you sure you want to delete this question?");
+        alert.setContentText("ID #" + q.getId() + " – " + q.getText());
 
-    	    //Save the updated list back to the CSV (with IDs renumbered)
-    	    saveQuestionsToCsv(questions);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isEmpty() || result.get() != ButtonType.OK) {
+            // user cancelled -> do nothing
+            return;
+        }
 
-    	    //Refresh the UI from the CSV
-    	    reloadQuestionsUI();
+        // Remove from in-memory lists
+        questions.removeIf(qq -> qq.getId() == q.getId());
+        allQuestions.removeIf(qq -> qq.getId() == q.getId());
 
-    	    System.out.println("Delete requested for question id=" + q.getId());
+        // Save the updated list back to the CSV (with IDs renumbered)
+        saveQuestionsToCsv(allQuestions);
+
+        // Reload UI from updated list
+        reloadQuestionsUI();
+        // Rebuild filters because IDs changed
+        setupFilters();
+        applyFilters();
+
+        System.out.println("Deleted question id=" + q.getId());
     }
-    	
-    	
-    	// Writes the given list of questions back to the CSV file
-    	private void saveQuestionsToCsv(List<Question> questions) {
-    	    //adjust path if your file is elsewhere
-    		String filePath = getQuestionsCsvPath();
-    		System.out.println("Saving questions to: " + filePath);
 
-    	    try (PrintWriter pw = new PrintWriter(
-    	            new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
+    /**
+     * Writes the given list of questions back to the CSV file.
+     * IDs are renumbered sequentially (1..N) after delete.
+     */
+    private void saveQuestionsToCsv(List<Question> questions) {
+        String filePath = getQuestionsCsvPath();
+        System.out.println("Saving questions to: " + filePath);
 
-    	        // IMPORTANT
+        try (PrintWriter pw = new PrintWriter(
+                new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
 
-    	        pw.println("ID,Question,Difficulty,A,B,C,D,Correct Answer");
+            // CSV header – column names
+            pw.println("ID,Question,Difficulty,A,B,C,D,Correct Answer");
 
-    	        int newId = 1;
-    	        for (Question q : questions) {
-    	            // Renumber IDs to keep them serial after delete
-    	            q.setId(newId++);
+            int newId = 1;
+            for (Question q : questions) {
+                // Renumber IDs to keep them serial after delete
+                q.setId(newId++);
 
-    	            String difficultyNum = mapDifficultyToNumber(q.getDifficulty());       // Easy is "1"
-    	            String correctLetter = mapCorrectNumberToLetter(q.getCorrectOption()); // 1 is "A"
+                String difficultyNum = mapDifficultyToNumber(q.getDifficulty());
+                String correctLetter = mapCorrectNumberToLetter(q.getCorrectOption());
 
-    	            String line = String.join(",",
-    	                    String.valueOf(q.getId()),        // ID
-    	                    escapeCsv(q.getText()),           // Question
-    	                    difficultyNum,                    // Difficulty (1–4)
-    	                    escapeCsv(q.getOptA()),           // A
-    	                    escapeCsv(q.getOptB()),           // B
-    	                    escapeCsv(q.getOptC()),           // C
-    	                    escapeCsv(q.getOptD()),           // D
-    	                    correctLetter                     // Correct Answer
-    	            );
-    	            pw.println(line);
-    	        }
+                String line = String.join(",",
+                        String.valueOf(q.getId()),      // ID
+                        escapeCsv(q.getText()),         // Question
+                        difficultyNum,                  // Difficulty (1–4)
+                        escapeCsv(q.getOptA()),         // A
+                        escapeCsv(q.getOptB()),         // B
+                        escapeCsv(q.getOptC()),         // C
+                        escapeCsv(q.getOptD()),         // D
+                        correctLetter                   // Correct Answer
+                );
+                pw.println(line);
+            }
 
-    	    } catch (IOException e) {
-    	        e.printStackTrace();
-    	    }
-    	}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    	// escape values that contain commas/quotes/newlines
-    	private String escapeCsv(String s) {
-    	    if (s == null) return "";
-    	    if (s.contains(",") || s.contains("\"") || s.contains("\n")) {
-    	        s = s.replace("\"", "\"\"");  // " -> ""
-    	        return "\"" + s + "\"";
-    	    }
-    	    return s;
-    	}
+    /**
+     * Escapes values that contain commas/quotes/newlines for CSV.
+     */
+    private String escapeCsv(String s) {
+        if (s == null) return "";
+        if (s.contains(",") || s.contains("\"") || s.contains("\n")) {
+            s = s.replace("\"", "\"\"");  // " -> ""
+            return "\"" + s + "\"";
+        }
+        return s;
+    }
 
-    	// Difficulty text to number
-    	private String mapDifficultyToNumber(String difficultyText) {
-    	    if (difficultyText == null) return "1";
-    	    switch (difficultyText.toLowerCase()) {
-    	        case "easy":   return "1";
-    	        case "medium": return "2";
-    	        case "hard":   return "3";
-    	        case "expert": return "4";
-    	        default:       return "1";
-    	    }
-    	}
+    /**
+     * Difficulty text (Easy/Medium/Hard/Expert) to number (1..4).
+     */
+    private String mapDifficultyToNumber(String difficultyText) {
+        if (difficultyText == null) return "1";
+        switch (difficultyText.toLowerCase()) {
+            case "easy":   return "1";
+            case "medium": return "2";
+            case "hard":   return "3";
+            case "expert": return "4";
+            default:       return "1";
+        }
+    }
 
-    	// correctOption 1..4 to "A..D"
-    	private String mapCorrectNumberToLetter(int correctOption) {
-    	    switch (correctOption) {
-    	        case 1:  return "A";
-    	        case 2:  return "B";
-    	        case 3:  return "C";
-    	        case 4:  return "D";
-    	        default: return "A";
-    	    }
-    	}
-
-
+    /**
+     * correctOption 1..4 → "A..D".
+     */
+    private String mapCorrectNumberToLetter(int correctOption) {
+        switch (correctOption) {
+            case 1:  return "A";
+            case 2:  return "B";
+            case 3:  return "C";
+            case 4:  return "D";
+            default: return "A";
+        }
+    }
 }
-
