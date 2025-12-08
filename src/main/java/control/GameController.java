@@ -21,6 +21,7 @@ import java.util.List;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;

@@ -434,7 +434,7 @@ public class PlayLoginController {
     @FXML
     public void onSkipLoginClicked() {
         playClickSound();
-        // e.g. goToMainPage(false) with guest mode, if you want
+        goToMainPage(false);
     }
 
     @FXML

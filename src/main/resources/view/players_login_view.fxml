@@ -2,301 +2,192 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<GridPane fx:id="root"
-          maxHeight="-Infinity" maxWidth="-Infinity"
-          minHeight="-Infinity" minWidth="-Infinity"
-          prefHeight="750.0" prefWidth="1200.0"
-          style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);"
-          stylesheets="@../css/board.css"
-          xmlns="http://javafx.com/javafx/21"
-          xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="control.GameController">
-
-    <!-- ===== Columns & Rows (same proportions as before) ===== -->
-    <columnConstraints>
-        <ColumnConstraints maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
-        <ColumnConstraints maxWidth="490.0" minWidth="490.0" prefWidth="490.0" />
-        <ColumnConstraints maxWidth="20.0"  minWidth="20.0"  prefWidth="20.0"  />
-        <ColumnConstraints maxWidth="490.0" minWidth="490.0" prefWidth="490.0" />
-        <ColumnConstraints maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
-    </columnConstraints>
-
-    <rowConstraints>
-        <RowConstraints maxHeight="48.0" minHeight="48.0" prefHeight="48.0" />
-        <RowConstraints maxHeight="70.0" minHeight="70.0" prefHeight="70.0" />
-        <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" />
-        <RowConstraints maxHeight="490.0" minHeight="490.0" prefHeight="490.0" />
-        <RowConstraints maxHeight="80.0" minHeight="80.0" prefHeight="80.0" />
-        <RowConstraints maxHeight="58.0" minHeight="58.0" prefHeight="58.0" />
-    </rowConstraints>
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" style="-fx-background-color: purple;" stylesheets="@../css/login.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.PlayLoginController">
 
     <children>
 
-        <!-- ===== Top buttons row (Exit / Help / Back / Pause / Sound) ===== -->
-        <HBox alignment="CENTER_LEFT"
-              prefHeight="50.0" prefWidth="1200.0"
-              spacing="10.0"
-              GridPane.columnSpan="5" GridPane.rowIndex="0">
+        <HBox alignment="CENTER" layoutX="0.0" layoutY="10.0" prefWidth="800.0" spacing="40.0">
             <children>
-                <Button text="Exit"
-                        onAction="#onExitBtnClicked"
-                        prefHeight="32.0" prefWidth="90.0"
-                        style="-fx-background-color: #ef4444;
-                               -fx-text-fill: white;
-                               -fx-background-radius: 20;
-                               -fx-cursor: hand;"
-                        styleClass="zoom-on-hover">
+                <Text fx:id="playersTab" onMouseClicked="#showPlayersLogin" style="-fx-fill: white; -fx-underline: true; -fx-cursor: hand;" text="Players">
                     <font>
-                        <Font name="Copperplate Gothic Bold" size="16.0" />
+                        <Font name="Copperplate Gothic Light" size="22.0" />
                     </font>
-                    <HBox.margin>
-                        <Insets left="15.0" />
-                    </HBox.margin>
-                </Button>
+                </Text>
 
-                <Button text="Help"
-                        onAction="#onHelpBtnClicked"
-                        prefHeight="32.0" prefWidth="90.0"
-                        style="-fx-background-color: #22c55e;
-                               -fx-text-fill: white;
-                               -fx-background-radius: 20;
-                               -fx-cursor: hand;"
-                        styleClass="zoom-on-hover">
+                <Text fx:id="adminTab" onMouseClicked="#showAdminLogin" style="-fx-fill: #7dd3fc; -fx-underline: false; -fx-cursor: hand;" text="Admin">
                     <font>
-                        <Font name="Copperplate Gothic Bold" size="16.0" />
+                        <Font name="Copperplate Gothic Light" size="20.0" />
                     </font>
-                </Button>
-
-                <Button text="Back"
-                        onAction="#onBackBtnClicked"
-                        prefHeight="32.0" prefWidth="90.0"
-                        style="-fx-background-color: #4b5563;
-                               -fx-text-fill: white;
-                               -fx-background-radius: 20;
-                               -fx-cursor: hand;"
-                        styleClass="zoom-on-hover">
-                    <font>
-                        <Font name="Copperplate Gothic Bold" size="16.0" />
-                    </font>
-                </Button>
-
-                <!-- spacer -->
-                <Label text="" prefWidth="700.0" />
-
-                <!-- Pause -->
-                <Button fx:id="pauseBtn"
-                        onAction="#onPauseGame"
-                        prefHeight="40.0" prefWidth="40.0"
-                        style="-fx-background-radius: 40;
-                               -fx-background-color: transparent;
-                               -fx-cursor: hand;">
-                    <graphic>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
-                            <image>
-                                <Image url="@/Images/pause.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-
-                <!-- Music -->
-                <Button fx:id="musicIsOnButton"
-                        onAction="#onSoundOff"
-                        prefHeight="40.0" prefWidth="40.0"
-                        style="-fx-background-radius: 40;
-                               -fx-background-color: transparent;
-                               -fx-cursor: hand;">
-                    <graphic>
-                        <ImageView fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
-                            <image>
-                                <Image url="@/Images/volume.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
+                </Text>
             </children>
         </HBox>
 
-        <!-- ===== Difficulty + Time bar (glass pill) ===== -->
-        <StackPane GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1"
-                   GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+        <StackPane layoutY="60.0" prefHeight="340.0" prefWidth="800.0">
             <children>
-                <Label prefWidth="900.0" prefHeight="50.0"
-                       style="-fx-background-color: rgba(15,23,42,0.65);
-                              -fx-background-radius: 30;
-                              -fx-border-color: rgba(255,255,255,0.3);
-                              -fx-border-radius: 30;
-                              -fx-border-width: 1.5;">
-                </Label>
 
-                <HBox alignment="CENTER" spacing="200.0">
-                    <children>
-                        <Label fx:id="difficultyLabel"
-                               text="Difficulty: -"
-                               textFill="#E5E7EB">
+                <GridPane fx:id="playerLoginCard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="296.0" prefWidth="800.0">
+
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="10.0" prefWidth="400.0" />
+                    </columnConstraints>
+
+                    <rowConstraints>
+                        <RowConstraints maxHeight="282.0000061035156" minHeight="10.0" prefHeight="187.0000457763672" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="142.40001525878904" minHeight="10.0" prefHeight="40.600018310546886" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="122.19998168945312" minHeight="10.0" prefHeight="68.4" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="113.60000000000002" minHeight="10.0" prefHeight="51.599999999999994" vgrow="SOMETIMES" />
+                    </rowConstraints>
+
+                        <Text fx:id="forgotPasswordText" onMouseClicked="#onForgotPasswordClicked" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-cursor: hand; -fx-fill: white;" text="forgot password?" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+						    <font>
+						        <Font name="Copperplate Gothic Light" size="18.0" />
+						    </font>
+						</Text>
+
+
+                        <Button mnemonicParsing="false" onAction="#onPlayersLoginClicked" prefHeight="33.0" prefWidth="138.0" style="-fx-cursor: hand;" text="Login" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="18.0" />
                             </font>
-                        </Label>
+                            <GridPane.margin>
+                                <Insets right="10.0" />
+                            </GridPane.margin>
+                        </Button>
 
-                        <Label fx:id="timeLabel"
-                               text="Time: 00:00"
-                               textFill="#E5E7EB">
+                        <Button mnemonicParsing="false" onAction="#onSkipLoginClicked" prefHeight="33.0" prefWidth="138.0" style="-fx-cursor: hand;" text="Skip" GridPane.columnIndex="1" GridPane.rowIndex="2">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="18.0" />
                             </font>
-                        </Label>
+                            <GridPane.margin>
+                                <Insets left="10.0" />
+                            </GridPane.margin>
+                        </Button>
+
+                        <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="3">
+						    <children>
+						        <Text style="-fx-fill: white;" text="New Player? Sign Up ">
+						            <font>
+						                <Font name="Copperplate Gothic Light" size="18.0" />
+						            </font>
+						        </Text>
+						
+						        <Text fx:id="signUpHereText" onMouseClicked="#onSignUpClicked" style="-fx-fill: #00ccff; -fx-underline: true; -fx-cursor: hand;" text="Here!">
+						            <font>
+						                <Font name="Copperplate Gothic Bold" size="18.0" />
+						            </font>
+						        </Text>
+						    </children>
+						</HBox>
+
+                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                            <children>
+                                <Text fill="WHITE" layoutX="140.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player 1">
+                                    <font>
+                                        <Font name="Copperplate Gothic Bold" size="24.0" />
+                                    </font>
+                                </Text>
+
+                                <TextField fx:id="p1NameField" layoutX="75.0" layoutY="73.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="250.0" promptText="Enter Player 1's Name" />
+
+                                <PasswordField fx:id="p1PasswordField" layoutX="74.0" layoutY="129.0" prefHeight="26.0" prefWidth="250.0" promptText="Enter Player 1's Password" />
+
+                                <TextField fx:id="p1PasswordVisibleField" layoutX="74.0" layoutY="129.0" managed="false" prefHeight="26.0" prefWidth="250.0" promptText="Enter Player 1's Password" visible="false" />
+
+								<Button fx:id="p1TogglePasswordButton" layoutX="328.0" layoutY="129.0" mnemonicParsing="false" onMousePressed="#onP1PasswordPress" onMouseReleased="#onP1PasswordRelease" prefHeight="26.0" prefWidth="30.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                                    <graphic>
+                                        <ImageView fx:id="p1EyeIcon" fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                            <image>
+                                                <Image url="@/Images/view.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </AnchorPane>
+
+                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                            <children>
+                                <Text fill="WHITE" layoutX="141.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player 2">
+                                    <font>
+                                        <Font name="Copperplate Gothic Bold" size="24.0" />
+                                    </font>
+                                </Text>
+
+                                <TextField fx:id="p2NameField" layoutX="75.0" layoutY="73.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="250.0" promptText="Enter Player 2's Name" />
+
+                                <PasswordField fx:id="p2PasswordField" layoutX="75.0" layoutY="129.0" prefHeight="26.0" prefWidth="250.0" promptText="Enter Player 2's Password" />
+
+                                <TextField fx:id="p2PasswordVisibleField" layoutX="75.0" layoutY="129.0" managed="false" prefHeight="26.0" prefWidth="250.0" promptText="Enter Player 2's Password" visible="false" />
+
+								<Button fx:id="p2TogglePasswordButton" layoutX="328.0" layoutY="129.0" mnemonicParsing="false" onMousePressed="#onP2PasswordPress" onMouseReleased="#onP2PasswordRelease" prefHeight="26.0" prefWidth="30.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                                    <graphic>
+                                        <ImageView fx:id="p2EyeIcon" fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                            <image>
+                                                <Image url="@/Images/view.png" />
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </AnchorPane>
+                        
+                        
+                    </GridPane>
+				
+                <AnchorPane fx:id="adminLoginCard" managed="false" prefHeight="400.0" prefWidth="800.0" visible="false">
+                    <children>
+                        <Text fill="WHITE" layoutX="320.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Admin Login" textOrigin="CENTER">
+                            <font>
+                                <Font name="Copperplate Gothic Bold" size="26.0" />
+                            </font>
+                        </Text>
+                        
+                         <Text fx:id="forgotPasswordTextAdmin" fill="WHITE" layoutX="320.0" layoutY="250.0" onMouseClicked="#onForgotPasswordClicked" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-cursor: hand;" text="forgot password?" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+						    <font>
+						        <Font name="Copperplate Gothic Light" size="18.0" />
+						    </font>
+						</Text>
+
+                        <TextField fx:id="adminNameField" layoutX="257.0" layoutY="130.0" prefHeight="30.0" prefWidth="300.0" promptText="Admin Name" />
+
+                        <PasswordField fx:id="adminPasswordField" layoutX="255.0" layoutY="180.0" prefHeight="30.0" prefWidth="300.0" promptText="Password" />
+
+                        <TextField fx:id="adminPasswordVisibleField" layoutX="255.0" layoutY="180.0" managed="false" prefHeight="30.0" prefWidth="300.0" promptText="Password" visible="false" />
+
+						<Button fx:id="adminTogglePasswordButton" layoutX="560.0" layoutY="180.0" mnemonicParsing="false" onMousePressed="#onAdminPasswordPress" onMouseReleased="#onAdminPasswordRelease" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                            <graphic>
+                                <ImageView fx:id="adminEyeIcon" fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/Images/view.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+
+                        <Button fx:id="adminLoginButton" layoutX="325.0" layoutY="270.0" mnemonicParsing="false" onAction="#onAdminLogin" prefHeight="33.0" prefWidth="160.0" style="-fx-cursor: hand;" text="Login">
+                            <font>
+                                <Font name="Copperplate Gothic Light" size="18.0" />
+                            </font>
+                        </Button>
                     </children>
-                </HBox>
+                </AnchorPane>
+
             </children>
         </StackPane>
-
-        <!-- ===== Bombs left bar (glass pill) ===== -->
-        <StackPane GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2"
-                   GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-            <children>
-                <Label prefWidth="900.0" prefHeight="45.0"
-                       style="-fx-background-color: rgba(15,23,42,0.65);
-                              -fx-background-radius: 30;
-                              -fx-border-color: rgba(255,255,255,0.25);
-                              -fx-border-radius: 30;
-                              -fx-border-width: 1.2;" />
-
-                <HBox alignment="CENTER" spacing="250.0">
-                    <children>
-                        <Label fx:id="player1BombsLeftLabel"
-                               text="Player 1, Mines left: 0"
-                               textFill="#E5E7EB">
-                            <font>
-                                <Font name="Copperplate Gothic Bold" size="18.0" />
-                            </font>
-                        </Label>
-
-                        <Label fx:id="player2BombsLeftLabel"
-                               text="Player 2, Mines left: 0"
-                               textFill="#E5E7EB">
-                            <font>
-                                <Font name="Copperplate Gothic Bold" size="18.0" />
-                            </font>
-                        </Label>
-                    </children>
-                </HBox>
-            </children>
-        </StackPane>
-
-        <!-- ===== BOARDS (keep 490x490 like original) ===== -->
-        <HBox alignment="CENTER"
-              prefHeight="490.0" prefWidth="1000.0"
-              spacing="80.0"
-              GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3">
-            <children>
-
-                <!-- Player 1 board -->
-                <StackPane prefWidth="520.0" prefHeight="490.0">
-                    <children>
-                        <!-- rounded dark background behind grid -->
-                        <Label prefWidth="520.0" prefHeight="490.0"
-                               style="-fx-background-color: rgba(15,23,42,0.9);
-                                      -fx-background-radius: 40;
-                                      -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 30, 0.4, 0, 8);" />
-                        <GridPane fx:id="player1Grid"
-                                  prefWidth="490.0" prefHeight="490.0"
-                                  style="-fx-padding: 8;"
-                                  styleClass="grid-board">
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="ALWAYS" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints vgrow="ALWAYS" />
-                            </rowConstraints>
-                        </GridPane>
-                    </children>
-                </StackPane>
-
-                <!-- Player 2 board -->
-                <StackPane prefWidth="520.0" prefHeight="490.0">
-                    <children>
-                        <!-- rounded dark background -->
-                        <Label prefWidth="520.0" prefHeight="490.0"
-                               style="-fx-background-color: rgba(15,23,42,0.9);
-                                      -fx-background-radius: 40;
-                                      -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 30, 0.4, 0, 8);" />
-                        <GridPane fx:id="player2Grid"
-                                  prefWidth="490.0" prefHeight="490.0"
-                                  style="-fx-padding: 8;"
-                                  styleClass="grid-board">
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="ALWAYS" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints vgrow="ALWAYS" />
-                            </rowConstraints>
-                        </GridPane>
-                    </children>
-                </StackPane>
-
-            </children>
-        </HBox>
-
-        <!-- ===== Hearts bar (glass pill) ===== -->
-        <StackPane GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4"
-                   GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-            <children>
-                <Label prefWidth="900.0" prefHeight="60.0"
-                       style="-fx-background-color: rgba(15,23,42,0.75);
-                              -fx-background-radius: 30;
-                              -fx-border-color: rgba(255,255,255,0.25);
-                              -fx-border-radius: 30;
-                              -fx-border-width: 1.2;" />
-
-                <HBox alignment="CENTER_LEFT" spacing="10.0" prefWidth="860.0">
-                    <children>
-                        <Label text="Shared Hearts:"
-                               textFill="#E5E7EB">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="16.0" />
-                            </font>
-                            <HBox.margin>
-                                <Insets left="25.0" />
-                            </HBox.margin>
-                        </Label>
-
-                        <HBox fx:id="heartsBox"
-                              alignment="CENTER_LEFT"
-                              spacing="5.0"
-                              prefHeight="50.0" />
-                    </children>
-                </HBox>
-            </children>
-        </StackPane>
-
-        <!-- ===== Score label on the right ===== -->
-        <HBox alignment="CENTER_RIGHT"
-              prefHeight="58.0" prefWidth="1200.0"
-              GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5">
-            <children>
-                <Label fx:id="scoreLabel"
-                       text="Score: 0"
-                       textFill="#E5E7EB">
-                    <font>
-                        <Font name="Copperplate Gothic Light" size="18.0" />
-                    </font>
-                    <HBox.margin>
-                        <Insets right="40.0" />
-                    </HBox.margin>
-                </Label>
-            </children>
-        </HBox>
 
     </children>
-</GridPane>
+</AnchorPane>
