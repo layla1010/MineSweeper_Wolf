@@ -16,328 +16,580 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="635.0" prefWidth="800.0" style="-fx-background-color: purple;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.SignupController">
-  <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="400.0" />
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="400.0" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints maxHeight="195.19998168945312" minHeight="10.0" prefHeight="149.5999755859375" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="250.4000244140625" minHeight="10.0" prefHeight="206.8000244140625" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="263.9999755859375" minHeight="10.0" prefHeight="263.9999755859375" vgrow="SOMETIMES" />
-  </rowConstraints>
-   <children>
-      <AnchorPane fx:id="anchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="175.0" prefWidth="766.0" style="-fx-background-radius: 150; -fx-border-radius: 150; -fx-border-color: rgba(255,255,255,0.6); -fx-border-width: 3; -fx-background-color: rgba(255, 255, 255, 0.12);;" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
-         <children>
-            <StackPane layoutX="634.0" layoutY="22.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img10" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
-                        <Image url="@/Images/S13.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="569.0" layoutY="22.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img9" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
-                        <Image url="@/Images/S3.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="504.0" layoutY="22.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img8" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
+<GridPane fx:id="signupRoot"
+          maxHeight="-Infinity" maxWidth="-Infinity"
+          minHeight="-Infinity" minWidth="-Infinity"
+          prefHeight="635.0" prefWidth="800.0"
+          style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);"
+          xmlns="http://javafx.com/javafx/21"
+          xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="control.SignupController">
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="400.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="400.0" />
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="210.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" prefHeight="275.0" vgrow="SOMETIMES" />
+    </rowConstraints>
+
+    <children>
+
+        <!-- AVATAR STRIP GLASS CARD -->
+        <AnchorPane fx:id="anchor"
+                    maxHeight="-Infinity" maxWidth="-Infinity"
+                    minHeight="-Infinity" minWidth="-Infinity"
+                    prefHeight="175.0" prefWidth="766.0"
+                    style="-fx-background-radius: 40;
+                           -fx-border-radius: 40;
+                           -fx-border-color: rgba(255,255,255,0.6);
+                           -fx-border-width: 3;
+                           -fx-background-color: rgba(255, 255, 255, 0.12);"
+                    GridPane.columnSpan="2"
+                    GridPane.halignment="CENTER"
+                    GridPane.rowIndex="2"
+                    GridPane.valignment="TOP">
+            <children>
+
+                <!-- Avatars row -->
+                <StackPane layoutX="49.0" layoutY="22.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img1"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S12.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <StackPane layoutX="114.0" layoutY="22.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img2"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S9.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <StackPane layoutX="179.0" layoutY="22.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img3"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S2.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <StackPane layoutX="244.0" layoutY="22.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img4"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S8.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <StackPane layoutX="309.0" layoutY="22.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img5"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S10.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <StackPane layoutX="374.0" layoutY="22.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img6"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S7.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <StackPane layoutX="439.0" layoutY="22.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img7"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S11.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <StackPane layoutX="504.0" layoutY="22.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img8"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S4.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <StackPane layoutX="569.0" layoutY="22.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img9"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S3.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <StackPane layoutX="634.0" layoutY="22.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img10"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S13.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <StackPane layoutX="76.0" layoutY="88.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img11"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S1.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <StackPane layoutX="142.0" layoutY="88.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img12"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S6.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <StackPane layoutX="207.0" layoutY="88.0"
+                           onMouseClicked="#onAvatarClicked"
+                           prefHeight="65.0" prefWidth="65.0">
+                    <styleClass>
+                        <String fx:value="avatar-option" />
+                        <String fx:value="zoom-on-hover" />
+                    </styleClass>
+                    <children>
+                        <ImageView fx:id="img13"
+                                   fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#onAvatarClicked"
+                                   pickOnBounds="true" preserveRatio="true">
+                            <clip>
+                                <Circle centerX="30.0" centerY="30.0" radius="30.0" />
+                            </clip>
+                            <image>
+                                <Image url="@/Images/S5.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </StackPane>
+
+                <!-- PLUS BUTTON (custom avatar) -->
+                <StackPane layoutX="277.0" layoutY="88.0"
+                           onMouseClicked="#playClickSound"
+                           prefHeight="65.0" prefWidth="65.0"
+                           style="-fx-cursor: hand;"
+                           styleClass="zoom-on-hover">
+                    <children>
+                        <ImageView fitHeight="60.0" fitWidth="60.0"
+                                   onMouseClicked="#playClickSound"
+                                   preserveRatio="true">
+                            <image>
+                                <Image url="@/Images/plus.png" />
+                            </image>
+                        </ImageView>
+                        <Button maxHeight="60.0" maxWidth="60.0"
+                                minHeight="60.0" minWidth="60.0"
+                                mnemonicParsing="false"
+                                onAction="#onPlus"
+                                onMouseClicked="#playClickSound"
+                                prefHeight="60.0" prefWidth="60.0"
+                                style="-fx-background-radius: 100;
+                                       -fx-background-color: transparent;
+                                       -fx-cursor: hand;" />
+                    </children>
+                </StackPane>
+
+            </children>
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+            <GridPane.margin>
+                <Insets top="15.0" />
+            </GridPane.margin>
+        </AnchorPane>
+
+        <!-- SELECTED AVATAR + TITLE -->
+        <StackPane maxHeight="-Infinity" maxWidth="-Infinity"
+                   minHeight="-Infinity" minWidth="-Infinity"
+                   onMouseClicked="#onPlayerAreaClicked"
+                   prefHeight="75.0" prefWidth="75.0"
+                   GridPane.columnSpan="2"
+                   GridPane.halignment="LEFT"
+                   GridPane.valignment="CENTER">
+            <children>
+                <ImageView fx:id="playerAvatar"
+                           fitHeight="70.0" fitWidth="70.0"
+                           onMouseClicked="#onPlayerAreaClicked"
+                           pickOnBounds="true"
+                           preserveRatio="true"
+                           style="-fx-border-color: rgba(255,255,255,0.6);
+                                  -fx-border-width: 2;">
+                    <clip>
+                        <Circle centerX="35" centerY="35" radius="35" />
+                    </clip>
+                    <image>
                         <Image url="@/Images/S4.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="439.0" layoutY="22.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img7" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
-                        <Image url="@/Images/S11.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="374.0" layoutY="22.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img6" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
-                        <Image url="@/Images/S7.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="309.0" layoutY="22.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img5" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
-                        <Image url="@/Images/S10.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="244.0" layoutY="22.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img4" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
-                        <Image url="@/Images/S8.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="179.0" layoutY="22.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img3" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
-                        <Image url="@/Images/S2.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="114.0" layoutY="22.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img2" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
-                        <Image url="@/Images/S9.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="49.0" layoutY="22.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img1" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
-                        <Image url="@/Images/S12.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="207.0" layoutY="88.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img13" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
-                        <Image url="@/Images/S5.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="142.0" layoutY="88.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img12" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
-                        <Image url="@/Images/S6.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="76.0" layoutY="88.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
-               <styleClass>
-                  <String fx:value="avatar-option" />
-                  <String fx:value="zoom-on-hover" />
-               </styleClass>
-               <children>
-                  <ImageView fx:id="img11" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#onAvatarClicked" pickOnBounds="true" preserveRatio="true">
-                     <clip>
-                        <Circle centerX="30.0" centerY="30.0" radius="30.0" />
-                     </clip>
-                     <image>
-                        <Image url="@/Images/S1.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </StackPane>
-            <StackPane layoutX="277.0" layoutY="88.0" onMouseClicked="#playClickSound" prefHeight="65.0" prefWidth="65.0" style="-fx-cursor: hand;" styleClass="zoom-on-hover">
-               <children>
-                  <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" preserveRatio="true">
-                     <image>
-                        <Image url="@/Images/plus.png" />
-                     </image>
-                  </ImageView>
-                  <Button maxHeight="60.0" maxWidth="60.0" minHeight="60.0" minWidth="60.0" mnemonicParsing="false" onAction="#onPlus" onMouseClicked="#playClickSound" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 100; -fx-background-color: transparent; -fx-cursor: hand;" />
-               </children>
-            </StackPane>
-         </children>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-         <GridPane.margin>
-            <Insets top="15.0" />
-         </GridPane.margin>
-      </AnchorPane>
-      <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onPlayerAreaClicked" prefHeight="75.0" prefWidth="75.0" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
-         <children>
-            <ImageView fx:id="playerAvatar" fitHeight="70.0" fitWidth="70.0" onMouseClicked="#onPlayerAreaClicked" pickOnBounds="true" preserveRatio="true" style="fx-border-color: rgba(255,255,255,0.6);">
-               <clip>
-                  <Circle centerX="35" centerY="35" radius="35" />
-               </clip>
-               <image>
-                  <Image url="@/Images/S4.png" />
-               </image>
-            </ImageView>
-         </children>
-         <GridPane.margin>
-            <Insets left="200.0" top="60.0" />
-         </GridPane.margin>
-      </StackPane>
-      <Text fx:id="PlayerNameSignup" strokeType="OUTSIDE" strokeWidth="0.0" text="Player Name" GridPane.columnSpan="2" GridPane.halignment="CENTER">
-         <font>
-            <Font name="Copperplate Gothic Bold" size="24.0" />
-         </font>
-         <GridPane.margin>
-            <Insets top="60.0" />
-         </GridPane.margin>
-      </Text>
-      <TextField fx:id="EmailSignup" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="369.0" promptText="Enter Email" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
-         <GridPane.margin>
-            <Insets top="30.0" />
-         </GridPane.margin>
-      </TextField>
-      <TextField fx:id="passwordTextFieldSignUp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="369.0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
-         <GridPane.margin>
-            <Insets bottom="60.0" />
-         </GridPane.margin>
-      </TextField>
-      <Button fx:id="togglePasswordSignupBtn" layoutX="580" layoutY="200" onAction="#onTogglePasswordSignup" prefHeight="30" prefWidth="30" style="-fx-background-color: transparent;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-    <graphic>
-        <ImageView fx:id="eyeIconSignup" fitHeight="20" fitWidth="20">
-            <image>
-                <Image url="@/Images/view.png" />
-            </image>
-        </ImageView>
-    </graphic>
-         <GridPane.margin>
-            <Insets left="25.0" top="70.0" />
-         </GridPane.margin>
-</Button>
-      <PasswordField fx:id="PasswordSignup" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="369.0" promptText="Enter Password" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
-         <GridPane.margin>
-            <Insets bottom="60.0" />
-         </GridPane.margin>
-      </PasswordField>
-      <TextField fx:id="NameSignup" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="369.0" promptText="Enter Official Name" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-         <GridPane.margin>
-            <Insets top="-30.0" />
-         </GridPane.margin></TextField>
-      <TextField fx:id="repasswordTextFieldSignUp1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="369.0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
-         <GridPane.margin>
-            <Insets bottom="15.0" />
-         </GridPane.margin>
-      </TextField>
-      <Button fx:id="toggleRePasswordSignupBtn" layoutX="580" layoutY="200" onAction="#onToggleRePasswordSignup" prefHeight="30" prefWidth="30" style="-fx-background-color: transparent;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-    <graphic>
-        <ImageView fx:id="eyeIconReSignup" fitHeight="20" fitWidth="20">
-            <image>
-                <Image url="@/Images/view.png" />
-            </image>
-        </ImageView>
-    </graphic>
-         <GridPane.margin>
-            <Insets left="25.0" top="165.0" />
-         </GridPane.margin>
-</Button>
-      <PasswordField fx:id="rePasswordSignup1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="369.0" promptText="Re-Enter Password" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
-         <GridPane.margin>
-            <Insets bottom="15.0" />
-         </GridPane.margin>
-      </PasswordField>
-      <Button fx:id="signUpBtn" mnemonicParsing="false" onAction="#onSignUpBtnClicked" prefHeight="40.0" prefWidth="120.0" text="Sign-Up" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
-         <GridPane.margin>
-            <Insets bottom="10.0" />
-         </GridPane.margin>
-         <font>
-            <Font name="Copperplate Gothic Bold" size="21.0" />
-         </font>
-      </Button>
-   </children>
+                    </image>
+                </ImageView>
+            </children>
+            <GridPane.margin>
+                <Insets left="200.0" top="60.0" />
+            </GridPane.margin>
+        </StackPane>
+
+        <Text fx:id="PlayerNameSignup"
+              strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Player Name"
+              GridPane.columnSpan="2"
+              GridPane.halignment="CENTER">
+            <font>
+                <Font name="Copperplate Gothic Bold" size="24.0" />
+            </font>
+            <GridPane.margin>
+                <Insets top="60.0" />
+            </GridPane.margin>
+        </Text>
+
+        <!-- FORM FIELDS (CENTERED COLUMN) -->
+
+        <!-- Email -->
+        <TextField fx:id="EmailSignup"
+                   maxHeight="-Infinity" maxWidth="-Infinity"
+                   minHeight="-Infinity" minWidth="-Infinity"
+                   prefHeight="26.0" prefWidth="369.0"
+                   promptText="Enter Email"
+                   GridPane.columnSpan="2"
+                   GridPane.halignment="CENTER"
+                   GridPane.rowIndex="1"
+                   GridPane.valignment="TOP">
+            <GridPane.margin>
+                <Insets top="30.0" />
+            </GridPane.margin>
+        </TextField>
+
+        <!-- Official Name -->
+        <TextField fx:id="NameSignup"
+                   maxHeight="-Infinity" maxWidth="-Infinity"
+                   minHeight="-Infinity" minWidth="-Infinity"
+                   prefHeight="26.0" prefWidth="369.0"
+                   promptText="Enter Official Name"
+                   GridPane.columnSpan="2"
+                   GridPane.halignment="CENTER"
+                   GridPane.rowIndex="1"
+                   GridPane.valignment="CENTER">
+            <GridPane.margin>
+                <Insets top="-10.0" />
+            </GridPane.margin>
+        </TextField>
+
+        <!-- Password (hidden) -->
+        <PasswordField fx:id="PasswordSignup"
+                       maxHeight="-Infinity" maxWidth="-Infinity"
+                       minHeight="-Infinity" minWidth="-Infinity"
+                       prefHeight="26.0" prefWidth="369.0"
+                       promptText="Enter Password"
+                       GridPane.columnSpan="2"
+                       GridPane.halignment="CENTER"
+                       GridPane.rowIndex="1"
+                       GridPane.valignment="BOTTOM">
+            <GridPane.margin>
+                <Insets bottom="60.0" />
+            </GridPane.margin>
+        </PasswordField>
+
+        <!-- Password (visible text) -->
+        <TextField fx:id="passwordTextFieldSignUp"
+                   maxHeight="-Infinity" maxWidth="-Infinity"
+                   minHeight="-Infinity" minWidth="-Infinity"
+                   prefHeight="26.0" prefWidth="369.0"
+                   promptText="Enter Password"
+                   visible="false" managed="false"
+                   GridPane.columnSpan="2"
+                   GridPane.halignment="CENTER"
+                   GridPane.rowIndex="1"
+                   GridPane.valignment="BOTTOM">
+            <GridPane.margin>
+                <Insets bottom="60.0" />
+            </GridPane.margin>
+        </TextField>
+
+        <!-- Password eye (press & hold) -->
+        <Button fx:id="togglePasswordSignupBtn"
+                onMousePressed="#onPasswordSignupPress"
+                onMouseReleased="#onPasswordSignupRelease"
+                prefHeight="30" prefWidth="30"
+                style="-fx-background-color: transparent;
+                       -fx-cursor: hand;"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="1"
+                GridPane.halignment="LEFT"
+                GridPane.valignment="BOTTOM">
+            <graphic>
+                <ImageView fx:id="eyeIconSignup"
+                           fitHeight="20" fitWidth="20"
+                           preserveRatio="true">
+                    <image>
+                        <Image url="@/Images/view.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+            <GridPane.margin>
+                <Insets bottom="60.0" left="220.0" />
+            </GridPane.margin>
+        </Button>
+
+        <!-- Re-enter Password (hidden) -->
+        <PasswordField fx:id="rePasswordSignup1"
+                       maxHeight="-Infinity" maxWidth="-Infinity"
+                       minHeight="-Infinity" minWidth="-Infinity"
+                       prefHeight="26.0" prefWidth="369.0"
+                       promptText="Re-Enter Password"
+                       GridPane.columnSpan="2"
+                       GridPane.halignment="CENTER"
+                       GridPane.rowIndex="1"
+                       GridPane.valignment="BOTTOM">
+            <GridPane.margin>
+                <Insets bottom="15.0" />
+            </GridPane.margin>
+        </PasswordField>
+
+        <!-- Re-enter Password (visible text) -->
+        <TextField fx:id="repasswordTextFieldSignUp1"
+                   maxHeight="-Infinity" maxWidth="-Infinity"
+                   minHeight="-Infinity" minWidth="-Infinity"
+                   prefHeight="26.0" prefWidth="369.0"
+                   promptText="Re-Enter Password"
+                   visible="false" managed="false"
+                   GridPane.columnSpan="2"
+                   GridPane.halignment="CENTER"
+                   GridPane.rowIndex="1"
+                   GridPane.valignment="BOTTOM">
+            <GridPane.margin>
+                <Insets bottom="15.0" />
+            </GridPane.margin>
+        </TextField>
+
+        <!-- Re-enter Password eye (press & hold) -->
+        <Button fx:id="toggleRePasswordSignupBtn"
+                onMousePressed="#onRePasswordSignupPress"
+                onMouseReleased="#onRePasswordSignupRelease"
+                prefHeight="30" prefWidth="30"
+                style="-fx-background-color: transparent;
+                       -fx-cursor: hand;"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="1"
+                GridPane.halignment="LEFT"
+                GridPane.valignment="BOTTOM">
+            <graphic>
+                <ImageView fx:id="eyeIconReSignup"
+                           fitHeight="20" fitWidth="20"
+                           preserveRatio="true">
+                    <image>
+                        <Image url="@/Images/view.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+            <GridPane.margin>
+                <Insets bottom="15.0" left="220.0" />
+            </GridPane.margin>
+        </Button>
+
+        <!-- SIGN-UP BUTTON (glass style, matches main) -->
+        <Button fx:id="signUpBtn"
+                mnemonicParsing="false"
+                onAction="#onSignUpBtnClicked"
+                prefHeight="40.0" prefWidth="200.0"
+                text="Sign-Up"
+                textFill="white"
+                style="-fx-background-color: rgba(255,255,255,0.20);
+                       -fx-background-radius: 25;
+                       -fx-border-color: rgba(255,255,255,0.30);
+                       -fx-border-width: 2;
+                       -fx-border-radius: 25;
+                       -fx-cursor: hand;"
+                GridPane.columnSpan="2"
+                GridPane.halignment="CENTER"
+                GridPane.rowIndex="2"
+                GridPane.valignment="BOTTOM">
+            <GridPane.margin>
+                <Insets bottom="10.0" />
+            </GridPane.margin>
+            <font>
+                <Font name="Copperplate Gothic Bold" size="21.0" />
+            </font>
+            <styleClass>
+                <String fx:value="floating-card" />
+                <String fx:value="zoom-on-hover" />
+            </styleClass>
+        </Button>
+
+    </children>
 </GridPane>
