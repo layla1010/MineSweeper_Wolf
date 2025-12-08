@@ -41,7 +41,6 @@ public class PlayLoginController {
     @FXML private Text playersTab;
     @FXML private Text adminTab;
 
-    // Players login fields
     @FXML private TextField p1NameField;
     @FXML private TextField p2NameField;
 
@@ -53,7 +52,6 @@ public class PlayLoginController {
     @FXML private TextField     p2PasswordVisibleField;
     @FXML private ImageView     p2EyeIcon;
 
-    // Admin login fields
     @FXML private TextField     adminNameField;
     @FXML private PasswordField adminPasswordField;
     @FXML private TextField     adminPasswordVisibleField;
@@ -68,10 +66,8 @@ public class PlayLoginController {
         this.stage = stage;
     }
 
-    // ================== INIT ==================
     @FXML
     private void initialize() {
-        // Bind visible text fields to password fields
         if (p1PasswordField != null && p1PasswordVisibleField != null) {
             p1PasswordVisibleField.textProperty()
                     .bindBidirectional(p1PasswordField.textProperty());
@@ -87,10 +83,8 @@ public class PlayLoginController {
                     .bindBidirectional(adminPasswordField.textProperty());
         }
 
-        // Start with players tab
         setLoginMode(true, false);
 
-        // Hide "visible" text fields initially
         if (p1PasswordVisibleField != null) {
             p1PasswordVisibleField.setVisible(false);
             p1PasswordVisibleField.setManaged(false);
@@ -104,7 +98,6 @@ public class PlayLoginController {
             adminPasswordVisibleField.setManaged(false);
         }
 
-        // Set initial eye icons
         if (p1EyeIcon != null) {
             p1EyeIcon.setImage(new Image(getClass().getResourceAsStream("/Images/view.png")));
         }
@@ -115,7 +108,6 @@ public class PlayLoginController {
             adminEyeIcon.setImage(new Image(getClass().getResourceAsStream("/Images/view.png")));
         }
 
-        // Optional: make background match main page gradient (instead of plain purple)
         if (mainPane != null) {
             mainPane.setStyle(
                 "-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);"
@@ -125,7 +117,6 @@ public class PlayLoginController {
         playIntroAnimation();
     }
 
-    // ================== ANIMATIONS ==================
 
     private void playIntroAnimation() {
         if (mainPane == null) return;
@@ -148,7 +139,6 @@ public class PlayLoginController {
             adminLoginCard.setManaged(!showPlayers);
         } else {
             if (showPlayers) {
-                // admin -> players
                 FadeTransition fadeOut = new FadeTransition(Duration.millis(200), adminLoginCard);
                 fadeOut.setFromValue(1.0);
                 fadeOut.setToValue(0.0);
@@ -167,7 +157,6 @@ public class PlayLoginController {
 
                 fadeOut.play();
             } else {
-                // players -> admin
                 FadeTransition fadeOut = new FadeTransition(Duration.millis(200), playerLoginCard);
                 fadeOut.setFromValue(1.0);
                 fadeOut.setToValue(0.0);
@@ -188,7 +177,6 @@ public class PlayLoginController {
             }
         }
 
-        // Tab styles
         if (playersTab != null && adminTab != null) {
             if (showPlayers) {
                 playersTab.setStyle("-fx-fill: white; -fx-underline: true; -fx-cursor: hand;");
@@ -200,7 +188,6 @@ public class PlayLoginController {
         }
     }
 
-    // ================== TAB HANDLERS ==================
     @FXML
     private void showPlayersLogin() {
         playClickSound();
@@ -213,7 +200,6 @@ public class PlayLoginController {
         setLoginMode(false, true);
     }
 
-    // ================== PLAYERS LOGIN ==================
     @FXML
     private void onPlayersLoginClicked() {
         SoundManager.playClick();
@@ -267,7 +253,6 @@ public class PlayLoginController {
         goToMainPage(false);
     }
 
-    // ================== ADMIN LOGIN ==================
     @FXML
     private void onAdminLogin() {
         SoundManager.playClick();
@@ -308,9 +293,7 @@ public class PlayLoginController {
         }
     }
 
-    // ================== PASSWORD VISIBILITY (PRESS & HOLD) ==================
 
-    // ---- Player 1 ----
     @FXML
     private void onP1PasswordPress() {
         SoundManager.playClick();
@@ -342,7 +325,6 @@ public class PlayLoginController {
         }
     }
 
-    // ---- Player 2 ----
     @FXML
     private void onP2PasswordPress() {
         SoundManager.playClick();
@@ -374,7 +356,6 @@ public class PlayLoginController {
         }
     }
 
-    // ---- Admin ----
     @FXML
     private void onAdminPasswordPress() {
         SoundManager.playClick();
@@ -406,7 +387,6 @@ public class PlayLoginController {
         }
     }
 
-    // ================== SIGN UP + SKIP + FORGOT ==================
 
     @FXML
     private void onSignUpClicked() {
@@ -430,7 +410,6 @@ public class PlayLoginController {
         }
     }
 
-    // currently empty – you can decide later what "Skip" should do
     @FXML
     public void onSkipLoginClicked() {
         playClickSound();
@@ -439,7 +418,7 @@ public class PlayLoginController {
 
     @FXML
     private void onForgotPasswordClicked() {
-        playClickSound();
+        playClickSound();  // optional
 
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Forgot Password");
@@ -448,12 +427,17 @@ public class PlayLoginController {
 
         Optional<String> result = dialog.showAndWait();
         if (!result.isPresent()) {
+            // user cancelled
             return;
         }
 
         String email = result.get().trim();
         if (email.isEmpty()) {
-            showError("Error", "Email cannot be empty.");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Email cannot be empty.");
+            alert.showAndWait();
             return;
         }
 
@@ -461,19 +445,38 @@ public class PlayLoginController {
         Player player = sysData.findPlayerByEmail(email);
 
         if (player == null) {
-            showError("Unknown Email", "No player found for this email.");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Unknown Email");
+            alert.setHeaderText(null);
+            alert.setContentText("No player found for this email.");
+            alert.showAndWait();
             return;
         }
 
-        // if admin card visible, enforce admin role
-        if (adminLoginCard != null && adminLoginCard.isVisible()) {
+        if (adminLoginCard.isVisible()) {
             if (player.getRole() != Role.ADMIN) {
-                showError("Access Denied", "This email does not belong to an Admin account.");
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Access Denied");
+                alert.setHeaderText(null);
+                alert.setContentText("This email does not belong to an Admin account.");
+                alert.showAndWait();
                 return;
             }
         }
 
         String otp = generateOneTimePassword();
+
+        try {
+            sysData.updatePlayerPassword(email, otp);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Could not update password. Please try again.");
+            alert.showAndWait();
+            return;
+        }
 
         try {
             EmailService.sendOtpEmail(email, otp);
@@ -483,19 +486,21 @@ public class PlayLoginController {
 
         Alert info = new Alert(AlertType.INFORMATION);
         info.setTitle("Password Reset");
-        info.setHeaderText("One-time password sent");
-        info.setContentText("If an account exists for " + email + ", a one-time password has been sent.");
+        info.setHeaderText("One-time password has been set");
+        info.setContentText(
+            "A one-time password has been sent to " + email +
+            ".\nUse it as your password on the login screen.\n" +
+            "You can change it later if you want."
+        );
         info.showAndWait();
-
-        // later you can add OTP verification + password change dialog
     }
 
+
     private String generateOneTimePassword() {
-        int code = (int) (Math.random() * 900_000) + 100_000; // 100000–999999
+        int code = (int) (Math.random() * 900_000) + 100_000; 
         return Integer.toString(code);
     }
 
-    // ================== UTIL ==================
     @FXML
     private void playClickSound() {
         SoundManager.playClick();
