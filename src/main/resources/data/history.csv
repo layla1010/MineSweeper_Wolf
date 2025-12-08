@@ -1,6 +1,5 @@
-date,duration,difficulty,score,result,player1,player2
-2025-11-27,2:16,EASY,55,WIN,Adan,Layla
-2025-11-27,0:46,EASY,94,LOSE,LOLO,SISI
-2025-11-28,2:14,EASY,126,WIN,Layla,Mira
-2025-11-28,2:00,EASY,112,WIN,kayla,baily
-2025-11-28,5:07,EASY,123,WIN,Jihad,Aya
+date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Official,player2Official
+2025-12-07,3:44,EASY,129,WIN,layla,hallumi,,
+2025-12-07,3:39,EASY,127,WIN,lay,hannah,,
+2025-12-07,2:03,EASY,117,WIN,lay,lay,,
+2025-12-07,1:14,EASY,95,LOSE,bobo,haha,Layla,Haneen

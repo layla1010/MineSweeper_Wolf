@@ -1,10 +1,21 @@
 package control;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import model.Player;
+import model.Role;
+import model.SysData;
 import util.AvatarManager;
+import util.SessionManager;
 import util.SoundManager;
 
 public class SignupController {
@@ -24,16 +35,53 @@ public class SignupController {
     @FXML private ImageView img11;
     @FXML private ImageView img12;
     @FXML private ImageView img13;
+    @FXML private TextField NameSignup;
+    @FXML private TextField EmailSignup;
+    @FXML private PasswordField PasswordSignup;
+    @FXML private TextField passwordTextFieldSignUp;
+    @FXML private ImageView eyeIconSignup;
+    @FXML private boolean passwordVisibleSignup = false;
+    
+    @FXML private PasswordField rePasswordSignup1;
+    @FXML private TextField repasswordTextFieldSignUp1;
+    @FXML private ImageView eyeIconReSignup;
+    @FXML private boolean rePasswordVisibleSignup = false;
 
-    private Stage stage;
+    
+    
     private AvatarManager avatarManager;
-
-    public SignupController() {
-    }
+    private Stage stage;
 
     public void setStage(Stage stage) {
         this.stage = stage;
     }
+
+
+    private void showError(String title, String message) {
+        Alert a = new Alert(Alert.AlertType.ERROR);
+        a.setTitle(title);
+        a.setHeaderText(null);
+        a.setContentText(message);
+        a.showAndWait();
+    }
+
+    private void showInfo(String title, String message) {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle(title);
+        a.setHeaderText(null);
+        a.setContentText(message);
+        a.showAndWait();
+    }
+
+    private boolean isValidEmail(String email) {
+        return email != null && email.contains("@") && email.contains(".");
+    }
+
+
+    public SignupController() {
+    }
+
+    
 
     @FXML
     private void initialize() {
@@ -45,6 +93,9 @@ public class SignupController {
         );
 
         avatarManager.selectPlayer(1);
+        passwordTextFieldSignUp.textProperty().bindBidirectional(PasswordSignup.textProperty());
+        repasswordTextFieldSignUp1.textProperty().bindBidirectional(rePasswordSignup1.textProperty());
+
     }
 
     @FXML
@@ -70,5 +121,137 @@ public class SignupController {
         Stage stage = (Stage) playerAvatar.getScene().getWindow();
         avatarManager.handlePlus(stage);
     }
+
+    
+    @FXML
+    private void onSignUpBtnClicked() {
+        playClickSound();
+
+        String officialName = (NameSignup.getText() == null) ? "" : NameSignup.getText().trim();
+        String email        = (EmailSignup.getText() == null) ? "" : EmailSignup.getText().trim();
+        String password     = (PasswordSignup.getText() == null) ? "" : PasswordSignup.getText().trim();
+        String rePassword   = (rePasswordSignup1.getText() == null) ? "" : rePasswordSignup1.getText().trim();
+
+        if (officialName.isEmpty() || email.isEmpty() || password.isEmpty() || rePassword.isEmpty()) {
+            showError("Missing Information", "Please fill in all fields.");
+            return;
+        }
+        if (!isValidEmail(email)) {
+            showError("Invalid Email", "Please enter a valid email address.");
+            return;
+        }
+        if (!password.equals(rePassword)) {
+            showError("Password Mismatch", "Password and confirmation do not match.");
+            return;
+        }
+        if (password.length() < 4) {
+            showError("Weak Password", "Password must be at least 4 characters long.");
+            return;
+        }
+
+        SysData sysData = SysData.getInstance();
+
+        if (sysData.findPlayerByOfficialName(officialName) != null) {
+            showError("Name Already Exists",
+                      "Official name is already in use. Please choose a different name.");
+            return;
+        }
+
+        // 🔹 Get avatar id from AvatarManager
+        String avatarId = avatarManager.getSelectedAvatarIdForPlayer1();
+        if (avatarId == null || avatarId.isBlank()) {
+            // optional: default value if something went wrong
+            avatarId = "S4.png";
+        }
+
+        Player newPlayer;
+        try {
+            newPlayer = sysData.createPlayer(
+                    officialName,
+                    email,
+                    password,
+                    Role.PLAYER,
+                    avatarId       // 🔹 PASS IT HERE
+            );
+        } catch (IllegalArgumentException ex) {
+            showError("Sign-Up Failed", ex.getMessage());
+            return;
+        }
+
+        SessionManager.setLoggedInUser(newPlayer);
+
+        showInfo("Sign-Up Successful",
+                 "Account created successfully.\nYou can now log in and play.");
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));
+            Parent root = loader.load();
+
+            PlayLoginController loginController = loader.getController();
+            loginController.setStage(stage);
+
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Navigation Error", "Could not return to login screen.");
+        }
+    }
+    
+    
+    @FXML
+    private void onTogglePasswordSignup() {
+        SoundManager.playClick();
+        passwordVisibleSignup = !passwordVisibleSignup;
+
+        if (passwordVisibleSignup) {
+            passwordTextFieldSignUp.setVisible(true);
+            passwordTextFieldSignUp.setManaged(true);
+
+            PasswordSignup.setVisible(false);
+            PasswordSignup.setManaged(false);
+
+            eyeIconSignup.setImage(new Image(
+                    getClass().getResourceAsStream("/Images/hide.png")));
+        } else {
+            PasswordSignup.setVisible(true);
+            PasswordSignup.setManaged(true);
+
+            passwordTextFieldSignUp.setVisible(false);
+            passwordTextFieldSignUp.setManaged(false);
+
+            eyeIconSignup.setImage(new Image(
+                    getClass().getResourceAsStream("/Images/view.png")));
+        }
+    }
+    
+    @FXML
+    private void onToggleRePasswordSignup() {
+        SoundManager.playClick();
+        rePasswordVisibleSignup = !rePasswordVisibleSignup;
+
+        if (rePasswordVisibleSignup) {
+            repasswordTextFieldSignUp1.setVisible(true);
+            repasswordTextFieldSignUp1.setManaged(true);
+
+            rePasswordSignup1.setVisible(false);
+            rePasswordSignup1.setManaged(false);
+
+            eyeIconReSignup.setImage(new Image(
+                    getClass().getResourceAsStream("/Images/hide.png")));
+        } else {
+            rePasswordSignup1.setVisible(true);
+            rePasswordSignup1.setManaged(true);
+
+            repasswordTextFieldSignUp1.setVisible(false);
+            repasswordTextFieldSignUp1.setManaged(false);
+
+            eyeIconReSignup.setImage(new Image(
+                    getClass().getResourceAsStream("/Images/view.png")));
+        }
+    }
+
+
 
 }

@@ -10,22 +10,21 @@
 	import javafx.scene.control.TextField;
 	import javafx.scene.image.Image;
 	import javafx.scene.image.ImageView;
-	import javafx.scene.input.MouseEvent;
 	import javafx.scene.layout.AnchorPane;
 	import javafx.scene.layout.GridPane;
 	import javafx.scene.layout.Pane;
 	import javafx.scene.text.Text;
 	import javafx.stage.Stage;
-	import util.AvatarManager;
-import util.EmailService;
-import util.SoundManager;
+	import util.EmailService;
+	import util.SoundManager;
 	import java.util.Optional;
 	import javafx.scene.control.Alert;
 	import javafx.scene.control.Alert.AlertType;
 	import javafx.scene.control.TextInputDialog;
-	import javafx.scene.text.Text;
 	import model.Player;
-	import model.SysData;
+import model.Role;
+import model.SysData;
+	import util.SessionManager;
 
 	
 	public class PlayLoginController {
@@ -46,7 +45,6 @@ import util.SoundManager;
 	    @FXML private Text adminTab;
 	    @FXML private TextField adminNameField;
 	
-	    private AvatarManager avatarManager;
 	
 	    @FXML private PasswordField p1PasswordField;
 	    @FXML private TextField     p1PasswordVisibleField;
@@ -67,6 +65,8 @@ import util.SoundManager;
 	    private boolean adminPasswordVisible = false;
 	    
 	    @FXML private Text forgotPasswordText;
+	    
+	    @FXML private Text forgotPasswordTextAdmin;
 
 	    
 	    private Stage stage;
@@ -98,24 +98,77 @@ import util.SoundManager;
 	    @FXML
 	    private void onPlayersLoginClicked() {
 	        SoundManager.playClick(); 
-	
+
 	        String p1Name = (p1NameField.getText() == null) ? "" : p1NameField.getText().trim();
 	        String p2Name = (p2NameField.getText() == null) ? "" : p2NameField.getText().trim();
 	        String p1Pass = (p1PasswordField.getText() == null) ? "" : p1PasswordField.getText().trim();
 	        String p2Pass = (p2PasswordField.getText() == null) ? "" : p2PasswordField.getText().trim();
-	
-	        // TO DO: validate via CSV
-	        if (p1Name.isEmpty() || p2Name.isEmpty()) {
-	            // show error alert, etc.
-	            // (I already have showError in other controllers; I can reuse a util)
+
+	        if (p1Name.isEmpty() || p2Name.isEmpty() ||
+	            p1Pass.isEmpty() || p2Pass.isEmpty()) {
+	            Alert a = new Alert(AlertType.ERROR);
+	            a.setTitle("Login failed");
+	            a.setHeaderText(null);
+	            a.setContentText("Both players must enter name and password.");
+	            a.showAndWait();
 	            return;
 	        }
-	
-	        // Save to some shared session (pseudo-code)
-	        // PlayerSession.setPlayers(p1Name, p1Pass, p2Name, p2Pass);
-	
+
+	        SysData sys = SysData.getInstance();
+
+	        Player p1 = sys.findPlayerByOfficialName(p1Name);
+	        Player p2 = sys.findPlayerByOfficialName(p2Name);
+
+	        if (p1 == null) {
+	            Alert a = new Alert(AlertType.ERROR);
+	            a.setTitle("Login failed");
+	            a.setHeaderText(null);
+	            a.setContentText("Player 1 is not a registered user.");
+	            a.showAndWait();
+	            return;
+	        }
+
+	        if (p2 == null) {
+	            Alert a = new Alert(AlertType.ERROR);
+	            a.setTitle("Login failed");
+	            a.setHeaderText(null);
+	            a.setContentText("Player 2 is not a registered user.");
+	            a.showAndWait();
+	            return;
+	        }
+
+	        if (!p1.checkPassword(p1Pass)) {
+	            Alert a = new Alert(AlertType.ERROR);
+	            a.setTitle("Login failed");
+	            a.setHeaderText(null);
+	            a.setContentText("Incorrect password for Player 1.");
+	            a.showAndWait();
+	            return;
+	        }
+
+	        if (!p2.checkPassword(p2Pass)) {
+	            Alert a = new Alert(AlertType.ERROR);
+	            a.setTitle("Login failed");
+	            a.setHeaderText(null);
+	            a.setContentText("Incorrect password for Player 2.");
+	            a.showAndWait();
+	            return;
+	        }
+
+	        if (p1 == p2) {
+	            Alert a = new Alert(AlertType.ERROR);
+	            a.setTitle("Login failed");
+	            a.setHeaderText(null);
+	            a.setContentText("Player 1 and Player 2 must be different users.");
+	            a.showAndWait();
+	            return;
+	        }
+
+	        SessionManager.setPlayers(p1, p1Name, p2, p2Name);
+
 	        goToMainPage(false); 
 	    }
+
 	    
 	    @FXML
 	    private void onAdminLogin() {
@@ -124,11 +177,26 @@ import util.SoundManager;
 	        String adminName = adminNameField.getText() == null ? "" : adminNameField.getText().trim();
 	        String adminPass = adminPasswordField.getText() == null ? "" : adminPasswordField.getText().trim();
 	
-	        // TO DO: validate admin credentials (strict)
-	        // if (!"admin".equals(adminName) || !"1234".equals(adminPass)) { show error; return; }
-	
-	        // Save admin in session if needed
-	        // PlayerSession.setAdmin(adminName);
+	        Player admin = SysData.getInstance().findPlayerByOfficialName(adminName);
+
+	        if (admin == null || !admin.checkPassword(adminPass)) {
+	            Alert a = new Alert(AlertType.ERROR);
+	            a.setTitle("Login failed");
+	            a.setHeaderText(null);
+	            a.setContentText("Invalid Name or Password.");
+	            a.showAndWait();
+	            return;
+	            } 
+	        if (!admin.isAdmin()) {
+		            Alert a = new Alert(AlertType.ERROR);
+		            a.setTitle("Login failed");
+		            a.setHeaderText(null);
+		            a.setContentText("Not a saved Admin.");
+		            a.showAndWait();
+		            return;
+		            }
+	        
+	        SessionManager.setLoggedInUser(admin);
 	
 	        goToMainPage(true); 
 	    }
@@ -143,6 +211,7 @@ import util.SoundManager;
 	
 	            Stage stage = (Stage) playerLoginCard.getScene().getWindow();
 	            stage.setScene(new Scene(root));
+	            stage.centerOnScreen();
 	            stage.show();
 	
 	        } catch (Exception e) {
@@ -344,6 +413,17 @@ import util.SoundManager;
 	            alert.setContentText("No player found for this email.");
 	            alert.showAndWait();
 	            return;
+	        }
+	        
+	        if (adminLoginCard.isVisible()) {
+	            if (player.getRole() != Role.ADMIN) {
+	                Alert alert = new Alert(AlertType.ERROR);
+	                alert.setTitle("Access Denied");
+	                alert.setHeaderText(null);
+	                alert.setContentText("This email does not belong to an Admin account.");
+	                alert.showAndWait();
+	                return; // do NOT send OTP
+	            }
 	        }
 
 	        // 3. Generate one-time password (6-digit code)
