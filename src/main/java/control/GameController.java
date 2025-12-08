@@ -49,6 +49,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 
 public class GameController {
 
@@ -91,6 +94,10 @@ public class GameController {
 
     private int safeCellsRemaining1;
     private int safeCellsRemaining2;
+    
+    ///added by jihad
+    private boolean[][] revealedCellsP1;
+    private boolean[][] revealedCellsP2;
 
     private static final int TOTAL_HEART_SLOTS = 10;
 
@@ -102,9 +109,18 @@ public class GameController {
 
         this.board1 = new Board(difficulty);
         this.board2 = new Board(difficulty);
+        
+        //ADDED BY JIHAD:
+        //print both boards for debugging
+        printBoardDebug("Player 1 Board", board1);
+        printBoardDebug("Player 2 Board", board2);
 
         this.minesLeft1 = board1.getMineCount();
         this.minesLeft2 = board2.getMineCount();
+        
+        //Newlly added to track cells that were already revealed (for scoring)
+        this.revealedCellsP1 = new boolean[board1.getRows()][board1.getCols()];
+        this.revealedCellsP2 = new boolean[board2.getRows()][board2.getCols()];
 
         int totalCells1 = board1.getRows() * board1.getCols();
         int totalCells2 = board2.getRows() * board2.getCols();
@@ -269,6 +285,20 @@ public class GameController {
                 return;
             }
 
+//            if (e.getButton() == MouseButton.SECONDARY) {
+//                if ((tileIsPlayer1 && !isPlayer1Turn) ||
+//                        (!tileIsPlayer1 && isPlayer1Turn)) {
+//                    return;
+//                }
+//
+//                if (button.isDisable()) {
+//                    return;
+//                }
+//
+//                toggleFlag(button);
+//                return;
+//            }
+            //Changed by jihad!
             if (e.getButton() == MouseButton.SECONDARY) {
                 if ((tileIsPlayer1 && !isPlayer1Turn) ||
                         (!tileIsPlayer1 && isPlayer1Turn)) {
@@ -279,7 +309,8 @@ public class GameController {
                     return;
                 }
 
-                toggleFlag(button);
+                // NEW: pass board + coords so we can check cell type
+                toggleFlag(board, r, c, button, tileIsPlayer1);
                 return;
             }
 
@@ -305,14 +336,44 @@ public class GameController {
         return tile;
     }
 
+//    //Toggles a flag icon on a covered cell. If a flag is present, removes it; otherwise adds a flag graphic or emoji.
+//    private void toggleFlag(Button button) {
+//        if (button.getGraphic() instanceof ImageView) {
+//            button.setGraphic(null);
+//            button.getStyleClass().remove("cell-flagged");
+//            return;
+//        }
+//
+//        try {
+//            Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
+//            ImageView iv = new ImageView(img);
+//            iv.setFitWidth(20);
+//            iv.setFitHeight(20);
+//            iv.setPreserveRatio(true);
+//            button.setGraphic(iv);
+//        } catch (Exception ex) {
+//            button.setText("🚩");
+//        }
+//        if (!button.getStyleClass().contains("cell-flagged")) {
+//            button.getStyleClass().add("cell-flagged");
+//        }
+//    }
+    
     //Toggles a flag icon on a covered cell. If a flag is present, removes it; otherwise adds a flag graphic or emoji.
-    private void toggleFlag(Button button) {
+    //If a QUESTION or SURPRISE cell is flagged, score is reduced by 3 points.
+    private void toggleFlag(Board board, int row, int col, Button button, boolean isPlayer1) {
+        Cell cell = board.getCell(row, col);
+
+        // If there is already a flag → remove it (no score change)
         if (button.getGraphic() instanceof ImageView) {
             button.setGraphic(null);
             button.getStyleClass().remove("cell-flagged");
+            // scoreboard might not strictly need refresh, but safe:
+            updateScoreAndMineLabels();
             return;
         }
 
+        // We are placing a new flag
         try {
             Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
             ImageView iv = new ImageView(img);
@@ -323,10 +384,22 @@ public class GameController {
         } catch (Exception ex) {
             button.setText("🚩");
         }
+
         if (!button.getStyleClass().contains("cell-flagged")) {
             button.getStyleClass().add("cell-flagged");
         }
+
+        // NEW RULE: flagging a QUESTION or SURPRISE cell → -3 points
+        if (cell.getType() == CellType.QUESTION || cell.getType() == CellType.SURPRISE) {
+            System.out.println("The score before flagging: " + score);
+        	score -= 3;
+            System.out.println("Flagged " + cell.getType() + " at (" + row + "," + col + "), score -3, so it is: " + score);
+
+        }
+
+        updateScoreAndMineLabels();
     }
+
     
     //Reveals a single cell and updates hearts, score, and game state according to the cell type (MINE, QUESTION, SURPRISE, NUMBER, EMPTY).
     //Also checks for win/lose conditions.
@@ -342,6 +415,16 @@ public class GameController {
         if (button.isDisable()) {
             return;
         }
+        
+        //added by jihad:
+        //check if this cell is being revealed for the first time
+        boolean[][] revealedArray = isPlayer1 ? revealedCellsP1 : revealedCellsP2;
+        boolean isFirstReveal = false;
+        if (revealedArray != null) {
+            isFirstReveal = !revealedArray[row][col];
+            revealedArray[row][col] = true;
+        }
+        //until here
 
         if (button.getGraphic() instanceof ImageView) {
             button.setGraphic(null);
@@ -373,6 +456,22 @@ public class GameController {
                     onGameOver();
                 }
             }
+//            case QUESTION -> {
+//                try {
+//                    Image img = new Image(getClass().getResourceAsStream("/Images/question-mark.png"));
+//                    ImageView iv = new ImageView(img);
+//                    iv.setFitWidth(20);
+//                    iv.setFitHeight(20);
+//                    iv.setPreserveRatio(true);
+//                    button.setGraphic(iv);
+//                    button.getStyleClass().addAll("cell-revealed", "cell-question");
+//                    score += 0;
+//                } catch (Exception ex) {
+//                    button.setText("?");
+//                    button.getStyleClass().addAll("cell-revealed", "cell-question");
+//                    score += 0;
+//                }
+//            }
             case QUESTION -> {
                 try {
                     Image img = new Image(getClass().getResourceAsStream("/Images/question-mark.png"));
@@ -382,13 +481,35 @@ public class GameController {
                     iv.setPreserveRatio(true);
                     button.setGraphic(iv);
                     button.getStyleClass().addAll("cell-revealed", "cell-question");
-                    score += 0;
                 } catch (Exception ex) {
                     button.setText("?");
                     button.getStyleClass().addAll("cell-revealed", "cell-question");
-                    score += 0;
+                }
+
+                //first time a QUESTION is revealed: +1 point
+                if (isFirstReveal) {
+                	System.out.println("Before first reveal QUESTION at (" + row + "," + col + "), the score is: " + score);
+                	score += 1;
+                	System.out.println("First reveal QUESTION at (" + row + "," + col + "), score +1, so it is: " + score);
                 }
             }
+
+//            case SURPRISE -> {
+//                try {
+//                    Image img = new Image(getClass().getResourceAsStream("/Images/giftbox.png"));
+//                    ImageView iv = new ImageView(img);
+//                    iv.setFitWidth(20);
+//                    iv.setFitHeight(20);
+//                    iv.setPreserveRatio(true);
+//                    button.setGraphic(iv);
+//                    button.getStyleClass().addAll("cell-revealed", "cell-surprise");
+//                    score += 2;
+//                } catch (Exception ex) {
+//                    button.setText("★");
+//                    button.getStyleClass().addAll("cell-revealed", "cell-surprise");
+//                    score += 2;
+//                }
+//            }
             case SURPRISE -> {
                 try {
                     Image img = new Image(getClass().getResourceAsStream("/Images/giftbox.png"));
@@ -398,13 +519,19 @@ public class GameController {
                     iv.setPreserveRatio(true);
                     button.setGraphic(iv);
                     button.getStyleClass().addAll("cell-revealed", "cell-surprise");
-                    score += 2;
                 } catch (Exception ex) {
                     button.setText("★");
                     button.getStyleClass().addAll("cell-revealed", "cell-surprise");
-                    score += 2;
+                }
+
+                //first time a SURPRISE is revealed: +1 point
+                if (isFirstReveal) {
+                	System.out.println("Before first reveal SURPRISE at (" + row + "," + col + "), the score is: " + score);
+                	score += 1;
+                	System.out.println("First reveal SURPRISE at (" + row + "," + col + "), score +1, so it is: " + score);
                 }
             }
+
             case NUMBER -> {
                 int n = cell.getAdjacentMines();
                 button.setText(String.valueOf(n));
@@ -437,24 +564,59 @@ public class GameController {
         updateScoreAndMineLabels();
     }
     
-    //Handles a cell click by revealing it and triggering cascade reveal if the cell is empty. Returns true to indicate the turn was used.
+//    //Handles a cell click by revealing it and triggering cascade reveal if the cell is empty. Returns true to indicate the turn was used.
+//    private boolean handleCellClick(Board board,
+//                                    int row,
+//                                    int col,
+//                                    Button button,
+//                                    StackPane tile,
+//                                    boolean isPlayer1) {
+//
+//        Cell cell = board.getCell(row, col);
+//
+//        revealSingleCell(board, row, col, button, tile, isPlayer1);
+//
+//        if (cell.getType() == CellType.EMPTY) {
+//            cascadeReveal(board, row, col, isPlayer1);
+//        }
+//
+//        return true;
+//    }
+    //Changed by Jihad:
     private boolean handleCellClick(Board board,
-                                    int row,
-                                    int col,
-                                    Button button,
-                                    StackPane tile,
-                                    boolean isPlayer1) {
+            int row,
+            int col,
+            Button button,
+            StackPane tile,
+            boolean isPlayer1) {
 
-        Cell cell = board.getCell(row, col);
+    	Cell cell = board.getCell(row, col);
 
-        revealSingleCell(board, row, col, button, tile, isPlayer1);
+    	//Determine which revealed-array to use
+    	boolean[][] revealedArray = isPlayer1 ? revealedCellsP1 : revealedCellsP2;
 
-        if (cell.getType() == CellType.EMPTY) {
-            cascadeReveal(board, row, col, isPlayer1);
-        }
+    	//If this is a SURPRISE cell and it was already revealed before,
+    	//this click is an ACTIVATION (second click).
+    	if (cell.getType() == CellType.SURPRISE &&
+    			revealedArray != null &&
+    			revealedArray[row][col]) {
 
-        return true;
+    		activateSurprise(board, row, col, button, tile, isPlayer1);
+    		return true;
+    	}
+
+    	//Otherwise, normal reveal (first time or other types)
+    	revealSingleCell(board, row, col, button, tile, isPlayer1);
+
+    	//Cascade for EMPTY cells
+    	if (cell.getType() == CellType.EMPTY) {
+    		cascadeReveal(board, row, col, isPlayer1);
+    	}
+
+    	return true;
     }
+
+    
     
     //Performs a flood-fill style reveal of neighboring cells starting from the given position, for empty areas.
     private void cascadeReveal(Board board, int startRow, int startCol, boolean isPlayer1) {
@@ -842,6 +1004,173 @@ public class GameController {
             e.printStackTrace();
         }
     }
+    
+    //ADDED BY JIHAD:
+    //helper method: prints the logical contents of a board to the console
+    private void printBoardDebug(String title, Board board) {
+        System.out.println("========== " + title + " ==========");
+        int rows = board.getRows();
+        int cols = board.getCols();
+
+        //Print column indices header
+        System.out.print("    ");
+        for (int c = 0; c < cols; c++) {
+            System.out.printf("%3d", c);
+        }
+        System.out.println();
+        System.out.print("    ");
+        for (int c = 0; c < cols; c++) {
+            System.out.print("---");
+        }
+        System.out.println();
+
+        for (int r = 0; r < rows; r++) {
+            //Row index on the left
+            System.out.printf("%3d|", r);
+
+            for (int c = 0; c < cols; c++) {
+                Cell cell = board.getCell(r, c);
+                char ch;
+
+                switch (cell.getType()) {
+                    case MINE -> ch = 'M';
+                    case QUESTION -> ch = 'Q';
+                    case SURPRISE -> ch = 'S';
+                    case NUMBER -> {
+                        int n = cell.getAdjacentMines();
+                        //Show digits 0–9, or 'N' if >9 just in case
+                        if (n >= 0 && n <= 9) {
+                            ch = (char) ('0' + n);
+                        } else {
+                            ch = 'N';
+                        }
+                    }
+                    case EMPTY -> ch = '.';
+                    default -> ch = '?';
+                }
+
+                System.out.printf("%3c", ch);
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+    
+    //Activation Surprise cell method:
+    //Activates a surprise cell on second click: base activation score + random good/bad effect.
+    //Good: extra points +1 life (or convert heart to points if at max).
+    //Bad: extra negative points -1 life.
+    //After activation, the cell is disabled (cannot be clicked again).
+    private void activateSurprise(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
+
+    	int livesBefore = sharedHearts;
+    	int scoreBefore = score;
+
+    	int activationPoints = getSurpriseActivationPoints();
+    	int goodBonus = getSurpriseGoodBonusPoints();
+    	int badPenalty = getSurpriseBadPenaltyPoints();
+
+    	//Always get activation points
+    	int scoreChange = activationPoints;
+
+    	//50% chance good / bad
+    	boolean good = Math.random() < 0.5;
+
+    	if (good) {
+    		//Good surprise: extra positive points + possibly +1 life
+    		scoreChange += goodBonus;
+
+    		if (sharedHearts < TOTAL_HEART_SLOTS) {
+    			//Gain 1 life
+    			sharedHearts += 1;
+    		} else {
+    			//Hearts already max then convert the extra life into points
+    			//Conversion equals activation cost per mode
+    			scoreChange += activationPoints;
+    		}
+    	} else {
+    		//Bad surprise: extra negative points and -1 life
+    		scoreChange -= badPenalty;
+    		sharedHearts = Math.max(0, sharedHearts - 1);
+    	}
+
+    	//Apply the total score change
+    	score += scoreChange;
+
+    	// Update hearts bar
+    	buildHeartsBar();
+
+    	//If lives hit zero → game over, same as stepping on mines
+    	if (sharedHearts == 0 && !gameOver) {
+    		gameWon = false;
+    		onGameOver();
+    	}
+
+    	//Disable this surprise cell so it cannot be activated again
+    	button.setDisable(true);
+
+    	//Refresh score / mines labels
+    	updateScoreAndMineLabels();
+
+    	//Show popup with result
+    	int livesAfter = sharedHearts;
+    	int netScoreChange = score - scoreBefore;
+    	showSurprisePopup(good, netScoreChange, livesBefore, livesAfter);
+    }
+
+    	
+    
+    //Helper methods for activating surprise cell:
+    //Base score for activating a surprise (second click) per difficulty
+    private int getSurpriseActivationPoints() {
+        return switch (difficulty) {
+            case EASY -> 5;
+            case MEDIUM -> 8;
+            case HARD -> 12;
+        };
+    }
+
+    //Extra score for GOOD surprise (on top of activation)
+    private int getSurpriseGoodBonusPoints() {
+        return switch (difficulty) {
+            case EASY -> 8;
+            case MEDIUM -> 12;
+            case HARD -> 16;
+        };
+    }
+
+    //Extra score (negative) for BAD surprise (on top of activation)
+    private int getSurpriseBadPenaltyPoints() {
+        return switch (difficulty) {
+            case EASY -> 8;
+            case MEDIUM -> 12;
+            case HARD -> 16;
+        };
+    }
+    // Shows a popup describing the surprise result and changes
+    private void showSurprisePopup(boolean good, int netScoreChange, int livesBefore, int livesAfter) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Surprise Result");
+
+        String typeText = good ? "GOOD surprise!" : "BAD surprise!";
+        int livesDelta = livesAfter - livesBefore;
+        String scoreChangeText = (netScoreChange >= 0 ? "+" : "") + netScoreChange;
+        String livesChangeText = (livesDelta > 0 ? "+" : "") + livesDelta;
+
+        StringBuilder msg = new StringBuilder();
+        msg.append(typeText).append("\n\n");
+        msg.append("Score change: ").append(scoreChangeText).append("\n");
+        msg.append("Lives change: ").append(livesChangeText).append("\n");
+        msg.append("\nNew score: ").append(score).append("\n");
+        msg.append("New lives: ").append(sharedHearts).append("/").append(TOTAL_HEART_SLOTS);
+
+        alert.setHeaderText(null);
+        alert.setContentText(msg.toString());
+        alert.showAndWait();
+    }
+
+
+
 
 
 }
