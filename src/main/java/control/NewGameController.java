@@ -25,6 +25,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Difficulty;
 import model.GameConfig;
+import model.SysData;
 import util.SoundManager;
 import util.UIAnimations;
 
@@ -54,7 +55,9 @@ public class NewGameController {
     @FXML private ImageView img11;
     @FXML private ImageView img12;
     @FXML private ImageView img13;
-    @FXML private Button setUpmusicIsOnButton;
+    @FXML private Button setUpSoundButton;  
+    @FXML private Button setUpMusicButton;
+
 
 
     private boolean player1AvatarChosen = false;
@@ -70,12 +73,18 @@ public class NewGameController {
 
     @FXML
     private void initialize() {
-        selectPlayer(1);
-        setupAvatarThumbnails();
-        UIAnimations.applyHoverZoomToAllButtons(root);
-        UIAnimations.applyFloatingToCards(root);
-        UIAnimations.applyHoverZoomToClass(root);
-    }
+    	    selectPlayer(1);
+    	    setupAvatarThumbnails();
+    	    UIAnimations.applyHoverZoomToAllButtons(root);
+    	    UIAnimations.applyFloatingToCards(root);
+    	    UIAnimations.applyHoverZoomToClass(root);
+
+    	    // סינכרון אייקונים לפי ההגדרות הגלובליות
+    	    refreshSoundIconFromSettings();
+    	    refreshMusicIconFromSettings();
+    	}
+
+
 
     @FXML
     private void playClickSound() {
@@ -257,20 +266,33 @@ public class NewGameController {
             }
         }
     }
-    
+ 
      
-    @FXML void onSoundOff() {
-        util.SoundManager.toggleMusic();
+    @FXML
+    void onSoundOff() {
+        // להפוך את מצב ה-Sound הגלובלי
+        boolean newState = !SysData.isSoundEnabled();
+        SysData.setSoundEnabled(newState);
 
-        if (setUpmusicIsOnButton != null && setUpmusicIsOnButton.getGraphic() instanceof ImageView iv) {
-            String iconPath = util.SoundManager.isMusicOn()
-                    ? "/Images/volume.png"
-                    : "/Images/mute.png";
-
-            Image img = new Image(getClass().getResourceAsStream(iconPath));
-            iv.setImage(img);
-        }
+        // לעדכן אייקון רמקול
+        refreshSoundIconFromSettings();
     }
+
+
+    
+    @FXML
+    void onMusicToggle() {
+        // להדליק/לכבות מוזיקה בפועל
+        SoundManager.toggleMusic();
+
+        // לשמור את המצב ל-SysData
+        boolean musicOn = SoundManager.isMusicOn();
+        SysData.setMusicEnabled(musicOn);
+
+        // לעדכן אייקון המוזיקה
+        refreshMusicIconFromSettings();
+    }
+
     
     @FXML
     private void onAvatarClicked(MouseEvent event) {
@@ -309,4 +331,55 @@ public class NewGameController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    
+    
+    
+    /** עדכון אייקון הרמקול לפי SysData.isSoundEnabled() */
+    private void refreshSoundIconFromSettings() {
+        if (setUpSoundButton == null) return;
+        if (!(setUpSoundButton.getGraphic() instanceof ImageView iv)) return;
+
+        boolean enabled = SysData.isSoundEnabled();
+        String iconPath = enabled ? "/Images/volume.png" : "/Images/mute.png";
+
+        Image img = new Image(getClass().getResourceAsStream(iconPath));
+        iv.setImage(img);
+    }
+
+    private void refreshMusicIconFromSettings() {
+        if (setUpMusicButton == null) return;
+        if (!(setUpMusicButton.getGraphic() instanceof ImageView iv)) return;
+
+        boolean enabled = SysData.isMusicEnabled();
+
+        // סנכרון עם SoundManager
+        if (enabled && !SoundManager.isMusicOn()) {
+            SoundManager.startMusic();
+        } else if (!enabled && SoundManager.isMusicOn()) {
+            SoundManager.stopMusic();
+        }
+
+        String iconPath;
+        double size;
+
+        if (enabled) {
+            // מוזיקה דלוקה → אייקון music קטן
+            iconPath = "/Images/music.png";
+            size = 40;       // גודל רגיל
+        } else {
+            // מוזיקה כבויה → אייקון music_mute גדול
+            iconPath = "/Images/music_mute.png";
+            size = 60;       // פה תבחרי כמה גדול את רוצה (50/60/70)
+        }
+
+        Image img = new Image(getClass().getResourceAsStream(iconPath));
+        iv.setImage(img);
+
+        iv.setFitWidth(size);
+        iv.setFitHeight(size);
+    }
+
+
+
+
 }

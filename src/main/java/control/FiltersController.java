@@ -106,18 +106,19 @@ public class FiltersController {
      */
     @FXML
     private void onMusicToggled() {
-        SoundManager.playClick();
+    	  SoundManager.playClick();
 
-        boolean enabled = musicToggle.isSelected();
-        SysData.setMusicEnabled(enabled);
+          boolean enabled = musicToggle.isSelected();
 
-        // Make sure actual background music state matches the filter
-        boolean currentlyOn = SoundManager.isMusicOn();
-        if (enabled && !currentlyOn) {
-            SoundManager.toggleMusic();
-        } else if (!enabled && currentlyOn) {
-            SoundManager.toggleMusic();
-        }
+          // לשמור את ההגדרה הגלובלית
+          SysData.setMusicEnabled(enabled);
+
+          // להפעיל/לכבות מוזיקה בפועל
+          if (enabled) {
+              SoundManager.startMusic();
+          } else {
+              SoundManager.stopMusic();
+          }
     }
 
     /**
@@ -159,4 +160,5 @@ public class FiltersController {
         SoundManager.playClick();
         SysData.setAutoRemoveFlagEnabled(autoRemoveFlagToggle.isSelected());
     }
+
 }

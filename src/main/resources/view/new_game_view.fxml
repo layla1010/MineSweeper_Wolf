@@ -53,15 +53,37 @@
                     </font>
                 </Text>
 
-                <Button fx:id="setUpmusicIsOnButton" layoutX="1146.0" layoutY="18.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSoundOff" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 50; -fx-background-color: transparent;">
-                    <graphic>
-                        <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@/Images/volume.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
+                <!-- SOUND BUTTON (קליקים, אפקטים) -->
+<Button fx:id="setUpSoundButton"
+        layoutX="1146.0" layoutY="18.0"
+        maxHeight="-Infinity" maxWidth="-Infinity"
+        minHeight="-Infinity" minWidth="-Infinity"
+        mnemonicParsing="false"
+        onAction="#onSoundOff"
+        prefHeight="40.0" prefWidth="40.0"
+        style="-fx-background-radius: 50; -fx-background-color: transparent;">
+    <graphic>
+        <!-- שימי לב: בלי <image> בפנים, רק ImageView ריק -->
+        <ImageView fitHeight="40.0" fitWidth="40.0"
+                   pickOnBounds="true" preserveRatio="true"/>
+    </graphic>
+</Button>
+<!-- MUSIC BUTTON -->
+<Button fx:id="setUpMusicButton"
+        layoutX="1096.0" layoutY="18.0"
+        maxHeight="-Infinity" maxWidth="-Infinity"
+        minHeight="-Infinity" minWidth="-Infinity"
+        mnemonicParsing="false"
+        onAction="#onMusicToggle"
+        prefHeight="40.0" prefWidth="40.0"
+        style="-fx-background-radius: 50; -fx-background-color: transparent;">
+    <graphic>
+        <!-- גם כאן ImageView בלי url -->
+        <ImageView fitHeight="40.0" fitWidth="40.0"
+                   pickOnBounds="true" preserveRatio="true"/>
+    </graphic>
+</Button>
+
             </children>
         </AnchorPane>
 

@@ -61,9 +61,11 @@ public class GameController {
     @FXML private Label scoreLabel;
     @FXML private HBox heartsBox;
     @FXML private Button pauseBtn;
-    @FXML private Button musicIsOnButton;
+    @FXML private Button soundButton;       
+    @FXML private Button musicButton;   // אותו שם כמו ב-FXML
+  
     @FXML private Parent root;
-
+    
     private GameConfig config;
     private Difficulty difficulty;
     private Board board1;
@@ -125,6 +127,7 @@ public class GameController {
         initForbiddenCursor();
         applyTurnStateToBoards();
 
+        // --- TIMER SETTINGS ---
         elapsedSeconds = 0;
         if (SysData.isTimerEnabled()) {
             updateTimeLabel();
@@ -135,6 +138,11 @@ public class GameController {
             }
             timer = null;
         }
+
+        // --- SYNC MUSIC ICON WITH SETTINGS (NEW!) ---
+        refreshMusicIconFromSettings();
+        refreshMusicIconFromSettings();
+
     }
 
     private void buildHeartsBar() {
@@ -682,20 +690,27 @@ public class GameController {
 
     @FXML
     private void onSoundOff() {
+        // להפוך מצב sound בלבד (קליקים)
+        boolean newState = !SysData.isSoundEnabled();
+        SysData.setSoundEnabled(newState);
+
+        refreshSoundIconFromSettings();
+    }
+
+    @FXML
+    private void onMusicToggle() {
+        // להדליק/לכבות את המוזיקה
         SoundManager.toggleMusic();
 
-        if (musicIsOnButton != null && musicIsOnButton.getGraphic() instanceof ImageView iv) {
-            boolean musicOn = SoundManager.isMusicOn();
-            SysData.setMusicEnabled(musicOn);
+        // לשמור את המצב ב-SysData (כמו ב-NewGameController)
+        boolean musicOn = SoundManager.isMusicOn();
+        SysData.setMusicEnabled(musicOn);
 
-            String iconPath = musicOn
-                    ? "/Images/volume.png"
-                    : "/Images/mute.png";
-
-            Image img = new Image(getClass().getResourceAsStream(iconPath));
-            iv.setImage(img);
-        }
+        // לעדכן את האייקון בכפתור
+        refreshMusicIconFromSettings();
     }
+
+
 
     @FXML
     private void onMainMenu() {
@@ -894,7 +909,51 @@ public class GameController {
             }
         }
     }
+    private void refreshMusicIconFromSettings() {
+        if (musicButton == null) return;
+        if (!(musicButton.getGraphic() instanceof ImageView iv)) return;
 
+        boolean enabled = SysData.isMusicEnabled();
+
+        // סנכרון עם SoundManager
+        if (enabled && !SoundManager.isMusicOn()) {
+            SoundManager.startMusic();
+        } else if (!enabled && SoundManager.isMusicOn()) {
+            SoundManager.stopMusic();
+        }
+
+        String iconPath;
+        double size;
+
+        if (enabled) {
+            // מוזיקה דלוקה → אייקון music קטן
+            iconPath = "/Images/music.png";
+            size = 40;       // גודל רגיל
+        } else {
+            // מוזיקה כבויה → אייקון music_mute גדול
+            iconPath = "/Images/music_mute.png";
+            size = 60;       // פה תבחרי כמה גדול את רוצה (50/60/70)
+        }
+
+        Image img = new Image(getClass().getResourceAsStream(iconPath));
+        iv.setImage(img);
+
+        iv.setFitWidth(size);
+        iv.setFitHeight(size);
+    }
+
+
+
+    private void refreshSoundIconFromSettings() {
+        if (soundButton == null) return;
+        if (!(soundButton.getGraphic() instanceof ImageView iv)) return;
+
+        boolean enabled = SysData.isSoundEnabled();
+        String iconPath = enabled ? "/Images/volume.png" : "/Images/mute.png";
+
+        Image img = new Image(getClass().getResourceAsStream(iconPath));
+        iv.setImage(img);
+    }
 
     
 }

@@ -1,5 +1,7 @@
 package util;
 
+import model.SysData;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -66,16 +68,19 @@ public class SoundManager {
     // ============================================================
     //  SOUND EFFECTS
     // ============================================================
+    
     public static void playClick() {
-        if (!SysData.isSoundEnabled()) return;   // <-- obey SOUND filter
+        // אם המשתמש כיבה "Sound" במסך ה-Filters – לא לנגן קליק
+        if (!SysData.isSoundEnabled()) {
+            return;
+        }
+
         if (clickClip == null) return;
-
-        if (clickClip.isRunning())
-            clickClip.stop();
-
+        if (clickClip.isRunning()) clickClip.stop();
         clickClip.setFramePosition(0);
         clickClip.start();
     }
+
 
     // ============================================================
     //  MUSIC CONTROL
