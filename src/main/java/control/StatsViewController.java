@@ -1,9 +1,14 @@
 package control;
 
+import java.io.IOException;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.chart.PieChart;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
@@ -17,24 +22,25 @@ import model.Player;
 import model.PlayerStats;
 import model.SysData;
 import util.SessionManager;
+import util.SoundManager;
 
-/**
- * Controller for the statistics screen.
- * Displays statistics for Player 1 and Player 2:
- * - Wins / Losses / Give ups / Wins with no mistakes
- * - Total games, best score, best time and opponents
- * - Score progression over time by difficulty
- */
+
 public class StatsViewController {
 
     private Stage stage;
 
     @FXML private ScrollPane mainPane;
 
-    @FXML private ImageView player1avatar;
+    @FXML private ImageView p1avatar;
     @FXML private Text      p1OfficialNameText;
-    @FXML private ImageView player2avatar;
+    @FXML private ImageView p2avatar;
     @FXML private Text      p2OfficialNameText;
+    @FXML private Text numOfWins;
+    @FXML private Text numOfLosses;
+    @FXML private Text numOfGiveUps;
+    @FXML private Text numOfWins2;
+    @FXML private Text numOfLosses2;
+    @FXML private Text numOfGiveUps2;
 
     public ScrollPane getMainPane() {
         return mainPane;
@@ -58,7 +64,6 @@ public class StatsViewController {
         public final int bestTimeSeconds;
         public final String bestTimeOpponent;
 
-        // Arrays of scores to show progression by difficulty
         public final int[] easyScores;
         public final int[] mediumScores;
         public final int[] hardScores;
@@ -101,45 +106,38 @@ public class StatsViewController {
         }
     }
 
-    // Pie charts for Player 1
     @FXML private PieChart p1winsChart;
     @FXML private PieChart p1lossesChart;
     @FXML private PieChart p1giveUpsChart;
     @FXML private PieChart p1winsWithNoMistakesChart;
 
-    // Pie charts for Player 2
     @FXML private PieChart p2winsChart;
     @FXML private PieChart p2lossesChart;
     @FXML private PieChart p2giveUpsChart;
     @FXML private PieChart p2winsWithNoMistakesChart;
 
-    // Text labels for Player 1 pie charts
     @FXML private Label p1winsLabel;
     @FXML private Label p1lossesLabel;
     @FXML private Label p1giveUpsLabel;
     @FXML private Label p1winsWithNoMistakesLabel;
 
-    // Text labels for Player 2 pie charts
     @FXML private Label p2winsLabel;
     @FXML private Label p2lossesLabel;
     @FXML private Label p2giveUpsLabel;
     @FXML private Label p2winsWithNoMistakesLabel;
 
-    // Summary labels for Player 1
     @FXML private Label p1TotalGamesLabel;
     @FXML private Label p1BestScoreLabel;
     @FXML private Label p1BestScoreWithLabel;
     @FXML private Label p1BestTimeLabel;
     @FXML private Label p1BestTimeWithLabel;
 
-    // Summary labels for Player 2
     @FXML private Label p2TotalGamesLabel;
     @FXML private Label p2BestScoreLabel;
     @FXML private Label p2BestScoreWithLabel;
     @FXML private Label p2BestTimeLabel;
     @FXML private Label p2BestTimeWithLabel;
 
-    // Line charts for progression of scores
     @FXML private LineChart<Number, Number> p1ProgressChart;
     @FXML private LineChart<Number, Number> p2ProgressChart;
 
@@ -149,7 +147,6 @@ public class StatsViewController {
     private void initialize() {
         SysData.getInstance().loadHistoryFromCsv();
 
-        // Real data: take logged-in players from SessionManager
         SysData sys = SysData.getInstance();
 
         Player p1Model = SessionManager.getPlayer1();
@@ -222,15 +219,29 @@ public class StatsViewController {
             p1OfficialNameText.setText(stats.playerName);
         }
 
-        if (player1avatar != null && stats.avatarImagePath != null && !stats.avatarImagePath.isBlank()) {
-            player1avatar.setImage(new Image(stats.avatarImagePath));
+        if (p1avatar != null) {
+            Image img = loadAvatarImage(stats.avatarImagePath);
+            if (img != null) {
+                p1avatar.setImage(img);
+            }
+        }
+
+        if (numOfWins != null) {
+            numOfWins.setText(String.valueOf(stats.wins));
+        }
+        if (numOfLosses != null) {
+            numOfLosses.setText(String.valueOf(stats.losses));
+        }
+        if (numOfGiveUps != null) {
+            numOfGiveUps.setText(String.valueOf(stats.giveUps));
         }
 
         if (p1ProgressChart != null) {
             updateProgressChart(p1ProgressChart, stats);
         }
     }
-
+    
+    
     // Applies Player 2 statistics to all Player 2 UI controls
     public void setPlayer2Stats(PlayerStatsData stats) {
         applyStatsToUi(
@@ -248,8 +259,21 @@ public class StatsViewController {
             p2OfficialNameText.setText(stats.playerName);
         }
 
-        if (player2avatar != null && stats.avatarImagePath != null && !stats.avatarImagePath.isBlank()) {
-            player2avatar.setImage(new Image(stats.avatarImagePath));
+        if (p2avatar != null) {
+            Image img = loadAvatarImage(stats.avatarImagePath);
+            if (img != null) {
+                p2avatar.setImage(img);
+            }
+        }
+        
+        if (numOfWins2 != null) {
+            numOfWins2.setText(String.valueOf(stats.wins));
+        }
+        if (numOfLosses2 != null) {
+            numOfLosses2.setText(String.valueOf(stats.losses));
+        }
+        if (numOfGiveUps2 != null) {
+            numOfGiveUps2.setText(String.valueOf(stats.giveUps));
         }
 
         if (p2ProgressChart != null) {
@@ -257,58 +281,58 @@ public class StatsViewController {
         }
     }
 
-    // =========================
-    // Internal helpers
-    // =========================
-
+   
     private void applyStatsToUi(PlayerStatsData stats,
-                                PieChart winsChart, Label winsLabel,
-                                PieChart lossesChart, Label lossesLabel,
-                                PieChart giveUpsChart, Label giveUpsLabel,
-                                PieChart winsNoMistakesChart, Label winsNoMistakesLabel,
-                                Label totalGamesLabel,
-                                Label bestScoreLabel, Label bestScoreWithLabel,
-                                Label bestTimeLabel, Label bestTimeWithLabel) {
+            PieChart winsChart,           Label winsLabel,
+            PieChart lossesChart,         Label lossesLabel,
+            PieChart giveUpsChart,        Label giveUpsLabel,
+            PieChart winsNoMistakesChart, Label winsNoMistakesLabel,
+            Label totalGamesLabel,
+            Label bestScoreLabel,         Label bestScoreWithLabel,
+            Label bestTimeLabel,          Label bestTimeWithLabel) {
 
-        if (stats == null) return;
+			if (stats == null) return;
+			
+				int totalGames = stats.totalGames;
+				double winPercent = 0;
+				double lossesPercent = 0;
+				double giveUpsPercent = 0;
+				double winsNoMistakesPercent = 0;
+			
+			if (totalGames > 0) {
+				winPercent            = stats.wins               * 100.0 / totalGames;
+				lossesPercent         = stats.losses             * 100.0 / totalGames;
+				giveUpsPercent        = stats.giveUps            * 100.0 / totalGames;
+				winsNoMistakesPercent = stats.winsWithNoMistakes * 100.0 / totalGames;
+			}
+			
+			
+			setupDonut(winsChart,           winsLabel,           winPercent);
+			setupDonut(lossesChart,         lossesLabel,         lossesPercent);
+			setupDonut(giveUpsChart,        giveUpsLabel,        giveUpsPercent);
+			setupDonut(winsNoMistakesChart, winsNoMistakesLabel, winsNoMistakesPercent);
+			
+			if (totalGamesLabel != null) {
+				totalGamesLabel.setText(String.valueOf(stats.totalGames));
+			}
+			
+			if (bestScoreLabel != null) {
+				bestScoreLabel.setText("best score:    " + stats.bestScore);
+			}
+			if (bestScoreWithLabel != null) {
+				String opponent = (stats.bestScoreOpponent == null || stats.bestScoreOpponent.isBlank()) ? "-" : stats.bestScoreOpponent;
+				bestScoreWithLabel.setText("with:       " + opponent);
+			}
+			
+			if (bestTimeLabel != null) {
+				bestTimeLabel.setText("best time:  " + formatDuration(stats.bestTimeSeconds));
+			}
+			if (bestTimeWithLabel != null) {
+				String opponent = (stats.bestTimeOpponent == null || stats.bestTimeOpponent.isBlank()) ? "-" : stats.bestTimeOpponent;
+				bestTimeWithLabel.setText("With:      " + opponent);
+			}
+			}
 
-        int totalOutcomes = stats.wins + stats.losses + stats.giveUps + stats.winsWithNoMistakes;
-        double winPercent = 0, lossesPercent = 0, giveUpsPercent = 0, winsNoMistakesPercent = 0;
-
-        if (totalOutcomes > 0) {
-            winPercent            = stats.wins               * 100.0 / totalOutcomes;
-            lossesPercent         = stats.losses             * 100.0 / totalOutcomes;
-            giveUpsPercent        = stats.giveUps            * 100.0 / totalOutcomes;
-            winsNoMistakesPercent = stats.winsWithNoMistakes * 100.0 / totalOutcomes;
-        }
-
-        setupDonut(winsChart,           winsLabel,           winPercent);
-        setupDonut(lossesChart,         lossesLabel,         lossesPercent);
-        setupDonut(giveUpsChart,        giveUpsLabel,        giveUpsPercent);
-        setupDonut(winsNoMistakesChart, winsNoMistakesLabel, winsNoMistakesPercent);
-
-        if (totalGamesLabel != null) {
-            totalGamesLabel.setText(String.valueOf(stats.totalGames));
-        }
-
-        if (bestScoreLabel != null) {
-            bestScoreLabel.setText("best score:    " + stats.bestScore);
-        }
-        if (bestScoreWithLabel != null) {
-            String opponent = (stats.bestScoreOpponent == null || stats.bestScoreOpponent.isBlank())
-                    ? "-" : stats.bestScoreOpponent;
-            bestScoreWithLabel.setText("with:       " + opponent);
-        }
-
-        if (bestTimeLabel != null) {
-            bestTimeLabel.setText("best time:  " + formatDuration(stats.bestTimeSeconds));
-        }
-        if (bestTimeWithLabel != null) {
-            String opponent = (stats.bestTimeOpponent == null || stats.bestTimeOpponent.isBlank())
-                    ? "-" : stats.bestTimeOpponent;
-            bestTimeWithLabel.setText("With:      " + opponent);
-        }
-    }
 
     private void updateProgressChart(LineChart<Number, Number> chart, PlayerStatsData stats) {
         chart.getData().clear();
@@ -354,4 +378,43 @@ public class StatsViewController {
         int seconds = durationSeconds % 60;
         return String.format("%d:%02d", minutes, seconds);
     }
+    
+    private Image loadAvatarImage(String avatarId) {
+        String resource = "/Images/S5.png";
+
+        if (avatarId != null && !avatarId.isBlank()) {
+            resource = "/Images/" + avatarId;
+        }
+
+        try {
+            var url = getClass().getResource(resource);
+            if (url == null) {
+                // Fallback to default if something is wrong
+                url = getClass().getResource("/Images/S5.png");
+            }
+            if (url != null) {
+                return new Image(url.toExternalForm());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    @FXML
+    private void onBackToSettingsClicked() {
+        SoundManager.playClick();
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/settings_view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) mainPane.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

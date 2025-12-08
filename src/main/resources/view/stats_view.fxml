@@ -4,6 +4,7 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
@@ -11,16 +12,31 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane fx:id="mainPane" maxHeight="1500.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1200.0" style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #064e3b, #115e59);" stylesheets="@../css/stats.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.StatsViewController">
+<ScrollPane fx:id="mainPane" maxHeight="1500.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1200.0" style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #064e3b, #115e59);" stylesheets="@../css/stats.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.StatsViewController">
    <content>
-      <GridPane alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="730.0" prefWidth="1500.0" style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #064e3b, #115e59);" stylesheets="@../css/stats.css">
+	    <VBox alignment="TOP_CENTER" prefWidth="1500" spacing="20" style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #064e3b, #115e59);">
+	        
+	        <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="7.0" prefWidth="1500.0" spacing="20" style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #064e3b, #115e59);">
+	            <Label text="    " />
+            <Button onAction="#onBackToSettingsClicked" prefHeight="73.0" prefWidth="101.0" style="-fx-background-color: transparent;" styleClass="settings-back-button" text="⬅" textFill="#3cc970">
+               <HBox.margin>
+                  <Insets left="-60.0" top="30.0" />
+               </HBox.margin>
+               <font>
+                  <Font name="Copperplate Gothic Bold" size="40.0" />
+               </font>
+            </Button>
+	        </HBox>
+                <GridPane alignment="CENTER" prefHeight="730.0" prefWidth="1500" style="-fx-background-color: linear-gradient(to bottom right, #0f172a, #064e3b, #115e59);" stylesheets="@../css/stats.css">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -42,7 +58,7 @@
                <children>
                   <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="100.0" style="-fx-border-radius: 100; -fx-background-radius: 100;">
                      <children>
-                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 100; -fx-background-radius: 100;">
+                        <ImageView fx:id="p1avatar" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 100; -fx-background-radius: 100;">
                          <clip>
                               <Circle centerX="50" centerY="50" radius="50" />
                           </clip>
@@ -60,21 +76,36 @@
 						</Text>
 
                         <StackPane layoutX="116.0" layoutY="69.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="15.0" prefWidth="300.0" style="-fx-background-color: white; -fx-background-radius: 50;" />
-                        <Label layoutX="451.0" layoutY="59.0" prefHeight="18.0" prefWidth="38.0" text="wins" textFill="#e1d9d9">
+                        <Label layoutX="449.0" layoutY="49.0" prefHeight="18.0" prefWidth="38.0" text="wins" textFill="#e1d9d9">
                            <font>
                               <Font name="Copperplate Gothic Light" size="14.0" />
                            </font>
                         </Label>
-                        <Label layoutX="511.0" layoutY="59.0" prefHeight="18.0" prefWidth="57.0" text="losses" textFill="#e1d9d9">
+                        <Label layoutX="509.0" layoutY="49.0" prefHeight="18.0" prefWidth="57.0" text="losses" textFill="#e1d9d9">
                            <font>
                               <Font name="Copperplate Gothic Light" size="14.0" />
                            </font>
                         </Label>
-                        <Label layoutX="587.0" layoutY="59.0" prefHeight="18.0" prefWidth="66.0" text="give ups" textFill="#e1d9d9">
+                        <Label layoutX="585.0" layoutY="49.0" prefHeight="18.0" prefWidth="66.0" text="give ups" textFill="#e1d9d9">
                            <font>
                               <Font name="Copperplate Gothic Light" size="14.0" />
                            </font>
                         </Label>
+                        <Text fx:id="numOfWins" fill="#e1d9d9" layoutX="460.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                           <font>
+                              <Font name="Copperplate Gothic Light" size="14.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="numOfGiveUps" fill="#e1d9d9" layoutX="613.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                           <font>
+                              <Font name="Copperplate Gothic Light" size="14.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="numOfLosses" fill="#e1d9d9" layoutX="532.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                           <font>
+                              <Font name="Copperplate Gothic Light" size="14.0" />
+                           </font>
+                        </Text>
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
@@ -256,7 +287,7 @@
                <children>
                   <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="100.0" style="-fx-border-radius: 100; -fx-background-radius: 100;">
                      <children>
-                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 100; -fx-background-radius: 100;">
+                        <ImageView fx:id="p2avatar" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 100; -fx-background-radius: 100;">
                            <clip>
                               <Circle centerX="50" centerY="50" radius="50" />
                            </clip>
@@ -290,6 +321,21 @@
                               <Font name="Copperplate Gothic Light" size="14.0" />
                            </font>
                         </Label>
+                        <Text fx:id="numOfWins2" fill="#e1d9d9" layoutX="460.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                           <font>
+                              <Font name="Copperplate Gothic Light" size="14.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="numOfLosses2" fill="#e1d9d9" layoutX="536.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                           <font>
+                              <Font name="Copperplate Gothic Light" size="14.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="numOfGiveUps2" fill="#e1d9d9" layoutX="613.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+                           <font>
+                              <Font name="Copperplate Gothic Light" size="14.0" />
+                           </font>
+                        </Text>
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
@@ -452,5 +498,6 @@
             </GridPane>
          </children>
       </GridPane>
+      </VBox>
    </content>
 </ScrollPane>

@@ -15,7 +15,6 @@ import java.util.Map;
 
 public class SysData {
 
-    // ===== Singleton =====
 
     /** Singleton instance of SysData. */
     private static final SysData INSTANCE = new SysData();
@@ -24,7 +23,6 @@ public class SysData {
         return INSTANCE;
     }
 
-    // ===== History & Players =====
 
     /** Stores all game history records. */
     private final History history = new History();
@@ -38,7 +36,6 @@ public class SysData {
     /** CSV file name (kept for reference – actual path is resolved dynamically). */
     private static final String HISTORY_FILE_NAME = "/data/history.csv";
 
-    // ===== Global Settings (Filters) =====
 
     /** Controls whether background music is enabled. */
     private static boolean musicEnabled = true;
@@ -59,14 +56,12 @@ public class SysData {
     private SysData() {
     }
 
-    // ================== Accessors ==================
 
     /** Returns the History object that holds all Game records. */
     public History getHistory() {
         return history;
     }
 
-    // ================== File Path Helpers ==================
 
     /** Resolves the full path to the history CSV file. */
     private static String getHistoryCsvPath() {
@@ -148,7 +143,6 @@ public class SysData {
         }
     }
 
-    // ================== History: Load / Save ==================
 
     /** Adds a single Game record to the history. */
     public void addGameToHistory(Game game) {
@@ -196,7 +190,7 @@ public class SysData {
         }
 
         String[] parts = line.split(",", -1);  // keep empty columns
-        if (parts.length != 9) {
+        if (parts.length != 10) {
             return null;
         }
 
@@ -210,7 +204,8 @@ public class SysData {
             String nick_player2 = parts[6];
             String off_player1 = toNullIfBlank(parts[7]);
             String off_player2 = toNullIfBlank(parts[8]);
-
+            boolean winWithoutMistakes = Boolean.parseBoolean(parts[9].trim());
+            
             return new Game(
                     off_player1,
                     off_player2,
@@ -220,7 +215,9 @@ public class SysData {
                     score,
                     result,
                     date,
-                    durationSeconds
+                    durationSeconds, 
+                    winWithoutMistakes
+
             );
 
         } catch (Exception e) {
@@ -263,7 +260,7 @@ public class SysData {
 
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             // header
-            writer.write("date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Official,player2Official");
+            writer.write("date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Official,player2Official,winWithoutMistakes");
             writer.newLine();
 
             for (Game game : games) {
@@ -287,7 +284,9 @@ public class SysData {
         String p2Nick        = sanitizeForCsv(game.getPlayer2Nickname());
         String p1Off         = sanitizeForCsvOrEmpty(game.getPlayer1OfficialName());
         String p2Off         = sanitizeForCsvOrEmpty(game.getPlayer2OfficialName());
+        String noMistakesStr = Boolean.toString(game.isWinWithoutMistakes());
 
+        
         return String.join(",",
                 dateStr,
                 durationStr,
@@ -297,11 +296,11 @@ public class SysData {
                 p1Nick,
                 p2Nick,
                 p1Off,
-                p2Off
+                p2Off,
+                noMistakesStr
         );
     }
 
-    // ================== Players: Load / Save ==================
 
     /** Loads all Players data from the Player CSV file into memory. */
     public void loadPlayersFromCsv() {
@@ -403,7 +402,6 @@ public class SysData {
         return String.join(",", officialName, email, password, role, avatarId);
     }
 
-    // ================== CSV Sanitizers ==================
 
     /** Sanitizes a text field for safe CSV storage. */
     private String sanitizeForCsv(String text) {
@@ -421,7 +419,6 @@ public class SysData {
         return sanitizeForCsv(text);
     }
 
-    // ================== Settings Getters / Setters ==================
 
     public static boolean isMusicEnabled() {
         return musicEnabled;
@@ -472,7 +469,6 @@ public class SysData {
         autoRemoveFlagEnabled = true;
     }
 
-    // ================== Player Management API ==================
 
     public Player findPlayerByEmail(String email) {
         if (email == null) return null;
@@ -523,7 +519,6 @@ public class SysData {
         savePlayersToCsv();
     }
 
-    // ================== Stats ==================
 
     public PlayerStats computeStatsForPlayer(Player player) {
         if (player == null) {
@@ -556,11 +551,12 @@ public class SysData {
         int wins = 0;
         int losses = 0;
         int giveUps = 0;
-        int winsWithNoMistakes = 0; // TODO: update when storing mistakes per game
+        int winsWithNoMistakes = 0; // will update later once we track mistakes per game
 
         int bestScore = Integer.MIN_VALUE;
         String bestScoreOpponent = "-";
 
+        // best time: SHORTEST WINNING TIME ONLY
         int bestTimeSeconds = Integer.MAX_VALUE;
         String bestTimeOpponent = "-";
 
@@ -593,14 +589,21 @@ public class SysData {
             switch (res) {
                 case WIN:
                     wins++;
-                    // winsWithNoMistakes will be updated when mistakes per game are stored
+
+                    if (game.isWinWithoutMistakes()) {
+                        winsWithNoMistakes++;
+                    }
+
                     break;
+
                 case LOSE:
                     losses++;
                     break;
+
                 case GIVE_UP:
                     giveUps++;
                     break;
+
                 default:
                     break;
             }
@@ -608,17 +611,19 @@ public class SysData {
             // Opponent name
             String opponent = getOpponentName(game, targetName);
 
-            // best score (max)
+            // best score (max over ALL results)
             if (score > bestScore) {
                 bestScore = score;
                 bestScoreOpponent = opponent;
             }
 
-            // best time (min duration)
-            int durationSeconds = parseDuration(game.getDurationFormatted());
-            if (durationSeconds > 0 && durationSeconds < bestTimeSeconds) {
-                bestTimeSeconds = durationSeconds;
-                bestTimeOpponent = opponent;
+            // best time (MIN duration, but ONLY among WINS)
+            if (res == GameResult.WIN) {
+                int durationSeconds = parseDuration(game.getDurationFormatted());
+                if (durationSeconds > 0 && durationSeconds < bestTimeSeconds) {
+                    bestTimeSeconds = durationSeconds;
+                    bestTimeOpponent = opponent;
+                }
             }
         }
 
@@ -628,6 +633,21 @@ public class SysData {
             bestTimeSeconds = 0;
             bestScoreOpponent = "-";
             bestTimeOpponent = "-";
+        } else {
+            // Player has some games but ZERO wins → no “best winning time”
+            if (wins == 0) {
+                bestTimeSeconds = 0;
+                bestTimeOpponent = "-";
+            }
+            // If player has games but all scores <= 0 we keep bestScore=0, opponent "-"
+            if (bestScore == Integer.MIN_VALUE) {
+                bestScore = 0;
+                bestScoreOpponent = "-";
+            }
+            if (bestTimeSeconds == Integer.MAX_VALUE) {
+                bestTimeSeconds = 0;
+                bestTimeOpponent = "-";
+            }
         }
 
         int[] easyScores = easyScoresList.stream().mapToInt(Integer::intValue).toArray();
@@ -651,6 +671,7 @@ public class SysData {
                 hardScores
         );
     }
+
 
     private boolean isPlayerInGame(Game game, String officialName) {
         if (officialName == null || officialName.isBlank()) {

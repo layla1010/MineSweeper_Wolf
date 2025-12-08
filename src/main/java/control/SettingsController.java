@@ -110,7 +110,7 @@ public class SettingsController {
             StatsViewController controller = loader.getController();
             controller.setStage(stage);
 
-            Scene scene = new Scene(root, 1200, 730);
+            Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.centerOnScreen();
         } catch (Exception e) {

@@ -26,11 +26,9 @@ import util.SoundManager;
 
 public class SignupController {
 
-    // ==== ROOT & CARDS FOR ANIMATION ====
     @FXML private GridPane signupRoot;
-    @FXML private AnchorPane anchor;   // the avatars glass card
+    @FXML private AnchorPane anchor;   
 
-    // ==== AVATARS ====
     @FXML private ImageView playerAvatar;
 
     @FXML private ImageView img1;
@@ -47,21 +45,17 @@ public class SignupController {
     @FXML private ImageView img12;
     @FXML private ImageView img13;
 
-    // ==== FORM FIELDS ====
     @FXML private TextField NameSignup;
     @FXML private TextField EmailSignup;
 
-    // password #1 (hidden + visible)
     @FXML private PasswordField PasswordSignup;
     @FXML private TextField    passwordTextFieldSignUp;
     @FXML private ImageView    eyeIconSignup;
 
-    // password #2 (hidden + visible)
     @FXML private PasswordField rePasswordSignup1;
     @FXML private TextField     repasswordTextFieldSignUp1;
     @FXML private ImageView     eyeIconReSignup;
 
-    // ==== HELPERS ====
     private AvatarManager avatarManager;
     private Stage stage;
 
@@ -72,10 +66,8 @@ public class SignupController {
         this.stage = stage;
     }
 
-    // ----------------- INIT -----------------
     @FXML
     private void initialize() {
-        // Avatar manager + thumbnails
         avatarManager = new AvatarManager(playerAvatar, null);
         avatarManager.setupThumbnails(
                 img1, img2, img3, img4, img5, img6,
@@ -102,7 +94,6 @@ public class SignupController {
         playIntroAnimation();
     }
 
-    // ----------------- ANIMATION -----------------
     private void playIntroAnimation() {
         if (signupRoot == null) return;
 
@@ -126,7 +117,6 @@ public class SignupController {
         }
     }
 
-    // ----------------- COMMON UTILS -----------------
     private void showError(String title, String message) {
         Alert a = new Alert(Alert.AlertType.ERROR);
         a.setTitle(title);
@@ -152,7 +142,6 @@ public class SignupController {
         SoundManager.playClick();
     }
 
-    // ----------------- AVATAR HANDLERS -----------------
     @FXML
     private void onPlayerAreaClicked() {
         avatarManager.selectPlayer(1);
@@ -172,7 +161,6 @@ public class SignupController {
         avatarManager.handlePlus(stage);
     }
 
-    // ----------------- SIGN-UP BUTTON -----------------
     @FXML
     private void onSignUpBtnClicked() {
         playClickSound();
@@ -248,7 +236,6 @@ public class SignupController {
         }
     }
 
-    // ----------------- PRESS & HOLD PASSWORD VISIBILITY -----------------
 
     // Password #1: press to show, release to hide
     @FXML
