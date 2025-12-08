@@ -195,21 +195,34 @@ public class SysData {
             return null;
         }
 
-        String[] parts = line.split(",", -1);  // keep empty columns
+        // Remove potential BOM and trim
+        String cleaned = line.replace("\uFEFF", "").trim();
+
+        String[] parts = cleaned.split(",", -1);  // keep empty columns
+        if (parts.length == 0) {
+            return null;
+        }
+
+        // If the first column is "date" → this is a header line, skip it
+        if (parts[0].equalsIgnoreCase("date")) {
+            return null;
+        }
+
+        // We expect exactly 9 columns in a valid history line
         if (parts.length != 9) {
             return null;
         }
 
         try {
-            LocalDate date = LocalDate.parse(parts[0]);       // "2025-11-26"
-            int durationSeconds = parseDuration(parts[1]);    // "21:15" or "1275"
-            Difficulty difficulty = Difficulty.valueOf(parts[2]);
-            int score = Integer.parseInt(parts[3]);
-            GameResult result = GameResult.valueOf(parts[4]); // WIN / LOSE / GIVE_UP
-            String nick_player1 = parts[5];
-            String nick_player2 = parts[6];
-            String off_player1 = toNullIfBlank(parts[7]);
-            String off_player2 = toNullIfBlank(parts[8]);
+            LocalDate date         = LocalDate.parse(parts[0]);       // "2025-11-26"
+            int durationSeconds    = parseDuration(parts[1]);         // "21:15" or "1275"
+            Difficulty difficulty  = Difficulty.valueOf(parts[2]);
+            int score              = Integer.parseInt(parts[3]);
+            GameResult result      = GameResult.valueOf(parts[4]);    // WIN / LOSE / GIVE_UP
+            String nick_player1    = parts[5];
+            String nick_player2    = parts[6];
+            String off_player1     = toNullIfBlank(parts[7]);
+            String off_player2     = toNullIfBlank(parts[8]);
 
             return new Game(
                     off_player1,
