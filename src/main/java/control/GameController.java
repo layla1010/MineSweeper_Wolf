@@ -139,11 +139,14 @@ public class GameController {
             timer = null;
         }
 
-        // --- SYNC MUSIC ICON WITH SETTINGS (NEW!) ---
-        refreshMusicIconFromSettings();
-        refreshMusicIconFromSettings();
+        // --- SYNC ICONS WITH SETTINGS ---
+        refreshSoundIconFromSettings();   // ← כפתור sound (קליקים)
+        refreshMusicIconFromSettings();   // ← כפתור music (מוזיקת רקע)
 
     }
+
+
+    
 
     private void buildHeartsBar() {
         if (heartsBox == null) return;
@@ -926,13 +929,12 @@ public class GameController {
         double size;
 
         if (enabled) {
-            // מוזיקה דלוקה → אייקון music קטן
             iconPath = "/Images/music.png";
-            size = 40;       // גודל רגיל
+            size = 40;       
         } else {
-            // מוזיקה כבויה → אייקון music_mute גדול
+            
             iconPath = "/Images/music_mute.png";
-            size = 60;       // פה תבחרי כמה גדול את רוצה (50/60/70)
+            size = 60;       
         }
 
         Image img = new Image(getClass().getResourceAsStream(iconPath));
