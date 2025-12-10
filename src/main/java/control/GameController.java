@@ -101,6 +101,9 @@ public class GameController {
     // Added by Jihad – track cells that were already revealed (for scoring & surprise)
     private boolean[][] revealedCellsP1;
     private boolean[][] revealedCellsP2;
+    
+    private boolean mistakeMade = false;
+
 
     private static final int TOTAL_HEART_SLOTS = 10;
 
@@ -388,8 +391,11 @@ public class GameController {
         if (!button.getStyleClass().contains("cell-flagged")) {
             button.getStyleClass().add("cell-flagged");
         }
+        
+        if (!cell.isMine()) {
+            mistakeMade = true;
+        }
 
-        // NEW RULE: flagging a QUESTION or SURPRISE cell → -3 points
         if (cell.getType() == CellType.QUESTION || cell.getType() == CellType.SURPRISE) {
             System.out.println("The score before flagging: " + score);
             score -= 3;
@@ -440,24 +446,32 @@ public class GameController {
         );
 
         switch (cell.getType()) {
-            case MINE -> {
-                button.setText("💣");
-                button.getStyleClass().addAll("cell-revealed", "cell-mine");
-                sharedHearts = Math.max(0, sharedHearts - 1);
-                triggerExplosion(tile);
+        case MINE -> {
+            button.setText("💣");
+            button.getStyleClass().addAll("cell-revealed", "cell-mine");
 
-                if (isPlayer1) {
-                    minesLeft1 -= 1;
-                } else {
-                    minesLeft2 -= 1;
-                }
-                buildHeartsBar();
-
-                if (sharedHearts == 0 && !gameOver) {
-                    gameWon = false;
-                    onGameOver();
-                }
+            int heartsBefore = sharedHearts;
+            sharedHearts = Math.max(0, sharedHearts - 1);
+            if (sharedHearts < heartsBefore) {
+                // revealing a mine and actually losing a life = mistake
+                mistakeMade = true;
             }
+
+            triggerExplosion(tile);
+
+            if (isPlayer1) {
+                minesLeft1 -= 1;
+            } else {
+                minesLeft2 -= 1;
+            }
+            buildHeartsBar();
+
+            if (sharedHearts == 0 && !gameOver) {
+                gameWon = false;
+                onGameOver();
+            }
+        }
+
             case QUESTION -> {
                 try {
                     Image img = new Image(getClass().getResourceAsStream("/Images/question-mark.png"));
@@ -779,6 +793,7 @@ public class GameController {
      */
     @FXML
     private void onExitBtnClicked() {
+    	saveGiveUpGame();
         stopTimer();
         System.exit(0);
     }
@@ -797,6 +812,7 @@ public class GameController {
      */
     @FXML
     private void onBackBtnClicked() throws IOException {
+    	saveGiveUpGame();
         stopTimer();
 
         Stage stage = (Stage) player1Grid.getScene().getWindow();
@@ -973,6 +989,8 @@ public class GameController {
         // Nicknames still come from GameConfig
         String player1Nick = config.getPlayer1Nickname();
         String player2Nick = config.getPlayer2Nickname();
+        
+        boolean winWithoutMistakes = (gameWon && !mistakeMade);
 
         Game gameRecord = new Game(
                 player1Official,
@@ -983,7 +1001,8 @@ public class GameController {
                 score,
                 result,
                 LocalDate.now(),
-                elapsedSeconds
+                elapsedSeconds,
+                winWithoutMistakes
         );
 
         SysData sysData = SysData.getInstance();
@@ -1204,6 +1223,57 @@ public class GameController {
         alert.setContentText(msg.toString());
         alert.showAndWait();
     }
+    
+    /**
+     * Saves a GIVE_UP record when the players leave the game
+     * via Back/Exit before it naturally ends.
+     */
+    private void saveGiveUpGame() {
+        // If there is no config, we can't build a proper Game record
+        if (config == null) {
+            return;
+        }
+
+        // If the game already ended (WIN/LOSE) and was saved,
+        // don't also save a GIVE_UP on top of it.
+        if (gameOver) {
+            return;
+        }
+
+        GameResult result = GameResult.GIVE_UP;
+
+        // Logged-in players (registered users)
+        Player p1 = SessionManager.getPlayer1();
+        Player p2 = SessionManager.getPlayer2();
+
+        String player1Official = (p1 != null) ? p1.getOfficialName() : null;
+        String player2Official = (p2 != null) ? p2.getOfficialName() : null;
+
+        // Nicknames come from the GameConfig (what was typed in New Game screen)
+        String player1Nick = config.getPlayer1Nickname();
+        String player2Nick = config.getPlayer2Nickname();
+
+        // Use current difficulty, score and elapsedSeconds from this controller
+        Game giveUpGame = new Game(
+                player1Official,
+                player2Official,
+                player1Nick,
+                player2Nick,
+                difficulty,
+                score,
+                result,
+                LocalDate.now(),
+                elapsedSeconds,
+                false
+        );
+
+        SysData sysData = SysData.getInstance();
+        sysData.addGameToHistory(giveUpGame);
+        sysData.saveHistoryToCsv();
+
+        System.out.println("Saved GIVE_UP game: " + giveUpGame);
+    }
+
 
     /**
      * Smart Hints feature:

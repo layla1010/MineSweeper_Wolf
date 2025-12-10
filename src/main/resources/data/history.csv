@@ -1,6 +1,8 @@
 date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Official,player2Official
-2025-12-07,3:44,EASY,129,WIN,layla,hallumi,,
-2025-12-07,3:39,EASY,127,WIN,lay,hannah,,
-2025-12-07,2:03,EASY,117,WIN,lay,lay,,
-2025-12-07,1:14,EASY,95,LOSE,bobo,haha,Layla,Haneen
-2025-12-07,4:24,EASY,131,WIN,ay,ayy,,
+2025-12-07,3:44,EASY,129,WIN,layla,hallumi,Layla,Haneen,false
+2025-12-07,3:39,EASY,127,WIN,lay,hannah,Layla,Haneen,false
+2025-12-07,2:03,EASY,117,WIN,lay,lay,Layla,l0ol0o,true
+2025-12-07,1:14,EASY,95,LOSE,bobo,haha,Layla,Haneen,false
+2025-12-08,3:59,MEDIUM,249,LOSE,layla,l0ol0o,Layla,l0ol0o,false
+2025-12-08,0:02,EASY,0,GIVE_UP,lo,ho,Layla,Haneen,false
+2025-12-08,26:33,HARD,405,WIN,soso,popo,Haneen,Layla,true

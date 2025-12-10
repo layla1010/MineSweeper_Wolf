@@ -16,12 +16,14 @@ public class Game {
     private final GameResult result;
     private final LocalDate date;       
     private final int durationSeconds;  //total duration in seconds
+    private final boolean winWithoutMistakes;
+
 
     //Can be used elsewhere if needed (for time fields, not used directly here)
     public static final DateTimeFormatter TIME_FORMATTER =
             DateTimeFormatter.ofPattern("HH:mm");
 
-    public Game(String player1OfficialName, String player2OfficialName, String player1Nickname,String player2Nickname, Difficulty difficulty, int finalScore, GameResult result, LocalDate date, int durationSeconds) {
+    public Game(String player1OfficialName, String player2OfficialName, String player1Nickname,String player2Nickname, Difficulty difficulty, int finalScore, GameResult result, LocalDate date, int durationSeconds, boolean winWithoutMistakes) {
 
         if (player1Nickname == null || player1Nickname.trim().isEmpty()) {
             throw new IllegalArgumentException("player1Nickname cannot be null or empty");
@@ -42,6 +44,11 @@ public class Game {
         this.result = Objects.requireNonNull(result, "result cannot be null");
         this.date = Objects.requireNonNull(date, "date cannot be null");
         this.durationSeconds = durationSeconds;
+        this.winWithoutMistakes = winWithoutMistakes;
+    }
+    
+    public boolean isWinWithoutMistakes() {
+        return winWithoutMistakes;
     }
 
     public String getPlayer1OfficialName() {
