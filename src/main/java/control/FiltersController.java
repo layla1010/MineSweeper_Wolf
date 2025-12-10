@@ -100,13 +100,14 @@ public class FiltersController {
         SoundManager.playClick();
 
         boolean enabled = musicToggle.isSelected();
+
+        // Save global setting
         SysData.setMusicEnabled(enabled);
 
         // Keep real background music in sync with the toggle
         boolean currentlyOn = SoundManager.isMusicOn();
-        if (enabled && !currentlyOn) {
-            SoundManager.toggleMusic();
-        } else if (!enabled && currentlyOn) {
+        if (enabled != currentlyOn) {
+            // Only toggle if there is a real change
             SoundManager.toggleMusic();
         }
     }

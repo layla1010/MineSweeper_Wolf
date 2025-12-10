@@ -65,7 +65,9 @@ public class GameController {
     @FXML private Label scoreLabel;
     @FXML private HBox heartsBox;
     @FXML private Button pauseBtn;
-    @FXML private Button musicIsOnButton;
+    @FXML private Button soundButton;
+    @FXML private Button musicButton;
+
     @FXML private Parent root;
 
     private GameConfig config;
@@ -148,6 +150,7 @@ public class GameController {
         initForbiddenCursor();
         applyTurnStateToBoards();
 
+        // --- TIMER SETTINGS ---
         elapsedSeconds = 0;
         if (SysData.isTimerEnabled()) {
             updateTimeLabel();
@@ -158,6 +161,10 @@ public class GameController {
             }
             timer = null;
         }
+
+        // --- SYNC ICONS WITH SETTINGS ---
+        refreshSoundIconFromSettings();   // sound (clicks)
+        refreshMusicIconFromSettings();   // music (background)
     }
 
     /**
@@ -837,24 +844,30 @@ public class GameController {
     }
 
     /**
-     * Handling the sound/music button: toggles background music using SoundManager
-     * and updates the icon. Also syncs SysData music flag.
+     * Handling the sound button: toggles sound effects setting (click sounds) and updates icon.
      */
     @FXML
     private void onSoundOff() {
+        boolean newState = !SysData.isSoundEnabled();
+        SysData.setSoundEnabled(newState);
+        refreshSoundIconFromSettings();
+    }
+
+    /**
+     * Handling the music button: toggles background music via SoundManager
+     * and syncs SysData + icon.
+     */
+    @FXML
+    private void onMusicToggle() {
+        // Toggle music playback
         SoundManager.toggleMusic();
 
-        if (musicIsOnButton != null && musicIsOnButton.getGraphic() instanceof ImageView iv) {
-            boolean musicOn = SoundManager.isMusicOn();
-            SysData.setMusicEnabled(musicOn);
+        // Save current state to SysData
+        boolean musicOn = SoundManager.isMusicOn();
+        SysData.setMusicEnabled(musicOn);
 
-            String iconPath = musicOn
-                    ? "/Images/volume.png"
-                    : "/Images/mute.png";
-
-            Image img = new Image(getClass().getResourceAsStream(iconPath));
-            iv.setImage(img);
-        }
+        // Update icon and ensure state is synced
+        refreshMusicIconFromSettings();
     }
 
     @FXML
@@ -1263,5 +1276,48 @@ public class GameController {
                 }
             }
         }
+    }
+
+    // =================== SOUND / MUSIC ICON HELPERS ===================
+
+    private void refreshMusicIconFromSettings() {
+        if (musicButton == null) return;
+        if (!(musicButton.getGraphic() instanceof ImageView iv)) return;
+
+        boolean enabled = SysData.isMusicEnabled();
+
+        // Sync SoundManager with SysData
+        if (enabled && !SoundManager.isMusicOn()) {
+            SoundManager.startMusic();
+        } else if (!enabled && SoundManager.isMusicOn()) {
+            SoundManager.stopMusic();
+        }
+
+        String iconPath;
+        double size;
+
+        if (enabled) {
+            iconPath = "/Images/music.png";
+            size = 40;
+        } else {
+            iconPath = "/Images/music_mute.png";
+            size = 60;
+        }
+
+        Image img = new Image(getClass().getResourceAsStream(iconPath));
+        iv.setImage(img);
+        iv.setFitWidth(size);
+        iv.setFitHeight(size);
+    }
+
+    private void refreshSoundIconFromSettings() {
+        if (soundButton == null) return;
+        if (!(soundButton.getGraphic() instanceof ImageView iv)) return;
+
+        boolean enabled = SysData.isSoundEnabled();
+        String iconPath = enabled ? "/Images/volume.png" : "/Images/mute.png";
+
+        Image img = new Image(getClass().getResourceAsStream(iconPath));
+        iv.setImage(img);
     }
 }

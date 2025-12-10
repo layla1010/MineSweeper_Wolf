@@ -1,10 +1,10 @@
 package util;
 
+import model.SysData;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-
-import model.SysData;
 
 /**
  * SoundManager handles all game audio:
@@ -26,9 +26,7 @@ public class SoundManager {
     /** Indicates whether the background music is currently playing. */
     private static boolean musicOn = false;
 
-    // ============================================================
-    //  INIT
-    // ============================================================
+   
 
     /**
      * Initializes all audio resources. Should be called once on app startup.
@@ -83,16 +81,14 @@ public class SoundManager {
         }
     }
 
-    // ============================================================
-    //  SOUND EFFECTS
-    // ============================================================
-
+   
     /**
      * Plays the click sound once from the beginning.
      * Respects SysData.isSoundEnabled().
      */
     public static void playClick() {
-        if (!SysData.isSoundEnabled()) return;   // obey SOUND filter
+        // If the user disabled "Sound" in filters – don't play click
+        if (!SysData.isSoundEnabled()) return;
         if (clickClip == null) return;
 
         if (clickClip.isRunning()) {
@@ -103,9 +99,7 @@ public class SoundManager {
         clickClip.start();
     }
 
-    // ============================================================
-    //  MUSIC CONTROL
-    // ============================================================
+    
 
     /**
      * Starts looping the background music. If already playing, this does nothing.
@@ -153,9 +147,6 @@ public class SoundManager {
         return musicOn;
     }
 
-    // ============================================================
-    //  EXTRA — for future one-shot effects
-    // ============================================================
 
     /**
      * Plays an arbitrary effect file from /Sounds/, e.g. "explosion.wav".
