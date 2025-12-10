@@ -49,7 +49,10 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-
+import javafx.scene.control.ButtonType;
+import java.util.Optional;
+import control.QuestionsManagerController;
+import model.Question;
 
 public class GameController {
 
@@ -593,6 +596,14 @@ public class GameController {
     		activateSurprise(board, row, col, button, tile, isPlayer1);
     		return true;
     	}
+    	// SECOND CLICK ON QUESTION → activate question (EASY mode rules for now)
+        if (cell.getType() == CellType.QUESTION &&
+            revealedArray != null &&
+            revealedArray[row][col]) {
+
+            activateQuestion(board, row, col, button, tile, isPlayer1);
+            return true;
+        }
 
     	//Otherwise, normal reveal (first time or other types)
     	revealSingleCell(board, row, col, button, tile, isPlayer1);
@@ -1143,6 +1154,357 @@ public class GameController {
         alert.setContentText(msg.toString());
         alert.showAndWait();
     }
+    
+    //Returns a random question from the CSV using QuestionsManagerController logic
+    private Question getRandomQuestionFromPool() {
+        List<Question> all = QuestionsManagerController.loadQuestionsForGame();
+
+        if (all == null || all.isEmpty()) {
+            System.out.println("No questions found.");
+            return null;
+        }
+
+        int idx = (int) (Math.random() * all.size());
+        return all.get(idx);
+    }
+    
+    //Shows a multiple-choice question dialog and returns the chosen option (1-4), or -1 if canceled.
+    private int showQuestionDialog(Question q) {
+        if (q == null) return -1;
+
+        Alert alert = new Alert(AlertType.NONE);
+        alert.setTitle("Trivia Question");
+        alert.setHeaderText("Question (" + q.getDifficulty() + ")");
+        StringBuilder content = new StringBuilder();
+        content.append(q.getText()).append("\n\n");
+        content.append("1) ").append(q.getOptA()).append("\n");
+        content.append("2) ").append(q.getOptB()).append("\n");
+        content.append("3) ").append(q.getOptC()).append("\n");
+        content.append("4) ").append(q.getOptD()).append("\n");
+
+        alert.setContentText(content.toString());
+
+        ButtonType btn1 = new ButtonType("1");
+        ButtonType btn2 = new ButtonType("2");
+        ButtonType btn3 = new ButtonType("3");
+        ButtonType btn4 = new ButtonType("4");
+        ButtonType cancel = new ButtonType("Cancel");
+
+        alert.getButtonTypes().setAll(btn1, btn2, btn3, btn4, cancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isEmpty() || result.get() == cancel) {
+            return -1; // user closed / canceled
+        }
+
+        if (result.get() == btn1) return 1;
+        if (result.get() == btn2) return 2;
+        if (result.get() == btn3) return 3;
+        if (result.get() == btn4) return 4;
+
+        return -1;
+    }
+    // Adds lives but caps at TOTAL_HEART_SLOTS. Extra lives are converted to points
+    // at "pointsPerConvertedHeart". Returns the extra score gained from conversion.
+    private int addLivesWithCap(int livesToAdd, int pointsPerConvertedHeart) {
+    	int extraScoreFromConversion = 0;
+
+    	for (int i = 0; i < livesToAdd; i++) {
+    		if (sharedHearts < TOTAL_HEART_SLOTS) {
+    			sharedHearts++;
+    		} else {
+    			extraScoreFromConversion += pointsPerConvertedHeart;
+    		}
+    	}
+
+    	return extraScoreFromConversion;
+    }
+    // Reveals one random mine visually (if any) on the given board for the given player,
+    // without affecting hearts. It does decrease the mines-left counter and updates labels.
+    private void revealRandomMineReward(Board board, boolean isPlayer1) {
+    	StackPane[][] buttons = isPlayer1 ? p1Buttons : p2Buttons;
+    	List<int[]> mines = new ArrayList<>();
+
+    	int rows = board.getRows();
+    	int cols = board.getCols();
+
+    	for (int r = 0; r < rows; r++) {
+    		for (int c = 0; c < cols; c++) {
+    			Cell cell = board.getCell(r, c);
+    			if (cell.getType() == CellType.MINE) {
+    				StackPane tile = buttons[r][c];
+    				if (tile == null || tile.getChildren().isEmpty()) continue;
+    				Button btn = (Button) tile.getChildren().get(0);
+    				if (!btn.isDisable()) {
+    					mines.add(new int[]{r, c});
+    				}
+    			}
+    		}
+    	}
+
+    	if (mines.isEmpty()) {
+    		return;
+    	}
+
+    	int idx = (int) (Math.random() * mines.size());
+    	int[] rc = mines.get(idx);
+    	int row = rc[0];
+    	int col = rc[1];
+
+    	StackPane tile = buttons[row][col];
+    	Button button = (Button) tile.getChildren().get(0);
+
+    	// Show the mine but do NOT change hearts or trigger explosion
+    	button.setText("💣");
+    	button.getStyleClass().removeAll("cell-hidden", "cell-flagged");
+    	if (!button.getStyleClass().contains("cell-revealed")) {
+    		button.getStyleClass().add("cell-revealed");
+    	}
+    	if (!button.getStyleClass().contains("cell-mine")) {
+    		button.getStyleClass().add("cell-mine");
+    	}
+    	button.setDisable(true);
+
+    	// Decrease mines-left count
+    	if (isPlayer1) {
+    		minesLeft1 = Math.max(0, minesLeft1 - 1);
+    	} else {
+    		minesLeft2 = Math.max(0, minesLeft2 - 1);
+    	}
+    	updateScoreAndMineLabels();
+    }
+    
+    // Reveals up to a 3x3 area of NON-MINE cells automatically for the given player.
+    // Uses normal revealSingleCell for non-mine cells (so score & safeCellsRemaining update),
+    // skips mines entirely to avoid punishing the player on a reward.
+    private void revealArea3x3Reward(Board board, boolean isPlayer1) {
+    	StackPane[][] buttons = isPlayer1 ? p1Buttons : p2Buttons;
+    	int rows = board.getRows();
+    	int cols = board.getCols();
+
+    	// Collect candidate centers (cells that are not mines and not disabled)
+    	List<int[]> centers = new ArrayList<>();
+    	for (int r = 0; r < rows; r++) {
+    		for (int c = 0; c < cols; c++) {
+    			Cell cell = board.getCell(r, c);
+    			if (cell.getType() == CellType.MINE) continue;
+
+    			StackPane tile = buttons[r][c];
+    			if (tile == null || tile.getChildren().isEmpty()) continue;
+    			Button btn = (Button) tile.getChildren().get(0);
+    			if (!btn.isDisable()) {
+    				centers.add(new int[]{r, c});
+    			}
+    		}
+    	}
+    	
+    	if (centers.isEmpty()) {
+    		return;
+    	}
+
+    	int idx = (int) (Math.random() * centers.size());
+    	int[] rc = centers.get(idx);
+    	int centerRow = rc[0];
+    	int centerCol = rc[1];
+
+    	for (int dr = -1; dr <= 1; dr++) {
+    		for (int dc = -1; dc <= 1; dc++) {
+    			int r = centerRow + dr;
+    			int c = centerCol + dc;
+    			if (r < 0 || c < 0 || r >= rows || c >= cols) continue;
+
+    			Cell cell = board.getCell(r, c);
+    			if (cell.getType() == CellType.MINE) {
+    				// Skip mines in this reward area
+    				continue;
+    			}
+
+    			StackPane tile = buttons[r][c];
+    			if (tile == null || tile.getChildren().isEmpty()) continue;
+    			Button btn = (Button) tile.getChildren().get(0);
+    			if (btn.isDisable()) continue;
+
+    			// Normal reveal for non-mine cells, so score & safeCellsRemaining work as usual
+    			revealSingleCell(board, r, c, btn, tile, isPlayer1);
+    		}
+    	}
+    }
+    // Shows a popup describing what happened after answering a question.
+    private void showQuestionResultPopup(Question q,
+                                         boolean correct,
+                                         int netScoreChange,
+                                         int livesBefore,
+                                         int livesAfter,
+                                         String extraInfo) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Question Result");
+
+        String difficultyText = q != null ? q.getDifficulty() : "Unknown";
+
+        StringBuilder msg = new StringBuilder();
+        msg.append("You answered a ").append(difficultyText).append(" question.\n\n");
+        msg.append(correct ? "Your answer is CORRECT!\n" : "Your answer is WRONG.\n");
+        msg.append("Score change: ").append(netScoreChange >= 0 ? "+" : "").append(netScoreChange).append("\n");
+
+        int livesDelta = livesAfter - livesBefore;
+        msg.append("Lives change: ").append(livesDelta >= 0 ? "+" : "").append(livesDelta).append("\n");
+
+        if (extraInfo != null && !extraInfo.isBlank()) {
+            msg.append("\n").append(extraInfo).append("\n");
+        }
+
+        msg.append("\nNew score: ").append(score).append("\n");
+        msg.append("New lives: ").append(sharedHearts).append("/").append(TOTAL_HEART_SLOTS);
+
+        alert.setHeaderText(null);
+        alert.setContentText(msg.toString());
+        alert.showAndWait();
+    }
+    
+    // Activates a QUESTION cell on second click in EASY game mode.
+    // 1) Costs +5 points (activation).
+    // 2) Shows a random question from CSV (via SysData).
+    // 3) Applies rewards/penalties based on question difficulty & correctness.
+    // 4) Caps lives at 10; extra lives convert to points (5 per heart in EASY).
+    // 5) Blocks the cell after activation and shows a result popup.
+    private void activateQuestion(Board board,
+                               	int row,
+                               	int col,
+                               	Button button,
+                               	StackPane tile,
+                               	boolean isPlayer1) {
+
+    	// For now we implement rules for EASY game mode as requested.
+    	if (this.difficulty != Difficulty.EASY) {
+    		// You can later extend this to other game modes.
+    		return;
+    	}
+
+    	int activationPoints = getSurpriseActivationPoints(); // 5 in EASY
+    	int livesBefore = sharedHearts;
+    	int scoreBefore = score;
+
+    	// Base activation gain
+    	score += activationPoints;
+
+    	// Get a random question
+    	Question q = getRandomQuestionFromPool();
+    	if (q == null) {
+    		// No question available: just block the cell and update UI
+    		button.setDisable(true);
+    		updateScoreAndMineLabels();
+    		buildHeartsBar();
+    		return;
+    	}
+
+    	int chosenOption = showQuestionDialog(q);
+    	if (chosenOption == -1) {
+    		// Treat cancel/close as wrong answer with no extra effect
+    		button.setDisable(true);
+    		updateScoreAndMineLabels();
+    		buildHeartsBar();
+    		return;
+    	}
+
+    	boolean correct = (chosenOption == q.getCorrectOption());
+    	String qDiff = q.getDifficulty() != null ? q.getDifficulty().toLowerCase() : "easy";
+
+    	String extraInfo = "";
+
+    	if (qDiff.equals("easy")) {
+    		if (correct) {
+    			// +1 life and +3 points (with cap & conversion)
+    			score += 3;
+    			int converted = addLivesWithCap(1, activationPoints); // extra score for over-cap
+    			score += converted;
+    			if (converted > 0) {
+    				extraInfo = "You were already at max lives, so the extra life was converted to +" +
+    						converted + " points. ";
+    			}
+    		} else {
+    			// Wrong: -3 points or 0, 50% each
+    			if (Math.random() < 0.5) {
+    				score -= 3;
+    				extraInfo = "Wrong answer: you lost 3 points.";
+    			} else {
+    				extraInfo = "Wrong answer: no additional penalty this time.";
+    			}
+    		}
+    	} else if (qDiff.equals("medium")) {
+    		if (correct) {
+    			// Reveal one mine automatically (no heart penalty) +6 points
+    			revealRandomMineReward(board, isPlayer1);
+    			score += 6;
+    			extraInfo = "Correct! One mine was revealed automatically for you.";
+    		} else {
+    			// Wrong: -6 points or 0, 50% each
+    			if (Math.random() < 0.5) {
+    				score -= 6;
+    				extraInfo = "Wrong answer: you lost 6 points.";
+    			} else {
+    				extraInfo = "Wrong answer: no additional penalty this time.";
+    			}
+    		}
+    	} else if (qDiff.equals("hard")) {
+    		if (correct) {
+    			// Reveal 3x3 cells automatically if possible +10 points
+    			revealArea3x3Reward(board, isPlayer1);
+    			score += 10;
+    			extraInfo = "Correct! A 3×3 area of cells was revealed for you.";
+    		} else {
+    			// Wrong: -10 points
+    			score -= 10;
+    			extraInfo = "Wrong answer: you lost 10 points.";
+    		}
+    	} else if (qDiff.equals("expert")) {
+    		if (correct) {
+    			// +2 lives and +15 points, with cap & conversion
+    			score += 15;
+    			int converted = addLivesWithCap(2, activationPoints);
+    			score += converted;
+    			if (converted > 0) {
+    				extraInfo = "You gained 2 lives, but some were converted to +" +
+    						converted + " points because you were at max lives.";
+    			}
+    		} else {
+    			// Wrong: -15 points and -1 life
+    			score -= 15;
+    			sharedHearts = Math.max(0, sharedHearts - 1);
+    			extraInfo = "Wrong answer: you lost 15 points and 1 life.";
+    		}
+    	}
+
+    	// Update hearts bar after any life changes
+    	buildHeartsBar();
+
+    	// If lives hit zero → game over
+    	if (sharedHearts == 0 && !gameOver) {
+    		gameWon = false;
+    		onGameOver();
+    	}
+
+    	// Block this question cell so it can't be activated again
+    	button.setDisable(true);
+
+    	// Update labels & show result popup
+    	updateScoreAndMineLabels();
+    	int livesAfter = sharedHearts;
+    	int netScoreChange = score - scoreBefore;
+    	showQuestionResultPopup(q, correct, netScoreChange, livesBefore, livesAfter, extraInfo);
+    }
+
+
+
+    
+    	
+    
+
+
+
+
+    
+
+
 
 
 
