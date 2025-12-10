@@ -51,7 +51,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import java.util.Optional;
-import control.QuestionsManagerController;
 import model.Question;
 
 public class GameController {
@@ -276,21 +275,6 @@ public class GameController {
             if (isPaused) {
                 return;
             }
-
-//            if (e.getButton() == MouseButton.SECONDARY) {
-//                if ((tileIsPlayer1 && !isPlayer1Turn) ||
-//                        (!tileIsPlayer1 && isPlayer1Turn)) {
-//                    return;
-//                }
-//
-//                if (button.isDisable()) {
-//                    return;
-//                }
-//
-//                toggleFlag(button);
-//                return;
-//            }
-            //Changed by jihad!
             if (e.getButton() == MouseButton.SECONDARY) {
                 if ((tileIsPlayer1 && !isPlayer1Turn) ||
                         (!tileIsPlayer1 && isPlayer1Turn)) {
@@ -327,29 +311,6 @@ public class GameController {
 
         return tile;
     }
-
-//    //Toggles a flag icon on a covered cell. If a flag is present, removes it; otherwise adds a flag graphic or emoji.
-//    private void toggleFlag(Button button) {
-//        if (button.getGraphic() instanceof ImageView) {
-//            button.setGraphic(null);
-//            button.getStyleClass().remove("cell-flagged");
-//            return;
-//        }
-//
-//        try {
-//            Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
-//            ImageView iv = new ImageView(img);
-//            iv.setFitWidth(20);
-//            iv.setFitHeight(20);
-//            iv.setPreserveRatio(true);
-//            button.setGraphic(iv);
-//        } catch (Exception ex) {
-//            button.setText("🚩");
-//        }
-//        if (!button.getStyleClass().contains("cell-flagged")) {
-//            button.getStyleClass().add("cell-flagged");
-//        }
-//    }
     
     //Toggles a flag icon on a covered cell. If a flag is present, removes it; otherwise adds a flag graphic or emoji.
     //If a QUESTION or SURPRISE cell is flagged, score is reduced by 3 points.
@@ -432,6 +393,7 @@ public class GameController {
         switch (cell.getType()) {
             case MINE -> {
                 button.setText("💣");
+                button.setDisable(true); //BLOCK the mine cell after revealing
                 button.getStyleClass().addAll("cell-revealed", "cell-mine");
                 sharedHearts = Math.max(0, sharedHearts - 1);
                 triggerExplosion(tile);
@@ -448,22 +410,6 @@ public class GameController {
                     onGameOver();
                 }
             }
-//            case QUESTION -> {
-//                try {
-//                    Image img = new Image(getClass().getResourceAsStream("/Images/question-mark.png"));
-//                    ImageView iv = new ImageView(img);
-//                    iv.setFitWidth(20);
-//                    iv.setFitHeight(20);
-//                    iv.setPreserveRatio(true);
-//                    button.setGraphic(iv);
-//                    button.getStyleClass().addAll("cell-revealed", "cell-question");
-//                    score += 0;
-//                } catch (Exception ex) {
-//                    button.setText("?");
-//                    button.getStyleClass().addAll("cell-revealed", "cell-question");
-//                    score += 0;
-//                }
-//            }
             case QUESTION -> {
                 try {
                     Image img = new Image(getClass().getResourceAsStream("/Images/question-mark.png"));
@@ -485,23 +431,6 @@ public class GameController {
                 	System.out.println("First reveal QUESTION at (" + row + "," + col + "), score +1, so it is: " + score);
                 }
             }
-
-//            case SURPRISE -> {
-//                try {
-//                    Image img = new Image(getClass().getResourceAsStream("/Images/giftbox.png"));
-//                    ImageView iv = new ImageView(img);
-//                    iv.setFitWidth(20);
-//                    iv.setFitHeight(20);
-//                    iv.setPreserveRatio(true);
-//                    button.setGraphic(iv);
-//                    button.getStyleClass().addAll("cell-revealed", "cell-surprise");
-//                    score += 2;
-//                } catch (Exception ex) {
-//                    button.setText("★");
-//                    button.getStyleClass().addAll("cell-revealed", "cell-surprise");
-//                    score += 2;
-//                }
-//            }
             case SURPRISE -> {
                 try {
                     Image img = new Image(getClass().getResourceAsStream("/Images/giftbox.png"));
@@ -596,7 +525,7 @@ public class GameController {
     		activateSurprise(board, row, col, button, tile, isPlayer1);
     		return true;
     	}
-    	// SECOND CLICK ON QUESTION → activate question (EASY mode rules for now)
+    	// SECOND CLICK ON QUESTION : activate question
         if (cell.getType() == CellType.QUESTION &&
             revealedArray != null &&
             revealedArray[row][col]) {
@@ -1540,9 +1469,87 @@ public class GameController {
     			}
     		}
     	//GAME MODE: HARD
-    	} else {
-    			//to do later
-    			System.out.println("HARD GAME MODE LOGIC");
+    	} else if (this.difficulty == Difficulty.HARD) {
+    		if (qDiff.equals("easy")) {
+                if (correct) {
+                    //correct: +1 life and +10 points
+                    score += 10;
+                    int converted = addLivesWithCap(1, activationPoints); // 12 per extra life in HARD
+                    score += converted;
+                    if (converted > 0) {
+                        extraInfo = "You were already at max lives, so the extra life was converted to +" +
+                                converted + " points.";
+                    } else {
+                        extraInfo = "Correct! You gained 1 life.";
+                    }
+                } else {
+                    //wrong: -10 points and -1 life
+                    score -= 10;
+                    sharedHearts = Math.max(0, sharedHearts - 1);
+                    extraInfo = "Wrong answer: you lost 10 points and 1 life.";
+                }
+
+            } else if (qDiff.equals("medium")) {
+                if (correct) {
+                    //correct: either +1 life and +15 points OR +2 lives and +15 points (50% each)
+                    score += 15;
+                    int livesToAdd = (Math.random() < 0.5) ? 1 : 2;
+                    int converted = addLivesWithCap(livesToAdd, activationPoints);
+                    score += converted;
+                    if (converted > 0) {
+                        extraInfo = "Correct! You gained " + livesToAdd +
+                                " lives, but some were converted to +" + converted +
+                                " points because you were at max lives.";
+                    } else {
+                        extraInfo = "Correct! You gained " + livesToAdd + " lives.";
+                    }
+                } else {
+                    //wrong: either (-15 points and -1 life) OR (-15 points and -2 lives) (50% each)
+                    score -= 15;
+                    int livesLost = (Math.random() < 0.5) ? 1 : 2;
+                    sharedHearts = Math.max(0, sharedHearts - livesLost);
+                    extraInfo = "Wrong answer: you lost 15 points and " +
+                            livesLost + " life" + (livesLost > 1 ? "s." : ".");
+                }
+
+            } else if (qDiff.equals("hard")) {
+                if (correct) {
+                    //correct: +2 lives and +20 points
+                    score += 20;
+                    int converted = addLivesWithCap(2, activationPoints);
+                    score += converted;
+                    if (converted > 0) {
+                        extraInfo = "Correct! You gained 2 lives, but some were converted to +" +
+                                converted + " points because you were at max lives.";
+                    } else {
+                        extraInfo = "Correct! You gained 2 lives.";
+                    }
+                } else {
+                    //wrong: -20 points and -2 lives
+                    score -= 20;
+                    sharedHearts = Math.max(0, sharedHearts - 2);
+                    extraInfo = "Wrong answer: you lost 20 points and 2 lives.";
+                }
+
+            } else if (qDiff.equals("expert")) {
+                if (correct) {
+                    //correct: +3 lives and +40 points
+                    score += 40;
+                    int converted = addLivesWithCap(3, activationPoints);
+                    score += converted;
+                    if (converted > 0) {
+                        extraInfo = "Correct! You gained 3 lives, but some were converted to +" +
+                                converted + " points because you were at max lives.";
+                    } else {
+                        extraInfo = "Correct! You gained 3 lives.";
+                    }
+                } else {
+                    //wrong: -40 points and -3 lives
+                    score -= 40;
+                    sharedHearts = Math.max(0, sharedHearts - 3);
+                    extraInfo = "Wrong answer: you lost 40 points and 3 lives.";
+                }
+            }
  
     	}
 
