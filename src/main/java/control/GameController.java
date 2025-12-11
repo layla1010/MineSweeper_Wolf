@@ -346,6 +346,7 @@ public class GameController {
                 }
 
                 toggleFlag(board, r, c, button, tileIsPlayer1);
+                switchTurn();
                 return;
             }
 
@@ -385,10 +386,11 @@ public class GameController {
     private void toggleFlag(Board board, int row, int col, Button button, boolean isPlayer1) {
         Cell cell = board.getCell(row, col);
 
-        // If there is already a flag → remove it (no score change)
+        // If there is already a flag → remove it (no score / mines change)
         if (button.getGraphic() instanceof ImageView) {
             button.setGraphic(null);
             button.getStyleClass().remove("cell-flagged");
+            // we don't enable mines again because we disable them once flagged correctly
             updateScoreAndMineLabels();
             return;
         }
@@ -409,6 +411,25 @@ public class GameController {
             button.getStyleClass().add("cell-flagged");
         }
 
+        
+        // If this cell is a mine → reveal that it's a mine and decrease minesLeft
+        if (cell.isMine()) {
+            // show mine instead of just a flag
+            button.setGraphic(null);
+            button.setText("💣");
+            button.getStyleClass().add("cell-mine");
+            button.getStyleClass().add("cell-revealed");
+
+            // this mine is now safely found → it shouldn't be clickable anymore
+            button.setDisable(true);
+
+            if (isPlayer1) {
+                minesLeft1 = Math.max(0, minesLeft1 - 1);
+            } else {
+                minesLeft2 = Math.max(0, minesLeft2 - 1);
+            }
+
+        } else {
         // Wrong flag on non-mine → mistake
         if (!cell.isMine()) {
             mistakeMade = true;
@@ -419,7 +440,7 @@ public class GameController {
             score -= 3;
             System.out.println("Flagged " + cell.getType() + " at (" + row + "," + col + "), score -3, now: " + score);
         }
-
+        }
         updateScoreAndMineLabels();
     }
 
