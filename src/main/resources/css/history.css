@@ -113,7 +113,7 @@
     -fx-font-size: 12px;
 }
 
-/* ===== Buttons (Apply / Clear / Sort) ===== */
+/* ===== Buttons (Apply / Sort) ===== */
 .history-small-button {
     -fx-background-color: linear-gradient(#3C8DFF, #274B8E);
     -fx-text-fill: #f6f7ff;
@@ -147,17 +147,7 @@
     -fx-text-fill: #F6F7FF;
     -fx-font-size: 12px;
 }
-
-/* dropdown items */
-.combo-box-popup .list-view .list-cell {
-    -fx-background-color: #050814;
-    -fx-text-fill: #F6F7FF;
-}
-
-.combo-box-popup .list-view .list-cell:hover {
-    -fx-background-color: #274B8E;
-}
-
+ 
 /* DatePicker inner text field */
 .date-picker .text-field {
     -fx-background-color: transparent;
@@ -176,6 +166,182 @@
 .date-picker .arrow-button .arrow {
     -fx-background-color: #F6F7FF;
 }
+
+
+/* =========================
+   COMBOBOX BASE (closed state)
+   ========================= */
+
+.combo-box-base {
+    -fx-background-color: linear-gradient(#111A33, #050814);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #274B8E;
+    -fx-border-width: 1;
+    -fx-padding: 2 10 2 10;
+}
+
+.combo-box-base:focused {
+    -fx-background-color: linear-gradient(#111A33, #050814);
+    -fx-border-color: #35E0FF;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+/* arrow button in the combo */
+.combo-box-base .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 8 0 4;
+}
+
+.combo-box-base .arrow-button .arrow {
+    -fx-background-color: #35E0FF;   /* cyan arrow */
+}
+
+
+/* ===============================
+   COMBOBOX POPUP (Filter / Sort)
+   =============================== */
+
+/* Dropdown panel */
+.combo-box-popup .list-view {
+    -fx-background-color: #000000;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(53,224,255,0.4);
+    -fx-border-width: 1.2;
+    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.4), 20, 0.4, 0, 0);
+}
+
+
+.combo-box-popup .scroll-bar:vertical {
+    -fx-background-color: #050814;
+}
+
+.combo-box-popup .scroll-bar:vertical .track {
+    -fx-background-color: #050814;
+    -fx-background-radius: 8;
+}
+
+.combo-box-popup .scroll-bar:vertical .thumb {
+    -fx-background-color: #111A33;
+    -fx-background-radius: 8;
+}
+
+.combo-box-popup .scroll-bar:vertical .increment-button,
+.combo-box-popup .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+}
+
+/* Individual items */
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #E5E7EB;
+    -fx-padding: 6 12 6 12;
+    -fx-font-size: 13px;
+}
+
+/* Hover = soft neon */
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: #0B1226;
+    -fx-border-color: #35E0FF;
+    -fx-border-width: 1;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.5), 14, 0.4, 0, 0);
+}
+
+/* Selected = full neon glow */
+.combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: #111A33;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #35E0FF;
+    -fx-border-width: 1.5;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.75), 18, 0.6, 0, 0);
+}
+
+
+/* ===============================
+   DATE PICKER POPUP (Calendar)
+   =============================== */
+
+/* Whole popup panel */
+.date-picker-popup {
+    -fx-background-color: #000000;        /* FULL BLACK background */
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(53,224,255,0.5);  /* Soft neon border */
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.5), 25, 0.4, 0, 0);
+}
+
+/* Month-Year Header */
+.date-picker-popup > .month-year-pane {
+    -fx-background-color: #000000;
+    -fx-padding: 6 10 6 10;
+}
+
+.date-picker-popup > .month-year-pane .label {
+    -fx-text-fill: #F6F7FF;
+    -fx-font-size: 13px;
+}
+
+/* Header arrows */
+.date-picker-popup > .month-year-pane .spinner .button {
+    -fx-background-color: transparent;
+}
+
+.date-picker-popup > .month-year-pane .spinner .button .arrow {
+    -fx-background-color: #35E0FF; /* cyan arrow */
+}
+
+/* Weekday row (Sun, Mon...) */
+.date-picker-popup .day-name-cell {
+    -fx-background-color: #000000;
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 11px;
+}
+
+/* Day cells */
+.date-picker-popup .day-cell {
+    -fx-background-color: #000000;
+    -fx-text-fill: #E5E7EB;
+    -fx-font-size: 12px;
+    -fx-padding: 5 0 5 0;
+}
+
+/* Hover effect — neon blue glow */
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #0B1226;
+    -fx-border-color: #35E0FF;
+    -fx-border-width: 1;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.6), 12, 0.4, 0, 0);
+}
+
+/* Selected date */
+.date-picker-popup .selected {
+    -fx-background-color: #111A33;
+    -fx-border-color: #35E0FF;
+    -fx-border-width: 1.5;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.8), 18, 0.6, 0, 0);
+}
+
+/* Today's date highlight */
+.date-picker-popup .today {
+    -fx-border-color: #35E0FF;
+    -fx-border-width: 1.2;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+
 
 /* ===== Back button (arrow) ===== */
 .history-back-button {
