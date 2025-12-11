@@ -273,11 +273,9 @@ public class QuestionsManagerController {
         }
     }
 
-    /**
-     * Loads questions from the CSV file into a List<Question>.
-     * Validates each row and logs invalid entries to stderr.
-     */
-    private List<Question> loadQuestionsFromCsv() {
+
+    //Loads questions from the CSV file into a List<Question> and validates rows and logs any invalid entries to stderr.
+    public List<Question> loadQuestionsFromCsv() {
         List<Question> result = new ArrayList<>();
 
         String csvPath = getQuestionsCsvPath();
@@ -381,6 +379,12 @@ public class QuestionsManagerController {
 
         return result;
     }
+    
+    public static List<Question> loadQuestionsForGame() {
+        QuestionsManagerController temp = new QuestionsManagerController();
+        return temp.loadQuestionsFromCsv();
+    }
+
 
     /**
      * Converts difficulty number to text.
