@@ -639,7 +639,7 @@ public class GameController {
         revealSingleCell(board, row, col, button, tile, isPlayer1);
 
         // Cascade for EMPTY cells
-        if (cell.getType() == CellType.EMPTY) {
+        if (cell.getType() == CellType.EMPTY || cell.getType() == CellType.QUESTION || cell.getType() == CellType.SURPRISE) {
             cascadeReveal(board, row, col, isPlayer1);
         }
 
@@ -685,6 +685,8 @@ public class GameController {
             revealSingleCell(board, r, c, btn, tile, isPlayer1);
 
             if (cell.getType() == CellType.EMPTY ||
+            		  cell.getType() == CellType.QUESTION ||
+            		  cell.getType() == CellType.SURPRISE ||
                 (cell.getType() == CellType.NUMBER && cell.getAdjacentMines() == 0)) {
 
                 for (int dr = -1; dr <= 1; dr++) {
