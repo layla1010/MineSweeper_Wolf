@@ -199,6 +199,28 @@
     -fx-cursor: hand;
 }
 
+/* =========================
+   GAME SETUP BACK BUTTON
+   ========================= */
+
+.game-back-button {
+    -fx-background-color: transparent;          /* let the gradient show through */
+    -fx-text-fill: #E5E7F5;                     /* light text like the title */
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+}
+
+.game-back-button:hover {
+    /* soft glassy hover effect */
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-background-radius: 8;
+    -fx-text-fill: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(249,168,255,0.55), 14, 0.5, 0, 0);
+}
+
+
 .settings-back-button:hover {
     -fx-text-fill: #E5F4FF;
 }

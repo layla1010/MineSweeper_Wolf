@@ -227,6 +227,27 @@ public class NewGameController {
             showError("Failed to start the game due to an internal error.");
         }
     }
+    
+    
+    @FXML
+    private void onBackClicked() {
+        playClickSound();
+
+        try {
+           
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
+            Parent mainRoot = loader.load();
+
+            Stage stage = (Stage) root.getScene().getWindow();
+            stage.setScene(new Scene(mainRoot));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Failed to return to main screen.");
+        }
+    }
+
+
 
     /**
      * Handles the "+" button for custom avatar selection.

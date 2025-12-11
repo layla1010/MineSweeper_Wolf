@@ -176,3 +176,21 @@
 .date-picker .arrow-button .arrow {
     -fx-background-color: #F6F7FF;
 }
+
+/* ===== Back button (arrow) ===== */
+.history-back-button {
+    -fx-background-color: transparent;      /* let the dark background show */
+    -fx-text-fill: #E5E7F5;                 /* same light text as the screen */
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+}
+
+.history-back-button:hover {
+    -fx-background-color: rgba(39, 75, 142, 0.35);  /* soft blue glass */
+    -fx-background-radius: 8;
+    -fx-text-fill: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.35), 10, 0.4, 0, 0);
+}
+

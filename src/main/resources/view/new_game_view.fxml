@@ -41,6 +41,13 @@
         <!-- TOP TITLE BAR -->
         <AnchorPane maxHeight="75.0" maxWidth="1200.0" minHeight="15.0" minWidth="1200.0" prefHeight="20.0" prefWidth="1200.0">
             <children>
+            <Button layoutX="20.0" layoutY="18.0"
+        prefHeight="32.0" prefWidth="32.0"
+        mnemonicParsing="false"
+        onAction="#onBackClicked"
+        styleClass="game-back-button"
+        text="←" />
+            
                 <Text fill="#F6F7FF" layoutX="504.0" layoutY="35.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-effect: dropshadow(gaussian, #f973c5, 20, 0.5, 0, 0);" text="Game Setup" textAlignment="CENTER" wrappingWidth="200.0">
                     <font>
                         <Font name="Copperplate Gothic Bold" size="24.0" />

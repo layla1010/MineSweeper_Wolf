@@ -1,11 +1,2 @@
-date,duration,difficulty,score,result,player1,player2
-2025-11-27,2:16,EASY,55,WIN,Adan,Layla
-2025-11-27,0:46,EASY,94,LOSE,LOLO,SISI
-2025-11-28,2:14,EASY,126,WIN,Layla,Mira
-2025-11-28,2:00,EASY,112,WIN,kayla,baily
-2025-11-28,5:07,EASY,123,WIN,Jihad,Aya
-2025-12-10,7:35,EASY,184,LOSE,k,j
-2025-12-10,1:08,EASY,0,LOSE,LL,NN
-2025-12-10,0:43,EASY,1,LOSE,K,V
-2025-12-10,0:55,EASY,0,LOSE,MM,KKK
-2025-12-10,4:18,EASY,31,LOSE,e,d
+date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Official,player2Official,winWithoutMistakes
+2025-12-11,3:37,EASY,75,GIVE_UP,kbj,cfgn,,,false

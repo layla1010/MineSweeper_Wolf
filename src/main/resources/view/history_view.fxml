@@ -30,11 +30,19 @@
         </padding>
 
         <!-- Big HISTORY title -->
-        <HBox alignment="CENTER_LEFT">
-            <children>
-                <Label text="History" styleClass="history-title"/>
-            </children>
-        </HBox>
+<HBox alignment="CENTER_LEFT">
+    <children>
+        <!-- Back arrow button -->
+        <Button text="←"
+                prefWidth="32.0" prefHeight="32.0"
+                mnemonicParsing="false"
+                onAction="#onBackBtnClicked"
+                styleClass="history-back-button"/>
+
+        <Label text="History" styleClass="history-title"/>
+    </children>
+</HBox>
+
 
         <!-- Filter + Sort row -->
         <HBox spacing="12.0"
