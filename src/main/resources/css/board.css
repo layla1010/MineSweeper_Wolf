@@ -156,6 +156,34 @@
     -fx-effect: dropshadow(gaussian, #bbf7d0, 40, 0.9, 0, 0);
 }
 
+/* =======================
+   AVATAR RINGS ABOVE BOARDS
+   ======================= */
+
+.avatar-ring {
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+    -fx-padding: 4;
+}
+
+/* Player 1 avatar – red glow */
+.avatar-ring-p1 {
+    -fx-background-color: rgba(30, 0, 0, 0.85);
+    -fx-border-color: #ff4b81;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(248, 113, 113, 0.8), 25, 0.7, 0, 0);
+}
+
+/* Player 2 avatar – green glow */
+.avatar-ring-p2 {
+    -fx-background-color: rgba(0, 24, 16, 0.85);
+    -fx-border-color: #22c55e;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(34, 197, 94, 0.8), 25, 0.7, 0, 0);
+}
+
+
+
 /* ===== SMART HINTS (unchanged) ===== */
 
 .smart-hint-cell {

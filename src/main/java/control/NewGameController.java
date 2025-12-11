@@ -190,9 +190,17 @@ public class NewGameController {
             showError("Please select a difficulty level.");
             return;
         }
+        
+        String p1 = avatarManager.getSelectedAvatarIdForPlayer1();
+        String p2 = avatarManager.getSelectedAvatarIdForPlayer2();
 
-        if (!avatarManager.areBothAvatarsChosen()) {
-            avatarManager.showAvatarErrorIfNeeded();
+        if (p1 == null || p1.isBlank() || p2 == null || p2.isBlank()) {
+            // Show an alert manually
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle("Avatar Required");
+            a.setHeaderText(null);
+            a.setContentText("Both players must choose an avatar before starting the game.");
+            a.showAndWait();
             return;
         }
 
@@ -208,7 +216,9 @@ public class NewGameController {
         GameConfig config = new GameConfig(
                 nickname1.trim(),
                 nickname2.trim(),
-                difficulty
+                difficulty,
+                p1,
+                p2
         );
 
         try {

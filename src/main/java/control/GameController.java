@@ -71,6 +71,9 @@ public class GameController {
     @FXML private Button musicButton;
 
     @FXML private Parent root;
+    @FXML private ImageView player1AvatarImage;
+    @FXML private ImageView player2AvatarImage;
+
 
     private GameConfig config;
     private Difficulty difficulty;
@@ -130,11 +133,18 @@ public class GameController {
 
         this.minesLeft1 = board1.getMineCount();
         this.minesLeft2 = board2.getMineCount();
+        
+     // ----------  load avatars above boards ----------
+        setBoardAvatar(player1AvatarImage, config.getPlayer1AvatarPath());
+        setBoardAvatar(player2AvatarImage, config.getPlayer2AvatarPath());
+        // -----------------------------------------------------
+
 
         // Track which cells were already revealed (for scoring & surprise/question logic)
         this.revealedCellsP1 = new boolean[board1.getRows()][board1.getCols()];
         this.revealedCellsP2 = new boolean[board2.getRows()][board2.getCols()];
 
+        
         int totalCells1 = board1.getRows() * board1.getCols();
         int totalCells2 = board2.getRows() * board2.getCols();
         this.safeCellsRemaining1 = totalCells1 - board1.getMineCount();
@@ -175,7 +185,34 @@ public class GameController {
         // --- SYNC ICONS WITH SETTINGS ---
         refreshSoundIconFromSettings();   // sound (clicks)
         refreshMusicIconFromSettings();   // music (background)
+        
+        
     }
+    
+    private void setBoardAvatar(ImageView target, String avatarId) {
+        if (target == null) return;
+        if (avatarId == null || avatarId.isBlank()) return;
+
+        try {
+            Image img;
+            if (avatarId.startsWith("file:")) {
+                // custom file chosen with '+'
+                img = new Image(avatarId);
+            } else {
+                // built-in S1.png ... in /Images
+                var stream = getClass().getResourceAsStream("/Images/" + avatarId);
+                if (stream == null) {
+                    System.err.println("GameController: cannot find /Images/" + avatarId);
+                    return;
+                }
+                img = new Image(stream);
+            }
+            target.setImage(img);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * Builds the hearts bar UI based on the current number of shared lives.

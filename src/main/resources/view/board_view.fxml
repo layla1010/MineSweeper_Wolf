@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.VBox?>
 
 <GridPane fx:id="root"
           maxHeight="-Infinity" maxWidth="-Infinity"
@@ -213,86 +214,123 @@
             </children>
         </StackPane>
 
-        <!-- BOARDS ROW -->
-        <HBox alignment="CENTER"
-              prefHeight="490.0" prefWidth="1000.0"
-              spacing="80.0"
-              GridPane.columnIndex="1"
-              GridPane.columnSpan="3"
-              GridPane.rowIndex="3">
-            <children>
+        <!-- ====== BOARDS ROW (rowIndex=3) WITH AVATARS ====== -->
+    <HBox alignment="CENTER"
+          prefHeight="490.0" prefWidth="1000.0"
+          spacing="80.0"
+          GridPane.columnIndex="1"
+          GridPane.columnSpan="3"
+          GridPane.rowIndex="3">
+        <children>
 
-                <!-- Player 1 board (RED) -->
-                <StackPane maxHeight="-Infinity" maxWidth="-Infinity"
+            <!-- Player 1 board + avatar -->
+            <StackPane maxHeight="-Infinity" maxWidth="-Infinity"
+                       minHeight="-Infinity" minWidth="-Infinity"
+                       prefHeight="520.0" prefWidth="520.0">
+                <children>
+
+                    <!-- red card background -->
+                    <Label maxHeight="-Infinity" maxWidth="-Infinity"
                            minHeight="-Infinity" minWidth="-Infinity"
-                           prefHeight="520.0" prefWidth="520.0">
-                    <children>
-                        <!-- Red wrapper card -->
-                        <Label maxHeight="-Infinity" maxWidth="-Infinity"
-                               minHeight="-Infinity" minWidth="-Infinity"
-                               prefHeight="500.0" prefWidth="500.0"
-                               styleClass="board-card board-card-p1" />
+                           prefHeight="500.0" prefWidth="500.0"
+                           styleClass="board-card board-card-p1"/>
 
-                        <!-- Grid -->
-                        <GridPane fx:id="player1Grid"
-                                  maxHeight="-Infinity" maxWidth="-Infinity"
-                                  minHeight="-Infinity" minWidth="-Infinity"
-                                  prefHeight="490.0" prefWidth="490.0"
-                                  style="-fx-padding: 8;"
-                                  styleClass="grid-board grid-board-p1">
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="ALWAYS" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints vgrow="ALWAYS" />
-                            </rowConstraints>
-                        </GridPane>
-                    </children>
-                    <padding>
-                        <Insets top="25.0" />
-                    </padding>
-                </StackPane>
+                    <!-- vertical layout: avatar on top, grid under it -->
+                    <VBox alignment="TOP_CENTER" spacing="18">
+                        <children>
 
-                <!-- Player 2 board (GREEN) -->
-                <StackPane maxHeight="-Infinity" maxWidth="-Infinity"
+                            <!-- avatar frame -->
+                            <StackPane styleClass="avatar-ring avatar-ring-p1">
+    <ImageView fx:id="player1AvatarImage"
+               fitHeight="70.0" fitWidth="70.0"
+               preserveRatio="true" />
+</StackPane>
+
+
+                            <!-- board grid -->
+                            <GridPane fx:id="player1Grid"
+                                      maxHeight="-Infinity" maxWidth="-Infinity"
+                                      minHeight="-Infinity" minWidth="-Infinity"
+                                      prefHeight="430.0" prefWidth="490.0"
+                                      style="-fx-padding: 8;"
+                                      styleClass="grid-board grid-board-p1">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints vgrow="ALWAYS" />
+                                </rowConstraints>
+                            </GridPane>
+                        </children>
+                        <padding>
+                            <Insets top="18.0" left="10.0" right="10.0" bottom="10.0"/>
+                        </padding>
+                    </VBox>
+
+                </children>
+                <padding>
+                    <Insets top="25.0" />
+                </padding>
+            </StackPane>
+
+            <!-- Player 2 board + avatar -->
+            <StackPane maxHeight="-Infinity" maxWidth="-Infinity"
+                       minHeight="-Infinity" minWidth="-Infinity"
+                       prefHeight="520.0" prefWidth="520.0">
+                <children>
+
+                    <!-- green card background -->
+                    <Label maxHeight="-Infinity" maxWidth="-Infinity"
                            minHeight="-Infinity" minWidth="-Infinity"
-                           prefHeight="520.0" prefWidth="520.0">
-                    <children>
-                        <!-- Green wrapper card -->
-                        <Label maxHeight="-Infinity" maxWidth="-Infinity"
-                               minHeight="-Infinity" minWidth="-Infinity"
-                               prefHeight="500.0" prefWidth="500.0"
-                               styleClass="board-card board-card-p2">
-                            <StackPane.margin>
-                                <Insets right="50.0" />
-                            </StackPane.margin>
-                        </Label>
+                           prefHeight="500.0" prefWidth="500.0"
+                           styleClass="board-card board-card-p2">
+                        <StackPane.margin>
+                            <Insets right="50.0" />
+                        </StackPane.margin>
+                    </Label>
 
-                        <!-- Grid -->
-                        <GridPane fx:id="player2Grid"
-                                  maxHeight="-Infinity" maxWidth="-Infinity"
-                                  minHeight="-Infinity" minWidth="-Infinity"
-                                  prefHeight="490.0" prefWidth="490.0"
-                                  style="-fx-padding: 8;"
-                                  styleClass="grid-board grid-board-p2">
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="ALWAYS" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints vgrow="ALWAYS" />
-                            </rowConstraints>
-                            <StackPane.margin>
-                                <Insets right="50.0" />
-                            </StackPane.margin>
-                        </GridPane>
-                    </children>
-                    <padding>
-                        <Insets top="25.0" />
-                    </padding>
-                </StackPane>
+                    <VBox alignment="TOP_CENTER" spacing="18">
+                        <children>
 
-            </children>
-        </HBox>
+                            <!-- avatar frame -->
+                            <StackPane styleClass="avatar-ring avatar-ring-p2">
+    <ImageView fx:id="player2AvatarImage"
+               fitHeight="70.0" fitWidth="70.0"
+               preserveRatio="true" />
+</StackPane>
+
+
+                            <!-- board grid -->
+                            <GridPane fx:id="player2Grid"
+                                      maxHeight="-Infinity" maxWidth="-Infinity"
+                                      minHeight="-Infinity" minWidth="-Infinity"
+                                      prefHeight="430.0" prefWidth="490.0"
+                                      style="-fx-padding: 8;"
+                                      styleClass="grid-board grid-board-p2">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints vgrow="ALWAYS" />
+                                </rowConstraints>
+                                <StackPane.margin>
+                                    <Insets right="50.0" />
+                                </StackPane.margin>
+                            </GridPane>
+                        </children>
+                        <padding>
+                            <Insets top="18.0" left="10.0" right="10.0" bottom="10.0"/>
+                        </padding>
+                    </VBox>
+
+                </children>
+                <padding>
+                    <Insets top="25.0" />
+                </padding>
+            </StackPane>
+
+        </children>
+    </HBox>
 
         <!-- Hearts + Score bar -->
         <StackPane GridPane.columnIndex="1"
