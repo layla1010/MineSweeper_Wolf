@@ -85,6 +85,13 @@
     -fx-text-fill: #ff9b9b;
 }
 
+.result-pill-giveup {
+    -fx-background-color: rgba(234, 179, 8, 0.18);  /* soft amber */
+    -fx-border-color: #eab308;
+    -fx-text-fill: #fde68a;
+}
+
+
 /* players text */
 .players-label {
     -fx-text-fill: #f2f7ff;
@@ -359,4 +366,15 @@
     -fx-text-fill: #FFFFFF;
     -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.35), 10, 0.4, 0, 0);
 }
+
+/* Small avatars in history rows */
+.history-avatar {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 8, 0.3, 0, 2);
+    -fx-smooth: true;
+    -fx-translate-y: 0;
+    -fx-opacity: 1.0;
+}
+
+
+
 

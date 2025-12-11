@@ -2,6 +2,7 @@ package control;
 
 
 import java.io.IOException;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ import model.Game;
 import model.GameResult;
 import model.SysData;
 import util.SoundManager;
+import javafx.scene.image.Image;                
+import javafx.scene.image.ImageView; 
+import javafx.geometry.Pos; 
 
 public class HistoryController {
 
@@ -97,6 +101,37 @@ public class HistoryController {
             historyList.getChildren().add(card);
         }
     }
+    
+ // ===  helper to load avatar image from stored id/path ===
+    private Image loadAvatarImage(String avatarId) {
+        if (avatarId == null || avatarId.isBlank()) {
+            return null;
+        }
+
+        // Custom avatar from file chooser
+        if (avatarId.startsWith("file:")) {
+            return new Image(avatarId, false);
+        }
+
+        // Built-in avatar: S1.png, S2.png, ...
+        return new Image(getClass().getResourceAsStream("/Images/" + avatarId));
+    }
+    
+ // === helper to create a small circular avatar view ===
+    private ImageView createAvatarView(String avatarId) {
+        Image img = loadAvatarImage(avatarId);
+        ImageView iv = new ImageView();
+        if (img != null) {
+            iv.setImage(img);
+        }
+        iv.setFitWidth(38);
+        iv.setFitHeight(38);
+        iv.setPreserveRatio(true);
+        iv.getStyleClass().add("history-avatar");
+        return iv;
+    }
+    
+    
 
     //Creates a single history card for one game session.
     private HBox createCardForGame(Game game) {
@@ -116,24 +151,49 @@ public class HistoryController {
         Label difficultyLabel = new Label(diffText);
         difficultyLabel.getStyleClass().addAll("pill-label", "difficulty-pill");
 
+     // ---  avatars and names in one HBox ---
+        ImageView avatar1 = createAvatarView(game.getPlayer1AvatarPath());
+        ImageView avatar2 = createAvatarView(game.getPlayer2AvatarPath());
+        
+        
         Label playersLabel =
                 new Label(game.getPlayer1Nickname() + " & " + game.getPlayer2Nickname());
         playersLabel.getStyleClass().add("players-label");
+        
+        HBox playersBox = new HBox(8, avatar1, playersLabel, avatar2);
+        playersBox.setAlignment(Pos.CENTER_LEFT);
 
-        Label resultLabel = new Label(
-                game.getResult() == GameResult.WIN ? "Won" : "Lost"
-        );
-        resultLabel.getStyleClass().add("pill-label");
-        if (game.getResult() == GameResult.WIN) {
-            resultLabel.getStyleClass().add("result-pill-won");
-        } else {
-            resultLabel.getStyleClass().add("result-pill-lost");
+        GameResult res = game.getResult();
+        String resultText;
+        String resultCssClass;
+
+        switch (res) {
+            case WIN -> {
+                resultText = "Won";
+                resultCssClass = "result-pill-won";
+            }
+            case LOSE -> {
+                resultText = "Lost";
+                resultCssClass = "result-pill-lost";
+            }
+            case GIVE_UP -> {
+                resultText = "Give up";
+                resultCssClass = "result-pill-giveup";
+            }
+            default -> {
+                resultText = res.name();
+                resultCssClass = "result-pill-lost"; // fallback style
+            }
         }
+
+        Label resultLabel = new Label(resultText);
+        resultLabel.getStyleClass().add("pill-label");
+        resultLabel.getStyleClass().add(resultCssClass);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
 
-        header.getChildren().addAll(difficultyLabel, playersLabel, spacer, resultLabel);
+        header.getChildren().addAll(difficultyLabel, playersBox, spacer, resultLabel);
 
         //bottom row: date, score and time
         HBox footer = new HBox();
@@ -239,8 +299,13 @@ public class HistoryController {
                     }
                 }
                 case "Result" -> {
-                    String res = g.getResult().name().toLowerCase(); // WIN / LOSS
-                    if (res.contains(query)) {
+                	GameResult resEnum = g.getResult();
+                	String resLabel = switch (resEnum) {
+                    case WIN    -> "won";
+                    case LOSE   -> "lost";
+                    case GIVE_UP -> "Give up";
+                };
+                    if (resLabel.contains(query)) {
                         result.add(g);
                     }
                 }

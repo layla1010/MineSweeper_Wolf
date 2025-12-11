@@ -17,75 +17,47 @@ public class Game {
     private final LocalDate date;       
     private final int durationSeconds;  //total duration in seconds
     private final boolean winWithoutMistakes;
+    private final String player1AvatarPath;
+    private final String player2AvatarPath;
+
 
 
     //Can be used elsewhere if needed (for time fields, not used directly here)
     public static final DateTimeFormatter TIME_FORMATTER =
             DateTimeFormatter.ofPattern("HH:mm");
 
-    public Game(String player1OfficialName, String player2OfficialName, String player1Nickname,String player2Nickname, Difficulty difficulty, int finalScore, GameResult result, LocalDate date, int durationSeconds, boolean winWithoutMistakes) {
+    public Game(String player1OfficialName,
+            String player2OfficialName,
+            String player1Nickname,
+            String player2Nickname,
+            Difficulty difficulty,
+            int score,
+            GameResult result,
+            LocalDate date,
+            int durationSeconds,
+            boolean winWithoutMistakes,
+            String player1AvatarPath,
+            String player2AvatarPath) {
 
-        if (player1Nickname == null || player1Nickname.trim().isEmpty()) {
-            throw new IllegalArgumentException("player1Nickname cannot be null or empty");
-        }
-        if (player2Nickname == null || player2Nickname.trim().isEmpty()) {
-            throw new IllegalArgumentException("player2Nickname cannot be null or empty");
-        }
-        if (durationSeconds < 0) {
-            throw new IllegalArgumentException("durationSeconds cannot be negative");
-        }
-
-        this.player1OfficialName = (player1OfficialName == null || player1OfficialName.isBlank()) ? null : player1OfficialName.trim();
-        this.player2OfficialName = (player2OfficialName == null || player2OfficialName.isBlank()) ? null : player2OfficialName.trim();
-        this.player1Nickname = player1Nickname.trim();
-        this.player2Nickname = player2Nickname.trim();
-        this.difficulty = Objects.requireNonNull(difficulty, "difficulty cannot be null");
-        this.finalScore = finalScore;
-        this.result = Objects.requireNonNull(result, "result cannot be null");
-        this.date = Objects.requireNonNull(date, "date cannot be null");
-        this.durationSeconds = durationSeconds;
-        this.winWithoutMistakes = winWithoutMistakes;
-    }
+    this.player1OfficialName = player1OfficialName;
+    this.player2OfficialName = player2OfficialName;
+    this.player1Nickname = player1Nickname;
+    this.player2Nickname = player2Nickname;
+    this.difficulty = difficulty;
+    this.finalScore = score;
+    this.result = result;
+    this.date = date;
+    this.durationSeconds = durationSeconds;
+    this.winWithoutMistakes = winWithoutMistakes;
+    this.player1AvatarPath = player1AvatarPath;
+    this.player2AvatarPath = player2AvatarPath;
+}
     
     public boolean isWinWithoutMistakes() {
         return winWithoutMistakes;
     }
 
-    public String getPlayer1OfficialName() {
-        return player1OfficialName;
-    }
-
-    public String getPlayer2OfficialName() {
-        return player2OfficialName;
-    }
-    
-    public String getPlayer1Nickname() {
-        return player1Nickname;
-    }
-
-    public String getPlayer2Nickname() {
-        return player2Nickname;
-    }
-
-    public Difficulty getDifficulty() {
-        return difficulty;
-    }
-
-    public int getFinalScore() {
-        return finalScore;
-    }
-
-    public GameResult getResult() {
-        return result;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public int getDurationSeconds() {
-        return durationSeconds;
-    }
+   
 
     
     //Formats the duration as M:SS (for example "10:21").
@@ -107,16 +79,62 @@ public class Game {
         return (result == GameResult.WIN) ? "Win" : "Lose";
     }
 
-    @Override
-    public String toString() {
-        return "Game{" +
-                "player1='" + player1Nickname + '\'' +
-                ", player2='" + player2Nickname + '\'' +
-                ", difficulty=" + difficulty +
-                ", finalScore=" + finalScore +
-                ", result=" + result +
-                ", date=" + date +
-                ", duration=" + getDurationFormatted() +
-                '}';
-    }
+	public String getPlayer1OfficialName() {
+		return player1OfficialName;
+	}
+
+	public String getPlayer2OfficialName() {
+		return player2OfficialName;
+	}
+
+	public String getPlayer1Nickname() {
+		return player1Nickname;
+	}
+
+	public String getPlayer2Nickname() {
+		return player2Nickname;
+	}
+
+	public Difficulty getDifficulty() {
+		return difficulty;
+	}
+
+	public int getFinalScore() {
+		return finalScore;
+	}
+
+	public GameResult getResult() {
+		return result;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public int getDurationSeconds() {
+		return durationSeconds;
+	}
+
+	public String getPlayer1AvatarPath() {
+		return player1AvatarPath;
+	}
+
+	public String getPlayer2AvatarPath() {
+		return player2AvatarPath;
+	}
+
+	public static DateTimeFormatter getTimeFormatter() {
+		return TIME_FORMATTER;
+	}
+
+	@Override
+	public String toString() {
+		return "Game [player1OfficialName=" + player1OfficialName + ", player2OfficialName=" + player2OfficialName
+				+ ", player1Nickname=" + player1Nickname + ", player2Nickname=" + player2Nickname + ", difficulty="
+				+ difficulty + ", finalScore=" + finalScore + ", result=" + result + ", date=" + date
+				+ ", durationSeconds=" + durationSeconds + ", winWithoutMistakes=" + winWithoutMistakes
+				+ ", player1AvatarPath=" + player1AvatarPath + ", player2AvatarPath=" + player2AvatarPath + "]";
+	}
+
+   
 }

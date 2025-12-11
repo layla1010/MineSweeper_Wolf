@@ -190,22 +190,26 @@ public class SysData {
         }
 
         String[] parts = line.split(",", -1);  // keep empty columns
-        if (parts.length != 10) {
+        if (parts.length < 10) {
             return null;
         }
 
         try {
-            LocalDate date = LocalDate.parse(parts[0]);       // "2025-11-26"
-            int durationSeconds = parseDuration(parts[1]);    // "21:15" or "1275"
-            Difficulty difficulty = Difficulty.valueOf(parts[2]);
-            int score = Integer.parseInt(parts[3]);
-            GameResult result = GameResult.valueOf(parts[4]); // WIN / LOSE / GIVE_UP
-            String nick_player1 = parts[5];
-            String nick_player2 = parts[6];
-            String off_player1 = toNullIfBlank(parts[7]);
-            String off_player2 = toNullIfBlank(parts[8]);
+            LocalDate date          = LocalDate.parse(parts[0]);       // "2025-11-26"
+            int durationSeconds     = parseDuration(parts[1]);         // "21:15" or "1275"
+            Difficulty difficulty   = Difficulty.valueOf(parts[2]);
+            int score               = Integer.parseInt(parts[3]);
+            GameResult result       = GameResult.valueOf(parts[4]);    // WIN / LOSE / GIVE_UP
+            String nick_player1     = parts[5];
+            String nick_player2     = parts[6];
+            String off_player1      = toNullIfBlank(parts[7]);
+            String off_player2      = toNullIfBlank(parts[8]);
             boolean winWithoutMistakes = Boolean.parseBoolean(parts[9].trim());
-            
+
+            // NEW: optional avatar columns (for older CSVs these may not exist)
+            String avatar1 = (parts.length > 10) ? toNullIfBlank(parts[10]) : null;
+            String avatar2 = (parts.length > 11) ? toNullIfBlank(parts[11]) : null;
+
             return new Game(
                     off_player1,
                     off_player2,
@@ -215,15 +219,17 @@ public class SysData {
                     score,
                     result,
                     date,
-                    durationSeconds, 
-                    winWithoutMistakes
-
+                    durationSeconds,
+                    winWithoutMistakes,
+                    avatar1,
+                    avatar2
             );
 
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+
     }
 
     /** Converts empty strings to null. */
@@ -260,7 +266,7 @@ public class SysData {
 
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             // header
-            writer.write("date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Official,player2Official,winWithoutMistakes");
+            writer.write("date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Official,player2Official,winWithoutMistakes,player1Avatar,player2Avatar");
             writer.newLine();
 
             for (Game game : games) {
@@ -285,6 +291,8 @@ public class SysData {
         String p1Off         = sanitizeForCsvOrEmpty(game.getPlayer1OfficialName());
         String p2Off         = sanitizeForCsvOrEmpty(game.getPlayer2OfficialName());
         String noMistakesStr = Boolean.toString(game.isWinWithoutMistakes());
+        String p1Avatar = sanitizeForCsvOrEmpty(game.getPlayer1AvatarPath());
+        String p2Avatar = sanitizeForCsvOrEmpty(game.getPlayer2AvatarPath());
 
         
         return String.join(",",
@@ -297,7 +305,9 @@ public class SysData {
                 p2Nick,
                 p1Off,
                 p2Off,
-                noMistakesStr
+                noMistakesStr,
+                p1Avatar,
+                p2Avatar
         );
     }
 

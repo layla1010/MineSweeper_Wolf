@@ -1121,7 +1121,9 @@ public class GameController {
                 result,
                 LocalDate.now(),
                 elapsedSeconds,
-                winWithoutMistakes
+                winWithoutMistakes,
+                config.getPlayer1AvatarPath(),
+                config.getPlayer2AvatarPath()
         );
 
         SysData sysData = SysData.getInstance();
@@ -1206,7 +1208,9 @@ public class GameController {
                 result,
                 LocalDate.now(),
                 elapsedSeconds,
-                false
+                false,
+                config.getPlayer1AvatarPath(),
+                config.getPlayer2AvatarPath()
         );
 
         SysData sysData = SysData.getInstance();
