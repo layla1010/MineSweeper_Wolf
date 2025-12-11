@@ -313,6 +313,13 @@ public class GameController {
         button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         button.getStyleClass().addAll("cell-tile", "cell-hidden");
 
+        // per-player style
+        if (isPlayer1) {
+            button.getStyleClass().add("p1-cell");
+        } else {
+            button.getStyleClass().add("p2-cell");
+        }
+        
         StackPane tile = new StackPane(button);
         tile.setMinSize(0, 0);
         tile.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);

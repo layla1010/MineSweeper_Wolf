@@ -1,8 +1,8 @@
+/* ===== BASE CELL STYLE ===== */
+
 .cell-tile {
-    -fx-background-color: linear-gradient(#121726, #050814);
     -fx-background-radius: 5;
     -fx-border-radius: 5;
-    -fx-border-color: #1f2937;
     -fx-border-width: 1.5;
     -fx-text-fill: #f9fafb;
     -fx-font-family: "Copperplate Gothic Light";
@@ -10,20 +10,44 @@
     -fx-padding: 0;
 }
 
-.cell-tile:hover {
-    -fx-background-color: linear-gradient(#20263a, #0b1020);
+/* -------- Player 1 cells – RED theme -------- */
+
+.p1-cell {
+    -fx-background-color: linear-gradient(#1b0205, #050104);
+    -fx-border-color: #b91c1c;
 }
 
-.cell-tile:pressed {
-    -fx-background-color: #02030a;
-    -fx-translate-y: 1;
+.p1-cell:hover {
+    -fx-background-color: linear-gradient(#2b050b, #0a0205);
+    -fx-effect: dropshadow(gaussian, rgba(248,113,113,0.7), 18, 0.6, 0, 0);
 }
 
-.cell-hidden {
+.p1-cell:pressed {
+    -fx-background-color: #120207;
 }
+
+/* -------- Player 2 cells – GREEN theme -------- */
+
+.p2-cell {
+    -fx-background-color: linear-gradient(#02140b, #010806);
+    -fx-border-color: #15803d;
+}
+
+.p2-cell:hover {
+    -fx-background-color: linear-gradient(#032016, #020e09);
+    -fx-effect: dropshadow(gaussian, rgba(52,211,153,0.7), 18, 0.6, 0, 0);
+}
+
+.p2-cell:pressed {
+    -fx-background-color: #021009;
+}
+
+/* ===== CELL STATES ===== */
+
+.cell-hidden { }
 
 .cell-revealed {
-    -fx-background-color: white;
+    -fx-background-color: #e5e7eb;
     -fx-border-color: #374151;
 }
 
@@ -39,15 +63,13 @@
     -fx-text-fill: #fecaca;
 }
 
+/* Numbers */
 .cell-number {
-    -fx-text-fill: navy blue;
+    -fx-text-fill: #1d4ed8;
     -fx-font-family: "Copperplate Gothic Bold";
-    
-    
 }
 
-
-
+/* Question & Surprise glyph colors */
 .cell-question {
     -fx-text-fill: #facc15;
 }
@@ -56,15 +78,7 @@
     -fx-text-fill: #a855f7;
 }
 
-.grid-board.active-board {
-    -fx-opacity: 1.0;
-    -fx-effect: dropshadow(gaussian, #3C8DFF, 30, 0.5, 0, 0);
-}
-
-.grid-board.inactive-board {
-    -fx-opacity: 0.5;
-    -fx-effect: none;
-}
+/* ===== ACTIVE / INACTIVE PLAYER LABELS ===== */
 
 .active-player-label {
     -fx-text-fill: #F6F7FF;
@@ -74,4 +88,91 @@
 .inactive-player-label {
     -fx-text-fill: #8B94C4;
     -fx-font-weight: normal;
+}
+
+/* ===== BOARD WRAPPER CARDS ===== */
+
+.board-card {
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 30, 0.4, 0, 8);
+}
+
+/* Player 1 board card: red frame */
+.board-card-p1 {
+    -fx-background-color: linear-gradient(#170b11, #3f1020);
+    -fx-border-color: rgba(248,113,113,0.95);
+    -fx-border-width: 2;
+}
+
+/* Player 2 board card: green frame */
+.board-card-p2 {
+    -fx-background-color: linear-gradient(#07170f, #0f3f27);
+    -fx-border-color: rgba(52,211,153,0.95);
+    -fx-border-width: 2;
+}
+
+/* ===== GRIDS ===== */
+
+.grid-board {
+    -fx-background-color: transparent;
+    -fx-padding: 8;
+}
+
+.grid-board-p1 {
+    -fx-background-color: rgba(15, 23, 42, 0.85);
+    -fx-background-radius: 32;
+}
+
+.grid-board-p2 {
+    -fx-background-color: rgba(15, 23, 42, 0.85);
+    -fx-background-radius: 32;
+}
+
+/* Active board glow (whose turn it is) */
+
+.grid-board-p1.active-board {
+    -fx-opacity: 1.0;
+    -fx-effect: dropshadow(gaussian, #ff2d2d, 55, 0.95, 0, 0);
+}
+
+.grid-board-p2.active-board {
+    -fx-opacity: 1.0;
+    -fx-effect: dropshadow(gaussian, #4dff8c, 55, 0.95, 0, 0);
+}
+
+/* Inactive: dim, no glow */
+.grid-board.inactive-board {
+    -fx-opacity: 0.55;
+    -fx-effect: none;
+}
+
+/* Optional: extra hover on whole board */
+.grid-board-p1:hover {
+    -fx-effect: dropshadow(gaussian, #fecaca, 40, 0.9, 0, 0);
+}
+
+.grid-board-p2:hover {
+    -fx-effect: dropshadow(gaussian, #bbf7d0, 40, 0.9, 0, 0);
+}
+
+/* ===== SMART HINTS (unchanged) ===== */
+
+.smart-hint-cell {
+    -fx-background-color: #4fc3f7, #1e88e5;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 5;
+    -fx-border-color: #82b1ff;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(130,181,255,0.6), 10, 0.3, 0, 0);
+}
+
+.smart-hint {
+    -fx-background-color: rgba(0, 255, 120, 0.6) !important;
+    -fx-border-color: #00ff88 !important;
+    -fx-border-width: 2px;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-effect: dropshadow(gaussian, #00ff88, 15, 0.7, 0, 0);
 }
