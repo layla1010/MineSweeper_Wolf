@@ -985,8 +985,8 @@ public class GameController {
     	int goodBonus = getSurpriseGoodBonusPoints();
     	int badPenalty = getSurpriseBadPenaltyPoints();
 
-    	//Always get activation points
-    	int scoreChange = activationPoints;
+    	//Always costs the player activation points
+    	int scoreChange = -activationPoints;
 
     	//50% chance good / bad
     	boolean good = Math.random() < 0.5;
@@ -1298,8 +1298,8 @@ public class GameController {
     	int livesBefore = sharedHearts;
     	int scoreBefore = score;
 
-    	//activation gain (always)
-    	score += activationPoints;
+    	//Always costs the player activation points 
+    	score -= activationPoints;
 
     	//Get a random question
     	Question q = getRandomQuestionFromPool();
