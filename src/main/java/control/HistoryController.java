@@ -3,6 +3,7 @@ package control;
 
 import java.io.IOException;
 
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ import util.SoundManager;
 import javafx.scene.image.Image;                
 import javafx.scene.image.ImageView; 
 import javafx.geometry.Pos; 
+import javafx.scene.control.Alert;
+
 
 public class HistoryController {
 
@@ -62,6 +65,15 @@ public class HistoryController {
         SysData.getInstance().loadHistoryFromCsv();
         allGames.clear();
         allGames.addAll(SysData.getInstance().getHistory().getGames());
+        
+        if (allGames.isEmpty()) {
+            showInfo(
+                    "No history yet",
+                    "There are no games in the history yet.\n" +
+                    "Play some games first, then come back to this screen."
+            );
+        }
+
 
         // default selections
         if (filterTypeCombo != null && filterTypeCombo.getSelectionModel().isEmpty()) {
@@ -83,6 +95,19 @@ public class HistoryController {
         List<Game> filtered = applyFilter(allGames);
         List<Game> sorted = applySort(filtered);
         populateHistory(sorted);
+        
+        // if filtering by date and no games found → show message
+        String type = (filterTypeCombo != null) ? filterTypeCombo.getValue() : null;
+        if ("Date".equals(type)
+                && (sorted == null || sorted.isEmpty())
+                && dateFilterPicker != null
+                && dateFilterPicker.getValue() != null) {
+
+            showFilterError(
+                    "No games on this date",
+                    "No games were found on " + dateFilterPicker.getValue() + "."
+            );
+        }
     }
     
     //Fills the history VBox with game cards. If the list is empty, shows a "No games found" label instead.
@@ -299,22 +324,262 @@ public class HistoryController {
                     }
                 }
                 case "Result" -> {
-                	GameResult resEnum = g.getResult();
-                	String resLabel = switch (resEnum) {
-                    case WIN    -> "won";
-                    case LOSE   -> "lost";
-                    case GIVE_UP -> "Give up";
-                };
-                    if (resLabel.contains(query)) {
+                    String res = g.getResult().name().toLowerCase();   // e.g. "give_up"
+                    String normQuery = normalizeToken(query);          // e.g. "giveup"
+                    String normRes   = normalizeToken(res);            // e.g. "giveup"
+
+                    // match both raw and normalized strings
+                    if (res.contains(query) || normRes.contains(normQuery)) {
                         result.add(g);
                     }
                 }
+
                 default -> result.add(g);
             }
         }
 
         return result;
     }
+    
+ // ----------------- FILTER VALIDATION HELPERS -----------------
+
+    /** Normalize text: lowercase, remove spaces and underscores. */
+    private String normalizeToken(String s) {
+        if (s == null) return "";
+        return s.toLowerCase().replace(" ", "").replace("_", "");
+    }
+
+    /** True if text clearly looks like a difficulty word. */
+    private boolean isDifficultyWord(String text) {
+        String t = normalizeToken(text);
+        return t.equals("easy") || t.equals("medium") || t.equals("med") || t.equals("hard");
+    }
+
+    /** True if text clearly looks like a result word (win / lose / give up). */
+    private boolean isResultWord(String text) {
+        String t = normalizeToken(text);
+        return t.equals("win") || t.equals("won")
+                || t.equals("lose") || t.equals("loss") || t.equals("lost")
+                || t.equals("giveup") || t.equals("giveupgame");
+    }
+
+    /** Counts how many different difficulty words appear in the text. */
+    private int countDifficultyWords(String text) {
+        String t = normalizeToken(text);
+        int count = 0;
+        if (t.contains("easy")) count++;
+        if (t.contains("medium") || t.contains("med")) count++;
+        if (t.contains("hard")) count++;
+        return count;
+    }
+
+    
+    /** Shows a small warning popup. */
+    private void showFilterError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        Label label = new Label(message);
+        label.setWrapText(true);
+        label.setMaxWidth(350); 
+        VBox box = new VBox(label);
+        box.setSpacing(10);
+        alert.getDialogPane().setContent(box);
+        alert.showAndWait();
+    }
+    
+    /** Simple information popup for non-error messages. */
+    private void showInfo(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        Label label = new Label(message);
+        label.setWrapText(true);
+        label.setMaxWidth(350);
+        VBox box = new VBox(label);
+        box.setSpacing(10);
+        alert.getDialogPane().setContent(box);
+        alert.showAndWait();
+    }
+
+    /** Safely get trimmed text from the filter field. */
+    private String getFilterText() {
+        if (filterValueField == null) return "";
+        String txt = filterValueField.getText();
+        return txt == null ? "" : txt.trim();
+    }
+
+    /**
+     * Validates the current filter input according to filter type.
+     * Returns true if it's OK to run the filter, false if we showed an error.
+     */
+    private boolean validateFilterInput() {
+        if (filterTypeCombo == null) return true;
+
+        String type = filterTypeCombo.getValue();
+        if (type == null || "All".equals(type)) {
+            // no filter → always ok
+            return true;
+        }
+
+     // DATE filter: require a *valid* selected date
+        if ("Date".equals(type)) {
+            if (dateFilterPicker == null) {
+                showFilterError(
+                        "Missing date",
+                        "You chose to filter by date, but no date field is available."
+                );
+                return false;
+            }
+
+            String editorText = dateFilterPicker.getEditor().getText().trim();
+
+            // user typed something but DatePicker couldn't parse it
+            if (!editorText.isEmpty() && dateFilterPicker.getValue() == null) {
+                showFilterError(
+                        "Invalid date",
+                        "The date you entered (\"" + editorText + "\") is not a valid calendar date.\n" +
+                        "Please choose a valid date from the calendar."
+                );
+                return false;
+            }
+
+            // nothing typed and nothing selected
+            if (editorText.isEmpty() && dateFilterPicker.getValue() == null) {
+                showFilterError(
+                        "Missing date",
+                        "You chose to filter by date but didn’t select any date.\n" +
+                        "Please pick a date from the calendar."
+                );
+                return false;
+            }
+
+            // future date → not allowed
+            if (dateFilterPicker.getValue() != null &&
+                dateFilterPicker.getValue().isAfter(LocalDate.now())) {
+                showFilterError(
+                        "Invalid date",
+                        "You selected a day that hasn’t come yet.\n" +
+                        "Please choose a date that already happened."
+                );
+                return false;
+            }
+
+            return true;
+        }
+
+
+        // TEXT–based filters:
+        String text = getFilterText();
+        if (text.isEmpty()) {
+            showFilterError(
+                    "Missing value",
+                    "Please enter a value in the text field for this filter."
+            );
+            return false;
+        }
+
+        String lower = text.toLowerCase();
+
+     // --- Player name filter ---
+        if ("Player name".equals(type)) {
+
+            // 1) too short name
+            if (text.length() < 2) {
+                showFilterError(
+                        "Name too short",
+                        "Please enter at least 2 characters when filtering by player name."
+                );
+                return false;
+            }
+
+            // 2) user typed difficulty instead of name
+            if (isDifficultyWord(lower)) {
+                showFilterError(
+                        "Filter mismatch",
+                        "You selected \"Player name\" but typed a difficulty (\"" + text + "\").\n" +
+                        "Please enter a player nickname/name, or change the filter to \"Difficulty\"."
+                );
+                return false;
+            }
+
+            // 3) user typed result instead of name
+            if (isResultWord(lower)) {
+                showFilterError(
+                        "Filter mismatch",
+                        "You selected \"Player name\" but typed a result (\"" + text + "\").\n" +
+                        "Please enter a player nickname/name, or change the filter to \"Result\"."
+                );
+                return false;
+            }
+
+            // otherwise OK
+            return true;
+        }
+
+
+     // --- Difficulty filter ---
+        if ("Difficulty".equals(type)) {
+
+            if (isResultWord(lower)) {
+                showFilterError(
+                        "Filter mismatch",
+                        "You selected \"Difficulty\" but typed a result (\"" + text + "\").\n" +
+                        "Use \"Result\" filter for WIN / LOSE / GIVE UP."
+                );
+                return false;
+            }
+
+            // more than one difficulty word (e.g. "easy hard")
+            int diffWords = countDifficultyWords(text);
+            if (diffWords > 1) {
+                showFilterError(
+                        "Too many difficulties",
+                        "Please filter by one difficulty at a time.\n" +
+                        "Valid values are: Easy, Medium, Hard."
+                );
+                return false;
+            }
+
+            // not a known difficulty at all
+            if (!isDifficultyWord(lower)) {
+                showFilterError(
+                        "Invalid difficulty",
+                        "Unknown difficulty \"" + text + "\".\n" +
+                        "Valid values are: Easy, Medium, Hard."
+                );
+                return false;
+            }
+
+            return true;
+        }
+
+
+        // --- Result filter ---
+        if ("Result".equals(type)) {
+            if (isDifficultyWord(lower)) {
+                showFilterError(
+                        "Filter mismatch",
+                        "You selected \"Result\" but typed a difficulty (\"" + text + "\").\n" +
+                        "Use \"Difficulty\" filter for Easy / Medium / Hard."
+                );
+                return false;
+            }
+            if (!isResultWord(lower)) {
+                showFilterError(
+                        "Invalid result",
+                        "Unknown result \"" + text + "\".\n" +
+                        "Valid values are: Win, Lose, Give up."
+                );
+                return false;
+            }
+            return true;
+        }
+
+        // Any other filter type → accept
+        return true;
+    }
+
 
     //Applies sorting to the given list of games based on the selected sort option.
     private List<Game> applySort(List<Game> source) {
@@ -358,6 +623,12 @@ public class HistoryController {
     @FXML
     private void onFilterApplyClicked() {
         SoundManager.playClick();
+        
+       // validate before actually filtering
+        if (!validateFilterInput()) {
+            // invalid input – do NOT refresh the view
+            return;
+        }
         refreshHistoryView();
     }
     
