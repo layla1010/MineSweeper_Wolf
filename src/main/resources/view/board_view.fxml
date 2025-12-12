@@ -185,28 +185,34 @@
                    GridPane.rowIndex="2"
                    GridPane.valignment="CENTER">
             <children>
-                <Label prefHeight="45.0" prefWidth="900.0"
+                <Label prefHeight="45.0" prefWidth="1150.0"
                        style="-fx-background-color: rgba(15,23,42,0.65);
                               -fx-background-radius: 30;
                               -fx-border-color: rgba(255,255,255,0.25);
                               -fx-border-radius: 30;
                               -fx-border-width: 1.2;" />
 
-                <HBox alignment="CENTER" spacing="250.0">
+                <HBox alignment="CENTER" spacing="330.0">
                     <children>
                         <Label fx:id="player1BombsLeftLabel"
                                text="Player 1, Mines left: 0"
                                textFill="#E5E7EB">
+                               maxWidth="500.0"
+                               minWidth="300.0"
+                               alignment="CENTER_LEFT">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="18.0" />
+                                <Font name="Copperplate Gothic Bold" size="14.0" />
                             </font>
                         </Label>
 
                         <Label fx:id="player2BombsLeftLabel"
                                text="Player 2, Mines left: 0"
                                textFill="#E5E7EB">
+                               maxWidth="500.0"
+                               minWidth="300.0"
+                               alignment="CENTER_RIGHT">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="18.0" />
+                                <Font name="Copperplate Gothic Bold" size="14.0" />
                             </font>
                         </Label>
                     </children>

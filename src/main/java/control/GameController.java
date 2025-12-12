@@ -86,6 +86,9 @@ public class GameController {
     private int score;
     private int minesLeft1;
     private int minesLeft2;
+    
+    private int flagsLeft1;
+    private int flagsLeft2;
 
     private String player1OfficialName;
     private String player2OfficialName;
@@ -133,6 +136,10 @@ public class GameController {
 
         this.minesLeft1 = board1.getMineCount();
         this.minesLeft2 = board2.getMineCount();
+        
+     //  starting flags per difficulty
+        this.flagsLeft1 = getInitialFlagsForDifficulty(difficulty);
+        this.flagsLeft2 = getInitialFlagsForDifficulty(difficulty);
         
      // ----------  load avatars above boards ----------
         setBoardAvatar(player1AvatarImage, config.getPlayer1AvatarPath());
@@ -261,10 +268,12 @@ public class GameController {
         }
 
         player1BombsLeftLabel.setText(
-                config.getPlayer1Nickname() + ", Mines left: " + board1.getMineCount()
+                config.getPlayer1Nickname() + ", Mines left: " + minesLeft1
+                + " | Flags left: " + flagsLeft1
         );
         player2BombsLeftLabel.setText(
-                config.getPlayer2Nickname() + ", Mines left: " + board2.getMineCount()
+                config.getPlayer2Nickname() + ", Mines left: " + minesLeft2
+                + " | Flags left: " + flagsLeft2
         );
 
         scoreLabel.setText("Score: " + score);
@@ -287,6 +296,15 @@ public class GameController {
             forbiddenCursor = null;
         }
     }
+    
+    private int getInitialFlagsForDifficulty(Difficulty diff) {
+        return switch (diff) {
+            case EASY   -> 20;
+            case MEDIUM -> 52;
+            case HARD   -> 88;
+        };
+    }
+
 
     // ============================================================
     // BOARD BUILDING
@@ -440,6 +458,21 @@ public class GameController {
         }
 
         // We are placing a new flag
+     // NEW – check flags left for this player
+        if (isPlayer1) {
+            if (flagsLeft1 <= 0) {
+                // no flags left for player 1 → do nothing
+                return;
+            }
+            flagsLeft1--;
+        } else {
+            if (flagsLeft2 <= 0) {
+                // no flags left for player 2 → do nothing
+                return;
+            }
+            flagsLeft2--;
+        }
+
         try {
             Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
             ImageView iv = new ImageView(img);
@@ -756,9 +789,11 @@ public class GameController {
 
         player1BombsLeftLabel.setText(
                 config.getPlayer1Nickname() + ", Mines left: " + minesLeft1
+                + " | Flags left: " + flagsLeft1 
         );
         player2BombsLeftLabel.setText(
                 config.getPlayer2Nickname() + ", Mines left: " + minesLeft2
+                + " | Flags left: " + flagsLeft2 
         );
     }
 
