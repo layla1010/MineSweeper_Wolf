@@ -445,81 +445,70 @@ public class GameController {
      * If a QUESTION or SURPRISE cell is flagged, score is reduced by 3 points.
      * If a non-mine is flagged, marks mistakeMade = true.
      */
-    private void toggleFlag(Board board, int row, int col, Button button, boolean isPlayer1) {
-        Cell cell = board.getCell(row, col);
+    	private void toggleFlag(Board board, int row, int col, Button button, boolean isPlayer1) {
+    	    Cell cell = board.getCell(row, col);
 
-        // If there is already a flag → remove it (no score / mines change)
-        if (button.getGraphic() instanceof ImageView) {
-            button.setGraphic(null);
-            button.getStyleClass().remove("cell-flagged");
-            // we don't enable mines again because we disable them once flagged correctly
-            updateScoreAndMineLabels();
-            return;
-        }
+    	    // If there is already a flag → remove it (no score / mines change)
+    	    if (button.getGraphic() instanceof ImageView) {
+    	        button.setGraphic(null);
+    	        button.getStyleClass().remove("cell-flagged");
+    	        // we don't enable mines again because we disable them once flagged correctly
+    	        updateScoreAndMineLabels();
+    	        return;
+    	    }
 
-        // We are placing a new flag
-     // NEW – check flags left for this player
-        if (isPlayer1) {
-            if (flagsLeft1 <= 0) {
-                // no flags left for player 1 → do nothing
-                return;
-            }
-            flagsLeft1--;
-        } else {
-            if (flagsLeft2 <= 0) {
-                // no flags left for player 2 → do nothing
-                return;
-            }
-            flagsLeft2--;
-        }
+    	    // We are placing a new flag
+    	    try {
+    	        Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
+    	        ImageView iv = new ImageView(img);
+    	        iv.setFitWidth(20);
+    	        iv.setFitHeight(20);
+    	        iv.setPreserveRatio(true);
+    	        button.setGraphic(iv);
+    	    } catch (Exception ex) {
+    	        button.setText("🚩");
+    	    }
 
-        try {
-            Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
-            ImageView iv = new ImageView(img);
-            iv.setFitWidth(20);
-            iv.setFitHeight(20);
-            iv.setPreserveRatio(true);
-            button.setGraphic(iv);
-        } catch (Exception ex) {
-            button.setText("🚩");
-        }
+    	    if (!button.getStyleClass().contains("cell-flagged")) {
+    	        button.getStyleClass().add("cell-flagged");
+    	    }
 
-        if (!button.getStyleClass().contains("cell-flagged")) {
-            button.getStyleClass().add("cell-flagged");
-        }
+    	    // ----- scoring + mine counters -----
+    	    if (cell.isMine()) {
+    	        // show mine instead of just a flag
+    	        button.setGraphic(null);
+    	        button.setText("💣");
+    	        button.getStyleClass().add("cell-mine");
+    	        button.getStyleClass().add("cell-revealed");
 
-        
-        // If this cell is a mine → reveal that it's a mine and decrease minesLeft
-        if (cell.isMine()) {
-            // show mine instead of just a flag
-            button.setGraphic(null);
-            button.setText("💣");
-            button.getStyleClass().add("cell-mine");
-            button.getStyleClass().add("cell-revealed");
+    	        // this mine is now safely found → it shouldn't be clickable anymore
+    	        button.setDisable(true);
 
-            // this mine is now safely found → it shouldn't be clickable anymore
-            button.setDisable(true);
+    	        // +1 point for correctly flagged mine
+    	        score += 1;
 
-            if (isPlayer1) {
-                minesLeft1 = Math.max(0, minesLeft1 - 1);
-            } else {
-                minesLeft2 = Math.max(0, minesLeft2 - 1);
-            }
+    	        if (isPlayer1) {
+    	            minesLeft1 = Math.max(0, minesLeft1 - 1);
+    	        } else {
+    	            minesLeft2 = Math.max(0, minesLeft2 - 1);
+    	        }
 
-        } else {
-        // Wrong flag on non-mine → mistake
-        if (!cell.isMine()) {
-            mistakeMade = true;
-        }
+    	    } else {
+    	        // Wrong flag on non-mine → mistake and -3 points
+    	        mistakeMade = true;
+    	        score -= 3;
+    	    }
 
-        if (cell.getType() == CellType.QUESTION || cell.getType() == CellType.SURPRISE) {
-            System.out.println("The score before flagging: " + score);
-            score -= 3;
-            System.out.println("Flagged " + cell.getType() + " at (" + row + "," + col + "), score -3, now: " + score);
-        }
-        }
-        updateScoreAndMineLabels();
-    }
+    	    updateScoreAndMineLabels();
+
+    	    // New win condition: all mines on at least one board are flagged and hearts > 0
+    	    if (!gameOver && sharedHearts > 0 && (minesLeft1 == 0 || minesLeft2 == 0)) {
+    	        gameWon = true;
+    	        onGameOver();
+    	    }
+    	}
+
+    
 
     // ============================================================
     // REVEAL LOGIC (FIRST CLICK)
@@ -1115,12 +1104,25 @@ public class GameController {
         }
         gameOver = true;
 
+        // 4. convert remaining hearts to points when the game is won
+        if (gameWon && sharedHearts > 0) {
+            int perHeart = switch (difficulty) {
+                case EASY   -> 5;
+                case MEDIUM -> 8;
+                case HARD   -> 12;
+            };
+            int bonus = sharedHearts * perHeart;
+            score += bonus;
+            updateScoreAndMineLabels();  // refresh score label before leaving screen
+        }
+
         stopTimer();
         saveCurrentGameToHistory();
         showEndGameScreen();
 
         System.out.println("Game over! Saved to history.");
     }
+
 
     /**
      * Saves the current game session (result, score, time, etc.)
@@ -1383,6 +1385,7 @@ public class GameController {
         int netScoreChange = score - scoreBefore;
         showSurprisePopup(good, netScoreChange, livesBefore, livesAfter);
     }
+
 
     // Base score for activating a surprise (second click) per difficulty
     private int getSurpriseActivationPoints() {
