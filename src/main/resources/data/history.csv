@@ -20,3 +20,11 @@ date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Off
 2025-12-12,0:09,HARD,4,GIVE_UP,dcd,scd,,,false,S12.png,S8.png
 2025-12-12,1:28,EASY,151,WIN,fvfd,hth,,,false,S12.png,S8.png
 2025-12-12,0:27,EASY,118,LOSE,fdnh,jygj,,,false,S9.png,S10.png
+2025-12-07,3:44,EASY,129,WIN,layla,hallumi,Layla,Haneen,false,S5.png,S6.png
+2025-12-07,3:39,EASY,127,WIN,lay,hannah,Layla,Haneen,false,S8.png,S8.png
+2025-12-07,2:03,EASY,117,WIN,lay,lay,Layla,l0ol0o,true,S12.png,S2.png
+2025-12-07,1:14,EASY,95,LOSE,bobo,haha,Layla,Haneen,false,S12.png,S7.png
+2025-12-08,3:59,MEDIUM,249,LOSE,layla,l0ol0o,Layla,l0ol0o,false,S9.png,S10.png
+2025-12-08,0:02,EASY,0,GIVE_UP,lo,ho,Layla,Haneen,false,S12.png,S8.png
+2025-12-08,26:33,HARD,405,WIN,soso,popo,Haneen,Layla,true,S12.png,S3.png
+2025-12-12,1:45,EASY,159,WIN,k,;,Layla,Haneen,false,S12.png,S6.png
