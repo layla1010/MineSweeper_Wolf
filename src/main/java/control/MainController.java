@@ -70,18 +70,8 @@ public class MainController {
         UIAnimations.applyFloatingToCards(mainGrid);
 
         setupNewGameShimmer();
-     // ✅ Make all decorative nodes ignore mouse clicks (so they don't block the login link)
-        for (Node n : mainGrid.getChildren()) {
-            // Keep UI controls clickable (Buttons, Hyperlinks, Labels, etc.)
-            if (n instanceof Control) continue;
-
-            // Ignore mouse events for everything else (images/shapes/effects)
-            n.setMouseTransparent(true);
-        }
-
-        // ✅ Ensure the login box is always on top and clickable
-        loginBox.setMouseTransparent(false);
         loginBox.toFront();
+
 
     }
 
@@ -251,6 +241,7 @@ public class MainController {
         );
 
         Circle orb = new Circle(radius);
+        orb.setMouseTransparent(true);
         orb.setFill(grad);
         orb.setOpacity(0.6);
         orb.setEffect(new GaussianBlur(60));
@@ -305,6 +296,7 @@ public class MainController {
     //Creates and animates a single expanding ring
     private void createEnergyRing(double delaySeconds) {
         Circle ring = new Circle(120);
+        ring.setMouseTransparent(true);
         ring.setStroke(Color.rgb(255, 255, 255, 0.4));
         ring.setStrokeWidth(2);
         ring.setFill(Color.TRANSPARENT);
@@ -343,6 +335,7 @@ public class MainController {
         for (int i = 0; i < count; i++) {
             double size = 2 + rnd.nextDouble() * 3;
             Circle sparkle = new Circle(size, Color.rgb(255, 255, 255, 0.9));
+            sparkle.setMouseTransparent(true);
             sparkle.setOpacity(0.0);
 
             double startX = rnd.nextDouble() * 900 - 450;
