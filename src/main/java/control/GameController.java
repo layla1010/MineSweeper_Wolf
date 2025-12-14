@@ -2002,7 +2002,7 @@ public class GameController {
                 }
             }
         }
-
+/*
         // 2) if all needed mines are flagged → highlight remaining safe cells
         if (flagged == needed) {
 
@@ -2032,7 +2032,7 @@ public class GameController {
                     }
                 }
             }
-        }
+        }*/
     }
 
     // ============================================================
