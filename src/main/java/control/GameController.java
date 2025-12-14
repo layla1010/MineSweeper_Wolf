@@ -408,7 +408,6 @@ public class GameController {
                 }
 
                 toggleFlag(board, r, c, button, tileIsPlayer1);
-                switchTurn();
                 return;
             }
 
@@ -445,68 +444,94 @@ public class GameController {
      * If a QUESTION or SURPRISE cell is flagged, score is reduced by 3 points.
      * If a non-mine is flagged, marks mistakeMade = true.
      */
-    	private void toggleFlag(Board board, int row, int col, Button button, boolean isPlayer1) {
-    	    Cell cell = board.getCell(row, col);
+    private void toggleFlag(Board board, int row, int col, Button button, boolean isPlayer1) {
+	    Cell cell = board.getCell(row, col);
 
-    	    // If there is already a flag → remove it (no score / mines change)
-    	    if (button.getGraphic() instanceof ImageView) {
-    	        button.setGraphic(null);
-    	        button.getStyleClass().remove("cell-flagged");
-    	        // we don't enable mines again because we disable them once flagged correctly
-    	        updateScoreAndMineLabels();
-    	        return;
-    	    }
+	    // If there is already a flag → remove it (no score / mines change)
+	    if (button.getGraphic() instanceof ImageView) {
+	        button.setGraphic(null);
+	        button.getStyleClass().remove("cell-flagged");
+	        // we don't enable mines again because we disable them once flagged correctly
+	        updateScoreAndMineLabels();
+	        return;
+	    }
+	    
+	    // If trying to place a NEW flag but no flags left → show popup
+	    if (isPlayer1) {
+	        if (flagsLeft1 <= 0) {
+	        	showNoFlagsLeftAlert();
+	            return;
+	        }
+	        flagsLeft1--; // consume a flag permanently
+	    } else {
+	        if (flagsLeft2 <= 0) {
+	        	showNoFlagsLeftAlert();
+	            return;
+	        }
+	        flagsLeft2--; // consume a flag permanently
+	    }
 
-    	    // We are placing a new flag
-    	    try {
-    	        Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
-    	        ImageView iv = new ImageView(img);
-    	        iv.setFitWidth(20);
-    	        iv.setFitHeight(20);
-    	        iv.setPreserveRatio(true);
-    	        button.setGraphic(iv);
-    	    } catch (Exception ex) {
-    	        button.setText("🚩");
-    	    }
+	    // We are placing a new flag
+	    try {
+	        Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
+	        ImageView iv = new ImageView(img);
+	        iv.setFitWidth(20);
+	        iv.setFitHeight(20);
+	        iv.setPreserveRatio(true);
+	        button.setGraphic(iv);
+	    } catch (Exception ex) {
+	        button.setText("🚩");
+	    }
 
-    	    if (!button.getStyleClass().contains("cell-flagged")) {
-    	        button.getStyleClass().add("cell-flagged");
-    	    }
+	    if (!button.getStyleClass().contains("cell-flagged")) {
+	        button.getStyleClass().add("cell-flagged");
+	    }
 
-    	    // ----- scoring + mine counters -----
-    	    if (cell.isMine()) {
-    	        // show mine instead of just a flag
-    	        button.setGraphic(null);
-    	        button.setText("💣");
-    	        button.getStyleClass().add("cell-mine");
-    	        button.getStyleClass().add("cell-revealed");
+	    // ----- scoring + mine counters -----
+	    if (cell.isMine()) {
+	        // show mine instead of just a flag
+	        button.setGraphic(null);
+	        button.setText("💣");
+	        button.getStyleClass().add("cell-mine");
+	        button.getStyleClass().add("cell-revealed");
 
-    	        // this mine is now safely found → it shouldn't be clickable anymore
-    	        button.setDisable(true);
+	        // this mine is now safely found → it shouldn't be clickable anymore
+	        button.setDisable(true);
 
-    	        // +1 point for correctly flagged mine
-    	        score += 1;
+	        // +1 point for correctly flagged mine
+	        score += 1;
 
-    	        if (isPlayer1) {
-    	            minesLeft1 = Math.max(0, minesLeft1 - 1);
-    	        } else {
-    	            minesLeft2 = Math.max(0, minesLeft2 - 1);
-    	        }
+	        if (isPlayer1) {
+	            minesLeft1 = Math.max(0, minesLeft1 - 1);
+	        } else {
+	            minesLeft2 = Math.max(0, minesLeft2 - 1);
+	        }
 
-    	    } else {
-    	        // Wrong flag on non-mine → mistake and -3 points
-    	        mistakeMade = true;
-    	        score -= 3;
-    	    }
+	    } else {
+	        // Wrong flag on non-mine → mistake and -3 points
+	        mistakeMade = true;
+	        score -= 3;
+	    }
 
-    	    updateScoreAndMineLabels();
+	    updateScoreAndMineLabels();
 
-    	    // New win condition: all mines on at least one board are flagged and hearts > 0
-    	    if (!gameOver && sharedHearts > 0 && (minesLeft1 == 0 || minesLeft2 == 0)) {
-    	        gameWon = true;
-    	        onGameOver();
-    	    }
-    	}
+	    // New win condition: all mines on at least one board are flagged and hearts > 0
+	    if (!gameOver && sharedHearts > 0 && (minesLeft1 == 0 || minesLeft2 == 0)) {
+	        gameWon = true;
+	        onGameOver();
+	    }
+	}
+
+    
+    private void showNoFlagsLeftAlert() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("No Flags Left");
+        alert.setHeaderText(null);
+        alert.setContentText("You have no flags left.\nUsed flags cannot be recovered.");
+        alert.showAndWait();
+    }
+
+
 
     
 
