@@ -327,12 +327,20 @@ public class HistoryController {
                     String res = g.getResult().name().toLowerCase();   // e.g. "give_up"
                     String normQuery = normalizeToken(query);          // e.g. "giveup"
                     String normRes   = normalizeToken(res);            // e.g. "giveup"
+                    // If the user typed a valid result word, compare canonically
+                    if (isResultWord(normQuery)) {
+                        String canonQuery = canonicalResultToken(normQuery);
+                        String canonRes   = canonicalResultToken(normRes);
 
+                        if (canonRes.equals(canonQuery)) {
+                            result.add(g);
+                        }
+                    } else {
                     // match both raw and normalized strings
-                    if (res.contains(query) || normRes.contains(normQuery)) {
+                    if (res.contains(query) || normRes.contains(normQuery) ) {
                         result.add(g);
                     }
-                }
+                }}
 
                 default -> result.add(g);
             }
@@ -340,6 +348,8 @@ public class HistoryController {
 
         return result;
     }
+    
+  
     
  // ----------------- FILTER VALIDATION HELPERS -----------------
 
@@ -360,8 +370,21 @@ public class HistoryController {
         String t = normalizeToken(text);
         return t.equals("win") || t.equals("won")
                 || t.equals("lose") || t.equals("loss") || t.equals("lost")
-                || t.equals("giveup") || t.equals("giveupgame");
+                || t.equals("giveup") || t.equals("giveupgame") || t.equals("give up")
+                || t.equals("gave up");
     }
+    
+    /** Map user input / enum text to a canonical result token: win | lose | giveup */
+    private String canonicalResultToken(String text) {
+        String t = normalizeToken(text);
+
+        if (t.equals("win") || t.equals("won")) return "win";
+        if (t.equals("lose") || t.equals("lost") || t.equals("loss")) return "lose";
+        if (t.equals("giveup") || t.equals("giveupgame") || t.equals("give")) return "giveup";
+
+        return t; 
+    }
+
 
     /** Counts how many different difficulty words appear in the text. */
     private int countDifficultyWords(String text) {
