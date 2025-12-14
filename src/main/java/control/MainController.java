@@ -22,6 +22,7 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -35,6 +36,9 @@ import javafx.util.Duration;
 import util.SessionManager;
 import util.SoundManager;
 import util.UIAnimations;
+import javafx.scene.Node;
+import javafx.scene.control.Control;
+
 
 public class MainController {
 
@@ -42,6 +46,8 @@ public class MainController {
     @FXML private ImageView logoImage;
     @FXML private Button newGameBtn;
     @FXML private Rectangle newGameShimmer;
+    @FXML private HBox loginBox;
+
 
     private Stage stage;
     private boolean adminMode = false;
@@ -64,7 +70,19 @@ public class MainController {
         UIAnimations.applyFloatingToCards(mainGrid);
 
         setupNewGameShimmer();
-        
+     // ✅ Make all decorative nodes ignore mouse clicks (so they don't block the login link)
+        for (Node n : mainGrid.getChildren()) {
+            // Keep UI controls clickable (Buttons, Hyperlinks, Labels, etc.)
+            if (n instanceof Control) continue;
+
+            // Ignore mouse events for everything else (images/shapes/effects)
+            n.setMouseTransparent(true);
+        }
+
+        // ✅ Ensure the login box is always on top and clickable
+        loginBox.setMouseTransparent(false);
+        loginBox.toFront();
+
     }
 
     
@@ -373,6 +391,30 @@ public class MainController {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onLoginClicked(ActionEvent event) {
+    	System.out.println("LOGIN LINK CLICKED!");
+
+        SoundManager.playClick();
+        try {
+            FXMLLoader loader = new FXMLLoader(MainController.class.getResource("/view/players_login_view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Login navigation failed");
+            alert.setContentText(e.toString());
+            alert.showAndWait();
         }
     }
 
