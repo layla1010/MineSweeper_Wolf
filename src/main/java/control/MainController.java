@@ -22,6 +22,7 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -35,6 +36,9 @@ import javafx.util.Duration;
 import util.SessionManager;
 import util.SoundManager;
 import util.UIAnimations;
+import javafx.scene.Node;
+import javafx.scene.control.Control;
+
 
 public class MainController {
 
@@ -42,6 +46,8 @@ public class MainController {
     @FXML private ImageView logoImage;
     @FXML private Button newGameBtn;
     @FXML private Rectangle newGameShimmer;
+    @FXML private HBox loginBox;
+
 
     private Stage stage;
     private boolean adminMode = false;
@@ -64,7 +70,9 @@ public class MainController {
         UIAnimations.applyFloatingToCards(mainGrid);
 
         setupNewGameShimmer();
-        
+        loginBox.toFront();
+
+
     }
 
     
@@ -233,6 +241,7 @@ public class MainController {
         );
 
         Circle orb = new Circle(radius);
+        orb.setMouseTransparent(true);
         orb.setFill(grad);
         orb.setOpacity(0.6);
         orb.setEffect(new GaussianBlur(60));
@@ -287,6 +296,7 @@ public class MainController {
     //Creates and animates a single expanding ring
     private void createEnergyRing(double delaySeconds) {
         Circle ring = new Circle(120);
+        ring.setMouseTransparent(true);
         ring.setStroke(Color.rgb(255, 255, 255, 0.4));
         ring.setStrokeWidth(2);
         ring.setFill(Color.TRANSPARENT);
@@ -325,6 +335,7 @@ public class MainController {
         for (int i = 0; i < count; i++) {
             double size = 2 + rnd.nextDouble() * 3;
             Circle sparkle = new Circle(size, Color.rgb(255, 255, 255, 0.9));
+            sparkle.setMouseTransparent(true);
             sparkle.setOpacity(0.0);
 
             double startX = rnd.nextDouble() * 900 - 450;
@@ -373,6 +384,30 @@ public class MainController {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onLoginClicked(ActionEvent event) {
+    	System.out.println("LOGIN LINK CLICKED!");
+
+        SoundManager.playClick();
+        try {
+            FXMLLoader loader = new FXMLLoader(MainController.class.getResource("/view/players_login_view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Login navigation failed");
+            alert.setContentText(e.toString());
+            alert.showAndWait();
         }
     }
 
