@@ -29,3 +29,6 @@ date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Off
 2025-12-08,26:33,HARD,405,WIN,soso,popo,Haneen,Layla,true,S12.png,S3.png
 2025-12-12,1:45,EASY,159,WIN,k,;,Layla,Haneen,false,S12.png,S6.png
 2025-12-14,4:54,EASY,180,WIN,lk,chimera,chimera,Layla,false,S5.png,S10.png
+2025-12-15,2:21,EASY,130,WIN,l,k,,,true,S6.png,S12.png
+2025-12-15,4:55,EASY,158,WIN,y,t,,,false,S6.png,S12.png
+2025-12-15,3:44,EASY,57,LOSE,j,h,,,false,S1.png,S12.png

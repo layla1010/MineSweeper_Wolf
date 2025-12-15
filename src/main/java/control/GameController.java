@@ -578,11 +578,8 @@ public class GameController {
                     minesLeft2 -= 1;
                 }
                 buildHeartsBar();
-
-                if (sharedHearts == 0 && !gameOver) {
-                    gameWon = false;
-                    onGameOver();
-                }
+                updateScoreAndMineLabels();
+                if (checkLoseAndHandle()) return;
             }
 
             case QUESTION -> {
@@ -733,6 +730,7 @@ public class GameController {
         stack.push(new int[]{startRow, startCol});
 
         while (!stack.isEmpty()) {
+        	if (gameOver) return;
             int[] rc = stack.pop();
             int r = rc[0];
             int c = rc[1];
@@ -1371,18 +1369,14 @@ public class GameController {
         // Update hearts bar
         buildHeartsBar();
 
-        // If lives hit zero → game over, same as stepping on mines
-        if (sharedHearts == 0 && !gameOver) {
-            gameWon = false;
-            onGameOver();
-        }
-
         // Disable this surprise cell so it cannot be activated again
         button.setDisable(true);
 
         // Refresh score / mines labels
         updateScoreAndMineLabels();
 
+        if (checkLoseAndHandle()) return;
+        
         // Show popup with result
         int livesAfter = sharedHearts;
         int netScoreChange = score - scoreBefore;
@@ -1945,17 +1939,14 @@ public class GameController {
         // Update hearts bar after any life changes
         buildHeartsBar();
 
-        // If lives hit zero → game over
-        if (sharedHearts == 0 && !gameOver) {
-            gameWon = false;
-            onGameOver();
-        }
-
         // Block this question cell so it can't be activated again
         button.setDisable(true);
 
         // Update labels & show result popup
         updateScoreAndMineLabels();
+        
+        if (checkLoseAndHandle()) return;
+
         int livesAfter = sharedHearts;
         int netScoreChange = score - scoreBefore;
         showQuestionResultPopup(q, correct, netScoreChange, livesBefore, livesAfter, extraInfo);
@@ -2082,4 +2073,14 @@ public class GameController {
         Image img = new Image(getClass().getResourceAsStream(iconPath));
         iv.setImage(img);
     }
+    
+    private boolean checkLoseAndHandle() {
+        if (gameOver) return true; 
+        if (sharedHearts > 0) return false;
+
+        gameWon = false;
+        onGameOver();
+        return true;
+    }
+
 }
