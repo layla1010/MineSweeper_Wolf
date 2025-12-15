@@ -269,6 +269,22 @@ public class HistoryController {
     }
 
 
+    /** True if text clearly looks like a result word (win / lose / give up). */
+    private boolean isResultWord(String text) {
+    	return canonicalResultToken(text) != null;
+    }
+
+    
+    
+    private String canonicalResultToken(String text) {
+        String t = normalizeToken(text);
+
+        if (t.equals("w") || t.equals("win") || t.equals("won")) return "win";
+        if (t.equals("l") || t.equals("lose") || t.equals("lost") || t.equals("loss")) return "lose";
+        if (t.equals("g") || t.equals("giveup") || t.equals("gaveup")) return "giveup";
+
+        return null; 
+    }
 
     //Applies the current filter to the given list of games.
     private List<Game> applyFilter(List<Game> source) {
@@ -325,11 +341,11 @@ public class HistoryController {
                 }
                 case "Result" -> {
                     String res = g.getResult().name().toLowerCase();   // e.g. "give_up"
-                    String normQuery = normalizeToken(query);          // e.g. "giveup"
+                    String normQuery = canonicalResultToken(query);       // e.g. "giveup"
                     String normRes   = normalizeToken(res);            // e.g. "giveup"
 
                     // match both raw and normalized strings
-                    if (res.contains(query) || normRes.contains(normQuery)) {
+                    if (normRes.equals(normQuery)) {
                         result.add(g);
                     }
                 }
@@ -355,14 +371,7 @@ public class HistoryController {
         return t.equals("easy") || t.equals("medium") || t.equals("med") || t.equals("hard");
     }
 
-    /** True if text clearly looks like a result word (win / lose / give up). */
-    private boolean isResultWord(String text) {
-        String t = normalizeToken(text);
-        return t.equals("win") || t.equals("won")
-                || t.equals("lose") || t.equals("loss") || t.equals("lost")
-                || t.equals("giveup") || t.equals("giveupgame");
-    }
-
+    
     /** Counts how many different difficulty words appear in the text. */
     private int countDifficultyWords(String text) {
         String t = normalizeToken(text);
@@ -567,11 +576,15 @@ public class HistoryController {
             }
             if (!isResultWord(lower)) {
                 showFilterError(
-                        "Invalid result",
-                        "Unknown result \"" + text + "\".\n" +
-                        "Valid values are: Win, Lose, Give up."
+                    "Invalid result",
+                    "Unknown result \"" + text + "\".\n" +
+                    "Valid results are:\n" +
+                    "• Win (win, won, w)\n" +
+                    "• Lose (lose, lost, loss, l)\n" +
+                    "• Give up (give up, gave up, g)"
                 );
                 return false;
+            
             }
             return true;
         }

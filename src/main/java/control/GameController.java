@@ -16,7 +16,9 @@ import util.SoundManager;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
@@ -507,6 +509,7 @@ public class GameController {
     	        onGameOver();
     	    }
     	}
+    
 
     
 
@@ -726,7 +729,7 @@ public class GameController {
         int cols = board.getCols();
 
         boolean[][] visited = new boolean[rows][cols];
-        java.util.Deque<int[]> stack = new java.util.ArrayDeque<>();
+        Deque<int[]> stack = new ArrayDeque<>();
         stack.push(new int[]{startRow, startCol});
 
         while (!stack.isEmpty()) {
@@ -1335,7 +1338,7 @@ public class GameController {
         int livesBefore = sharedHearts;
         int scoreBefore = score;
 
-        int activationPoints = getSurpriseActivationPoints();
+        int activationPoints = getActivationPoints();
         int goodBonus = getSurpriseGoodBonusPoints();
         int badPenalty = getSurpriseBadPenaltyPoints();
 
@@ -1387,8 +1390,8 @@ public class GameController {
     }
 
 
-    // Base score for activating a surprise (second click) per difficulty
-    private int getSurpriseActivationPoints() {
+    // Base score for activating a surprise/question (second click) per difficulty
+    private int getActivationPoints() {
         return switch (difficulty) {
             case EASY -> 5;
             case MEDIUM -> 8;
@@ -1675,7 +1678,7 @@ public class GameController {
      */
     private void activateQuestion(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
 
-        int activationPoints = getSurpriseActivationPoints(); // 5 EASY, 8 MEDIUM, 12 HARD
+        int activationPoints = getActivationPoints(); // 5 EASY, 8 MEDIUM, 12 HARD
         int livesBefore = sharedHearts;
         int scoreBefore = score;
 
