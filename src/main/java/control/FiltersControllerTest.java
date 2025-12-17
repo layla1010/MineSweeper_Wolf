@@ -1,3 +1,20 @@
+/**
+ * FiltersControllerTest
+ *
+ * This test class verifies the correct behavior of the FiltersController,
+ * which was implemented as part of the new iteration of the project.
+ *
+ * The purpose of this test is to validate that user interactions with
+ * filter toggle buttons correctly update the global configuration stored
+ * in the SysData class.
+ *
+ * The test focuses on unit-level behavior only and does not involve
+ * full UI rendering or navigation between screens.
+ *
+ * Testing Framework: JUnit 5
+ * Test Type: Unit Test
+ */
+
 package control;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,7 +58,35 @@ public class FiltersControllerTest {
         f.set(controller, timerToggle);
     }
 
-    
+    /**
+     * Test Case: onTimerToggled_WhenSelectedTrue_TimerEnabledBecomesTrue
+     *
+     * Test Objective:
+     * To verify that when the Timer toggle button is selected (ON),
+     * the corresponding configuration flag in SysData is updated correctly.
+     *
+     * Test Description:
+     * This test simulates a user enabling the Timer option in the Filters screen.
+     * The onTimerToggled() method is invoked, and the test verifies that
+     * SysData.isTimerEnabled() becomes true.
+     *
+     * Test Steps:
+     * 1. Reset all global settings in SysData to their default values.
+     * 2. Explicitly disable the timer setting in SysData.
+     * 3. Create a ToggleButton and set it to selected.
+     * 4. Inject the ToggleButton into the FiltersController using reflection.
+     * 5. Invoke the onTimerToggled() method on the JavaFX Application Thread.
+     * 6. Verify that SysData.isTimerEnabled() is true.
+     *
+     * Expected Result:
+     * SysData.isTimerEnabled() should be set to true.
+     *
+     * Actual Result:
+     * SysData.isTimerEnabled() is true.
+     *
+     * Test Result:
+     * PASS
+     */
 
     @Test
     void testOnTimerToggled_WhenSelectedTrue_TimerEnabledBecomesTrue() throws Exception {
@@ -80,3 +125,4 @@ public class FiltersControllerTest {
     }
 
 }
+
