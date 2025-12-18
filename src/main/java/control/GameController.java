@@ -2075,7 +2075,7 @@ private void showNoFlagsLeftAlert() {
             size = 40;
         } else {
             iconPath = "/Images/music_mute.png";
-            size = 60;
+            size = 40;
         }
 
         Image img = new Image(getClass().getResourceAsStream(iconPath));

@@ -186,7 +186,7 @@ public class AddQuestionController {
     }
     
     //Helper method: Checks that all given strings are distinct, ignoring case
-    private boolean allDistinctIgnoreCase(String... values) {
+    boolean allDistinctIgnoreCase(String... values) {
         for (int i = 0; i < values.length; i++) {
             for (int j = i + 1; j < values.length; j++) {
                 if (values[i].equalsIgnoreCase(values[j])) {
