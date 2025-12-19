@@ -6,48 +6,37 @@
 /* Neon main title */
 .neon-title {
     -fx-text-fill: #ff6ec7;
-    -fx-effect: dropshadow(gaussian, #ff6ec7, 30, 0.7, 0, 0);
+    -fx-effect: dropshadow(gaussian, #ff6ec7, 5, 0.28, 0, 0);
     -fx-alignment: center;
 }
 
+
 /* Outer stats panel (like glass card) */
 .stats-panel {
-    -fx-fill: rgba(255, 110, 199, 0.08);
+    -fx-fill: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));
     -fx-stroke: rgba(255, 110, 199, 0.4);
     -fx-stroke-width: 2;
     -fx-effect: dropshadow(gaussian, rgba(255,110,199,0.5), 30, 0.6, 0, 0);
 }
 
 /* Top header bar inside panel */
-.stats-header {
-    -fx-fill: linear-gradient(from 0% 0% to 100% 100%, #2e1b4b, #4b255f);
+.stats-header {	
+   /* -fx-fill: linear-gradient(from 0% 0% to 100% 100%, #2e1b4b, #4b255f);*/
     -fx-stroke: rgba(255, 110, 199, 0.6);
 }
 
 /* Text styles */
 .stat-header-text {
-    -fx-fill: #c4b5fd;
+    -fx-fill: white;
 }
 
-.stat-label {
-    -fx-fill: #c4b5fd;
-    -fx-font-weight: bold;
-    -fx-opacity: 0.9;
-}
-
-.stat-value,
-.stat-value-main {
-    -fx-fill: #ff6ec7;
-}
-
-/* Smaller values vs main players text */
+/* Smaller values vs main players text 
 .stat-value-main {
     -fx-font-size: 16px;
-}
+}*/
 
 /* Each stat card (score / time / difficulty / lives) */
 .stat-card {
-    -fx-fill: rgba(167, 139, 250, 0.2);
     -fx-stroke: rgba(255, 110, 199, 0.5);
     -fx-stroke-width: 1.5;
     -fx-effect: dropshadow(gaussian, rgba(167,139,250,0.5), 15, 0.5, 0, 0);
@@ -58,7 +47,6 @@
 /* Hover effect for stat cards – glow + slight scale */
 .stat-card:hover {
     -fx-stroke: #ff6ec7;
-    -fx-effect: dropshadow(gaussian, #ff6ec7, 30, 0.8, 0, 0);
 }
 
 /* Buttons */

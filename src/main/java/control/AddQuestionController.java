@@ -16,7 +16,7 @@ import java.util.Optional;
 public class AddQuestionController {
 
 
-    @FXML private TextField idTextField;
+    @FXML private Label idTextField;
     @FXML private ComboBox<String> difficultyComboBox;
     @FXML private TextArea questionTextArea;
     @FXML private TextField optionATextField;
@@ -36,7 +36,9 @@ public class AddQuestionController {
         // ID is serial and should be auto-filled, not editable
         int nextId = computeNextId();
         idTextField.setText(String.valueOf(nextId));
-        idTextField.setEditable(false);
+        difficultyComboBox.getSelectionModel().selectFirst();
+        correctAnswerComboBox.getSelectionModel().selectFirst();
+        
     }
 
   
@@ -110,7 +112,8 @@ public class AddQuestionController {
 
         //Collect data
         int id = Integer.parseInt(idTextField.getText().trim());
-        String difficultyNum = difficultyComboBox.getValue(); 
+        String difficultyText = difficultyComboBox.getValue();
+        String difficultyNum  = QuestionsManagerController.mapDifficultyToNumber(difficultyText); 
         String question = questionTextArea.getText().trim();
         String optA = optionATextField.getText().trim();
         String optB = optionBTextField.getText().trim();
@@ -186,7 +189,7 @@ public class AddQuestionController {
     }
     
     //Helper method: Checks that all given strings are distinct, ignoring case
-    private boolean allDistinctIgnoreCase(String... values) {
+    boolean allDistinctIgnoreCase(String... values) {
         for (int i = 0; i < values.length; i++) {
             for (int j = i + 1; j < values.length; j++) {
                 if (values[i].equalsIgnoreCase(values[j])) {

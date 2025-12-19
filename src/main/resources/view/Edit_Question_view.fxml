@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -10,21 +12,20 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.collections.FXCollections?>
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.EditQuestionController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="466.0" prefWidth="677.0" stylesheets="@../css/theme.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.EditQuestionController">
    <children>
       <VBox alignment="TOP_CENTER" layoutY="26.0" prefHeight="354.0" prefWidth="800.0" spacing="15.0" styleClass="root-background" AnchorPane.bottomAnchor="420.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0">
          <children>
             <HBox alignment="CENTER" prefHeight="32.0" prefWidth="800.0" spacing="10.0">
                <children>
-                  <Label prefHeight="57.0" prefWidth="601.0" text="Edit the Question Please - Note: All fields should be filled!" wrapText="true">
+                  <Label prefHeight="57.0" prefWidth="601.0" text="Edit the Question Please " textFill="WHITE" wrapText="true">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Copperplate Gothic Bold" size="30.0" />
                      </font>
+                     <HBox.margin>
+                        <Insets left="130.0" />
+                     </HBox.margin>
                   </Label>
                </children>
             </HBox>
@@ -35,20 +36,30 @@
                <children>
                   <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="780.0" spacing="10.0">
                      <children>
-                        <Label text="ID: " />
-                        <TextField fx:id="idTextField" prefWidth="100.0" />
+                        <Label text="ID: " textFill="WHITE">
+                           <font>
+                              <Font name="Copperplate Gothic Bold" size="18.0" />
+                           </font></Label>
+                        <Label fx:id="idTextField" text="ID" textFill="WHITE">
+                           <font>
+                              <Font name="Copperplate Gothic Light" size="18.0" />
+                           </font>
+                        </Label>
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="780.0" spacing="10.0">
                      <children>
-                        <Label text="Difficulty:" />
-						<ComboBox fx:id="difficultyComboBox" prefWidth="150.0">
+                        <Label text="Difficulty:" textFill="WHITE">
+                           <font>
+                              <Font name="Copperplate Gothic Bold" size="18.0" />
+                           </font></Label>
+						<ComboBox fx:id="difficultyComboBox" prefWidth="150.0" promptText="EASY" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);">
    							<items>
       							<FXCollections fx:factory="observableArrayList">
-         						<String fx:value="1" />
-         						<String fx:value="2" />
-         						<String fx:value="3" />
-         						<String fx:value="4" />
+         						<String fx:value="EASY" />
+         						<String fx:value="MEDIUM" />
+         						<String fx:value="HARD" />
+         						<String fx:value="EXPERT" />
       							</FXCollections>
    							</items>
 						</ComboBox>
@@ -56,38 +67,59 @@
                   </HBox>
                   <HBox prefHeight="58.0" prefWidth="780.0" spacing="10.0">
                      <children>
-                        <Label text="The Question: " />
-                        <TextArea fx:id="questionTextArea" prefHeight="56.0" prefRowCount="2" prefWidth="665.0" HBox.hgrow="ALWAYS" />
+                        <Label prefHeight="20.0" prefWidth="145.0" text="The Question: " textFill="WHITE">
+                           <HBox.margin>
+                              <Insets top="10.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font name="Copperplate Gothic Bold" size="18.0" />
+                           </font></Label>
+                        <TextArea fx:id="questionTextArea" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="38.0" prefRowCount="2" prefWidth="418.0" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                      <children>
-                        <Label text="Option A:" />
+                        <Label text="Option A:" textFill="WHITE">
+                           <font>
+                              <Font name="Copperplate Gothic Bold" size="18.0" />
+                           </font></Label>
                         <TextField fx:id="optionATextField" prefWidth="400.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="137.0" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                      <children>
-                        <Label text="Option B:" />
+                        <Label text="Option B:" textFill="WHITE">
+                           <font>
+                              <Font name="Copperplate Gothic Bold" size="18.0" />
+                           </font></Label>
                         <TextField fx:id="optionBTextField" prefWidth="400.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="173.0" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                      <children>
-                        <Label text="Option C:" />
+                        <Label text="Option C:" textFill="WHITE">
+                           <font>
+                              <Font name="Copperplate Gothic Bold" size="18.0" />
+                           </font></Label>
                         <TextField fx:id="optionCTextField" prefWidth="400.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="207.0" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                      <children>
-                        <Label text="Option D:" />
+                        <Label text="Option D:" textFill="WHITE">
+                           <font>
+                              <Font name="Copperplate Gothic Bold" size="18.0" />
+                           </font></Label>
                         <TextField fx:id="optionDTextField" prefWidth="400.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                      <children>
-                        <Label text="The Correct Answer Is:" />
-                        <ComboBox fx:id="correctAnswerComboBox" prefHeight="25.0" prefWidth="80.0">
+                        <Label text="The Correct Answer Is:" textFill="WHITE">
+                           <font>
+                              <Font name="Copperplate Gothic Bold" size="18.0" />
+                           </font></Label>
+                        <ComboBox fx:id="correctAnswerComboBox" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);">
    							<items>
       							<FXCollections fx:factory="observableArrayList">
          						<String fx:value="A" />
@@ -103,10 +135,16 @@
             </VBox>
          </children>
       </VBox>
-      <HBox alignment="CENTER" layoutX="300.0" layoutY="413.0" prefHeight="54.0" prefWidth="200.0" spacing="20.0">
+      <HBox alignment="CENTER" layoutX="203.0" layoutY="397.0" prefHeight="54.0" prefWidth="293.0" spacing="20.0">
          <children>
-            <Button fx:id="saveButton" mnemonicParsing="false" styleClass="primary-button" text="Save Question" onAction="#onSaveButtonClicked" />
-            <Button fx:id="cancelButton" mnemonicParsing="false" text="Cancel" onAction="#onCancelButtonClicked" />
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveButtonClicked" prefHeight="43.0" prefWidth="165.0" styleClass="primary-button" text="Save Question">
+               <font>
+                  <Font name="Copperplate Gothic Light" size="15.0" />
+               </font></Button>
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onCancelButtonClicked" prefHeight="43.0" prefWidth="92.0" text="Cancel">
+               <font>
+                  <Font name="Copperplate Gothic Light" size="15.0" />
+               </font></Button>
          </children>
       </HBox>
    </children>

@@ -261,12 +261,15 @@ public class PlayLoginController {
         String adminPass = adminPasswordField.getText() == null ? "" : adminPasswordField.getText().trim();
 
         Player admin = SysData.getInstance().findPlayerByOfficialName(adminName);
-
-        if (admin == null || !admin.checkPassword(adminPass)) {
+        
+        AdminLoginResult result = evaluateAdminLogin(admin, adminPass);
+        
+        if (result == AdminLoginResult.INVALID_CREDENTIALS) {
             showError("Login failed", "Invalid Name or Password.");
             return;
         }
-        if (!admin.isAdmin()) {
+        
+        if (result == AdminLoginResult.NOT_ADMIN) {
             showError("Login failed", "Not a saved Admin.");
             return;
         }
@@ -513,4 +516,27 @@ public class PlayLoginController {
         a.setContentText(msg);
         a.showAndWait();
     }
+    
+    public enum AdminLoginResult {
+        INVALID_CREDENTIALS,   // admin == null OR wrong password
+        NOT_ADMIN,             // credentials are ok, but role is not admin
+        SUCCESS                // credentials are ok + is admin
+    }
+
+    static AdminLoginResult evaluateAdminLogin(Player admin, String adminPass) {
+
+        // Normalize pass to avoid null issues in tests
+        String pass = (adminPass == null) ? "" : adminPass;
+
+        if (admin == null  || !admin.checkPassword(pass)) {
+            return AdminLoginResult.INVALID_CREDENTIALS;
+        }
+        
+        if (!admin.isAdmin()) {
+            return AdminLoginResult.NOT_ADMIN;
+        }
+
+        return AdminLoginResult.SUCCESS;
+    }
+
 }

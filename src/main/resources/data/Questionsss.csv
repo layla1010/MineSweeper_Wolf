@@ -1,9 +1,9 @@
 ID,Question,Difficulty,A,B,C,D,Correct Answer
-1,What is the main purpose of system modeling?,1,To replace the final system implementation,To develop abstract models showing different system perspectives,To generate test cases automatically,To create user interfaces,B
+1,What is the main purpose of system modeling?,4,To replace the final system implementation,To develop abstract models showing different system perspectives,To generate test cases automatically,To create user interfaces,B
 2,Which UML diagram shows interactions between a system and its environment?,1,Class diagram,Use case diagram,State diagram,Activity diagram,B
 3,Which requirement type describes what the system must do?,1,Non-functional requirements,User experience requirements,Domain requirements,Functional requirements,D
-4,What is verification concerned with?,1,Ensuring the system meets user expectations,Ensuring the system is bug-free,Ensuring the product matches earlier-phase specifications,Ensuring the product is ready for delivery,C
-5,A design pattern is best described as:,1,A UML notation,A reusable solution to a recurring design problem,A coding convention,A testing technique,B
+4,What is verification concerned with?,EASY,Ensuring the system meets user expectations,Ensuring the system is bug-free,Ensuring the product matches earlier-phase specifications,Ensuring the product is ready for delivery,C
+5,A design pattern is best described as:,2,A UML notation,A reusable solution to a recurring design problem,A coding convention,A testing technique,B
 6,What is the main function of a review?,1,To rewrite project requirements,To detect errors and evaluate a work product,To execute the program,To run acceptance tests,B
 7,Which perspective models how components interact inside a system?,2,Interaction perspective,Structural perspective,Behavioral perspective,External perspective,A
 8,What is a major problem with natural-language requirements?,2,They require programming knowledge,They may be ambiguous and unclear,They are too mathematical,They are always incomplete,B
@@ -26,3 +26,6 @@ ID,Question,Difficulty,A,B,C,D,Correct Answer
 25,hey,3,dd,ss,aa,q,B
 26,jjjjjjj?,3,dsfa,dd,ww,rr,C
 27,qq,2,q,t,y,w,C
+28,test,3,test1,test2,test3,test4,C
+29,h,1,k,g,v,n,A
+30,K,1,KJ,LK,HG,NM,A
