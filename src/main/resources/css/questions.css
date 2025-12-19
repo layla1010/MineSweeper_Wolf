@@ -1,0 +1,80 @@
+/* --- THEME BASE (glass / neon) --- */
+.option-label {
+    /* glass fill that works on purple gradients */
+    -fx-background-color:
+        linear-gradient(to bottom right,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.03)
+        );
+
+    /* subtle border in the same family as your UI */
+    -fx-border-color: rgba(255,255,255,0.22);
+    -fx-border-width: 2;
+    -fx-border-radius: 22;
+    -fx-background-radius: 22;
+
+    -fx-padding: 18 22;
+    -fx-text-fill: rgba(255,255,255,0.92);
+
+    /* keep your font; size here is optional */
+    -fx-font-size: 14px;
+	-fx-font-family: "Copperplate Gothic Light";
+
+    /* softer glow/shadow */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 18, 0.10, 0, 6);
+}
+
+/* hover: slightly brighter glass + a light glow */
+.option-label:hover {
+    -fx-background-color:
+        linear-gradient(to bottom right,
+            rgba(255,255,255,0.12),
+            rgba(255,255,255,0.05)
+        );
+
+    -fx-border-color: rgba(255,255,255,0.35);
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.10), 18, 0.12, 0, 6);
+}
+
+/* pressed feel */
+.option-label:pressed {
+    -fx-translate-y: 1;
+}
+
+/* keep tooltip readable if you use it */
+.tooltip {
+    -fx-background-color: rgba(10, 10, 20, 0.92);
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+/* --- STATES --- */
+/* Correct = neon green outline (like your screenshot) */
+.option-correct {
+    -fx-border-color: rgba(74, 222, 128, 0.95);
+    -fx-border-width: 3;
+
+    /* green-tinted glass (still subtle) */
+    -fx-background-color:
+        linear-gradient(to bottom right,
+            rgba(74,222,128,0.14),
+            rgba(255,255,255,0.03)
+        );
+
+    -fx-effect: dropshadow(gaussian, rgba(74,222,128,0.28), 22, 0.20, 0, 6);
+}
+
+/* Wrong = neon red outline (like your screenshot) */
+.option-wrong {
+    -fx-border-color: rgba(248, 113, 113, 0.95);
+    -fx-border-width: 3;
+
+    /* red-tinted glass (still subtle) */
+    -fx-background-color:
+        linear-gradient(to bottom right,
+            rgba(248,113,113,0.14),
+            rgba(255,255,255,0.03)
+        );
+
+    -fx-effect: dropshadow(gaussian, rgba(248,113,113,0.26), 22, 0.20, 0, 6);
+}

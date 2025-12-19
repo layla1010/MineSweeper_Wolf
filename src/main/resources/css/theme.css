@@ -1,0 +1,63 @@
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
+}
+
+/* Make ScrollPane transparent so the gradient behind shows */
+.scroll-pane,
+.scroll-pane > .viewport,
+.scroll-pane .content {
+    -fx-background-color: transparent;
+}
+
+/* Apply gradient to the CONTENT root (your VBox) */
+.themed-bg {
+    -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
+}
+
+.scroll-pane, .scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.combo-box {
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+.combo-box .list-cell {
+    -fx-text-fill: white;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: linear-gradient(
+        to bottom right,
+        #667eea,
+        #764ba2,
+        #f093fb
+    );
+    -fx-background-radius: 12;
+    -fx-padding: 4;
+}
+
+.combo-box-popup .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+
+.button {
+    -fx-background-color: linear-gradient(
+        to bottom right,
+        rgba(255,255,255,0.30),
+        rgba(255,255,255,0.15)
+    );
+
+    -fx-border-color: rgba(255,255,255,0.50);
+    -fx-border-width: 2;
+
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+
+    -fx-cursor: hand;
+    
+    -fx-text-fill: white;
+}
+

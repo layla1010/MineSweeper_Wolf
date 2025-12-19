@@ -333,7 +333,7 @@ public class QuestionsManagerController {
                 String optB          = cells[iB].trim();
                 String optC          = cells[iC].trim();
                 String optD          = cells[iD].trim();
-                String difficultyNum = cells[iDifficulty].trim();
+                String difficultyRaw = cells[iDifficulty].trim();
                 String idStr         = cells[iId].trim();
                 String questionText  = cells[iQuestion].trim();
                 String correctLetter = cells[iCorrect].trim();
@@ -343,10 +343,19 @@ public class QuestionsManagerController {
                     System.err.println("Skipping row " + rowNumber + " – invalid ID: '" + idStr + "'");
                     continue;
                 }
-                if (!difficultyNum.matches("[1-4]")) {
-                    System.err.println("Skipping row " + rowNumber + " – invalid difficulty: '" + difficultyNum + "'");
-                    continue;
+                String difficultyNum;
+                
+                if (difficultyRaw.matches("[1-4]")) {
+                    difficultyNum = difficultyRaw;
+                } else {
+                    difficultyNum = mapDifficultyToNumber(difficultyRaw); // you already have this method
+                    if (difficultyNum == null) {
+                        System.err.println("Skipping row " + rowNumber + " – invalid difficulty: '" + difficultyRaw + "'");
+                        continue;
+                    }
                 }
+                String difficultyText = mapDifficulty(difficultyNum);
+
                 if (!correctLetter.matches("[A-Da-d]")) {
                     System.err.println("Skipping row " + rowNumber + " – invalid correct answer: '" + correctLetter + "'");
                     continue;
@@ -357,7 +366,6 @@ public class QuestionsManagerController {
                 }
 
                 int id = Integer.parseInt(idStr);
-                String difficultyText = mapDifficulty(difficultyNum);
                 int correctOption     = mapCorrectLetter(correctLetter);
 
                 Question q = new Question(
@@ -551,7 +559,7 @@ public class QuestionsManagerController {
     /**
      * Difficulty text (Easy/Medium/Hard/Expert) to number (1..4).
      */
-    private String mapDifficultyToNumber(String difficultyText) {
+    static String mapDifficultyToNumber(String difficultyText) {
         if (difficultyText == null) return "1";
         switch (difficultyText.toLowerCase()) {
             case "easy":   return "1";

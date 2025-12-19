@@ -622,7 +622,7 @@ public class HistoryController {
 
     // Navigates back to the main menu screen and passes the stage to MainController
     @FXML
-    private void onBackBtnClicked() throws IOException {
+    private void onBackButtonClicked() throws IOException {
         SoundManager.playClick();
 
         Stage s = (stage != null)

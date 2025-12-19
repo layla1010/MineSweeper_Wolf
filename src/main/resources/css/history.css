@@ -15,8 +15,6 @@
 
 /* ===== Title ===== */
 .history-title {
-    -fx-text-fill: #35E0FF;
-    -fx-font-size: 48px;
     -fx-font-family: "Copperplate Gothic Bold", "Georgia", "Serif";
 }
 
@@ -33,7 +31,7 @@
 
 /* ===== Cards ===== */
 .history-card {
-    -fx-background-color: #11151f;
+    -fx-background-color:  linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));
     -fx-background-radius: 22;
     -fx-border-radius: 22;
     -fx-border-color: #2a3040;
@@ -43,7 +41,6 @@
 
 .history-card:hover {
     -fx-border-color: #35E0FF;
-    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.25), 12, 0.2, 0, 4);
 }
 
 /* top row: difficulty | players | result */
@@ -67,44 +64,49 @@
 
 /* difficulty pill */
 .difficulty-pill {
-    -fx-background-color: transparent;
-    -fx-border-color: #35E0FF;
-    -fx-text-fill: #35E0FF;
+    -fx-background-color: rgb(117, 77, 166, 0.12);
+    -fx-border-color: #3f2959;
+    -fx-text-fill: #3f2959;
+    -fx-font-family: "Copperplate Gothic Light";
 }
 
 /* result pills */
 .result-pill-won {
-    -fx-background-color: rgba(35, 160, 90, 0.15);
-    -fx-border-color: #23a05a;
-    -fx-text-fill: #7CFFB3;
+    -fx-background-color: rgb(0, 149, 55, 0.12);
+    -fx-border-color: #009537;
+    -fx-text-fill: #009537;
+    -fx-font-family: "Copperplate Gothic Light";
 }
 
 .result-pill-lost {
-    -fx-background-color: rgba(200, 60, 60, 0.18);
-    -fx-border-color: #c23c3c;
-    -fx-text-fill: #ff9b9b;
+    -fx-background-color: rgb(193, 61, 62, 0.18);
+    -fx-border-color: #c13d3e;
+    -fx-text-fill: #c13d3e;
+    -fx-font-family: "Copperplate Gothic Light";
 }
 
 .result-pill-giveup {
-    -fx-background-color: rgba(234, 179, 8, 0.18);  /* soft amber */
-    -fx-border-color: #eab308;
-    -fx-text-fill: #fde68a;
+    -fx-background-color: rgb(240, 235, 42, 0.15);
+    -fx-border-color: #fff800;
+    -fx-text-fill: #fff800;
+    -fx-font-family: "Copperplate Gothic Light";
 }
 
 
 /* players text */
 .players-label {
     -fx-text-fill: #f2f7ff;
-    -fx-font-size: 16px;
+    -fx-font-family: "Copperplate Gothic Bold";
+    -fx-font-size: 22px;
 }
 
 /* small badges: date, score, time */
 .info-badge {
-    -fx-background-color: #151a26;
     -fx-background-radius: 16;
     -fx-padding: 4 12 4 12;
-    -fx-text-fill: #d5e8ff;
-    -fx-font-size: 13px;
+    -fx-text-fill: white;
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 16px;
 }
 
 /* ===== Filter & sort bar ===== */
@@ -123,7 +125,7 @@
 /* ===== Buttons (Apply / Sort) ===== */
 .history-small-button {
     -fx-background-color: linear-gradient(#3C8DFF, #274B8E);
-    -fx-text-fill: #f6f7ff;
+    -fx-text-fill: white;
     -fx-background-radius: 20;
     -fx-padding: 4 14 4 14;
     -fx-cursor: hand;
@@ -140,8 +142,8 @@
 .text-field,
 .date-picker {
     -fx-background-color: #111A33;
-    -fx-text-fill: #F6F7FF;
-    -fx-prompt-text-fill: #4A537A;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: white;
     -fx-background-radius: 20;
     -fx-border-color: #274B8E;
     -fx-border-radius: 20;
@@ -151,14 +153,15 @@
 
 /* visible text inside combo boxes */
 .combo-box .list-cell {
-    -fx-text-fill: #F6F7FF;
+    -fx-text-fill: white;
+    -fx-font-family: "Copperplate Gothic Light";
     -fx-font-size: 12px;
 }
  
 /* DatePicker inner text field */
 .date-picker .text-field {
     -fx-background-color: transparent;
-    -fx-text-fill: #F6F7FF;
+    -fx-text-fill: white;
     -fx-prompt-text-fill: #4A537A;
     -fx-background-radius: 20;
     -fx-border-width: 0;
@@ -166,12 +169,12 @@
 
 /* DatePicker arrow */
 .date-picker .arrow-button {
-    -fx-background-color: transparent;
+    -fx-background-color: white;
     -fx-padding: 0 6 0 6;
 }
 
 .date-picker .arrow-button .arrow {
-    -fx-background-color: #F6F7FF;
+    -fx-background-color: white;
 }
 
 
@@ -198,11 +201,11 @@
 /* arrow button in the combo */
 .combo-box-base .arrow-button {
     -fx-background-color: transparent;
-    -fx-padding: 0 8 0 4;
+    fx-padding: 0 8 0 4;
 }
 
 .combo-box-base .arrow-button .arrow {
-    -fx-background-color: #35E0FF;   /* cyan arrow */
+    -fx-background-color: white;   
 }
 
 
@@ -255,7 +258,6 @@
     -fx-border-width: 1;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.5), 14, 0.4, 0, 0);
 }
 
 /* Selected = full neon glow */
@@ -291,7 +293,7 @@
 }
 
 .date-picker-popup > .month-year-pane .label {
-    -fx-text-fill: #F6F7FF;
+    -fx-text-fill: white;
     -fx-font-size: 13px;
 }
 
@@ -301,7 +303,8 @@
 }
 
 .date-picker-popup > .month-year-pane .spinner .button .arrow {
-    -fx-background-color: #35E0FF; /* cyan arrow */
+    -fx-background-color: white; /* cyan arrow */
+    -fx-text-fill: white;
 }
 
 /* Weekday row (Sun, Mon...) */
@@ -322,17 +325,16 @@
 /* Hover effect — neon blue glow */
 .date-picker-popup .day-cell:hover {
     -fx-background-color: #0B1226;
-    -fx-border-color: #35E0FF;
+    -fx-border-color: white;
     -fx-border-width: 1;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
-    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.6), 12, 0.4, 0, 0);
 }
 
 /* Selected date */
 .date-picker-popup .selected {
     -fx-background-color: #111A33;
-    -fx-border-color: #35E0FF;
+    -fx-border-color: white;
     -fx-border-width: 1.5;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
@@ -342,7 +344,7 @@
 
 /* Today's date highlight */
 .date-picker-popup .today {
-    -fx-border-color: #35E0FF;
+    -fx-border-color: white;
     -fx-border-width: 1.2;
     -fx-background-radius: 6;
     -fx-border-radius: 6;

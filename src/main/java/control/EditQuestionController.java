@@ -16,7 +16,7 @@ import java.util.*;
 
 public class EditQuestionController {
 
-    @FXML private TextField idTextField;
+    @FXML private Label idTextField;
     @FXML private ComboBox<String> difficultyComboBox;
     @FXML private TextArea questionTextArea;
     @FXML private TextField optionATextField;
@@ -33,9 +33,8 @@ public class EditQuestionController {
 
     @FXML
     public void initialize() {
-        //ID is not editable in edit mode
-        idTextField.setEditable(false);
-    }
+    	difficultyComboBox.setValue("EASY");
+    	correctAnswerComboBox.setValue("A");        }
 
     //Called from QuestionsManagerController.openEditScreen
     //Receives the Question object selected in the manager screen and fills all the UI fields with its data so it can be edited
@@ -49,22 +48,9 @@ public class EditQuestionController {
         optionCTextField.setText(q.getOptC());
         optionDTextField.setText(q.getOptD());
 
-        //convert difficulty text ("Easy") back to number ("1")
-        difficultyComboBox.setValue(difficultyTextToNum(q.getDifficulty()));
-
+        difficultyComboBox.setValue(q.getDifficulty().toUpperCase());
         //convert correctOption int (1-4) to letter ("A"-"D")
         correctAnswerComboBox.setValue(correctOptionToLetter(q.getCorrectOption()));
-    }
-
-    //Converts a difficulty text value from the Question model to the numeric representation used in the ComboBox and CSV
-    private String difficultyTextToNum(String text) {
-        return switch (text) {
-            case "Easy" -> "1";
-            case "Medium" -> "2";
-            case "Hard" -> "3";
-            case "Expert" -> "4";
-            default -> "1";
-        };
     }
 
     //converts the correct option index from the Question model, to the answer letter for the ComboBox
@@ -87,7 +73,8 @@ public class EditQuestionController {
         }
 
         int id = Integer.parseInt(idTextField.getText().trim());
-        String difficultyNum = difficultyComboBox.getValue();   
+        String difficultyText = difficultyComboBox.getValue();
+        String difficultyNum  = QuestionsManagerController.mapDifficultyToNumber(difficultyText);
         String question = questionTextArea.getText().trim();
         String optA = optionATextField.getText().trim();
         String optB = optionBTextField.getText().trim();
