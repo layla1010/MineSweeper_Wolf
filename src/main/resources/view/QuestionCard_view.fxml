@@ -1,68 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.QuestionCardController" spacing="8" styleClass="question-card">
+<VBox minHeight="134.0" prefWidth="541.0" spacing="8" styleClass="question-card" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.QuestionCardController">
 
     <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
+        <Insets bottom="10" left="10" right="10" top="10" />
     </padding>
 
-    <!-- TOP LINE: ID + DIFFICULTY + EDIT/DELETE -->
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <children>
-            <Label fx:id="idLabel" styleClass="id-label" text="#1"/>
-            <Label fx:id="difficultyLabel" styleClass="difficulty-badge" text="Easy"/>
+    <HBox alignment="CENTER_LEFT" spacing="10">
+    <children>
 
-            <HBox spacing="10" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                <children>
-                    <ImageView fx:id="editImg" onMouseClicked="#onEditClicked" fitHeight="24.0" fitWidth="20.0"
-                               pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@/Images/editing.png"/>
-                        </image>
-                    </ImageView>
-                    <ImageView fx:id="deleteImg" onMouseClicked="#onDeleteClicked" fitHeight="24.0" fitWidth="20.0"
-                               pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@/Images/bin.png"/>
-                        </image>
-                    </ImageView>
-                </children>
-            </HBox>
-        </children>
+        <!-- ID (auto sizes to text) -->
+        <Label fx:id="idLabel" alignment="CENTER" styleClass="id-label" text="#1" textFill="WHITE">
+            <font>
+                <Font name="Copperplate Gothic Light" size="12.0" />
+            </font>
+        </Label>
+
+        <!-- Difficulty (auto sizes to text) -->
+        <Label fx:id="difficultyLabel" alignment="CENTER" styleClass="difficulty-badge" text="Medium" textFill="WHITE">
+            <font>
+                <Font name="Copperplate Gothic Light" size="12.0" />
+            </font>
+        </Label>
+
+        <!-- Spacer pushes icons to the right -->
+		<Region HBox.hgrow="ALWAYS" />
+
+		         <HBox alignment="CENTER_RIGHT" spacing="10">
+        <ImageView fx:id="editImg" fitHeight="24.0" fitWidth="20.0" onMouseClicked="#onEditClicked" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+            <image><Image url="@/Images/editing.png" /></image>
+        </ImageView>
+
+        <ImageView fx:id="deleteImg" fitHeight="24.0" fitWidth="20.0" onMouseClicked="#onDeleteClicked" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+            <image><Image url="@/Images/bin.png" /></image>
+        </ImageView>
     </HBox>
+		
+		    </children>
+		</HBox>
+
 
     <!-- QUESTION TEXT -->
-    <Label fx:id="questionLabel"
-           styleClass="question-text"
-           wrapText="true"
-           text="QUESTION #1"/>
+	<HBox alignment="CENTER" maxWidth="Infinity">
+	    <Label fx:id="questionLabel" maxWidth="Infinity" style="-fx-underline: true;" styleClass="question-text" text="QUESTION #1" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+	        <font>
+	            <Font name="Copperplate Gothic Light" size="17.0" />
+	        </font>
+	    </Label>
+	</HBox>
+
+      
+
+<GridPane hgap="10" vgap="10">
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
+        <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
+    </columnConstraints>
+
 
     <!-- OPTIONS -->
-    <VBox spacing="5">
-        <children>
-            <HBox spacing="10">
-                <children>
-                    <Button fx:id="option1Button" text="OPTION #1" HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="option2Button" text="OPTION #2" HBox.hgrow="ALWAYS"/>
-                </children>
-            </HBox>
+    <children>
+        <Label fx:id="option1Label" alignment="CENTER_LEFT" maxWidth="Infinity" minWidth="140.0" prefHeight="34.0" styleClass="option-label" text="OPTION #1" textOverrun="ELLIPSIS" wrapText="false" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <tooltip><Tooltip text="" /></tooltip>
+            <font>
+               <Font name="Copperplate Gothic Bold" size="12.0" />
+            </font>
+        </Label>
 
-            <HBox spacing="10">
-                <children>
-                    <Button fx:id="option3Button" text="OPTION #3" HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="option4Button" text="OPTION #4" HBox.hgrow="ALWAYS"/>
-                </children>
-            </HBox>
-        </children>
-    </VBox>
+        <Label fx:id="option2Label" alignment="CENTER_LEFT" maxWidth="Infinity" minWidth="140.0" prefHeight="34.0" styleClass="option-label" text="OPTION #2" textFill="WHITE" textOverrun="ELLIPSIS" wrapText="false" GridPane.columnIndex="1" GridPane.rowIndex="0">
+        <tooltip><Tooltip text="" /></tooltip>
+            <font>
+               <Font name="Copperplate Gothic Bold" size="12.0" />
+            </font>
+        </Label>
+
+        <Label fx:id="option3Label" alignment="CENTER_LEFT" maxWidth="Infinity" minWidth="140.0" prefHeight="34.0" styleClass="option-label" text="OPTION #3" textOverrun="ELLIPSIS" wrapText="false" GridPane.columnIndex="0" GridPane.rowIndex="1">
+        <tooltip><Tooltip text="" /></tooltip>
+            <font>
+               <Font name="Copperplate Gothic Bold" size="12.0" />
+            </font>
+        </Label>
+
+        <Label fx:id="option4Label" alignment="CENTER_LEFT" maxWidth="Infinity" minWidth="140.0" prefHeight="34.0" styleClass="option-label" text="OPTION #4" textOverrun="ELLIPSIS" wrapText="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <tooltip><Tooltip text="" /></tooltip>
+            <font>
+               <Font name="Copperplate Gothic Bold" size="12.0" />
+            </font>
+        </Label>
+        
+    </children>
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
+</GridPane>
+   <stylesheets>
+      <URL value="@../css/theme.css" />
+      <URL value="@../css/questions.css" />
+   </stylesheets>
+
 
 </VBox>
-

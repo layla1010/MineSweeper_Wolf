@@ -2,6 +2,7 @@
 
 <!-- Aya Ala Deen – Settings Screen Implementation Documentation -->
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -13,73 +14,53 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="rootGrid"
-          xmlns="http://javafx.com/javafx/21"
-          xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="control.SettingsController"
-          prefWidth="1200.0" prefHeight="750.0"
-          style="-fx-background-color: #050814;"
-          stylesheets="@../css/style.css"
-          styleClass="settings-root">
+<GridPane fx:id="rootGrid" prefHeight="750.0" prefWidth="1200.0" styleClass="settings-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.SettingsController">
 
     <!-- Columns: padding left/right + center area -->
     <columnConstraints>
-        <ColumnConstraints prefWidth="120.0"/>
-        <ColumnConstraints prefWidth="960.0"/>
-        <ColumnConstraints prefWidth="120.0"/>
+        <ColumnConstraints prefWidth="120.0" />
+        <ColumnConstraints prefWidth="960.0" />
+        <ColumnConstraints prefWidth="120.0" />
     </columnConstraints>
 
     <!-- Rows: top bar, title, content, bottom padding -->
     <rowConstraints>
-        <RowConstraints prefHeight="80.0"/>
-        <RowConstraints prefHeight="120.0"/>
-        <RowConstraints prefHeight="480.0"/>
-        <RowConstraints prefHeight="70.0"/>
+        <RowConstraints prefHeight="80.0" />
+        <RowConstraints prefHeight="120.0" />
+        <RowConstraints prefHeight="480.0" />
+        <RowConstraints prefHeight="70.0" />
     </rowConstraints>
 
     <children>
 
         <!-- ⬅ Back to Main -->
-        <Button text="⬅"
-                onAction="#onBackToMainClicked"
-                styleClass="settings-back-button"
-                GridPane.columnIndex="0"
-                GridPane.rowIndex="0"
-                GridPane.halignment="LEFT"
-                GridPane.valignment="CENTER">
+        <Button onAction="#onBackToMainClicked" styleClass="settings-back-button" text="⬅" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="0" GridPane.valignment="CENTER">
             <GridPane.margin>
-                <Insets left="20.0"/>
+                <Insets left="20.0" />
             </GridPane.margin>
         </Button>
 
         <!-- 🐺 Title Area (Wolf Logo + Title + Subtitle) -->
-        <VBox spacing="10.0"
-              alignment="CENTER"
-              GridPane.columnIndex="1"
-              GridPane.rowIndex="1">
+        <VBox alignment="CENTER" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <children>
 
                 <!-- Wolf Logo -->
-                <ImageView fitHeight="90.0" fitWidth="90.0" preserveRatio="true"
-                           styleClass="wolf-logo">
+                <ImageView fitHeight="90.0" fitWidth="90.0" preserveRatio="true" styleClass="wolf-logo">
                     <image>
                         <!-- ضع الصورة هنا: src/main/resources/Images/wolf_logo.png -->
-                        <Image url="@../Images/wolf_logo.png"/>
+                        <Image url="@../Images/wolf_logo.png" />
                     </image>
                 </ImageView>
 
-                <Label text="WOLF SETTINGS" textFill="#e5f4ff"
-                       styleClass="settings-title">
+                <Label styleClass="settings-title" text="WOLF SETTINGS" textFill="#e5f4ff">
                     <font>
-                        <Font name="Copperplate Gothic Bold" size="32.0"/>
+                        <Font name="Copperplate Gothic Bold" size="32.0" />
                     </font>
                 </Label>
 
-                <Label text="Control your experience: filters, customization, statistics and more."
-                       textFill="#8B94C4"
-                       styleClass="settings-subtitle">
+                <Label styleClass="settings-subtitle" text="Control your experience: filters, customization, statistics and more." textFill="#8B94C4">
                     <font>
-                        <Font name="Copperplate Gothic Light" size="14.0"/>
+                        <Font name="Copperplate Gothic Light" size="14.0" />
                     </font>
                 </Label>
 
@@ -87,45 +68,35 @@
         </VBox>
 
         <!-- 🧩 Dashboard Grid: 2x2 Cards -->
-        <GridPane GridPane.columnIndex="1"
-                  GridPane.rowIndex="2"
-                  hgap="40.0" vgap="40.0"
-                  GridPane.halignment="CENTER"
-                  GridPane.valignment="TOP"
-                  styleClass="settings-dashboard">
+        <GridPane hgap="40.0" styleClass="settings-dashboard" vgap="40.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
             <columnConstraints>
-                <ColumnConstraints prefWidth="400.0"/>
-                <ColumnConstraints prefWidth="400.0"/>
+                <ColumnConstraints prefWidth="400.0" />
+                <ColumnConstraints prefWidth="400.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints prefHeight="180.0"/>
-                <RowConstraints prefHeight="180.0"/>
+                <RowConstraints prefHeight="180.0" />
+                <RowConstraints prefHeight="180.0" />
             </rowConstraints>
 
             <!-- 🔹 Filters Card -->
-            <Button fx:id="filtersBtn"
-                    onAction="#onFiltersClicked"
-                    GridPane.columnIndex="0" GridPane.rowIndex="0"
-                    styleClass="menu-card">
+            <Button fx:id="filtersBtn" onAction="#onFiltersClicked" styleClass="menu-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
                 <graphic>
                     <VBox alignment="CENTER" spacing="12.0">
                         <children>
-                            <ImageView fitHeight="60.0" fitWidth="60.0" preserveRatio="true"
-                                       styleClass="menu-card-icon">
+                            <ImageView fitHeight="60.0" fitWidth="60.0" preserveRatio="true" styleClass="menu-card-icon">
                                 <image>
                                     <!-- sliders icon -->
-                                    <Image url="@../Images/sliders_cyan.png"/>
+                                    <Image url="@../Images/sliders_cyan.png" />
                                 </image>
                             </ImageView>
                             <Label text="Filters" textFill="#E5F4FF">
                                 <font>
-                                    <Font name="Copperplate Gothic Bold" size="18.0"/>
+                                    <Font name="Copperplate Gothic Bold" size="18.0" />
                                 </font>
                             </Label>
-                            <Label text="Control music, sounds, timer and smart hints."
-                                   textFill="#9CA3AF">
+                            <Label text="Control music, sounds, timer and smart hints." textFill="#9CA3AF">
                                 <font>
-                                    <Font name="Copperplate Gothic Light" size="11.0"/>
+                                    <Font name="Copperplate Gothic Light" size="11.0" />
                                 </font>
                             </Label>
                         </children>
@@ -134,29 +105,24 @@
             </Button>
 
             <!-- 🎨 Customize Card -->
-            <Button fx:id="customizeBtn"
-                    onAction="#onCustomizeClicked"
-                    GridPane.columnIndex="1" GridPane.rowIndex="0"
-                    styleClass="menu-card">
+            <Button fx:id="customizeBtn" onAction="#onCustomizeClicked" styleClass="menu-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
                 <graphic>
                     <VBox alignment="CENTER" spacing="12.0">
                         <children>
-                            <ImageView fitHeight="60.0" fitWidth="60.0" preserveRatio="true"
-                                       styleClass="menu-card-icon">
+                            <ImageView fitHeight="60.0" fitWidth="60.0" preserveRatio="true" styleClass="menu-card-icon">
                                 <image>
                                     <!-- palette icon -->
-                                    <Image url="@../Images/palette_cyan.png"/>
+                                    <Image url="@../Images/palette_cyan.png" />
                                 </image>
                             </ImageView>
                             <Label text="Customize" textFill="#E5F4FF">
                                 <font>
-                                    <Font name="Copperplate Gothic Bold" size="18.0"/>
+                                    <Font name="Copperplate Gothic Bold" size="18.0" />
                                 </font>
                             </Label>
-                            <Label text="Future screen: board themes, colors and avatars."
-                                   textFill="#9CA3AF">
+                            <Label text="Future screen: board themes, colors and avatars." textFill="#9CA3AF">
                                 <font>
-                                    <Font name="Copperplate Gothic Light" size="11.0"/>
+                                    <Font name="Copperplate Gothic Light" size="11.0" />
                                 </font>
                             </Label>
                         </children>
@@ -165,29 +131,24 @@
             </Button>
 
             <!-- 📊 Statistics Card -->
-            <Button fx:id="statisticsBtn"
-                    onAction="#onStatisticsClicked"
-                    GridPane.columnIndex="0" GridPane.rowIndex="1"
-                    styleClass="menu-card">
+            <Button fx:id="statisticsBtn" onAction="#onStatisticsClicked" styleClass="menu-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
                 <graphic>
                     <VBox alignment="CENTER" spacing="12.0">
                         <children>
-                            <ImageView fitHeight="60.0" fitWidth="60.0" preserveRatio="true"
-                                       styleClass="menu-card-icon">
+                            <ImageView fitHeight="60.0" fitWidth="60.0" preserveRatio="true" styleClass="menu-card-icon">
                                 <image>
                                     <!-- stats icon -->
-                                    <Image url="@../Images/stats_cyan.png"/>
+                                    <Image url="@../Images/stats_cyan.png" />
                                 </image>
                             </ImageView>
                             <Label text="Statistics" textFill="#E5F4FF">
                                 <font>
-                                    <Font name="Copperplate Gothic Bold" size="18.0"/>
+                                    <Font name="Copperplate Gothic Bold" size="18.0" />
                                 </font>
                             </Label>
-                            <Label text="Future screen: wins, losses, average score and more."
-                                   textFill="#9CA3AF">
+                            <Label text="Future screen: wins, losses, average score and more." textFill="#9CA3AF">
                                 <font>
-                                    <Font name="Copperplate Gothic Light" size="11.0"/>
+                                    <Font name="Copperplate Gothic Light" size="11.0" />
                                 </font>
                             </Label>
                         </children>
@@ -196,29 +157,24 @@
             </Button>
 
             <!-- ❓ How To Play Card -->
-            <Button fx:id="howToPlayBtn"
-                    onAction="#onHowToPlayClicked"
-                    GridPane.columnIndex="1" GridPane.rowIndex="1"
-                    styleClass="menu-card">
+            <Button fx:id="howToPlayBtn" onAction="#onHowToPlayClicked" styleClass="menu-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
                 <graphic>
                     <VBox alignment="CENTER" spacing="12.0">
                         <children>
-                            <ImageView fitHeight="60.0" fitWidth="60.0" preserveRatio="true"
-                                       styleClass="menu-card-icon">
+                            <ImageView fitHeight="60.0" fitWidth="60.0" preserveRatio="true" styleClass="menu-card-icon">
                                 <image>
                                     <!-- help / cube icon -->
-                                    <Image url="@../Images/help_cyan.png"/>
+                                    <Image url="@../Images/help_cyan.png" />
                                 </image>
                             </ImageView>
                             <Label text="How To Play" textFill="#E5F4FF">
                                 <font>
-                                    <Font name="Copperplate Gothic Bold" size="18.0"/>
+                                    <Font name="Copperplate Gothic Bold" size="18.0" />
                                 </font>
                             </Label>
-                            <Label text="Future tutorial: rules, tips and strategy for WOLF."
-                                   textFill="#9CA3AF">
+                            <Label text="Future tutorial: rules, tips and strategy for WOLF." textFill="#9CA3AF">
                                 <font>
-                                    <Font name="Copperplate Gothic Light" size="11.0"/>
+                                    <Font name="Copperplate Gothic Light" size="11.0" />
                                 </font>
                             </Label>
                         </children>
@@ -229,4 +185,8 @@
         </GridPane>
 
     </children>
+   <stylesheets>
+      <URL value="@../css/style.css" />
+      <URL value="@../css/theme.css" />
+   </stylesheets>
 </GridPane>
