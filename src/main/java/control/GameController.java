@@ -57,6 +57,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.application.Platform;
 
 public class GameController {
 
@@ -107,6 +108,11 @@ public class GameController {
 
     private int safeCellsRemaining1;
     private int safeCellsRemaining2;
+    
+    //Win bonus popup data
+    private int endHeartsRemaining = 0;
+    private int endHeartsBonusPoints = 0;
+
 
     // Track cells that were already revealed (for scoring & surprise/question second-click)
     private boolean[][] revealedCellsP1;
@@ -1126,21 +1132,23 @@ private void showNoFlagsLeftAlert() {
         }
         gameOver = true;
 
-        // 4. convert remaining hearts to points when the game is won
+        //convert remaining hearts to points when the game is won
+        endHeartsRemaining = 0;
+        endHeartsBonusPoints = 0;
         if (gameWon && sharedHearts > 0) {
             int perHeart = switch (difficulty) {
                 case EASY   -> 5;
                 case MEDIUM -> 8;
                 case HARD   -> 12;
             };
-            int bonus = sharedHearts * perHeart;
-            score += bonus;
+            endHeartsRemaining = sharedHearts;
+            endHeartsBonusPoints = sharedHearts * perHeart;
+            score += endHeartsBonusPoints;
             updateScoreAndMineLabels();  // refresh score label before leaving screen
         }
 
         stopTimer();
         saveCurrentGameToHistory();
-        //showEndGameScreen();
         revealAllBoardsVisualOnly();
 
         PauseTransition pause = new PauseTransition(Duration.seconds(4.0));
@@ -1148,6 +1156,23 @@ private void showNoFlagsLeftAlert() {
         pause.play();
 
         System.out.println("Game over! Saved to history.");
+    }
+    
+    private void showHeartsBonusPopupIfNeeded() {
+        if (!gameWon) return;
+        if (endHeartsRemaining <= 0 || endHeartsBonusPoints <= 0) return;
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Hearts Bonus");
+        alert.setHeaderText("Bonus added to your final score!");
+
+        alert.setContentText(
+                "Remaining hearts: " + endHeartsRemaining + "\n" +
+                "Added points: +" + endHeartsBonusPoints + "\n\n" +
+                "Final score: " + score
+        );
+
+        alert.showAndWait();
     }
 
 
@@ -1227,6 +1252,9 @@ private void showNoFlagsLeftAlert() {
             stage.setScene(endScene);
             stage.centerOnScreen();
             stage.show();
+            
+            //Show hearts-bonus popup AFTER win screen is shown
+            Platform.runLater(this::showHeartsBonusPopupIfNeeded);
 
         } catch (IOException e) {
             e.printStackTrace();

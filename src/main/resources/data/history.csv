@@ -41,3 +41,6 @@ date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Off
 2025-12-18,1:43,MEDIUM,231,GIVE_UP,j,h,,,false,S6.png,S12.png
 2025-12-19,0:56,EASY,159,WIN,l,ll,,,false,S12.png,S2.png
 2025-12-19,1:16,EASY,151,WIN,a,aa,,,false,S9.png,S1.png
+2025-12-19,1:14,EASY,120,WIN,q,aa,,,false,S8.png,S5.png
+2025-12-19,0:25,EASY,57,WIN,d,s,,,false,S9.png,S6.png
+2025-12-19,2:17,MEDIUM,87,WIN,aa,dd,,,false,S12.png,S10.png
