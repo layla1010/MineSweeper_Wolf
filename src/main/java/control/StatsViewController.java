@@ -11,11 +11,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.text.Text;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import model.Player;
@@ -41,6 +43,8 @@ public class StatsViewController {
     @FXML private Text numOfWins2;
     @FXML private Text numOfLosses2;
     @FXML private Text numOfGiveUps2;
+    @FXML private Button backbtn;   
+    @FXML private HBox headerHBox;    
 
     public ScrollPane getMainPane() {
         return mainPane;
@@ -146,6 +150,10 @@ public class StatsViewController {
     @FXML
     private void initialize() {
         SysData.getInstance().loadHistoryFromCsv();
+       configureProgressChart(p1ProgressChart, "Player 1 Progress");
+        configureProgressChart(p2ProgressChart, "Player 2 Progress");
+    
+
 
         SysData sys = SysData.getInstance();
 
@@ -411,10 +419,41 @@ public class StatsViewController {
 
             Stage stage = (Stage) mainPane.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    
+    private void configureProgressChart(LineChart<Number, Number> chart, String title) {
+        if (chart == null) return;
+
+        chart.setTitle(title);
+
+        if (chart.getXAxis() instanceof javafx.scene.chart.NumberAxis x) {
+            x.setLabel("Game # (chronological)");
+            x.setForceZeroInRange(false);   // nicer scaling
+            x.setAutoRanging(true);
+        }
+
+        if (chart.getYAxis() instanceof javafx.scene.chart.NumberAxis y) {
+            y.setLabel("Score");
+            y.setForceZeroInRange(false);
+            y.setAutoRanging(true);
+        }
+
+        chart.setCreateSymbols(true);        
+        chart.setAlternativeRowFillVisible(false);
+        chart.setAlternativeColumnFillVisible(false);
+        chart.setHorizontalGridLinesVisible(true);
+        chart.setVerticalGridLinesVisible(false); 
+        chart.setVerticalZeroLineVisible(false);
+        chart.setHorizontalZeroLineVisible(false);
+
+        chart.setLegendVisible(true);
+        chart.setAnimated(false); 
+    }
+
 
 }

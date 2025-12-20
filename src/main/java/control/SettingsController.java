@@ -47,6 +47,7 @@ public class SettingsController {
 
             Stage stage = (Stage) rootGrid.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {
@@ -67,6 +68,7 @@ public class SettingsController {
 
             Stage stage = (Stage) rootGrid.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {

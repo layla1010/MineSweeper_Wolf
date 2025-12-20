@@ -6,21 +6,20 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="rootGrid" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.FiltersController">
+<GridPane fx:id="rootGrid" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.FiltersController">
 
     <columnConstraints>
-        <ColumnConstraints prefWidth="100.0" />
-        <ColumnConstraints prefWidth="1000.0" />
+        <ColumnConstraints maxWidth="927.3999977111816" minWidth="703.1999877929687" prefWidth="703.1999877929687" />
         <ColumnConstraints prefWidth="100.0" />
     </columnConstraints>
 
@@ -34,80 +33,127 @@
     <children>
 
         <!-- Back arrow -->
-        <Button onAction="#onBackToSettingsClicked" styleClass="settings-back-button" text="⬅" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+        <Button onAction="#onBackToSettingsClicked" prefHeight="48.0" prefWidth="63.0" styleClass="settings-back-button" text="⬅" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
             <GridPane.margin>
                 <Insets left="20.0" />
             </GridPane.margin>
         </Button>
 
         <!-- Title -->
-        <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0">
+        <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="42.0" prefWidth="594.0" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER">
             <columnConstraints>
-                <ColumnConstraints prefWidth="200.0" />
                 <ColumnConstraints prefWidth="600.0" />
-                <ColumnConstraints prefWidth="200.0" />
             </columnConstraints>
             <children>
-                <!-- Left icon (sliders) -->
-                <ImageView fitHeight="60.0" fitWidth="60.0" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
-                    <image>
-                        <Image url="@../Images/sliders_cyan.png" />
-                    </image>
-                </ImageView>
 
-                <Label text="Filters" textFill="#4fd1ff" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                <Label text="Filters" textFill="#fafafa" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                     <font>
-                        <Font name="Copperplate Gothic Bold" size="36.0" />
+                        <Font name="Copperplate Gothic Bold" size="40.0" />
                     </font>
                 </Label>
-
-                <!-- Right icon (sliders) -->
-                <ImageView fitHeight="60.0" fitWidth="60.0" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
-                    <image>
-                        <Image url="@../Images/sliders_cyan.png" />
-                    </image>
-                </ImageView>
             </children>
          <rowConstraints>
             <RowConstraints />
+            <RowConstraints />
          </rowConstraints>
+         <GridPane.margin>
+            <Insets bottom="10.0" top="20.0" />
+         </GridPane.margin>
         </GridPane>
 
         <!-- All filter rows -->
-        <VBox spacing="16.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
+        <VBox prefHeight="444.0" prefWidth="862.0" spacing="16.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
             <padding>
                 <Insets left="80.0" right="80.0" top="20.0" />
             </padding>
             <children>
 
                 <!-- Music -->
-                <HBox styleClass="filter-row">
+                <HBox minHeight="-Infinity" prefHeight="61.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
                     <Label styleClass="filter-label" text="Music" />
-                    <ToggleButton fx:id="musicToggle" onAction="#onMusicToggled" styleClass="switch-toggle" />
+               <StackPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="86.0" style="-fx-cursor: hand;">
+                  <children>
+                     <ImageView fx:id="musicToggle" fitHeight="80.0" fitWidth="80.0" onMouseClicked="#onMusicToggled" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+                        <image>
+                           <Image url="@../Images/switch-on.png" />
+                        </image>
+                        <StackPane.margin>
+                           <Insets right="20.0" />
+                        </StackPane.margin>
+                     </ImageView>
+                  </children>
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+               </StackPane>
                 </HBox>
 
                 <!-- Sound -->
-                <HBox styleClass="filter-row">
+                <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="61.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
                     <Label styleClass="filter-label" text="Sound" />
-                    <ToggleButton fx:id="soundToggle" onAction="#onSoundToggled" styleClass="switch-toggle" />
+               <StackPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="86.0" style="-fx-cursor: hand;">
+                  <children>
+                     <ImageView fx:id="soundToggle" fitHeight="80.0" fitWidth="80.0" onMouseClicked="#onSoundToggled" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+                        <image>
+                           <Image url="@../Images/switch-on.png" />
+                        </image>
+                        <StackPane.margin>
+                           <Insets right="30.0" />
+                        </StackPane.margin>
+                     </ImageView>
+                  </children>
+               </StackPane>
                 </HBox>
 
                 <!-- Timer -->
-                <HBox styleClass="filter-row">
+                <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="61.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
                     <Label styleClass="filter-label" text="Timer" />
-                    <ToggleButton fx:id="timerToggle" onAction="#onTimerToggled" styleClass="switch-toggle" />
+               <StackPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="86.0" style="-fx-cursor: hand;">
+                  <children>
+                     <ImageView fx:id="timerToggle" fitHeight="80.0" fitWidth="80.0" onMouseClicked="#onTimerToggled" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+                        <image>
+                           <Image url="@../Images/switch-on.png" />
+                        </image>
+                        <StackPane.margin>
+                           <Insets right="30.0" />
+                        </StackPane.margin>
+                     </ImageView>
+                  </children>
+               </StackPane>
                 </HBox>
 
                 <!-- Smart Hints -->
-                <HBox styleClass="filter-row">
+                <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="61.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
                     <Label styleClass="filter-label" text="Smart Hints" />
-                    <ToggleButton fx:id="smartHintsToggle" onAction="#onSmartHintsToggled" styleClass="switch-toggle" />
+               <StackPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="86.0" style="-fx-cursor: hand;">
+                  <children>
+                     <ImageView fx:id="smartHintsToggle" fitHeight="80.0" fitWidth="80.0" onMouseClicked="#onSmartHintsToggled" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+                        <image>
+                           <Image url="@../Images/switch-on.png" />
+                        </image>
+                        <StackPane.margin>
+                           <Insets right="30.0" />
+                        </StackPane.margin>
+                     </ImageView>
+                  </children>
+               </StackPane>
                 </HBox>
 
                 <!-- Auto Remove Flag -->
-                <HBox styleClass="filter-row">
+                <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="61.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
                     <Label styleClass="filter-label" text="Auto Remove Flag" />
-                    <ToggleButton fx:id="autoRemoveFlagToggle" onAction="#onAutoRemoveFlagToggled" styleClass="switch-toggle" />
+               <StackPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="86.0" style="-fx-cursor: hand;">
+                  <children>
+                     <ImageView fx:id="autoRemoveFlagToggle" fitHeight="80.0" fitWidth="80.0" onMouseClicked="#onAutoRemoveFlagToggled" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+                        <image>
+                           <Image url="@../Images/switch-on.png" />
+                        </image>
+                        <StackPane.margin>
+                           <Insets right="30.0" />
+                        </StackPane.margin>
+                     </ImageView>
+                  </children>
+               </StackPane>
                 </HBox>
 
             </children>

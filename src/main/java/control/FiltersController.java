@@ -8,7 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.SysData;
@@ -17,60 +18,37 @@ import util.SoundManager;
 /**
  * Controller for the Filters screen.
  *
- * Responsibilities:
- *  - Show the current state of all gameplay filters (music, sound, timer, smart hints, auto-remove-flag)
- *  - Update SysData whenever the user changes a toggle
- *  - Navigate back to the Settings screen
- *
- * This screen ONLY changes configuration flags in SysData.
- * The actual logic that uses these flags (e.g. turning timer on/off, applying smart hints, etc.)
- * is implemented in other parts of the system.
+ * Uses ImageView-based toggles instead of ToggleButtons
+ * for clearer visual feedback.
  */
 public class FiltersController {
 
-    // ====== FXML Components ======
-    @FXML
-    private GridPane rootGrid;
+    // ====== FXML ======
+    @FXML private GridPane rootGrid;
 
-    /** Toggle for enabling/disabling background music. */
-    @FXML
-    private ToggleButton musicToggle;
+    @FXML private ImageView musicToggle;
+    @FXML private ImageView soundToggle;
+    @FXML private ImageView timerToggle;
+    @FXML private ImageView smartHintsToggle;
+    @FXML private ImageView autoRemoveFlagToggle;
 
-    /** Toggle for enabling/disabling sound effects. */
-    @FXML
-    private ToggleButton soundToggle;
+    // ====== Images ======
+    private static final Image SWITCH_ON  =
+            new Image(FiltersController.class.getResourceAsStream("/Images/switch-on.png"));
+    private static final Image SWITCH_OFF =
+            new Image(FiltersController.class.getResourceAsStream("/Images/switch-off.png"));
 
-    /** Toggle for enabling/disabling the in-game timer. */
-    @FXML
-    private ToggleButton timerToggle;
-
-    /** Toggle for enabling/disabling smart hints. */
-    @FXML
-    private ToggleButton smartHintsToggle;
-
-    /** Toggle for enabling/disabling auto removal of flags when not needed. */
-    @FXML
-    private ToggleButton autoRemoveFlagToggle;
-
-
-    /**
-     * Called automatically after the FXML is loaded.
-     * Here we sync the toggles with the current configuration stored in SysData,
-     * so the UI always shows the real state of the settings.
-     */
+    // ====== Lifecycle ======
     @FXML
     private void initialize() {
-        musicToggle.setSelected(SysData.isMusicEnabled());
-        soundToggle.setSelected(SysData.isSoundEnabled());
-        timerToggle.setSelected(SysData.isTimerEnabled());
-        smartHintsToggle.setSelected(SysData.isSmartHintsEnabled());
-        autoRemoveFlagToggle.setSelected(SysData.isAutoRemoveFlagEnabled());
+        syncToggle(musicToggle, SysData.isMusicEnabled());
+        syncToggle(soundToggle, SysData.isSoundEnabled());
+        syncToggle(timerToggle, SysData.isTimerEnabled());
+        syncToggle(smartHintsToggle, SysData.isSmartHintsEnabled());
+        syncToggle(autoRemoveFlagToggle, SysData.isAutoRemoveFlagEnabled());
     }
 
-    /**
-     * Go back to the Settings screen.
-     * Called when the user clicks the "back" arrow button.
-     */
+    // ====== Navigation ======
     @FXML
     private void onBackToSettingsClicked() {
         SoundManager.playClick();
@@ -81,77 +59,70 @@ public class FiltersController {
 
             Stage stage = (Stage) rootGrid.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
-            // In a real app we might show an alert here, but for now we just print the error.
             e.printStackTrace();
         }
     }
 
-    // ====== Toggle Handlers – each one updates SysData ======
+    // ====== Toggle handlers ======
 
-    /**
-     * Called when the Music toggle is pressed.
-     * Updates SysData and also makes sure the actual background music state
-     * matches the selected option.
-     */
     @FXML
     private void onMusicToggled() {
         SoundManager.playClick();
 
-        boolean enabled = musicToggle.isSelected();
+        boolean newState = !SysData.isMusicEnabled();
+        SysData.setMusicEnabled(newState);
+        syncToggle(musicToggle, newState);
 
-        // Save global setting
-        SysData.setMusicEnabled(enabled);
-
-        // Keep real background music in sync with the toggle
-        boolean currentlyOn = SoundManager.isMusicOn();
-        if (enabled != currentlyOn) {
-            // Only toggle if there is a real change
+        if (newState != SoundManager.isMusicOn()) {
             SoundManager.toggleMusic();
         }
     }
 
-    /**
-     * Called when the Sound toggle is pressed.
-     * Only updates the "sound effects" flag in SysData.
-     * Other screens will read this flag before playing sounds.
-     */
     @FXML
     private void onSoundToggled() {
         SoundManager.playClick();
-        SysData.setSoundEnabled(soundToggle.isSelected());
+
+        boolean newState = !SysData.isSoundEnabled();
+        SysData.setSoundEnabled(newState);
+        syncToggle(soundToggle, newState);
     }
 
-    /**
-     * Called when the Timer toggle is pressed.
-     * Turns the timer configuration on/off in SysData.
-     * The actual timer will check this flag when running.
-     */
     @FXML
     private void onTimerToggled() {
         SoundManager.playClick();
-        SysData.setTimerEnabled(timerToggle.isSelected());
+
+        boolean newState = !SysData.isTimerEnabled();
+        SysData.setTimerEnabled(newState);
+        syncToggle(timerToggle, newState);
     }
 
-    /**
-     * Called when the Smart Hints toggle is pressed.
-     * Updates SysData so the game logic knows whether to use smart hints or not.
-     */
     @FXML
     private void onSmartHintsToggled() {
         SoundManager.playClick();
-        SysData.setSmartHintsEnabled(smartHintsToggle.isSelected());
+
+        boolean newState = !SysData.isSmartHintsEnabled();
+        SysData.setSmartHintsEnabled(newState);
+        syncToggle(smartHintsToggle, newState);
     }
 
-    /**
-     * Called when the Auto-Remove-Flag toggle is pressed.
-     * Updates SysData so the game knows if it should automatically
-     * remove flags when they are no longer relevant.
-     */
     @FXML
     private void onAutoRemoveFlagToggled() {
         SoundManager.playClick();
-        SysData.setAutoRemoveFlagEnabled(autoRemoveFlagToggle.isSelected());
+
+        boolean newState = !SysData.isAutoRemoveFlagEnabled();
+        SysData.setAutoRemoveFlagEnabled(newState);
+        syncToggle(autoRemoveFlagToggle, newState);
+    }
+
+    // ====== Helper ======
+
+    /**
+     * Updates the toggle image according to the boolean state.
+     */
+    private void syncToggle(ImageView toggle, boolean enabled) {
+        toggle.setImage(enabled ? SWITCH_ON : SWITCH_OFF);
     }
 }

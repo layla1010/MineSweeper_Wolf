@@ -134,6 +134,7 @@ public class MainController {
                                 .getScene().getWindow();
 
                 stage.setScene(new Scene(root));
+                stage.centerOnScreen();
                 stage.setTitle("Questions Management");
                 stage.show();
 
@@ -380,6 +381,7 @@ public class MainController {
             SettingsController controller = loader.getController();
 
             stage.setScene(new Scene(root));
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {

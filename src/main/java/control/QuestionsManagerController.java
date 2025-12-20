@@ -82,6 +82,7 @@ public class QuestionsManagerController {
             Stage stage = (Stage) backButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Main Menu");
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {
@@ -102,6 +103,7 @@ public class QuestionsManagerController {
 
             Stage stage = (Stage) newQuestionButton.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.centerOnScreen();
             stage.setTitle("Add New Question");
             stage.show();
 
@@ -460,6 +462,7 @@ public class QuestionsManagerController {
             Stage stage = (Stage) questionsContainerVBox.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Edit Question");
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {

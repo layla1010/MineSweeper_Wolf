@@ -230,6 +230,7 @@ public class NewGameController {
 
             Stage stage = (Stage) player1Nickname.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {
@@ -250,6 +251,7 @@ public class NewGameController {
 
             Stage stage = (Stage) root.getScene().getWindow();
             stage.setScene(new Scene(mainRoot));
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

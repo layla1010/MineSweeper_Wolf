@@ -162,10 +162,10 @@
 
 /* Modern switch-style toggle button */
 .switch-toggle {
-    -fx-background-color: #111827;
+    -fx-background-color: rgb(50, 37, 78);
     -fx-background-radius: 20;
     -fx-border-radius: 20;
-    -fx-border-color: #4B5563;
+    -fx-border-color: rgb(114, 86, 178);
     -fx-border-width: 2;
     -fx-pref-width: 70;
     -fx-pref-height: 32;
@@ -175,8 +175,8 @@
 
 /* On state */
 .switch-toggle:selected {
-    -fx-background-color: #22c55e;
-    -fx-border-color: #16a34a;
+    -fx-background-color: rgb(114, 86, 178);
+    -fx-border-color: rgb(99, 75, 155);
 }
 
 /* No text inside the toggle */

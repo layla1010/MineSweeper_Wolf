@@ -322,6 +322,7 @@ public class AddQuestionController {
             Stage stage = (Stage) saveButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Questions Management");
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {

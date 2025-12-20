@@ -1,10 +1,10 @@
 package control;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import javafx.fxml.FXML;
@@ -30,12 +30,15 @@ import model.GameResult;
 import model.SysData;
 import util.SoundManager;
 
+/**
+ * UI Controller: responsible only for UI wiring, rendering, navigation.
+ * Filtering/sorting/validation are delegated to HistoryFilterService.
+ */
 public class HistoryController {
 
     @FXML private BorderPane root;
     @FXML private VBox historyList;
 
-    // filter + sort controls
     @FXML private ComboBox<String> filterTypeCombo;
     @FXML private TextField filterValueField;
     @FXML private ComboBox<String> sortTypeCombo;
@@ -43,72 +46,125 @@ public class HistoryController {
 
     private Stage stage;
 
-    // Holds all games loaded from SysData (unfiltered)
     private final List<Game> allGames = new ArrayList<>();
 
-    // Date format used in the CSV history file
     private static final DateTimeFormatter CSV_DATE_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd"); // how it is stored in CSV
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    // Sets the primary stage reference for this controller
-    // Called from the main screen when navigating to history
+    private final HistoryFilterService service = new HistoryFilterService(CSV_DATE_FORMATTER);
+
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
-    // Called automatically when the History screen loads
     @FXML
     private void initialize() {
-        // load history once when screen opens
         SysData.getInstance().loadHistoryFromCsv();
         allGames.clear();
         allGames.addAll(SysData.getInstance().getHistory().getGames());
 
-        if (allGames.isEmpty()) {
-            showInfo(
-                    "No history yet",
-                    "There are no games in the history yet.\n" +
-                    "Play some games first, then come back to this screen."
-            );
-        }
-
-        // default selections
-        if (filterTypeCombo != null && filterTypeCombo.getSelectionModel().isEmpty()) {
-            filterTypeCombo.getSelectionModel().select("All");
-        }
-        if (sortTypeCombo != null && sortTypeCombo.getSelectionModel().isEmpty()) {
-            sortTypeCombo.getSelectionModel().select("None");
-        }
+        // defaults
+        selectDefault(filterTypeCombo, HistoryFilterService.OPT_ALL);
+        selectDefault(sortTypeCombo, HistoryFilterService.SORT_NONE);
 
         if (filterTypeCombo != null) {
             filterTypeCombo.setOnAction(event -> onFilterTypeChanged());
         }
 
-        refreshHistoryView();
+        onFilterTypeChanged();
+
+        if (allGames.isEmpty()) {
+            showAlert(Alert.AlertType.INFORMATION,
+                    "No history yet",
+                    "There are no games in the history yet.\nPlay some games first, then come back to this screen.");
+        }
+
+        refreshHistoryView(HistoryFilterService.OPT_ALL);
     }
 
-    // Rebuilds the history list based on current filter and sort settings
-    private void refreshHistoryView() {
-        List<Game> filtered = applyFilter(allGames);
-        List<Game> sorted = applySort(filtered);
-        populateHistory(sorted);
-
-        // if filtering by date and no games found → show message
-        String type = (filterTypeCombo != null) ? filterTypeCombo.getValue() : null;
-        if ("Date".equals(type)
-                && (sorted == null || sorted.isEmpty())
-                && dateFilterPicker != null
-                && dateFilterPicker.getValue() != null) {
-
-            showFilterError(
-                    "No games on this date",
-                    "No games were found on " + dateFilterPicker.getValue() + "."
-            );
+    private static void selectDefault(ComboBox<String> combo, String defaultValue) {
+        if (combo == null) return;
+        if (combo.getSelectionModel().isEmpty()) {
+            combo.getSelectionModel().select(defaultValue);
         }
     }
 
-    // Fills the history VBox with game cards
+    @FXML
+    private void onFilterTypeChanged() {
+        String selected = (filterTypeCombo != null) ? filterTypeCombo.getValue() : HistoryFilterService.OPT_ALL;
+        boolean isDate = HistoryFilterService.OPT_DATE.equals(selected);
+
+        if (dateFilterPicker != null) {
+            dateFilterPicker.setDisable(!isDate);
+            if (!isDate) {
+                dateFilterPicker.setValue(null);
+            }
+        }
+
+        if (filterValueField != null) {
+            filterValueField.setDisable(isDate);
+            if (isDate) {
+                filterValueField.clear();
+            }
+        }
+    }
+
+    @FXML
+    private void onFilterApplyClicked() {
+        SoundManager.playClick();
+        runFilterAndRender(/*smartSortAlso*/ false);
+    }
+
+    @FXML
+    private void onSortBtnClicked() {
+        SoundManager.playClick();
+        // Sort should sort the same filtered view -> smart inference consistent with Apply
+        runFilterAndRender(/*smartSortAlso*/ true);
+    }
+
+    private void runFilterAndRender(boolean smartSortAlso) {
+        String selectedType = (filterTypeCombo != null) ? filterTypeCombo.getValue() : HistoryFilterService.OPT_ALL;
+        String typed = getFilterText();
+        LocalDate selectedDate = (dateFilterPicker != null) ? dateFilterPicker.getValue() : null;
+
+        String effectiveType = service.resolveEffectiveFilterType(selectedType, typed);
+
+        HistoryFilterService.ValidationResult vr = service.validate(effectiveType, typed, selectedDate);
+        if (!vr.ok) {
+            showAlert(Alert.AlertType.WARNING, vr.title, vr.message);
+            return;
+        }
+
+        refreshHistoryView(effectiveType);
+    }
+
+    private void refreshHistoryView(String effectiveType) {
+        String typed = getFilterText();
+        LocalDate selectedDate = (dateFilterPicker != null) ? dateFilterPicker.getValue() : null;
+        String sortLabel = (sortTypeCombo != null) ? sortTypeCombo.getValue() : HistoryFilterService.SORT_NONE;
+
+        List<Game> filtered = service.filter(allGames, effectiveType, typed, selectedDate);
+        List<Game> sorted = service.sort(filtered, sortLabel);
+
+        populateHistory(sorted);
+
+        if (HistoryFilterService.OPT_DATE.equals(effectiveType)
+                && sorted.isEmpty()
+                && selectedDate != null) {
+            showAlert(Alert.AlertType.WARNING,
+                    "No games on this date",
+                    "No games were found on " + selectedDate + ".");
+        }
+    }
+
+    private String getFilterText() {
+        if (filterValueField == null) return "";
+        String txt = filterValueField.getText();
+        return (txt == null) ? "" : txt.trim();
+    }
+
     private void populateHistory(List<Game> games) {
+        if (historyList == null) return;
         historyList.getChildren().clear();
 
         if (games == null || games.isEmpty()) {
@@ -119,102 +175,39 @@ public class HistoryController {
         }
 
         for (Game game : games) {
-            HBox card = createCardForGame(game);
-            historyList.getChildren().add(card);
+            historyList.getChildren().add(createCardForGame(game));
         }
     }
 
-    // helper to load avatar image from stored id/path
-    private Image loadAvatarImage(String avatarId) {
-        if (avatarId == null || avatarId.isBlank()) {
-            return null;
-        }
-
-        // Custom avatar from file chooser
-        if (avatarId.startsWith("file:")) {
-            return new Image(avatarId, false);
-        }
-
-        // Built-in avatar: S1.png, S2.png, ...
-        return new Image(getClass().getResourceAsStream("/Images/" + avatarId));
-    }
-
-    // helper to create a small circular avatar view
-    private ImageView createAvatarView(String avatarId) {
-        Image img = loadAvatarImage(avatarId);
-        ImageView iv = new ImageView();
-        if (img != null) {
-            iv.setImage(img);
-        }
-        iv.setFitWidth(38);
-        iv.setFitHeight(38);
-        iv.setPreserveRatio(true);
-        iv.getStyleClass().add("history-avatar");
-        return iv;
-    }
-
-    // Creates a single history card for one game session
     private HBox createCardForGame(Game game) {
         HBox card = new HBox();
         card.getStyleClass().add("history-card");
         card.setSpacing(10);
 
-        // top row: difficulty, players and result
         HBox header = new HBox();
         header.getStyleClass().add("history-card-header");
         header.setSpacing(10);
 
-        String diffText =
-                game.getDifficulty().name().substring(0, 1) +
-                game.getDifficulty().name().substring(1).toLowerCase();
-
+        String diffText = prettifyEnumName(game.getDifficulty().name());
         Label difficultyLabel = new Label(diffText);
         difficultyLabel.getStyleClass().addAll("pill-label", "difficulty-pill");
 
-        // avatars and names in one HBox
         ImageView avatar1 = createAvatarView(game.getPlayer1AvatarPath());
         ImageView avatar2 = createAvatarView(game.getPlayer2AvatarPath());
 
-        Label playersLabel =
-                new Label(game.getPlayer1Nickname() + " & " + game.getPlayer2Nickname());
+        Label playersLabel = new Label(game.getPlayer1Nickname() + " & " + game.getPlayer2Nickname());
         playersLabel.getStyleClass().add("players-label");
 
         HBox playersBox = new HBox(8, avatar1, playersLabel, avatar2);
         playersBox.setAlignment(Pos.CENTER_LEFT);
 
-        GameResult res = game.getResult();
-        String resultText;
-        String resultCssClass;
-
-        switch (res) {
-            case WIN -> {
-                resultText = "Won";
-                resultCssClass = "result-pill-won";
-            }
-            case LOSE -> {
-                resultText = "Lost";
-                resultCssClass = "result-pill-lost";
-            }
-            case GIVE_UP -> {
-                resultText = "Give up";
-                resultCssClass = "result-pill-giveup";
-            }
-            default -> {
-                resultText = res.name();
-                resultCssClass = "result-pill-lost";
-            }
-        }
-
-        Label resultLabel = new Label(resultText);
-        resultLabel.getStyleClass().add("pill-label");
-        resultLabel.getStyleClass().add(resultCssClass);
+        Label resultLabel = buildResultPill(game.getResult());
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
 
         header.getChildren().addAll(difficultyLabel, playersBox, spacer, resultLabel);
 
-        // bottom row: date, score and time
         HBox footer = new HBox();
         footer.getStyleClass().add("history-card-footer");
         footer.setSpacing(15);
@@ -237,370 +230,81 @@ public class HistoryController {
         return card;
     }
 
-    // Called when the filter-type ComboBox changes
-    @FXML
-    private void onFilterTypeChanged() {
-        if (filterTypeCombo == null) return;
+    private static String prettifyEnumName(String raw) {
+        if (raw == null || raw.isBlank()) return "";
+        return raw.substring(0, 1) + raw.substring(1).toLowerCase().replace("_", " ");
+    }
 
-        String type = filterTypeCombo.getValue();
-        boolean isDate = "Date".equals(type);
+    private static Label buildResultPill(GameResult res) {
+        String resultText;
+        String css;
 
-        // If DATE is selected then enable DatePicker, disable text field
-        if (dateFilterPicker != null) {
-            dateFilterPicker.setDisable(!isDate);
-            if (!isDate) {
-                dateFilterPicker.setValue(null);
+        switch (res) {
+            case WIN -> { resultText = "Won"; css = "result-pill-won"; }
+            case LOSE -> { resultText = "Lost"; css = "result-pill-lost"; }
+            case GIVE_UP -> { resultText = "Give up"; css = "result-pill-giveup"; }
+            default -> { resultText = (res == null) ? "Unknown" : prettifyEnumName(res.name()); css = "result-pill-lost"; }
+        }
+
+        Label lbl = new Label(resultText);
+        lbl.getStyleClass().add("pill-label");
+        lbl.getStyleClass().add(css);
+        return lbl;
+    }
+
+    private ImageView createAvatarView(String avatarId) {
+        Image img = loadAvatarImage(avatarId);
+        ImageView iv = new ImageView();
+        if (img != null) iv.setImage(img);
+
+        iv.setFitWidth(38);
+        iv.setFitHeight(38);
+        iv.setPreserveRatio(true);
+        iv.getStyleClass().add("history-avatar");
+        return iv;
+    }
+
+    private Image loadAvatarImage(String avatarId) {
+        if (avatarId == null || avatarId.isBlank()) return null;
+
+        if (avatarId.startsWith("file:")) {
+            try {
+                return new Image(avatarId, false);
+            } catch (Exception e) {
+                return null;
             }
         }
 
-        if (filterValueField != null) {
-            filterValueField.setDisable(isDate);
-            if (isDate) {
-                filterValueField.clear();
-            }
+        try (InputStream stream = getClass().getResourceAsStream("/Images/" + avatarId)) {
+            if (stream == null) return null;
+            return new Image(stream);
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    // Normalize text: lowercase, remove spaces and underscores
-    private String normalizeToken(String s) {
-        if (s == null) return "";
-        return s.toLowerCase().replace(" ", "").replace("_", "");
-    }
-
-    // True if text clearly looks like a difficulty word
-    private boolean isDifficultyWord(String text) {
-        String t = normalizeToken(text);
-        return t.equals("easy") || t.equals("medium") || t.equals("med") || t.equals("hard");
-    }
-
-    // Counts how many different difficulty words appear in the text
-    private int countDifficultyWords(String text) {
-        String t = normalizeToken(text);
-        int count = 0;
-        if (t.contains("easy")) count++;
-        if (t.contains("medium") || t.contains("med")) count++;
-        if (t.contains("hard")) count++;
-        return count;
-    }
-
-    // Canonical result token mapping (win/lose/giveup)
-    private String canonicalResultToken(String text) {
-        String t = normalizeToken(text);
-        if (t.isEmpty()) return null;
-
-        if (t.equals("w") || t.equals("win") || t.equals("won")) return "win";
-        if (t.equals("l") || t.equals("lose") || t.equals("lost") || t.equals("loss")) return "lose";
-        if (t.equals("g") || t.equals("give") || t.equals("giveup") || t.equals("gaveup")) return "giveup";
-
-        return null;
-    }
-
-    /** True if text clearly looks like a result word. */
-    private boolean isResultWord(String text) {
-        return canonicalResultToken(text) != null;
-    }
-
-    // Applies the current filter to the given list of games
-    private List<Game> applyFilter(List<Game> source) {
-        String type = (filterTypeCombo != null) ? filterTypeCombo.getValue() : null;
-
-        // no filter case
-        if (type == null || "All".equals(type)) {
-            return new ArrayList<>(source);
-        }
-
-        // DATE FILTER
-        if ("Date".equals(type)) {
-            if (dateFilterPicker == null || dateFilterPicker.getValue() == null) {
-                // no date selected → no filtering
-                return new ArrayList<>(source);
-            }
-
-            LocalDate selected = dateFilterPicker.getValue();
-            List<Game> result = new ArrayList<>();
-
-            for (Game g : source) {
-                LocalDate gameDate = LocalDate.parse(g.getDateAsString(), CSV_DATE_FORMATTER);
-                if (gameDate.equals(selected)) {
-                    result.add(g);
-                }
-            }
-            return result;
-        }
-
-        // TEXT-BASED FILTERS
-        String text = (filterValueField != null) ? filterValueField.getText() : null;
-        if (text == null || text.trim().isEmpty()) {
-            return new ArrayList<>(source);
-        }
-
-        String query = text.trim().toLowerCase();
-        List<Game> result = new ArrayList<>();
-
-        for (Game g : source) {
-            switch (type) {
-                case "Player name" -> {
-                    String p1 = g.getPlayer1Nickname().toLowerCase();
-                    String p2 = g.getPlayer2Nickname().toLowerCase();
-                    if (p1.contains(query) || p2.contains(query)) {
-                        result.add(g);
-                    }
-                }
-                case "Difficulty" -> {
-                    String diff = g.getDifficulty().name().toLowerCase();
-                    if (diff.contains(query)) {
-                        result.add(g);
-                    }
-                }
-                case "Result" -> {
-                    String res = g.getResult().name().toLowerCase(); // "give_up"
-                    String normRes = normalizeToken(res);            // "giveup"
-
-                    String canonQuery = canonicalResultToken(query); // "win" | "lose" | "giveup" | null
-
-                    if (canonQuery != null) {
-                        String canonRes = canonicalResultToken(normRes);
-                        if (canonRes != null && canonRes.equals(canonQuery)) {
-                            result.add(g);
-                        }
-                    } else {
-                        String normQuery = normalizeToken(query);
-                        if (res.contains(query) || normRes.contains(normQuery)) {
-                            result.add(g);
-                        }
-                    }
-                }
-                default -> result.add(g);
-            }
-        }
-
-        return result;
-    }
-
-    // Shows a small warning popup
-    private void showFilterError(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
+
         Label label = new Label(message);
         label.setWrapText(true);
-        label.setMaxWidth(350);
+        label.setMaxWidth(380);
+
         VBox box = new VBox(label);
         box.setSpacing(10);
         alert.getDialogPane().setContent(box);
+
         alert.showAndWait();
     }
 
-    // Simple information popup for non-error messages
-    private void showInfo(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        Label label = new Label(message);
-        label.setWrapText(true);
-        label.setMaxWidth(350);
-        VBox box = new VBox(label);
-        box.setSpacing(10);
-        alert.getDialogPane().setContent(box);
-        alert.showAndWait();
-    }
-
-    // Safely get trimmed text from the filter field
-    private String getFilterText() {
-        if (filterValueField == null) return "";
-        String txt = filterValueField.getText();
-        return (txt == null) ? "" : txt.trim();
-    }
-
-    // VALIDATION (ONLY ONE COPY)
-    private boolean validateFilterInput() {
-        if (filterTypeCombo == null) return true;
-
-        String type = filterTypeCombo.getValue();
-        if (type == null || "All".equals(type)) {
-            return true;
-        }
-
-        // DATE filter
-        if ("Date".equals(type)) {
-            if (dateFilterPicker == null) {
-                showFilterError("Missing date", "You chose to filter by date, but no date field is available.");
-                return false;
-            }
-
-            String editorText = dateFilterPicker.getEditor().getText().trim();
-
-            if (!editorText.isEmpty() && dateFilterPicker.getValue() == null) {
-                showFilterError(
-                        "Invalid date",
-                        "The date you entered (\"" + editorText + "\") is not a valid calendar date.\n" +
-                        "Please choose a valid date from the calendar."
-                );
-                return false;
-            }
-
-            if (editorText.isEmpty() && dateFilterPicker.getValue() == null) {
-                showFilterError(
-                        "Missing date",
-                        "You chose to filter by date but didn’t select any date.\n" +
-                        "Please pick a date from the calendar."
-                );
-                return false;
-            }
-
-            if (dateFilterPicker.getValue() != null &&
-                    dateFilterPicker.getValue().isAfter(LocalDate.now())) {
-                showFilterError(
-                        "Invalid date",
-                        "You selected a day that hasn’t come yet.\n" +
-                        "Please choose a date that already happened."
-                );
-                return false;
-            }
-
-            return true;
-        }
-
-        // TEXT–based filters
-        String text = getFilterText();
-        if (text.isEmpty()) {
-            showFilterError("Missing value", "Please enter a value in the text field for this filter.");
-            return false;
-        }
-
-        String lower = text.toLowerCase();
-
-        // Player name filter
-        if ("Player name".equals(type)) {
-            if (text.length() < 2) {
-                showFilterError("Name too short", "Please enter at least 2 characters when filtering by player name.");
-                return false;
-            }
-
-            if (isDifficultyWord(lower)) {
-                showFilterError(
-                        "Filter mismatch",
-                        "You selected \"Player name\" but typed a difficulty (\"" + text + "\").\n" +
-                        "Please enter a player nickname/name, or change the filter to \"Difficulty\"."
-                );
-                return false;
-            }
-
-            if (isResultWord(lower)) {
-                showFilterError(
-                        "Filter mismatch",
-                        "You selected \"Player name\" but typed a result (\"" + text + "\").\n" +
-                        "Please enter a player nickname/name, or change the filter to \"Result\"."
-                );
-                return false;
-            }
-
-            return true;
-        }
-
-        // Difficulty filter
-        if ("Difficulty".equals(type)) {
-            if (isResultWord(lower)) {
-                showFilterError(
-                        "Filter mismatch",
-                        "You selected \"Difficulty\" but typed a result (\"" + text + "\").\n" +
-                        "Use \"Result\" filter for WIN / LOSE / GIVE UP."
-                );
-                return false;
-            }
-
-            int diffWords = countDifficultyWords(text);
-            if (diffWords > 1) {
-                showFilterError(
-                        "Too many difficulties",
-                        "Please filter by one difficulty at a time.\n" +
-                        "Valid values are: Easy, Medium, Hard."
-                );
-                return false;
-            }
-
-            if (!isDifficultyWord(lower)) {
-                showFilterError(
-                        "Invalid difficulty",
-                        "Unknown difficulty \"" + text + "\".\n" +
-                        "Valid values are: Easy, Medium, Hard."
-                );
-                return false;
-            }
-
-            return true;
-        }
-
-        // Result filter (allow partial/free-text)
-        if ("Result".equals(type)) {
-            if (isDifficultyWord(lower)) {
-                showFilterError(
-                        "Filter mismatch",
-                        "You selected \"Result\" but typed a difficulty (\"" + text + "\").\n" +
-                        "Use \"Difficulty\" filter for Easy / Medium / Hard."
-                );
-                return false;
-            }
-            return true;
-        }
-
-        return true;
-    }
-
-    // Applies sorting to the given list of games based on the selected sort option
-    private List<Game> applySort(List<Game> source) {
-        String sort = (sortTypeCombo != null) ? sortTypeCombo.getValue() : null;
-        List<Game> list = new ArrayList<>(source);
-
-        if (sort == null || "None".equals(sort)) {
-            return list;
-        }
-
-        switch (sort) {
-            case "Score (high → low)" ->
-                    list.sort(Comparator.comparingInt(Game::getFinalScore).reversed());
-
-            case "Score (low → high)" ->
-                    list.sort(Comparator.comparingInt(Game::getFinalScore));
-
-            case "Date (newest)" ->
-                    list.sort(Comparator.<Game, LocalDate>comparing(
-                            g -> LocalDate.parse(g.getDateAsString(), CSV_DATE_FORMATTER)
-                    ).reversed());
-
-            case "Date (oldest)" ->
-                    list.sort(Comparator.<Game, LocalDate>comparing(
-                            g -> LocalDate.parse(g.getDateAsString(), CSV_DATE_FORMATTER)
-                    ));
-
-            case "Duration (short → long)" ->
-                    list.sort(Comparator.comparingInt(Game::getDurationSeconds));
-
-            case "Duration (long → short)" ->
-                    list.sort(Comparator.comparingInt(Game::getDurationSeconds).reversed());
-        }
-
-        return list;
-    }
-
-    // Plays click sound and refreshes the history view with current filters
-    @FXML
-    private void onFilterApplyClicked() {
-        SoundManager.playClick();
-
-        if (!validateFilterInput()) {
-            return;
-        }
-        refreshHistoryView();
-    }
-
-    // Resets all filter controls to default (All / empty / no date)
     @FXML
     private void onClearFilterClicked() {
         SoundManager.playClick();
 
         if (filterTypeCombo != null) {
-            filterTypeCombo.getSelectionModel().select("All");
+            filterTypeCombo.getSelectionModel().select(HistoryFilterService.OPT_ALL);
         }
         if (filterValueField != null) {
             filterValueField.clear();
@@ -610,17 +314,9 @@ public class HistoryController {
         }
 
         onFilterTypeChanged();
-        refreshHistoryView();
+        refreshHistoryView(HistoryFilterService.OPT_ALL);
     }
 
-    // Plays click sound and refreshes the history view using the current sort selection
-    @FXML
-    private void onSortBtnClicked() {
-        SoundManager.playClick();
-        refreshHistoryView();
-    }
-
-    // Navigates back to the main menu screen and passes the stage to MainController
     @FXML
     private void onBackButtonClicked() throws IOException {
         SoundManager.playClick();
@@ -629,15 +325,14 @@ public class HistoryController {
                 ? stage
                 : (Stage) root.getScene().getWindow();
 
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/view/main_view.fxml")
-        );
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
         Parent mainRoot = loader.load();
 
         MainController mainController = loader.getController();
         mainController.setStage(s);
 
         s.setScene(new Scene(mainRoot, 1200, 750));
+        s.centerOnScreen();
         s.show();
     }
 }

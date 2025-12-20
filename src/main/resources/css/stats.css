@@ -1,3 +1,15 @@
+/* =========================
+   ScrollPane / Scrollbar
+   ========================= */
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
 .scroll-pane .scroll-bar:horizontal .thumb {
     -fx-background-color: #3C8DFF;
     -fx-background-radius: 5;
@@ -13,72 +25,155 @@
     -fx-padding: 0;
 }
 
-.chart-pie-label {
-    -fx-opacity: 0;
-}
 
-.chart-legend {
+
+
+/* =========================
+   Donut PieCharts (shared)
+   IMPORTANT: Only affect piecharts that you give a donut-chart class
+   ========================= */
+
+/* Recommended: add styleClass="donut-chart" to every PieChart in FXML
+   (p1winsChart, p1lossesChart, ... etc)
+   If you don't add it, the rules below will still mostly work, but this is cleaner. */
+
+.donut-chart.chart {
     -fx-background-color: transparent;
     -fx-padding: 0;
 }
 
-.default-color0.chart-pie {
-    -fx-pie-color: #ff638c;  
-	}
-	
-.default-color1.chart-pie {
-    -fx-pie-color: #813d54;  
-}
-
-.chart-pie-label {
-    -fx-opacity: 0;
-}
-
-.chart-legend {
+.donut-chart .chart-legend {
     -fx-background-color: transparent;
     -fx-padding: 0;
 }
 
-.wins-chart .default-color0.chart-pie {
-    -fx-pie-color: #22c55e;   
-}
-.wins-chart .default-color1.chart-pie {
-    -fx-pie-color: #e5e7eb;   
+.donut-chart .chart-pie-label {
+    -fx-opacity: 0;
 }
 
-.losses-chart .default-color0.chart-pie {
-    -fx-pie-color: #ef4444;
-}
-.losses-chart .default-color1.chart-pie {
-    -fx-pie-color: #e5e7eb;
-}
-
-.giveups-chart .default-color0.chart-pie {
-    -fx-pie-color: #f59e0b;
-}
-
-.giveups-chart .default-color1.chart-pie {
-    -fx-pie-color: #e5e7eb;
-}
-
-.winswithnomistakes-chart .default-color0.chart-pie {
-	-fx-pie-color: #4d6998
-}
-
-.winswithnomistakes-chart .default-color1.chart-pie {
-	-fx-pie-color: #e5e7eb;
-}
-
-.chart-series-line.default-color0 {
-    -fx-stroke: #22c55e;   
-}
-
-.chart-series-line.default-color1 {
-    -fx-stroke: #3b82f6;   
-}
-
-.chart-series-line.default-color2 {
-    -fx-stroke: #ef4444;  
+/* This controls the "ring" look (your Circle in the StackPane) */
+.donut-hole {
+    -fx-fill: rgb(45, 30, 78);     /* hole fill */
+    -fx-stroke: rgb(45, 30, 78);/* visible ring */
+    -fx-stroke-width: 2px;
 }
 
 
+/* =========================
+   Donut PieCharts (per type colors)
+   Uses your existing type classes: wins-chart, losses-chart, giveups-chart, winswithnomistakes-chart
+   ========================= */
+
+.wins-chart .default-color0.chart-pie { -fx-pie-color: #22c55e; }  /* filled */
+.wins-chart .default-color1.chart-pie { -fx-pie-color: #e5e7eb; }  /* remaining */
+
+.losses-chart .default-color0.chart-pie { -fx-pie-color: #ef4444; }
+.losses-chart .default-color1.chart-pie { -fx-pie-color: #e5e7eb; }
+
+.giveups-chart .default-color0.chart-pie { -fx-pie-color: #f59e0b; }
+.giveups-chart .default-color1.chart-pie { -fx-pie-color: #e5e7eb; }
+
+.winswithnomistakes-chart .default-color0.chart-pie { -fx-pie-color: #4d6998; }
+.winswithnomistakes-chart .default-color1.chart-pie { -fx-pie-color: #e5e7eb; }
+
+
+/* =========================
+   Progress LineCharts (scoped to your class: progress-chart)
+   ========================= */
+
+.progress-chart.chart {
+    -fx-background-color: transparent;
+    -fx-padding: 10;
+}
+
+.progress-chart .chart-plot-background {
+    -fx-background-color: rgba(10, 12, 20, 0.55);
+    -fx-background-radius: 18;
+}
+
+.progress-chart .chart-horizontal-grid-lines {
+    -fx-stroke: rgba(255, 255, 255, 0.10);
+}
+.progress-chart .chart-vertical-grid-lines {
+    -fx-stroke: rgba(255, 255, 255, 0.08);
+}
+
+/* Axis labels & ticks */
+.progress-chart .axis {
+    -fx-tick-label-fill: rgba(255, 255, 255, 0.85);
+}
+
+.progress-chart .axis-label {
+    -fx-text-fill: rgba(255, 255, 255, 0.95);
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.progress-chart .chart-title {
+    -fx-text-fill: rgba(255, 255, 255, 0.95);
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* Legend (if you ever enable it) */
+.progress-chart .chart-legend {
+    -fx-background-color: rgba(0, 0, 0, 0.25);
+    -fx-background-radius: 12;
+}
+
+/* Line thickness */
+.progress-chart .chart-series-line {
+    -fx-stroke-width: 3px;
+}
+
+/* Point symbols */
+.progress-chart .chart-line-symbol {
+    -fx-background-radius: 8px;
+    -fx-padding: 4px;
+}
+
+/* Line colors (series order: Easy, Medium, Hard) */
+.progress-chart .default-color0.chart-series-line { -fx-stroke: #00e5ff; }  /* Easy */
+.progress-chart .default-color1.chart-series-line { -fx-stroke: #ffd54f; }  /* Medium */
+.progress-chart .default-color2.chart-series-line { -fx-stroke: #ff5252; }  /* Hard */
+
+/* Point colors */
+.progress-chart .default-color0.chart-line-symbol { -fx-background-color: #00e5ff, rgba(0,0,0,0.3); }
+.progress-chart .default-color1.chart-line-symbol { -fx-background-color: #ffd54f, rgba(0,0,0,0.3); }
+.progress-chart .default-color2.chart-line-symbol { -fx-background-color: #ff5252, rgba(0,0,0,0.3); }
+
+
+
+.settings-back-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-font-family: "Copperplate Gothic Bold";
+    -fx-font-size: 25px;
+}
+
+.stats-header {
+    -fx-padding: 0 0 0 16;   /* left padding only */
+    -fx-alignment: center-left;
+}
+
+/* Big button, but still fits inside 58px header */
+.settings-back-button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+
+    -fx-font-family: "Copperplate Gothic Bold";
+    -fx-font-size: 28px;     /* increase this for bigger arrow */
+
+    -fx-padding: 6 14 6 14;  /* top right bottom left: makes hitbox larger */
+    -fx-min-height: 44px;    /* ensures big clickable area */
+    -fx-pref-height: 44px;
+    -fx-max-height: 44px;
+
+    -fx-min-width: 60px;
+    -fx-pref-width: 60px;
+}
+
+.settings-back-button:hover {
+    -fx-opacity: 0.85;
+}
