@@ -47,6 +47,7 @@ public class MainController {
     @FXML private Button newGameBtn;
     @FXML private Rectangle newGameShimmer;
     @FXML private HBox loginBox;
+    @FXML private Button statisticsBtn;
 
 
     private Stage stage;
@@ -412,7 +413,60 @@ public class MainController {
             alert.showAndWait();
         }
     }
+    
+  //Opens the statistics view
+    @FXML
+    private void onStatisticsClicked() {
+        SoundManager.playClick();
 
+        // Block stats if players are not logged in (skip-login / guest mode)
+        model.Player p1 = util.SessionManager.getPlayer1();
+        model.Player p2 = util.SessionManager.getPlayer2();
+
+        if (p1 == null || p2 == null) {
+            showInfo("Statistics are available only for logged-in players.\n" +
+                     "Please login as two players before opening the statistics screen.");
+            return;
+        }
+
+        try {
+            Stage stage = (Stage) mainGrid.getScene().getWindow();
+
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource("/view/stats_view.fxml"));
+            Parent root = loader.load();
+
+            StatsViewController controller = loader.getController();
+            controller.setStage(stage);
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.centerOnScreen();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Failed to load the Statistics screen.");
+        }
+    }
+
+
+    //Shows an error dialog with the given message.
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Navigation Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    
+    //Shows an informational dialog with the given message.
+    private void showInfo(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Not Implemented Yet");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
 
 

@@ -1,5 +1,7 @@
 package control;
 
+import java.io.IOException;
+
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
@@ -291,5 +293,22 @@ public class SignupController {
 
         eyeIconReSignup.setImage(new Image(
                 getClass().getResourceAsStream("/Images/view.png")));
+    }
+    
+    @FXML
+    private void onBackToSignUPClicked() {
+        SoundManager.playClick();
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) signupRoot.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -17,6 +17,7 @@ public class Main extends Application {
         SysData.getInstance().loadPlayersFromCsv();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));
+       // FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/board_view.fxml"));
         Parent root = loader.load(); 
 
         Scene scene = new Scene(root);//, 1200, 740);

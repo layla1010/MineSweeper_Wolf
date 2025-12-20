@@ -410,11 +410,11 @@ public class StatsViewController {
     }
     
     @FXML
-    private void onBackToSettingsClicked() {
+    private void onBackToMainClicked() {
         SoundManager.playClick();
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/settings_view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) mainPane.getScene().getWindow();

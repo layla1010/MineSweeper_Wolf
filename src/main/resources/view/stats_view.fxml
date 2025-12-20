@@ -263,9 +263,9 @@
 				        <Insets bottom="50.0" left="-70.0" />
 				    </GridPane.margin>
             				</LineChart>
-                     <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#onBackToSettingsClicked" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: transparent; -fx-cursor: hand;" styleClass="settings-back-button" text="⬅" textFill="WHITE">
+                     <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#onBackToMainClicked" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: transparent; -fx-cursor: hand;" styleClass="settings-back-button" text="⬅" textFill="WHITE">
                         <font>
-                           <Font name="Copperplate Gothic Bold" size="20.0" />
+                           <Font name="Copperplate Gothic Bold" size="20.0"/>
                         </font>
                      </Button>
 

@@ -389,6 +389,14 @@
                 <String fx:value="zoom-on-hover" />
             </styleClass>
         </Button>
+      <Button onAction="#onBackToSignUPClicked" prefHeight="62.0" prefWidth="62.0" styleClass="settings-back-button" text="⬅">
+         <font>
+            <Font name="Copperplate Gothic Bold" size="25.0" />
+         </font>
+         <GridPane.margin>
+            <Insets bottom="80.0" />
+         </GridPane.margin>
+      </Button>
 
     </children>
 </GridPane>

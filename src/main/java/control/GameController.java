@@ -87,6 +87,10 @@ public class GameController {
     private int sharedHearts;
     private int score;
     private int minesLeft1;
+    private int surprisesLeft1;
+    private int surprisesLeft2;    
+    private int questionsLeft2;    
+    private int questionsLeft1;    
     private int minesLeft2;
     
     private int flagsLeft1;
@@ -142,6 +146,12 @@ public class GameController {
      //  starting flags per difficulty
         this.flagsLeft1 = getInitialFlagsForDifficulty(difficulty);
         this.flagsLeft2 = getInitialFlagsForDifficulty(difficulty);
+        this.surprisesLeft1 = countType(board1, CellType.SURPRISE);
+        this.surprisesLeft2 = countType(board2, CellType.SURPRISE);
+
+        this.questionsLeft1 = countType(board1, CellType.QUESTION);
+        this.questionsLeft2 = countType(board2, CellType.QUESTION);
+
         
      // ----------  load avatars above boards ----------
         setBoardAvatar(player1AvatarImage, config.getPlayer1AvatarPath());
@@ -167,6 +177,7 @@ public class GameController {
         this.gameWon = false;
         this.mistakeMade = false;
 
+        
         // Apply generic animations to buttons/cards
         UIAnimations.applyHoverZoomToAllButtons(root);
         UIAnimations.applyFloatingToCards(root);
@@ -270,13 +281,18 @@ public class GameController {
         }
 
         player1BombsLeftLabel.setText(
-                config.getPlayer1Nickname() + ", Mines left: " + minesLeft1
-                + " | Flags left: " + flagsLeft1
-        );
-        player2BombsLeftLabel.setText(
-                config.getPlayer2Nickname() + ", Mines left: " + minesLeft2
-                + " | Flags left: " + flagsLeft2
-        );
+        	    config.getPlayer1Nickname() + ", Mines left: " + minesLeft1
+        	    + " | Flags left: " + flagsLeft1
+        	    + " | Surprises left: " + surprisesLeft1
+        	    + " | Questions left: " + questionsLeft1
+        	);
+
+        	player2BombsLeftLabel.setText(
+        	    config.getPlayer2Nickname() + ", Mines left: " + minesLeft2
+        	    + " | Flags left: " + flagsLeft2
+        	    + " | Surprises left: " + surprisesLeft2
+        	    + " | Questions left: " + questionsLeft2
+        	);
 
         scoreLabel.setText("Score: " + score);
     }
@@ -559,10 +575,13 @@ private void showNoFlagsLeftAlert() {
         // Check if this cell is being revealed for the first time
         boolean[][] revealedArray = isPlayer1 ? revealedCellsP1 : revealedCellsP2;
         boolean isFirstReveal = false;
+
         if (revealedArray != null) {
-            isFirstReveal = !revealedArray[row][col];
+            if (revealedArray[row][col]) return;
             revealedArray[row][col] = true;
+            isFirstReveal = true;
         }
+
 
         // Auto Remove Flag – if enabled, remove the flag when revealing a cell
         if (SysData.isAutoRemoveFlagEnabled()) {
@@ -612,6 +631,8 @@ private void showNoFlagsLeftAlert() {
                     iv.setPreserveRatio(true);
                     button.setGraphic(iv);
                     button.getStyleClass().addAll("cell-revealed", "cell-question");
+                    if (isPlayer1) questionsLeft1 = Math.max(0, questionsLeft1 - 1);
+                    else           questionsLeft2 = Math.max(0, questionsLeft2 - 1);
                 } catch (Exception ex) {
                     button.setText("?"); 
                     button.getStyleClass().addAll("cell-revealed", "cell-question");
@@ -634,6 +655,9 @@ private void showNoFlagsLeftAlert() {
                     iv.setPreserveRatio(true);
                     button.setGraphic(iv);
                     button.getStyleClass().addAll("cell-revealed", "cell-surprise");
+                    if (isPlayer1) surprisesLeft1 = Math.max(0, surprisesLeft1 - 1);
+                    else           surprisesLeft2 = Math.max(0, surprisesLeft2 - 1);
+
                 } catch (Exception ex) {
                     button.setText("★");
                     button.getStyleClass().addAll("cell-revealed", "cell-surprise");
@@ -799,13 +823,19 @@ private void showNoFlagsLeftAlert() {
         scoreLabel.setText("Score: " + score);
 
         player1BombsLeftLabel.setText(
-                config.getPlayer1Nickname() + ", Mines left: " + minesLeft1
-                + " | Flags left: " + flagsLeft1 
-        );
-        player2BombsLeftLabel.setText(
-                config.getPlayer2Nickname() + ", Mines left: " + minesLeft2
-                + " | Flags left: " + flagsLeft2 
-        );
+        	    config.getPlayer1Nickname() + ", Mines left: " + minesLeft1
+        	    + " | Flags left: " + flagsLeft1
+        	    + " | Surprises left: " + surprisesLeft1
+        	    + " | Questions left: " + questionsLeft1
+        	);
+
+        	player2BombsLeftLabel.setText(
+        	    config.getPlayer2Nickname() + ", Mines left: " + minesLeft2
+        	    + " | Flags left: " + flagsLeft2
+        	    + " | Surprises left: " + surprisesLeft2
+        	    + " | Questions left: " + questionsLeft2
+        	);
+
     }
 
     // ============================================================
@@ -2103,5 +2133,16 @@ private void showNoFlagsLeftAlert() {
         onGameOver();
         return true;
     }
+    
+    private int countType(Board board, CellType type) {
+        int count = 0;
+        for (int r = 0; r < board.getRows(); r++) {
+            for (int c = 0; c < board.getCols(); c++) {
+                if (board.getCell(r, c).getType() == type) count++;
+            }
+        }
+        return count;
+    }
+
 
 }
