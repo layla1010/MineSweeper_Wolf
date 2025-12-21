@@ -8,37 +8,29 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import util.SoundManager;
 
 public class SettingsController {
 
-   
-    @FXML
-    private GridPane rootGrid;
-    @FXML
-    private Button filtersBtn;
-    @FXML
-    private Button customizeBtn;
-    @FXML
-    private Button howToPlayBtn;
-    
-    private Stage stage;
-    
+    @FXML private GridPane rootGrid;
 
+    @FXML private Button filtersBtn;
+    @FXML private Button customizeBtn;
+    @FXML private Button howToPlayBtn;
 
+    @FXML private Button backBtn;
 
     @FXML
-    private void initialize(Stage stage) {
-        this.stage = stage;
+    private void initialize() {
+        // FXML calls this automatically (no args).
+        // Keep empty or add init logic.
     }
-    //Navigates back to the main menu
+
     @FXML
     private void onBackToMainClicked() {
         SoundManager.playClick();
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
             Parent root = loader.load();
@@ -54,12 +46,9 @@ public class SettingsController {
         }
     }
 
-    
-     //Opens the Filters screen (filters_view.fxml).
     @FXML
     private void onFiltersClicked() {
         SoundManager.playClick();
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/filters_view.fxml"));
             Parent root = loader.load();
@@ -75,9 +64,6 @@ public class SettingsController {
         }
     }
 
-  
-    //Handles the "Customize" card/button. Currently not implemented. Shows an informational dialog.
-    //In the future this will allow changing themes, colors, avatars, etc.
     @FXML
     private void onCustomizeClicked() {
         SoundManager.playClick();
@@ -85,18 +71,13 @@ public class SettingsController {
                  "In the future, this screen will allow changing themes, colors and avatars.");
     }
 
-    
-   
-     //Placeholder for the How To Play screen.
-    	//Currently not implemented. Shows an informational dialog.
     @FXML
     private void onHowToPlayClicked() {
         SoundManager.playClick();
         showInfo("How To Play screen is not implemented yet.\n" +
                  "In the future, this screen will explain Minesweeper WOLF rules and strategies.");
     }
-    
-    //Shows an error dialog with the given message.
+
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Navigation Error");
@@ -105,7 +86,6 @@ public class SettingsController {
         alert.showAndWait();
     }
 
-    //Shows an informational dialog with the given message.
     private void showInfo(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Not Implemented Yet");

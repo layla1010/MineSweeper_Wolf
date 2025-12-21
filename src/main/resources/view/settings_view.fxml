@@ -17,39 +17,40 @@
 
 <GridPane fx:id="rootGrid" prefHeight="653.0" prefWidth="555.0" styleClass="settings-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.SettingsController">
 
-    <!-- Columns: padding left/right + center area -->
+    <!-- Columns: left padding/back area + center area -->
     <columnConstraints>
-        <ColumnConstraints maxWidth="113.5999755859375" minWidth="50.40000381469727" prefWidth="67.99998397827149" />
-        <ColumnConstraints maxWidth="601.9999961853027" minWidth="523.4000160217286" prefWidth="523.4000160217286" />
+        <ColumnConstraints minWidth="50.0" prefWidth="68.0" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="450.0" prefWidth="523.4" />
     </columnConstraints>
 
-    <!-- Rows: top bar, title, content, bottom padding -->
+    <!-- Rows: top bar, title, cards -->
     <rowConstraints>
-        <RowConstraints maxHeight="77.60000610351562" minHeight="39.399993896484375" prefHeight="77.60000610351562" />
-        <RowConstraints maxHeight="237.60000610351562" minHeight="-Infinity" prefHeight="85.59999389648436" />
-      <RowConstraints maxHeight="216.4" minHeight="0.0" prefHeight="216.4" />
-      <RowConstraints maxHeight="192.0" minHeight="10.0" prefHeight="181.20002441406245" />
-      <RowConstraints maxHeight="195.20001220703125" minHeight="10.0" prefHeight="173.99997558593748" />
-        <RowConstraints maxHeight="65.5999816894531" minHeight="0.0" prefHeight="0.0" />
+        <RowConstraints minHeight="60.0" prefHeight="77.6" />
+        <RowConstraints minHeight="80.0" prefHeight="85.6" />
+        <RowConstraints minHeight="120.0" prefHeight="216.4" />
+        <RowConstraints minHeight="120.0" prefHeight="181.2" />
+        <RowConstraints minHeight="120.0" prefHeight="174.0" />
+        <RowConstraints minHeight="10.0" prefHeight="10.0" />
     </rowConstraints>
 
     <children>
 
         <!-- ⬅ Back to Main -->
-        <Button onAction="#onBackToMainClicked" styleClass="settings-back-button" text="⬅" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="0" GridPane.valignment="CENTER">
+        <Button fx:id="backBtn" minWidth="-Infinity" onAction="#onBackToMainClicked" prefHeight="48.0" prefWidth="58.0" style="-fx-cursor: hand;" styleClass="settings-back-button" text="⬅" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="0" GridPane.valignment="CENTER">
             <GridPane.margin>
-                <Insets />
+                <Insets left="10.0" />
             </GridPane.margin>
+         <font>
+            <Font size="5.0" />
+         </font>
         </Button>
 
-        <!-- 🐺 Title Area (Wolf Logo + Title + Subtitle) -->
-        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="166.0" prefWidth="593.0" spacing="10.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+        <!-- 🐺 Title Area -->
+        <VBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="139.0" prefWidth="300.0" spacing="10.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
             <children>
 
-                <!-- Wolf Logo -->
                 <ImageView fitHeight="90.0" fitWidth="90.0" preserveRatio="true" styleClass="wolf-logo">
                     <image>
-                        <!-- ضع الصورة هنا: src/main/resources/Images/wolf_logo.png -->
                         <Image url="@../Images/wolf_logo.png" />
                     </image>
                 </ImageView>
@@ -60,123 +61,142 @@
                     </font>
                 </Label>
 
-                <Label styleClass="settings-subtitle" text="Control your experience: filters, customization, statistics and more." textFill="WHITE">
-                    <font>
-                        <Font name="Copperplate Gothic Light" size="14.0" />
-                    </font>
-               <VBox.margin>
-                  <Insets right="15.0" />
-               </VBox.margin>
-                </Label>
-
             </children>
-         <GridPane.margin>
-            <Insets left="-50.0" />
-         </GridPane.margin>
+
+            <GridPane.margin>
+                <Insets left="-50.0" />
+            </GridPane.margin>
         </VBox>
-      <Button fx:id="filtersBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#onFiltersClicked" prefHeight="122.0" prefWidth="310.0" styleClass="menu-card" textFill="#a97575" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-         <graphic>
-            <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="119.0" prefWidth="295.0" spacing="12.0">
-               <children>
-                  <Label text="Filters" textFill="WHITE">
-                     <font>
-                        <Font name="Copperplate Gothic Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <Label text="Control music, sounds, timer and smart hints." textFill="WHITE">
-                     <font>
-                        <Font name="Copperplate Gothic Light" size="13.0" />
-                     </font>
-                  </Label>
-               </children>
-            </VBox>
-         </graphic>
-         <GridPane.margin>
-            <Insets top="50.0" />
-         </GridPane.margin>
-      </Button>
-      <Button fx:id="customizeBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#onCustomizeClicked" prefHeight="122.0" prefWidth="310.0" styleClass="menu-card" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
-         <graphic>
-            <VBox alignment="CENTER" spacing="12.0">
-               <children>
-                  <Label text="Customize" textFill="WHITE">
-                     <font>
-                        <Font name="Copperplate Gothic Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <Label text="Future screen: board themes, colors and avatars." textFill="WHITE">
-                     <font>
-                        <Font name="Copperplate Gothic Light" size="13.0" />
-                     </font>
-                  </Label>
-               </children>
-            </VBox>
-         </graphic>
-      </Button>
-      <Button fx:id="howToPlayBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#onHowToPlayClicked" prefHeight="122.0" prefWidth="310.0" styleClass="menu-card" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
-         <graphic>
-            <VBox alignment="CENTER" spacing="12.0">
-               <children>
-                  <Label text="How To Play" textFill="WHITE">
-                     <font>
-                        <Font name="Copperplate Gothic Bold" size="24.0" />
-                     </font>
+
+        <!-- Filters card -->
+        <Button fx:id="filtersBtn" onAction="#onFiltersClicked" prefHeight="122.0" prefWidth="310.0" styleClass="menu-card" textFill="#a97575" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+            <graphic>
+                <VBox alignment="CENTER" minHeight="-Infinity" prefHeight="91.0" prefWidth="266.0" spacing="12.0">
+                    <children>
+                        <Label text="Filters" textFill="WHITE">
+                            <font>
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
+                            </font>
+                        </Label>
+                        <Label alignment="CENTER" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" text="Control music, sounds, timer and smart hints." textFill="WHITE" wrapText="true">
+                            <font>
+                                <Font name="Copperplate Gothic Light" size="13.0" />
+                            </font>
                      <VBox.margin>
-                        <Insets top="40.0" />
+                        <Insets top="10.0" />
                      </VBox.margin>
-                  </Label>
-                  <Label maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="266.0" text="Future tutorial: rules, tips and strategy for WOLF." textFill="WHITE">
-                     <font>
-                        <Font name="Copperplate Gothic Light" size="13.0" />
-                     </font>
-                     <padding>
-                        <Insets bottom="30.0" />
-                     </padding>
-                  </Label>
-               </children>
-            </VBox>
-         </graphic>
-      </Button>
-      <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="45.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-         <children>
-            <ImageView fitHeight="45.0" fitWidth="45.0" preserveRatio="true">
-               <image>
-                  <Image url="@../Images/customize.png" />
-               </image>
-            </ImageView>
-         </children>
+                        </Label>
+                    </children>
+                </VBox>
+            </graphic>
+            <GridPane.margin>
+                <Insets top="50.0" />
+            </GridPane.margin>
+        </Button>
+
+        <!-- Customize card -->
+        <Button fx:id="customizeBtn" onAction="#onCustomizeClicked" prefHeight="122.0" prefWidth="310.0" styleClass="menu-card" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+            <graphic>
+                <VBox alignment="CENTER" spacing="12.0">
+                    <children>
+                        <Label text="Customize" textFill="WHITE">
+                            <font>
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
+                            </font>
+                        </Label>
+                        <Label text="Future screen: board themes, colors and avatars." textFill="WHITE" wrapText="true">
+                            <font>
+                                <Font name="Copperplate Gothic Light" size="13.0" />
+                            </font>
+                     <VBox.margin>
+                        <Insets top="6.0" />
+                     </VBox.margin>
+                        </Label>
+                    </children>
+                </VBox>
+            </graphic>
+        </Button>
+
+        <!-- How To Play card -->
+        <Button fx:id="howToPlayBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#onHowToPlayClicked" prefHeight="122.0" prefWidth="310.0" styleClass="menu-card" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+            <graphic>
+                <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="313.0" spacing="12.0">
+                    <children>
+                        <Label text="How To Play" textFill="WHITE">
+                            <font>
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
+                            </font>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                        </Label>
+                        <Label prefHeight="30.0" prefWidth="300.0" text="Future tutorial: rules, tips and strategy for WOLF." textFill="WHITE" wrapText="true">
+                            <font>
+                                <Font name="Copperplate Gothic Light" size="13.0" />
+                            </font>
+                     <VBox.margin>
+                        <Insets left="10.0" />
+                     </VBox.margin>
+                        </Label>
+                    </children>
+                </VBox>
+            </graphic>
+        </Button>
+
+        <!-- Decorative icons (must NOT block mouse) -->
+        <StackPane mouseTransparent="true" prefHeight="45.0" prefWidth="45.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+            <children>
+                <ImageView fitHeight="45.0" fitWidth="45.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../Images/customize.png" />
+                    </image>
+                </ImageView>
+            </children>
+            <GridPane.margin>
+                <Insets right="215.0" top="20.0" />
+            </GridPane.margin>
+        </StackPane>
+
+        <StackPane mouseTransparent="true" prefHeight="45.0" prefWidth="45.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+            <children>
+                <ImageView fitHeight="45.0" fitWidth="45.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../Images/creative-tools.png" />
+                    </image>
+                </ImageView>
+            </children>
+            <GridPane.margin>
+                <Insets bottom="30.0" right="195.0" />
+            </GridPane.margin>
+        </StackPane>
+
+                    <StackPane mouseTransparent="true" prefHeight="46.0" prefWidth="32.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+            <children>
+                <ImageView fitHeight="45.0" fitWidth="50.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../Images/guide.png" />
+                    </image>
+                </ImageView>
+            </children>
+            <GridPane.margin>
+                <Insets bottom="40.0" right="205.0" />
+            </GridPane.margin>
+        </StackPane>
+
+          <Label styleClass="settings-subtitle" text="Control your experience: filters, customization, statistics and more." textFill="WHITE" wrapText="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" GridPane.valignment="TOP">
+              <font>
+                  <Font name="Copperplate Gothic Light" size="14.0" />
+              </font>
          <GridPane.margin>
-            <Insets right="215.0" top="20.0" />
+            <Insets top="30.0" />
          </GridPane.margin>
-      </StackPane>
-      <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="45.0" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
-         <children>
-            <ImageView fitHeight="45.0" fitWidth="45.0" preserveRatio="true">
-               <image>
-                  <Image url="@../Images/creative-tools.png" />
-               </image>
-            </ImageView>
-         </children>
-         <GridPane.margin>
-            <Insets bottom="30.0" right="195.0" />
-         </GridPane.margin>
-      </StackPane>
-      <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="46.0" prefWidth="32.0" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
-         <children>
-            <ImageView fitHeight="45.0" fitWidth="50.0" preserveRatio="true">
-               <image>
-                  <Image url="@../Images/guide.png" />
-               </image>
-            </ImageView>
-         </children>
-         <GridPane.margin>
-            <Insets bottom="20.0" right="205.0" />
-         </GridPane.margin>
-      </StackPane>
+          </Label>
 
     </children>
-   <stylesheets>
-      <URL value="@../css/style.css" />
-      <URL value="@../css/theme.css" />
-   </stylesheets>
+
+    <stylesheets>
+        <URL value="@../css/style.css" />
+        <URL value="@../css/theme.css" />
+    </stylesheets>
+
 </GridPane>

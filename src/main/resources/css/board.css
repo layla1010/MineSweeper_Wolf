@@ -87,7 +87,7 @@
 
 .inactive-player-label {
     -fx-text-fill: #8B94C4;
-    -fx-font-weight: normal;
+    -fx-font-weight: bold;
 }
 
 /* ===== BOARD WRAPPER CARDS ===== */

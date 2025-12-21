@@ -93,7 +93,7 @@ public class QuestionCardController {
         setTooltip(option3Label, q.getOptC());
         setTooltip(option4Label, q.getOptD());
 
-        markAnswers(q.getCorrectOption()); 
+        markAnswers(normalizeCorrectIndex(q.getCorrectOption()));
     }
     
     

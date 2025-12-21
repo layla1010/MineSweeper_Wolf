@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
@@ -15,7 +16,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="mainGrid" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/theme.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.MainController">
+<GridPane fx:id="mainGrid" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.MainController">
 
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
@@ -62,14 +63,14 @@
         <!-- PRIMARY "NEW GAME" BUTTON (glass + shimmer) -->
         <StackPane GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
             <children>
-                <Button fx:id="newGameBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onNewGameClicked" prefHeight="75.0" prefWidth="550.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));                                -fx-background-radius: 50;                                -fx-border-color: rgba(255,255,255,0.50);                                -fx-border-width: 3;                                -fx-border-radius: 50;                                -fx-cursor: hand;" text="New Game" textFill="#ffffff">
+                <Button fx:id="newGameBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onNewGameClicked" prefHeight="80.0" prefWidth="550.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));                                -fx-background-radius: 50;                                -fx-border-color: rgba(255,255,255,0.50);                                -fx-border-width: 3;                                -fx-border-radius: 50;                                -fx-cursor: hand;" text="New Game" textFill="#ffffff">
                     <font>
                         <Font name="Copperplate Gothic Bold" size="36.0" />
                     </font>
-                    <styleClass>
-                        <String fx:value="floating-card" />
-                        <String fx:value="zoom-on-hover" />
-                    </styleClass>
+               <styleClass>
+                  <String fx:value="floating-card" />
+                  <String fx:value="zoom-on-hover" />
+               </styleClass>
                 </Button>
 
                 <!-- shimmer rectangle, animated in controller -->
@@ -78,27 +79,27 @@
         </StackPane>
 
         <!-- HISTORY BUTTON (glass style) -->
-        <Button fx:id="historyBtn" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onHistoryBtnClicked" prefHeight="75.0" prefWidth="550.0" style="-fx-background-color: rgba(255,255,255,0.20);                        -fx-background-radius: 50;                        -fx-border-color: rgba(255,255,255,0.30);                        -fx-border-width: 2;                        -fx-border-radius: 50;                        -fx-cursor: hand;" text="history" textFill="#ffffff" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+        <Button fx:id="historyBtn" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onHistoryBtnClicked" prefHeight="80.0" prefWidth="550.0" style="-fx-background-color: rgba(255,255,255,0.20);                        -fx-background-radius: 50;                        -fx-border-color: rgba(255,255,255,0.30);                        -fx-border-width: 2;                        -fx-border-radius: 50;                        -fx-cursor: hand;" text="history" textFill="#ffffff" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
             <font>
                 <Font name="Copperplate Gothic Bold" size="36.0" />
             </font>
-            <styleClass>
-                <String fx:value="floating-card" />
-                <String fx:value="zoom-on-hover" />
-            </styleClass>
+         <styleClass>
+            <String fx:value="floating-card" />
+            <String fx:value="zoom-on-hover" />
+         </styleClass>
         </Button>
 
         <!-- QUESTION MANAGEMENT BUTTON (glass style) -->
-        <Button fx:id="questionManagementBtn" minWidth="-Infinity" mnemonicParsing="false" onAction="#onQuestionManagementClicked" prefHeight="75.0" prefWidth="550.0" style="-fx-background-color: rgba(255,255,255,0.20);                        -fx-background-radius: 50;                        -fx-border-color: rgba(255,255,255,0.30);                        -fx-border-width: 2;                        -fx-border-radius: 50;                        -fx-cursor: hand;" text="Question management" textFill="#ffffff" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+        <Button fx:id="questionManagementBtn" minWidth="-Infinity" mnemonicParsing="false" onAction="#onQuestionManagementClicked" prefHeight="80.0" prefWidth="550.0" style="-fx-background-color: rgba(255,255,255,0.20);                        -fx-background-radius: 50;                        -fx-border-color: rgba(255,255,255,0.30);                        -fx-border-width: 2;                        -fx-border-radius: 50;                        -fx-cursor: hand;" text="Question management" textFill="#ffffff" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
             <font>
                 <Font name="Copperplate Gothic Bold" size="36.0" />
             </font>
-            <styleClass>
-                <String fx:value="floating-card" />
-                <String fx:value="zoom-on-hover" />
-            </styleClass>
+         <styleClass>
+            <String fx:value="floating-card" />
+            <String fx:value="zoom-on-hover" />
+         </styleClass>
         </Button>
-      <Button fx:id="statisticsBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onStatisticsClicked" prefHeight="75.0" prefWidth="550.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));                                -fx-background-radius: 50;                                -fx-border-color: rgba(255,255,255,0.50);                                -fx-border-width: 3;                                -fx-border-radius: 50;                                -fx-cursor: hand;" text="Statistics" textFill="#ffffff" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER">
+      <Button fx:id="statisticsBtn" alignment="TOP_CENTER" contentDisplay="BOTTOM" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onStatisticsClicked" prefHeight="80.0" prefWidth="550.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));                                -fx-background-radius: 50;                                -fx-border-color: rgba(255,255,255,0.50);                                -fx-border-width: 3;                                -fx-border-radius: 50;                                -fx-cursor: hand;" text="Statistics" textFill="#ffffff" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER">
          <font>
             <Font name="Copperplate Gothic Bold" size="36.0" />
          </font>
@@ -131,4 +132,8 @@
         </StackPane>
 
     </children>
+   <stylesheets>
+      <URL value="@../css/theme.css" />
+      <URL value="@../css/style.css" />
+   </stylesheets>
 </GridPane>
