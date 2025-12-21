@@ -57,6 +57,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.application.Platform;
 
 public class GameController {
 
@@ -120,6 +121,11 @@ public class GameController {
 
     private int safeCellsRemaining1;
     private int safeCellsRemaining2;
+    
+    //Win bonus popup data
+    private int endHeartsRemaining = 0;
+    private int endHeartsBonusPoints = 0;
+
 
     // Track cells that were already revealed (for scoring & surprise/question second-click)
     private boolean[][] revealedCellsP1;
@@ -1223,23 +1229,47 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         }
         gameOver = true;
 
-        // 4. convert remaining hearts to points when the game is won
+        //convert remaining hearts to points when the game is won
+        endHeartsRemaining = 0;
+        endHeartsBonusPoints = 0;
         if (gameWon && sharedHearts > 0) {
             int perHeart = switch (difficulty) {
                 case EASY   -> 5;
                 case MEDIUM -> 8;
                 case HARD   -> 12;
             };
-            int bonus = sharedHearts * perHeart;
-            score += bonus;
+            endHeartsRemaining = sharedHearts;
+            endHeartsBonusPoints = sharedHearts * perHeart;
+            score += endHeartsBonusPoints;
             updateScoreAndMineLabels();  // refresh score label before leaving screen
         }
 
         stopTimer();
         saveCurrentGameToHistory();
-        showEndGameScreen();
+        revealAllBoardsVisualOnly();
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(4.0));
+        pause.setOnFinished(e -> showEndGameScreen());
+        pause.play();
 
         System.out.println("Game over! Saved to history.");
+    }
+    
+    private void showHeartsBonusPopupIfNeeded() {
+        if (!gameWon) return;
+        if (endHeartsRemaining <= 0 || endHeartsBonusPoints <= 0) return;
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Hearts Bonus");
+        alert.setHeaderText("Bonus added to your final score!");
+
+        alert.setContentText(
+                "Remaining hearts: " + endHeartsRemaining + "\n" +
+                "Added points: +" + endHeartsBonusPoints + "\n\n" +
+                "Final score: " + score
+        );
+
+        alert.showAndWait();
     }
 
 
@@ -1319,6 +1349,9 @@ private void recalcFlagsLeft(boolean isPlayer1) {
             stage.setScene(endScene);
             stage.centerOnScreen();
             stage.show();
+            
+            //Show hearts-bonus popup AFTER win screen is shown
+            Platform.runLater(this::showHeartsBonusPopupIfNeeded);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -2211,5 +2244,94 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         return count;
     }
 
+    
+    //Reveal both boards' cells at the end of the game 
+    private void revealAllCellsOnBoardVisualOnly(Board board, StackPane[][] buttons) {
+        if (board == null || buttons == null) return;
+
+        int rows = board.getRows();
+        int cols = board.getCols();
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                StackPane tile = buttons[r][c];
+                if (tile == null || tile.getChildren().isEmpty()) continue;
+
+                Button btn = (Button) tile.getChildren().get(0);
+                Cell cell = board.getCell(r, c);
+
+                //skip already disabled/revealed buttons 
+                revealButtonVisualOnly(btn, cell);
+            }
+        }
+    }
+    
+    
+    private void revealButtonVisualOnly(Button button, Cell cell) {
+        if (button == null || cell == null) return;
+
+        //Remove flag graphic
+        button.setGraphic(null);
+        button.setText("");
+
+        //Clear styles that represent "hidden" state
+        button.getStyleClass().removeAll(
+                "cell-hidden", "cell-flagged",
+                "cell-mine", "cell-question", "cell-surprise",
+                "cell-number", "cell-empty"
+        );
+
+        //Always show it as revealed and disable it (end of game)
+        if (!button.getStyleClass().contains("cell-revealed")) {
+            button.getStyleClass().add("cell-revealed");
+        }
+        button.setDisable(true);
+
+        switch (cell.getType()) {
+            case MINE -> {
+                button.setText("💣");
+                button.getStyleClass().add("cell-mine");
+            }
+            case QUESTION -> {
+                try {
+                    Image img = new Image(getClass().getResourceAsStream("/Images/question-mark.png"));
+                    ImageView iv = new ImageView(img);
+                    iv.setFitWidth(20);
+                    iv.setFitHeight(20);
+                    iv.setPreserveRatio(true);
+                    button.setGraphic(iv);
+                } catch (Exception ex) {
+                    button.setText("?");
+                }
+                button.getStyleClass().add("cell-question");
+            }
+            case SURPRISE -> {
+                try {
+                    Image img = new Image(getClass().getResourceAsStream("/Images/giftbox.png"));
+                    ImageView iv = new ImageView(img);
+                    iv.setFitWidth(20);
+                    iv.setFitHeight(20);
+                    iv.setPreserveRatio(true);
+                    button.setGraphic(iv);
+                } catch (Exception ex) {
+                    button.setText("★");
+                }
+                button.getStyleClass().add("cell-surprise");
+            }
+            case NUMBER -> {
+                button.setText(String.valueOf(cell.getAdjacentMines()));
+                button.getStyleClass().add("cell-number");
+            }
+            case EMPTY -> {
+                button.setText("");
+                button.getStyleClass().add("cell-empty");
+            }
+        }
+    }
+    
+    private void revealAllBoardsVisualOnly() {
+        revealAllCellsOnBoardVisualOnly(board1, p1Buttons);
+        revealAllCellsOnBoardVisualOnly(board2, p2Buttons);
+    }
 
 }
