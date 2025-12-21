@@ -228,6 +228,14 @@ public class GameController {
         
     }
     
+    private int getInitialFlagsForDifficulty(Difficulty diff) {
+        return switch (diff) {
+            case EASY   -> 20;
+            case MEDIUM -> 52;
+            case HARD   -> 88;
+        };
+    }
+    
     private void setBoardAvatar(ImageView target, String avatarId) {
         if (target == null) return;
         if (avatarId == null || avatarId.isBlank()) return;
