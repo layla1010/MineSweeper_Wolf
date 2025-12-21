@@ -91,7 +91,16 @@ public class GameController {
     
     private int flagsLeft1;
     private int flagsLeft2;
+    
+    private int flagsUsed1;
+    private int flagsUsed2;
+    
+    private int revealedCountP1;
+    private int revealedCountP2;
 
+    private int totalCellsP1;
+    private int totalCellsP2;
+    
     private String player1OfficialName;
     private String player2OfficialName;
 
@@ -138,10 +147,7 @@ public class GameController {
 
         this.minesLeft1 = board1.getMineCount();
         this.minesLeft2 = board2.getMineCount();
-        
-     //  starting flags per difficulty
-        this.flagsLeft1 = getInitialFlagsForDifficulty(difficulty);
-        this.flagsLeft2 = getInitialFlagsForDifficulty(difficulty);
+     
         
      // ----------  load avatars above boards ----------
         setBoardAvatar(player1AvatarImage, config.getPlayer1AvatarPath());
@@ -153,11 +159,20 @@ public class GameController {
         this.revealedCellsP1 = new boolean[board1.getRows()][board1.getCols()];
         this.revealedCellsP2 = new boolean[board2.getRows()][board2.getCols()];
 
+        this.totalCellsP1 = board1.getRows() * board1.getCols();
+        this.totalCellsP2 = board2.getRows() * board2.getCols();
+
+        this.revealedCountP1 = 0;
+        this.revealedCountP2 = 0;
+
+        this.flagsUsed1 = 0;
+        this.flagsUsed2 = 0;
+
+        recalcFlagsLeft(true);
+        recalcFlagsLeft(false);
         
-        int totalCells1 = board1.getRows() * board1.getCols();
-        int totalCells2 = board2.getRows() * board2.getCols();
-        this.safeCellsRemaining1 = totalCells1 - board1.getMineCount();
-        this.safeCellsRemaining2 = totalCells2 - board2.getMineCount();
+        this.safeCellsRemaining1 = totalCellsP1 - board1.getMineCount();
+        this.safeCellsRemaining2 = totalCellsP2 - board2.getMineCount();
 
         this.sharedHearts = difficulty.getInitialLives();
         this.score = 0;
@@ -299,13 +314,7 @@ public class GameController {
         }
     }
     
-    private int getInitialFlagsForDifficulty(Difficulty diff) {
-        return switch (diff) {
-            case EASY   -> 20;
-            case MEDIUM -> 52;
-            case HARD   -> 88;
-        };
-    }
+    
 
 
     // ============================================================
@@ -460,17 +469,21 @@ private void toggleFlag(Board board, int row, int col, Button button, boolean is
 
     // If trying to place a NEW flag but no flags left → show popup
     if (isPlayer1) {
+    	recalcFlagsLeft(true); // make sure flagsLeft1 is up to date
         if (flagsLeft1 <= 0) {
             showNoFlagsLeftAlert();
             return;
         }
-        flagsLeft1--; // consume a flag permanently
+        flagsUsed1++;          // consume permanently (non-recoverable)
+        recalcFlagsLeft(true); // update flagsLeft1 after consuming
     } else {
+    	recalcFlagsLeft(false);
         if (flagsLeft2 <= 0) {
             showNoFlagsLeftAlert();
             return;
         }
-        flagsLeft2--; // consume a flag permanently
+        flagsUsed2++;
+        recalcFlagsLeft(false);
     }
 
     // We are placing a new flag
@@ -508,6 +521,18 @@ private void toggleFlag(Board board, int row, int col, Button button, boolean is
         } else {
             minesLeft2 = Math.max(0, minesLeft2 - 1);
         }
+        // mark as revealed
+        boolean[][] revealedArray = isPlayer1 ? revealedCellsP1 : revealedCellsP2;
+        if (revealedArray != null && !revealedArray[row][col]) {
+            revealedArray[row][col] = true;
+
+            if (isPlayer1) revealedCountP1++;
+            else revealedCountP2++;
+
+            recalcFlagsLeft(isPlayer1);
+        }
+
+
 
     } else {
         // Wrong flag on non-mine → mistake and -3 points
@@ -532,7 +557,29 @@ private void showNoFlagsLeftAlert() {
     alert.showAndWait();
 }
 
-    
+
+private int getUnrevealedCellsRemaining(boolean isPlayer1) {
+    int total = isPlayer1 ? totalCellsP1 : totalCellsP2;
+    int revealed = isPlayer1 ? revealedCountP1 : revealedCountP2;
+    return Math.max(0, total - revealed);
+}
+
+// allowed flags = half of ALL unrevealed cells
+private int allowedFlagsNow(boolean isPlayer1) {
+    return getUnrevealedCellsRemaining(isPlayer1) / 2; // floor
+}
+
+// flagsUsed is non-recoverable => flagsLeft = allowedNow - flagsUsed
+private void recalcFlagsLeft(boolean isPlayer1) {
+    int allowed = allowedFlagsNow(isPlayer1);
+
+    if (isPlayer1) {
+        flagsLeft1 = Math.max(0, allowed - flagsUsed1);
+    } else {
+        flagsLeft2 = Math.max(0, allowed - flagsUsed2);
+    }
+}
+
 
     // ============================================================
     // REVEAL LOGIC (FIRST CLICK)
@@ -563,6 +610,14 @@ private void showNoFlagsLeftAlert() {
             isFirstReveal = !revealedArray[row][col];
             revealedArray[row][col] = true;
         }
+        if (isFirstReveal) {
+            if (isPlayer1) revealedCountP1++;
+            else revealedCountP2++;
+
+            recalcFlagsLeft(isPlayer1);
+        }
+
+
 
         // Auto Remove Flag – if enabled, remove the flag when revealing a cell
         if (SysData.isAutoRemoveFlagEnabled()) {
