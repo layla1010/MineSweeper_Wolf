@@ -5,7 +5,7 @@
  * which was implemented as part of the new iteration of the project.
  *
  * The purpose of this test is to validate that user interactions with
- * filter toggle buttons correctly update the global configuration stored
+ * filter toggle images correctly update the global configuration stored
  * in the SysData class.
  *
  * The test focuses on unit-level behavior only and does not involve
@@ -18,6 +18,7 @@
 package control;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.concurrent.CountDownLatch;
@@ -27,17 +28,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javafx.application.Platform;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.image.ImageView;
 import model.SysData;
 
 public class FiltersControllerTest {
 
     private FiltersController controller;
-    private ToggleButton timerToggle;
+    private ImageView timerToggle;
 
-   @BeforeAll
+    @BeforeAll
     static void initJavaFxToolkit() {
-	   
         try {
             Platform.startup(() -> {}); // initialize JavaFX toolkit once
         } catch (IllegalStateException e) {
@@ -45,13 +45,12 @@ public class FiltersControllerTest {
         }
     }
 
-    
     @BeforeEach
     void setUp() throws Exception {
         SysData.resetToDefaults();
 
         controller = new FiltersController();
-        timerToggle = new ToggleButton();
+        timerToggle = new ImageView();
 
         // inject timerToggle into controller (because it's @FXML private)
         Field f = FiltersController.class.getDeclaredField("timerToggle");
@@ -60,58 +59,63 @@ public class FiltersControllerTest {
     }
 
     /**
-     * Test Case: onTimerToggled_WhenSelectedTrue_TimerEnabledBecomesTrue
+     * Test Case: onTimerToggled_FromFalse_ToTrue
      *
      * Test Objective:
-     * To verify that when the Timer toggle button is selected (ON),
-     * the corresponding configuration flag in SysData is updated correctly.
-     *
-     * Test Description:
-     * This test simulates a user enabling the Timer option in the Filters screen.
-     * The onTimerToggled() method is invoked, and the test verifies that
-     * SysData.isTimerEnabled() becomes true.
-     *
-     * Test Steps:
-     * 1. Reset all global settings in SysData to their default values.
-     * 2. Explicitly disable the timer setting in SysData.
-     * 3. Create a ToggleButton and set it to selected.
-     * 4. Inject the ToggleButton into the FiltersController using reflection.
-     * 5. Invoke the onTimerToggled() method on the JavaFX Application Thread.
-     * 6. Verify that SysData.isTimerEnabled() is true.
+     * Verify that when the timer is currently disabled in SysData,
+     * calling onTimerToggled() flips it to enabled.
      *
      * Expected Result:
-     * SysData.isTimerEnabled() should be set to true.
-     *
-     * Actual Result:
-     * SysData.isTimerEnabled() is true.
-     *
-     * Test Result:
-     * PASS
+     * SysData.isTimerEnabled() becomes true and the timer toggle image is updated.
      */
-
     @Test
-    void testOnTimerToggled_WhenSelectedTrue_TimerEnabledBecomesTrue() throws Exception {
-        SysData.setTimerEnabled(false);    
-        timerToggle.setSelected(true);
+    void testOnTimerToggled_FromFalse_ToTrue() throws Exception {
+        SysData.setTimerEnabled(false);
 
-        runOnFxThreadAndWait(() -> {
-            try {
-                Method m = FiltersController.class.getDeclaredMethod("onTimerToggled");
-                m.setAccessible(true);
-                m.invoke(controller);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        runOnFxThreadAndWait(() -> invokePrivate(controller, "onTimerToggled"));
 
         assertTrue(SysData.isTimerEnabled());
+        assertNotNull(timerToggle.getImage()); // UI state updated (switch image set)
     }
+
+    /**
+     * Test Case: onTimerToggled_FromTrue_ToFalse
+     *
+     * Test Objective:
+     * Verify that when the timer is currently enabled in SysData,
+     * calling onTimerToggled() flips it to disabled.
+     *
+     * Expected Result:
+     * SysData.isTimerEnabled() becomes false and the timer toggle image is updated.
+     */
+    @Test
+    void testOnTimerToggled_FromTrue_ToFalse() throws Exception {
+        SysData.setTimerEnabled(true);
+
+        runOnFxThreadAndWait(() -> invokePrivate(controller, "onTimerToggled"));
+
+        assertFalse(SysData.isTimerEnabled());
+        assertNotNull(timerToggle.getImage());
+    }
+
+    // helper: invoke private method via reflection
+    private static void invokePrivate(Object obj, String methodName) {
+        try {
+            Method m = obj.getClass().getDeclaredMethod(methodName);
+            m.setAccessible(true);
+            m.invoke(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // helper: run code on JavaFX thread and wait
     private static void runOnFxThreadAndWait(Runnable action) throws InterruptedException {
         if (Platform.isFxApplicationThread()) {
             action.run();
             return;
         }
+
         CountDownLatch latch = new CountDownLatch(1);
         final RuntimeException[] error = new RuntimeException[1];
 
@@ -124,6 +128,4 @@ public class FiltersControllerTest {
         latch.await();
         if (error[0] != null) throw error[0];
     }
-
 }
-
