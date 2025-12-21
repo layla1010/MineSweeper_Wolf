@@ -2,10 +2,12 @@ package control;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -20,6 +22,8 @@ import model.SysData;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
+
 
 public class PauseGameFeatureTest {
 
@@ -29,11 +33,22 @@ public class PauseGameFeatureTest {
     private GridPane player2Grid;
     private Button pauseBtn;
 
+    private static final AtomicBoolean FX_STARTED = new AtomicBoolean(false);
+
     @BeforeAll
     static void startJavaFxToolkit() throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-        Platform.startup(latch::countDown);
-        assertTrue(latch.await(3, TimeUnit.SECONDS), "JavaFX Toolkit did not start");
+        if (FX_STARTED.compareAndSet(false, true)) {
+            CountDownLatch latch = new CountDownLatch(1);
+
+            try {
+                Platform.startup(latch::countDown);
+            } catch (IllegalStateException alreadyStarted) {
+                // JavaFX toolkit was already started by another test
+                latch.countDown();
+            }
+
+            assertTrue(latch.await(3, TimeUnit.SECONDS), "JavaFX Toolkit did not start");
+        }
     }
 
     @BeforeEach
@@ -49,7 +64,8 @@ public class PauseGameFeatureTest {
         setPrivateField(controller, "player2Grid", player2Grid);
         setPrivateField(controller, "pauseBtn", pauseBtn);
 
-        SysData.setTimerEnabled(true);
+        runOnFxAndWait(() -> SysData.setTimerEnabled(true));
+
         setPrivateField(controller, "isPaused", false);
 
         // ✅ IMPORTANT: Timeline must have at least one KeyFrame or it becomes STOPPED instantly
@@ -59,7 +75,9 @@ public class PauseGameFeatureTest {
         timer.setCycleCount(Timeline.INDEFINITE);
 
         runOnFxAndWait(timer::play);
-        waitUntilFx(() -> timer.getStatus() == Animation.Status.RUNNING, 1500);
+        waitUntilFx(() -> timer.getStatus() == Animation.Status.RUNNING, 3000);
+
+        assertNotEquals(Animation.Status.STOPPED, timer.getStatus(), "Timer unexpectedly STOPPED");
 
         setPrivateField(controller, "timer", timer);
     }
@@ -174,4 +192,17 @@ public class PauseGameFeatureTest {
         }
         throw new NoSuchFieldException("Field not found: " + fieldName);
     }
+    
+    @AfterEach
+    void tearDown() throws Exception {
+        // stop timer created by this test (avoid leaking running timelines to other tests)
+        Timeline timer = (Timeline) getPrivateField(controller, "timer");
+        if (timer != null) {
+            runOnFxAndWait(timer::stop);
+        }
+
+        // reset global/static flags to default for next tests
+        SysData.setTimerEnabled(true);
+    }
+
 }
