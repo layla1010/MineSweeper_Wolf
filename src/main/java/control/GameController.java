@@ -1,19 +1,5 @@
 package control;
 
-import model.Board;
-import model.Cell;
-import model.CellType;
-import model.Difficulty;
-import model.GameConfig;
-import model.Game;
-import model.SysData;
-import model.GameResult;
-import model.Player;
-import model.Question;
-import util.SessionManager;
-import util.UIAnimations;
-import util.SoundManager;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayDeque;
@@ -29,6 +15,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
@@ -39,6 +26,7 @@ import javafx.scene.ImageCursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -57,7 +45,21 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.application.Platform;
+
+import model.Board;
+import model.Cell;
+import model.CellType;
+import model.Difficulty;
+import model.Game;
+import model.GameConfig;
+import model.GameResult;
+import model.Player;
+import model.Question;
+import model.SysData;
+import util.DialogUtil;
+import util.SessionManager;
+import util.SoundManager;
+import util.UIAnimations;
 
 public class GameController {
 
@@ -77,7 +79,6 @@ public class GameController {
     @FXML private ImageView player1AvatarImage;
     @FXML private ImageView player2AvatarImage;
 
-
     private GameConfig config;
     private Difficulty difficulty;
     private Board board1;
@@ -89,23 +90,24 @@ public class GameController {
     private int score;
     private int minesLeft1;
     private int surprisesLeft1;
-    private int surprisesLeft2;    
-    private int questionsLeft2;    
-    private int questionsLeft1;    
+    private int surprisesLeft2;
+    private int questionsLeft2;
+    private int questionsLeft1;
     private int minesLeft2;
-    
+
     private int flagsLeft1;
     private int flagsLeft2;
     
-    private int flagsUsed1;
-    private int flagsUsed2;
-    
+    private int flagsPlaced1;
+    private int flagsPlaced2;
+
     private int revealedCountP1;
     private int revealedCountP2;
 
     private int totalCellsP1;
     private int totalCellsP2;
-    
+    private int endScoreBefore;
+
     private String player1OfficialName;
     private String player2OfficialName;
 
@@ -121,11 +123,10 @@ public class GameController {
 
     private int safeCellsRemaining1;
     private int safeCellsRemaining2;
-    
-    //Win bonus popup data
+
+    // Win bonus popup data
     private int endHeartsRemaining = 0;
     private int endHeartsBonusPoints = 0;
-
 
     // Track cells that were already revealed (for scoring & surprise/question second-click)
     private boolean[][] revealedCellsP1;
@@ -136,9 +137,84 @@ public class GameController {
 
     private static final int TOTAL_HEART_SLOTS = 10;
 
-    // ============================================================
-    // INIT
-    // ============================================================
+    private PauseTransition idleHintTimer;
+    private static final Duration IDLE_HINT_DELAY = Duration.minutes(2);
+    private static final Duration IDLE_HINT_GLOW_DURATION = Duration.seconds(3);
+
+    /**
+     * Resets the idle timer. Any user action (click/flag/unflag/question/surprise)
+     * should call this.
+     */
+    private void resetIdleHintTimer() {
+        if (!SysData.isSmartHintsEnabled()) return;
+
+        if (idleHintTimer != null) {
+            idleHintTimer.stop();
+        }
+
+        idleHintTimer = new PauseTransition(IDLE_HINT_DELAY);
+        idleHintTimer.setOnFinished(e -> {
+            if (gameOver || isPaused) return;
+            showIdleHint();
+            // restart only after it triggers (still no action)
+            resetIdleHintTimer();
+        });
+        idleHintTimer.playFromStart();
+    }
+
+    /**
+     * Picks one unrevealed non mine cell (EMPTY/NUMBER/QUESTION/SURPRISE) on the CURRENT TURN board
+     * and makes it glow temporarily.
+     */
+    private void showIdleHint() {
+        if (!SysData.isSmartHintsEnabled()) return;
+        if (gameOver || isPaused) return;
+
+        boolean targetP1 = isPlayer1Turn;
+        Board board = targetP1 ? board1 : board2;
+        StackPane[][] tiles = targetP1 ? p1Buttons : p2Buttons;
+
+        if (board == null || tiles == null) return;
+
+        List<Button> candidates = new ArrayList<>();
+
+        for (int r = 0; r < board.getRows(); r++) {
+            for (int c = 0; c < board.getCols(); c++) {
+                Cell cell = board.getCell(r, c);
+                if (cell == null) continue;
+
+                // Only allow empty/number/question/surprise (explicitly exclude mines)
+                if (cell.getType() == CellType.MINE) continue;
+
+                StackPane tile = tiles[r][c];
+                if (tile == null || tile.getChildren().isEmpty()) continue;
+
+                Button btn = (Button) tile.getChildren().get(0);
+
+                // must be unrevealed and clickable (not disabled)
+                if (btn.isDisable()) continue;
+                if (!btn.getStyleClass().contains("cell-hidden")) continue;
+
+                // avoid hinting a flagged cell (they already acted on it)
+                if (btn.getStyleClass().contains("cell-flagged")) continue;
+
+                candidates.add(btn);
+            }
+        }
+
+        if (candidates.isEmpty()) return;
+
+        Button pick = candidates.get((int) (Math.random() * candidates.size()));
+
+        if (!pick.getStyleClass().contains("idle-hint-glow")) {
+            pick.getStyleClass().add("idle-hint-glow");
+        }
+
+        PauseTransition pt = new PauseTransition(IDLE_HINT_GLOW_DURATION);
+        pt.setOnFinished(e -> pick.getStyleClass().remove("idle-hint-glow"));
+        pt.play();
+    }
+
 
     /**
      * Initializes the game session using the given configuration.
@@ -157,23 +233,17 @@ public class GameController {
 
         this.minesLeft1 = board1.getMineCount();
         this.minesLeft2 = board2.getMineCount();
-        
-     //  starting flags per difficulty
-        this.flagsLeft1 = getInitialFlagsForDifficulty(difficulty);
-        this.flagsLeft2 = getInitialFlagsForDifficulty(difficulty);
+
         this.surprisesLeft1 = countType(board1, CellType.SURPRISE);
         this.surprisesLeft2 = countType(board2, CellType.SURPRISE);
 
         this.questionsLeft1 = countType(board1, CellType.QUESTION);
         this.questionsLeft2 = countType(board2, CellType.QUESTION);
 
-     
-        
-     // ----------  load avatars above boards ----------
+        // ----------  load avatars above boards ----------
         setBoardAvatar(player1AvatarImage, config.getPlayer1AvatarPath());
         setBoardAvatar(player2AvatarImage, config.getPlayer2AvatarPath());
         // -----------------------------------------------------
-
 
         // Track which cells were already revealed (for scoring & surprise/question logic)
         this.revealedCellsP1 = new boolean[board1.getRows()][board1.getCols()];
@@ -185,12 +255,11 @@ public class GameController {
         this.revealedCountP1 = 0;
         this.revealedCountP2 = 0;
 
-        this.flagsUsed1 = 0;
-        this.flagsUsed2 = 0;
-
+        // flagsUsed start at 0
+        flagsPlaced1 = flagsPlaced2 = 0;
         recalcFlagsLeft(true);
         recalcFlagsLeft(false);
-        
+
         this.safeCellsRemaining1 = totalCellsP1 - board1.getMineCount();
         this.safeCellsRemaining2 = totalCellsP2 - board2.getMineCount();
 
@@ -202,7 +271,6 @@ public class GameController {
         this.gameWon = false;
         this.mistakeMade = false;
 
-        
         // Apply generic animations to buttons/cards
         UIAnimations.applyHoverZoomToAllButtons(root);
         UIAnimations.applyFloatingToCards(root);
@@ -227,21 +295,14 @@ public class GameController {
             timer = null;
         }
 
-        // --- SYNC ICONS WITH SETTINGS ---
+        // SYNC ICONS WITH SETTINGS 
         refreshSoundIconFromSettings();   // sound (clicks)
         refreshMusicIconFromSettings();   // music (background)
-        
-        
+
+        // start/reset idle smart-hint timer
+        resetIdleHintTimer();
     }
-    
-    private int getInitialFlagsForDifficulty(Difficulty diff) {
-        return switch (diff) {
-            case EASY   -> 20;
-            case MEDIUM -> 52;
-            case HARD   -> 88;
-        };
-    }
-    
+
     private void setBoardAvatar(ImageView target, String avatarId) {
         if (target == null) return;
         if (avatarId == null || avatarId.isBlank()) return;
@@ -266,7 +327,6 @@ public class GameController {
         }
     }
 
-
     /**
      * Builds the hearts bar UI based on the current number of shared lives.
      * Fills up to TOTAL_HEART_SLOTS with full or empty heart icons.
@@ -280,7 +340,12 @@ public class GameController {
             boolean isFull = i < sharedHearts;
             String imgPath = isFull ? "/Images/heart.png" : "/Images/favorite.png";
 
-            Image img = new Image(getClass().getResourceAsStream(imgPath));
+            var stream = getClass().getResourceAsStream(imgPath);
+            if (stream == null) {
+                System.err.println("Missing resource: " + imgPath);
+                return;
+            }
+            Image img = new Image(stream);
             ImageView iv = new ImageView(img);
             iv.setFitHeight(50);
             iv.setFitWidth(50);
@@ -314,18 +379,18 @@ public class GameController {
         }
 
         player1BombsLeftLabel.setText(
-        	    config.getPlayer1Nickname() + ", Mines left: " + minesLeft1
-        	    + " | Flags left: " + flagsLeft1
-        	    + " | Surprises left: " + surprisesLeft1
-        	    + " | Questions left: " + questionsLeft1
-        	);
+                config.getPlayer1Nickname() + ", Mines left: " + minesLeft1
+                        + " | Flags left: " + flagsLeft1
+                        + " | Surprises left: " + surprisesLeft1
+                        + " | Questions left: " + questionsLeft1
+        );
 
-        	player2BombsLeftLabel.setText(
-        	    config.getPlayer2Nickname() + ", Mines left: " + minesLeft2
-        	    + " | Flags left: " + flagsLeft2
-        	    + " | Surprises left: " + surprisesLeft2
-        	    + " | Questions left: " + questionsLeft2
-        	);
+        player2BombsLeftLabel.setText(
+                config.getPlayer2Nickname() + ", Mines left: " + minesLeft2
+                        + " | Flags left: " + flagsLeft2
+                        + " | Surprises left: " + surprisesLeft2
+                        + " | Questions left: " + questionsLeft2
+        );
 
         scoreLabel.setText("Score: " + score);
     }
@@ -341,19 +406,17 @@ public class GameController {
      */
     private void initForbiddenCursor() {
         try {
-            Image img = new Image(getClass().getResourceAsStream("/Images/cursor_forbidden.png"));
+            var stream = getClass().getResourceAsStream("/Images/cursor_forbidden.png");
+            if (stream == null) {
+                forbiddenCursor = null;
+                return;
+            }
+            Image img = new Image(stream);
             forbiddenCursor = new ImageCursor(img, img.getWidth() / 2, img.getHeight() / 2);
         } catch (Exception e) {
             forbiddenCursor = null;
         }
     }
-    
-    
-
-
-    // ============================================================
-    // BOARD BUILDING
-    // ============================================================
 
     /**
      * Builds the minefield grid for a player.
@@ -419,7 +482,7 @@ public class GameController {
         } else {
             button.getStyleClass().add("p2-cell");
         }
-        
+
         StackPane tile = new StackPane(button);
         tile.setMinSize(0, 0);
         tile.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
@@ -434,21 +497,24 @@ public class GameController {
 
         button.setOnMouseClicked(e -> {
 
-            if (gameOver) {
-                return;
-            }
-            if (isPaused) {
+            if (gameOver) return;
+            if (isPaused) return;
+
+            // Turn guard
+            if ((tileIsPlayer1 && !isPlayer1Turn) || (!tileIsPlayer1 && isPlayer1Turn)) {
                 return;
             }
 
-            // Right click = FLAG
+            if (button.isDisable()) return;
+
+            // Any interaction (including flag/unflag) counts as "activity" for smart hints
+            resetIdleHintTimer();
+
+            // RIGHT CLICK: flag/unflag only, NO turn switching
             if (e.getButton() == MouseButton.SECONDARY) {
-                if ((tileIsPlayer1 && !isPlayer1Turn) ||
-                    (!tileIsPlayer1 && isPlayer1Turn)) {
-                    return;
-                }
 
-                if (button.isDisable()) {
+                // only allow flagging on covered cells
+                if (!button.getStyleClass().contains("cell-hidden")) {
                     return;
                 }
 
@@ -456,168 +522,168 @@ public class GameController {
                 return;
             }
 
-            // Only left click past this point
-            if (e.getButton() != MouseButton.PRIMARY) {
+            // LEFT CLICK: always behaves like reveal action, even if flagged
+            if (e.getButton() == MouseButton.PRIMARY) {
+                boolean consumedAction = handleCellClick(board, r, c, button, tile, tileIsPlayer1);
+                if (consumedAction) {
+                    switchTurn(); // reveal consumes turn
+                }
                 return;
             }
 
-            if ((tileIsPlayer1 && !isPlayer1Turn) ||
-                (!tileIsPlayer1 && isPlayer1Turn)) {
-                return;
-            }
-
-            if (button.isDisable()) {
-                return;
-            }
-
-            boolean consumedAction = handleCellClick(board, r, c, button, tile, tileIsPlayer1);
-            if (consumedAction) {
-                switchTurn();
-            }
         });
 
         return tile;
     }
 
-    // ============================================================
-    // FLAGGING
-    // ============================================================
+    /**
+     * Toggles a flag icon on a covered cell.
+     *  If it's a MINE: right-click reveals instantly and gives +1 score (Option A).
+     *  If it's NOT a mine: placing a flag consumes a non-reusable flag (flagsPlaced = flagsUsed).
+     *  Unflagging removes only the visual marker and does NOT refund a flag.
+     *  Wrong flag is a mistake and costs -3 score.
+     */
+    private void toggleFlag(Board board, int row, int col, Button button, boolean isPlayer1) {
+        if (gameOver || isPaused) return;
 
-   /**
- * Toggles a flag icon on a covered cell.
- * If a flag is present, removes it; otherwise adds a flag graphic.
- * If a QUESTION or SURPRISE cell is flagged, score is reduced by 3 points.
- * If a non-mine is flagged, marks mistakeMade = true.
- */
-private void toggleFlag(Board board, int row, int col, Button button, boolean isPlayer1) {
-    Cell cell = board.getCell(row, col);
+        Cell cell = board.getCell(row, col);
+        if (cell == null) return;
 
-    // If there is already a flag → remove it (no score / mines change)
-    if (button.getGraphic() instanceof ImageView) {
-        button.setGraphic(null);
-        button.getStyleClass().remove("cell-flagged");
-        // flags are NOT restored (you designed them as non-recoverable)
-        updateScoreAndMineLabels();
-        return;
-    }
+        // don't allow flagging revealed/disabled cells (for safety)
+        if (button.isDisable()) return;
 
-    // If trying to place a NEW flag but no flags left → show popup
-    if (isPlayer1) {
-    	recalcFlagsLeft(true); // make sure flagsLeft1 is up to date
-        if (flagsLeft1 <= 0) {
-            showNoFlagsLeftAlert();
+        // 1) If already flagged, then remove only visual flag (NO REFUND of flagsUsed)
+        if (button.getStyleClass().contains("cell-flagged")) {
+            button.setGraphic(null);
+            button.setText("");
+            button.getStyleClass().remove("cell-flagged");
+
+            // Do NOT decrement flagsPlacedX (non-reusable flags)
+            recalcFlagsLeft(isPlayer1);
+            updateScoreAndMineLabels();
             return;
         }
-        flagsUsed1++;          // consume permanently (non-recoverable)
-        recalcFlagsLeft(true); // update flagsLeft1 after consuming
-    } else {
-    	recalcFlagsLeft(false);
-        if (flagsLeft2 <= 0) {
-            showNoFlagsLeftAlert();
+
+        // Check flags availability (allowedNow - flagsUsed)
+        recalcFlagsLeft(isPlayer1);
+
+        if (isPlayer1 && flagsLeft1 <= 0) {
+            DialogUtil.show(AlertType.INFORMATION, null, "No Flags Left",
+                    "You have no flags left.\nFlagging non-mines reduces your flag quota.");
             return;
         }
-        flagsUsed2++;
-        recalcFlagsLeft(false);
-    }
-
-    // We are placing a new flag
-    try {
-        Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
-        ImageView iv = new ImageView(img);
-        iv.setFitWidth(20);
-        iv.setFitHeight(20);
-        iv.setPreserveRatio(true);
-        button.setGraphic(iv);
-    } catch (Exception ex) {
-        button.setText("🚩");
-    }
-
-    if (!button.getStyleClass().contains("cell-flagged")) {
-        button.getStyleClass().add("cell-flagged");
-    }
-
-    // ----- scoring + mine counters -----
-    if (cell.isMine()) {
-        // show mine instead of just a flag
-        button.setGraphic(null);
-        button.setText("💣");
-        button.getStyleClass().add("cell-mine");
-        button.getStyleClass().add("cell-revealed");
-
-        // this mine is now safely found → it shouldn't be clickable anymore
-        button.setDisable(true);
-
-        // +1 point for correctly flagged mine
-        score += 1;
-
-        if (isPlayer1) {
-            minesLeft1 = Math.max(0, minesLeft1 - 1);
-        } else {
-            minesLeft2 = Math.max(0, minesLeft2 - 1);
+        if (!isPlayer1 && flagsLeft2 <= 0) {
+            DialogUtil.show(AlertType.INFORMATION, null, "No Flags Left",
+                    "You have no flags left.\nFlagging non-mines reduces your flag quota.");
+            return;
         }
-        // mark as revealed
-        boolean[][] revealedArray = isPlayer1 ? revealedCellsP1 : revealedCellsP2;
-        if (revealedArray != null && !revealedArray[row][col]) {
-            revealedArray[row][col] = true;
 
-            if (isPlayer1) revealedCountP1++;
-            else revealedCountP2++;
+        // 3) If it's a mine -> reveal immediately (NOT a persistent flag)
+        if (cell.isMine()) {
+            button.setGraphic(null);
+            button.setText("💣");
+
+            button.getStyleClass().remove("cell-hidden");
+            button.getStyleClass().remove("cell-flagged"); // just in case
+            if (!button.getStyleClass().contains("cell-revealed")) button.getStyleClass().add("cell-revealed");
+            if (!button.getStyleClass().contains("cell-mine"))     button.getStyleClass().add("cell-mine");
+
+            button.setDisable(true);
+
+            // scoring + mines left
+            score += 1;
+            if (isPlayer1) minesLeft1 = Math.max(0, minesLeft1 - 1);
+            else          minesLeft2 = Math.max(0, minesLeft2 - 1);
+
+            // mark revealed for consistency with unrevealed-count logic
+            boolean[][] revealedArray = isPlayer1 ? revealedCellsP1 : revealedCellsP2;
+            if (revealedArray != null && !revealedArray[row][col]) {
+                revealedArray[row][col] = true;
+                if (isPlayer1) revealedCountP1++;
+                else          revealedCountP2++;
+            }
 
             recalcFlagsLeft(isPlayer1);
+            updateScoreAndMineLabels();
+
+            // Either board finishing ends the match
+            if (!gameOver && sharedHearts > 0 && (minesLeft1 == 0 || minesLeft2 == 0)) {
+                gameWon = true;
+                onGameOver();
+            }
+            return;
         }
 
+        // 4) Otherwise (non-mine): place a real flag (penalty flag) and consume a non-reusable flag
+        try {
+            Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
+            ImageView iv = new ImageView(img);
+            iv.setFitWidth(20);
+            iv.setFitHeight(20);
+            iv.setPreserveRatio(true);
+            button.setGraphic(iv);
+        } catch (Exception ex) {
+            button.setText("🚩");
+        }
 
+        if (!button.getStyleClass().contains("cell-flagged")) {
+            button.getStyleClass().add("cell-flagged");
+        }
 
-    } else {
-        // Wrong flag on non-mine → mistake and -3 points
+        // Consume a flag permanently
+        if (isPlayer1) {
+            flagsPlaced1++;
+            recalcFlagsLeft(true);
+        } else {
+            flagsPlaced2++;
+            recalcFlagsLeft(false);
+        }
+
+        // Penalty + mistake
         mistakeMade = true;
         score -= 3;
+
+        updateScoreAndMineLabels();
     }
 
-    updateScoreAndMineLabels();
-
-    // Win condition: all mines on at least one board are flagged and hearts > 0
-    if (!gameOver && sharedHearts > 0 && (minesLeft1 == 0 || minesLeft2 == 0)) {
-        gameWon = true;
-        onGameOver();
+    private int getUnrevealedCellsRemaining(boolean isPlayer1) {
+        int total = isPlayer1 ? totalCellsP1 : totalCellsP2;
+        int revealed = isPlayer1 ? revealedCountP1 : revealedCountP2;
+        return Math.max(0, total - revealed);
     }
-}
 
-private void showNoFlagsLeftAlert() {
-    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle("No Flags Left");
-    alert.setHeaderText(null);
-    alert.setContentText("You have no flags left.\nUsed flags cannot be recovered.");
-    alert.showAndWait();
-}
-
-
-private int getUnrevealedCellsRemaining(boolean isPlayer1) {
-    int total = isPlayer1 ? totalCellsP1 : totalCellsP2;
-    int revealed = isPlayer1 ? revealedCountP1 : revealedCountP2;
-    return Math.max(0, total - revealed);
-}
-
-// allowed flags = half of ALL unrevealed cells
-private int allowedFlagsNow(boolean isPlayer1) {
-    return getUnrevealedCellsRemaining(isPlayer1) / 2; // floor
-}
-
-// flagsUsed is non-recoverable => flagsLeft = allowedNow - flagsUsed
-private void recalcFlagsLeft(boolean isPlayer1) {
-    int allowed = allowedFlagsNow(isPlayer1);
-
-    if (isPlayer1) {
-        flagsLeft1 = Math.max(0, allowed - flagsUsed1);
-    } else {
-        flagsLeft2 = Math.max(0, allowed - flagsUsed2);
+    // allowed flags = half of ALL unrevealed cells
+    private int allowedFlagsNow(boolean isPlayer1) {
+        return getUnrevealedCellsRemaining(isPlayer1) / 2; // floor
     }
-}
 
+    // flagsUsed is non-recoverable => flagsLeft = allowedNow - flagsUsed
+    private void recalcFlagsLeft(boolean isPlayer1) {
+        int allowed = allowedFlagsNow(isPlayer1);
 
-    // ============================================================
-    // REVEAL LOGIC (FIRST CLICK)
-    // ============================================================
+        if (isPlayer1) {
+            flagsLeft1 = Math.max(0, allowed - flagsPlaced1);
+        } else {
+            flagsLeft2 = Math.max(0, allowed - flagsPlaced2);
+        }
+    }
+
+   
+
+ 
+     // Auto-remove flag removes only the VISUAL marker. It does NOT refund a flag.
+    private void autoRemoveFlagIfPresent(Board board, int row, int col, Button button, boolean isPlayer1) {
+        if (!button.getStyleClass().contains("cell-flagged")) return;
+
+        // Remove flag visuals only
+        button.setGraphic(null);
+        button.setText("");
+        button.getStyleClass().remove("cell-flagged");
+
+        // DO NOT decrement flagsPlacedX (non-reusable flags)
+        recalcFlagsLeft(isPlayer1);
+        updateScoreAndMineLabels();
+    }
 
     /**
      * Reveals a single cell and updates hearts, score, and game state
@@ -653,17 +719,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
             recalcFlagsLeft(isPlayer1);
         }
 
-
-
-
-        // Auto Remove Flag – if enabled, remove the flag when revealing a cell
-        if (SysData.isAutoRemoveFlagEnabled()) {
-            if (button.getGraphic() instanceof ImageView) {
-                button.setGraphic(null);
-            }
-            button.getStyleClass().remove("cell-flagged");
-        }
-
         button.getStyleClass().removeAll(
                 "cell-hidden", "cell-revealed",
                 "cell-mine", "cell-question",
@@ -679,19 +734,26 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                 int heartsBefore = sharedHearts;
                 sharedHearts = Math.max(0, sharedHearts - 1);
                 if (sharedHearts < heartsBefore) {
-                    // revealing a mine and actually losing a life = mistake
                     mistakeMade = true;
                 }
 
                 triggerExplosion(tile);
 
                 if (isPlayer1) {
-                    minesLeft1 -= 1;
+                    minesLeft1 = Math.max(0, minesLeft1 - 1);
                 } else {
-                    minesLeft2 -= 1;
+                    minesLeft2 = Math.max(0, minesLeft2 - 1);
                 }
                 buildHeartsBar();
                 updateScoreAndMineLabels();
+
+                // (#2) Either board finishing ends the match (keep ||)
+                if (!gameOver && sharedHearts > 0 && (minesLeft1 == 0 || minesLeft2 == 0)) {
+                    gameWon = true;
+                    onGameOver();
+                    return;
+                }
+
                 if (checkLoseAndHandle()) return;
             }
 
@@ -707,15 +769,13 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                     if (isPlayer1) questionsLeft1 = Math.max(0, questionsLeft1 - 1);
                     else           questionsLeft2 = Math.max(0, questionsLeft2 - 1);
                 } catch (Exception ex) {
-                    button.setText("?"); 
+                    button.setText("?");
                     button.getStyleClass().addAll("cell-revealed", "cell-question");
                 }
 
                 // first time a QUESTION is revealed: +1 point
                 if (isFirstReveal) {
-                    System.out.println("Before first reveal QUESTION at (" + row + "," + col + "), score: " + score);
                     score += 1;
-                    System.out.println("First reveal QUESTION at (" + row + "," + col + "), score +1, now: " + score);
                 }
             }
 
@@ -738,9 +798,7 @@ private void recalcFlagsLeft(boolean isPlayer1) {
 
                 // first time a SURPRISE is revealed: +1 point
                 if (isFirstReveal) {
-                    System.out.println("Before first reveal SURPRISE at (" + row + "," + col + "), score: " + score);
                     score += 1;
-                    System.out.println("First reveal SURPRISE at (" + row + "," + col + "), score +1, now: " + score);
                 }
             }
 
@@ -760,13 +818,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
             }
         }
 
-        // Smart Hints – if enabled, visually mark QUESTION cells in a special CSS class
-        if (SysData.isSmartHintsEnabled() && cell.getType() == CellType.QUESTION) {
-            if (!button.getStyleClass().contains("smart-hint-cell")) {
-                button.getStyleClass().add("smart-hint-cell");
-            }
-        }
-
         // Update remaining safe cells and check for win
         if (cell.getType() != CellType.MINE) {
             if (isPlayer1) {
@@ -775,8 +826,9 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                 safeCellsRemaining2 = Math.max(0, safeCellsRemaining2 - 1);
             }
 
+            // (#2) Either board finishing ends the match (keep ||)
             if (!gameOver && sharedHearts > 0 &&
-                (safeCellsRemaining1 == 0 || safeCellsRemaining2 == 0)) {
+                    (safeCellsRemaining1 == 0 || safeCellsRemaining2 == 0)) {
                 gameWon = true;
                 onGameOver();
             }
@@ -786,52 +838,55 @@ private void recalcFlagsLeft(boolean isPlayer1) {
     }
 
     /**
-     * Handles a cell click: reveal, cascade if empty, and trigger surprise/question activation
+     * Handles a cell click: reveal, cascade if empty/question/surprise, and trigger surprise/question activation
      * on second click. Always returns true → turn consumed.
      */
     private boolean handleCellClick(Board board,
-                                    int row,
-                                    int col,
-                                    Button button,
-                                    StackPane tile,
-                                    boolean isPlayer1) {
+            int row,
+            int col,
+            Button button,
+            StackPane tile,
+            boolean isPlayer1) {
 
-        Cell cell = board.getCell(row, col);
+		Cell cell = board.getCell(row, col);
+		boolean[][] revealedArray = isPlayer1 ? revealedCellsP1 : revealedCellsP2;
+		
+		// Left click on flagged cell should still reveal -> remove flag visuals first
+		if (button.getStyleClass().contains("cell-flagged")) {
+		autoRemoveFlagIfPresent(board, row, col, button, isPlayer1);
+		}
+		
+		// SECOND CLICK ON SURPRISE : activate surprise
+		if (cell.getType() == CellType.SURPRISE &&
+		revealedArray != null &&
+		revealedArray[row][col]) {
+		
+		activateSurprise(board, row, col, button, tile, isPlayer1);
+		return true;
+		}
+		
+		// SECOND CLICK ON QUESTION : activate question
+		if (cell.getType() == CellType.QUESTION &&
+		revealedArray != null &&
+		revealedArray[row][col]) {
+		
+		activateQuestion(board, row, col, button, tile, isPlayer1);
+		return true;
+		}
+		
+		revealSingleCell(board, row, col, button, tile, isPlayer1);
+		
+		// Cascade for EMPTY, QUESTION, SURPRISE (treated as empty by TA)
+		if (cell.getType() == CellType.EMPTY ||
+		cell.getType() == CellType.QUESTION ||
+		cell.getType() == CellType.SURPRISE) {
+		
+		cascadeReveal(board, row, col, isPlayer1);
+		}
+		
+		return true;
+		}
 
-        // Determine which revealed-array to use
-        boolean[][] revealedArray = isPlayer1 ? revealedCellsP1 : revealedCellsP2;
-
-        // SECOND CLICK ON SURPRISE : activate surprise
-        if (cell.getType() == CellType.SURPRISE &&
-            revealedArray != null &&
-            revealedArray[row][col]) {
-
-            activateSurprise(board, row, col, button, tile, isPlayer1);
-            return true;
-        }
-
-        // SECOND CLICK ON QUESTION : activate question
-        if (cell.getType() == CellType.QUESTION &&
-            revealedArray != null &&
-            revealedArray[row][col]) {
-
-            activateQuestion(board, row, col, button, tile, isPlayer1);
-            return true;
-        }
-
-        // Normal reveal (first time or other types)
-        revealSingleCell(board, row, col, button, tile, isPlayer1);
-
-        // Cascade for EMPTY cells
-        if (cell.getType() == CellType.EMPTY || cell.getType() == CellType.QUESTION || cell.getType() == CellType.SURPRISE) {
-            cascadeReveal(board, row, col, isPlayer1);
-        }
-
-        // Smart hint behaviour based on NUMBER neighbors
-        applySmartHint(board, row, col, isPlayer1);
-
-        return true;
-    }
 
     /**
      * Performs a flood-fill style reveal of neighboring cells starting from
@@ -848,7 +903,7 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         stack.push(new int[]{startRow, startCol});
 
         while (!stack.isEmpty()) {
-        	if (gameOver) return;
+            if (gameOver) return;
             int[] rc = stack.pop();
             int r = rc[0];
             int c = rc[1];
@@ -867,12 +922,15 @@ private void recalcFlagsLeft(boolean isPlayer1) {
             if (tile == null || tile.getChildren().isEmpty()) continue;
             Button btn = (Button) tile.getChildren().get(0);
 
+            // (#4/#5) remove only visual flag when cascade reveals; no refund
+            autoRemoveFlagIfPresent(board, r, c, btn, isPlayer1);
+
             revealSingleCell(board, r, c, btn, tile, isPlayer1);
 
             if (cell.getType() == CellType.EMPTY ||
-            		  cell.getType() == CellType.QUESTION ||
-            		  cell.getType() == CellType.SURPRISE ||
-                (cell.getType() == CellType.NUMBER && cell.getAdjacentMines() == 0)) {
+                    cell.getType() == CellType.QUESTION ||
+                    cell.getType() == CellType.SURPRISE ||
+                    (cell.getType() == CellType.NUMBER && cell.getAdjacentMines() == 0)) {
 
                 for (int dr = -1; dr <= 1; dr++) {
                     for (int dc = -1; dc <= 1; dc++) {
@@ -896,37 +954,26 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         scoreLabel.setText("Score: " + score);
 
         player1BombsLeftLabel.setText(
-        	    config.getPlayer1Nickname() + ", Mines left: " + minesLeft1
-        	    + " | Flags left: " + flagsLeft1
-        	    + " | Surprises left: " + surprisesLeft1
-        	    + " | Questions left: " + questionsLeft1
-        	);
+                config.getPlayer1Nickname() + ", Mines left: " + minesLeft1
+                        + " | Flags left: " + flagsLeft1
+                        + " | Surprises left: " + surprisesLeft1
+                        + " | Questions left: " + questionsLeft1
+        );
 
-        	player2BombsLeftLabel.setText(
-        	    config.getPlayer2Nickname() + ", Mines left: " + minesLeft2
-        	    + " | Flags left: " + flagsLeft2
-        	    + " | Surprises left: " + surprisesLeft2
-        	    + " | Questions left: " + questionsLeft2
-        	);
-
+        player2BombsLeftLabel.setText(
+                config.getPlayer2Nickname() + ", Mines left: " + minesLeft2
+                        + " | Flags left: " + flagsLeft2
+                        + " | Surprises left: " + surprisesLeft2
+                        + " | Questions left: " + questionsLeft2
+        );
     }
 
-    // ============================================================
-    // TURN HANDLING
-    // ============================================================
-
-    /**
-     * Switches the active player turn and refreshes the board states.
-     */
+  
     private void switchTurn() {
         isPlayer1Turn = !isPlayer1Turn;
         applyTurnStateToBoards();
     }
 
-    /**
-     * Applies active/inactive state styles and interactivity to both boards
-     * based on whose turn it is.
-     */
     private void applyTurnStateToBoards() {
         if (player1Grid == null || player2Grid == null) return;
 
@@ -939,9 +986,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         }
     }
 
-    /**
-     * Marks a board as active: enables it, sets styles, and updates the player label style.
-     */
     private void setBoardActive(GridPane grid, Label label) {
         grid.setDisable(false);
 
@@ -958,10 +1002,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         }
     }
 
-    /**
-     * Marks a board as inactive: disables it, applies "forbidden" cursor or default,
-     * and updates styles.
-     */
     private void setBoardInactive(GridPane grid, Label label) {
         grid.setDisable(true);
 
@@ -982,14 +1022,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         }
     }
 
-    // ============================================================
-    // TIMER
-    // ============================================================
-
-    /**
-     * Starts the game timer that updates every second and
-     * stops any existing timer before creating a new one.
-     */
     private void startTimer() {
         if (timer != null) {
             timer.stop();
@@ -1007,71 +1039,49 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         timer.play();
     }
 
-    /**
-     * Pauses the timer without resetting elapsed time.
-     */
     private void pauseTimer() {
         if (timer != null) {
             timer.pause();
         }
     }
 
-    /**
-     * Resumes the timer after it has been paused.
-     */
     private void resumeTimer() {
         if (timer != null) {
             timer.play();
         }
     }
 
-    /**
-     * Completely stops the timer.
-     */
     private void stopTimer() {
         if (timer != null) {
             timer.stop();
         }
     }
 
-    /**
-     * Updates the time label using the current number of elapsed seconds
-     * in "Time: mm:ss" format.
-     */
     private void updateTimeLabel() {
         int minutes = elapsedSeconds / 60;
         int seconds = elapsedSeconds % 60;
         timeLabel.setText(String.format("Time: %02d:%02d", minutes, seconds));
     }
 
-    // ============================================================
-    // TOP BAR BUTTONS (EXIT / HELP / BACK / PAUSE / SOUND / MUSIC)
-    // ============================================================
+  
 
-    /**
-     * Once clicking on exit button: saves GIVE_UP and closes the application.
-     */
     @FXML
     private void onExitBtnClicked() {
+        resetIdleHintTimer();
         saveGiveUpGame();
         stopTimer();
         System.exit(0);
     }
 
-    /**
-     * Clicking on help button: currently just logs a message to the console
-     * (placeholder for future help screen).
-     */
     @FXML
     private void onHelpBtnClicked() {
+        resetIdleHintTimer();
         System.out.println("Help clicked but screen not created yet!");
     }
 
-    /**
-     * Clicking on back button: saves GIVE_UP, stops the timer and returns to the main menu screen.
-     */
     @FXML
     private void onBackBtnClicked() throws IOException {
+        resetIdleHintTimer();
         saveGiveUpGame();
         stopTimer();
 
@@ -1088,17 +1098,22 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         stage.centerOnScreen();
     }
 
-    /**
-     * Handles the Pause/Play button: toggles paused state,
-     * updates button icon and board opacity, and pauses/resumes the timer accordingly.
-     */
     @FXML
     private void onPauseGame() {
-        isPaused = !isPaused();
+        resetIdleHintTimer();
+
+        isPaused = !isPaused;
 
         if (pauseBtn != null && pauseBtn.getGraphic() instanceof ImageView iv) {
             String iconPath = isPaused ? "/Images/play-button.png" : "/Images/pause.png";
-            Image img = new Image(getClass().getResourceAsStream(iconPath));
+
+            var stream = getClass().getResourceAsStream(iconPath);
+            if (stream == null) {
+                System.err.println("Missing resource: " + iconPath);
+                return;
+            }
+            Image img = new Image(stream);
+
             iv.setImage(img);
         }
 
@@ -1115,50 +1130,31 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         }
     }
 
-    private boolean isPaused() {
-        return isPaused;
-    }
-
-    /**
-     * Handling the sound button: toggles sound effects setting (click sounds) and updates icon.
-     */
     @FXML
     private void onSoundOff() {
+        resetIdleHintTimer();
         boolean newState = !SysData.isSoundEnabled();
         SysData.setSoundEnabled(newState);
         refreshSoundIconFromSettings();
     }
 
-    /**
-     * Handling the music button: toggles background music via SoundManager
-     * and syncs SysData + icon.
-     */
     @FXML
     private void onMusicToggle() {
-        // Toggle music playback
+        resetIdleHintTimer();
         SoundManager.toggleMusic();
 
-        // Save current state to SysData
         boolean musicOn = SoundManager.isMusicOn();
         SysData.setMusicEnabled(musicOn);
 
-        // Update icon and ensure state is synced
         refreshMusicIconFromSettings();
     }
 
     @FXML
     private void onMainMenu() {
-        // Currently unused; can be wired from FXML if needed
+        resetIdleHintTimer();
     }
 
-    // ============================================================
-    // EXPLOSION ANIMATION
-    // ============================================================
-
-    /**
-     * Triggers a small explosion animation on a tile when a mine is hit.
-     * Creates flash, shockwave, and debris animations and removes them after completion.
-     */
+  
     private void triggerExplosion(StackPane tilePane) {
         double centerX = tilePane.getWidth() / 2.0;
         double centerY = tilePane.getHeight() / 2.0;
@@ -1215,21 +1211,18 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         });
     }
 
-    // ============================================================
-    // GAME OVER + SAVE
-    // ============================================================
+ 
 
-    /**
-     * Main game-over handler: prevents duplicate handling, stops the timer,
-     * saves the game result, and opens the end-game screen.
-     */
     private void onGameOver() {
         if (gameOver) {
             return;
         }
         gameOver = true;
 
-        //convert remaining hearts to points when the game is won
+        // stop idle hint timer
+        if (idleHintTimer != null) idleHintTimer.stop();
+
+        // convert remaining hearts to points when the game is won
         endHeartsRemaining = 0;
         endHeartsBonusPoints = 0;
         if (gameWon && sharedHearts > 0) {
@@ -1238,10 +1231,11 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                 case MEDIUM -> 8;
                 case HARD   -> 12;
             };
+            endScoreBefore = score;
             endHeartsRemaining = sharedHearts;
             endHeartsBonusPoints = sharedHearts * perHeart;
             score += endHeartsBonusPoints;
-            updateScoreAndMineLabels();  // refresh score label before leaving screen
+            updateScoreAndMineLabels();
         }
 
         stopTimer();
@@ -1254,29 +1248,20 @@ private void recalcFlagsLeft(boolean isPlayer1) {
 
         System.out.println("Game over! Saved to history.");
     }
-    
+
     private void showHeartsBonusPopupIfNeeded() {
         if (!gameWon) return;
         if (endHeartsRemaining <= 0 || endHeartsBonusPoints <= 0) return;
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Hearts Bonus");
-        alert.setHeaderText("Bonus added to your final score!");
-
-        alert.setContentText(
+        DialogUtil.show(AlertType.INFORMATION,
+                "Bonus added to your final score!",
+                "Hearts Bonus",
                 "Remaining hearts: " + endHeartsRemaining + "\n" +
-                "Added points: +" + endHeartsBonusPoints + "\n\n" +
-                "Final score: " + score
-        );
-
-        alert.showAndWait();
+                        "Score before Addition: " + endScoreBefore + "\n" +
+                        "Added points: +" + endHeartsBonusPoints + "\n\n" +
+                        "Final score: " + score);
     }
 
-
-    /**
-     * Saves the current game session (result, score, time, etc.)
-     * into SysData's history and writes it to CSV.
-     */
     private void saveCurrentGameToHistory() {
         if (config == null) {
             return;
@@ -1284,14 +1269,12 @@ private void recalcFlagsLeft(boolean isPlayer1) {
 
         GameResult result = gameWon ? GameResult.WIN : GameResult.LOSE;
 
-        // Get the logged-in players from the session
         Player p1 = SessionManager.getPlayer1();
         Player p2 = SessionManager.getPlayer2();
 
         String player1Official = (p1 != null) ? p1.getOfficialName() : null;
         String player2Official = (p2 != null) ? p2.getOfficialName() : null;
 
-        // Nicknames still come from GameConfig
         String player1Nick = config.getPlayer1Nickname();
         String player2Nick = config.getPlayer2Nickname();
 
@@ -1319,10 +1302,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         System.out.println("Saved game: " + gameRecord);
     }
 
-    /**
-     * Shows the appropriate end game screen (win or lose view),
-     * passes the game data into EndGameController, and switches the scene.
-     */
     @FXML
     private void showEndGameScreen() {
         try {
@@ -1349,8 +1328,7 @@ private void recalcFlagsLeft(boolean isPlayer1) {
             stage.setScene(endScene);
             stage.centerOnScreen();
             stage.show();
-            
-            //Show hearts-bonus popup AFTER win screen is shown
+
             Platform.runLater(this::showHeartsBonusPopupIfNeeded);
 
         } catch (IOException e) {
@@ -1358,32 +1336,23 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         }
     }
 
-    /**
-     * Saves a GIVE_UP record when the players leave the game
-     * via Back/Exit before it naturally ends.
-     */
     private void saveGiveUpGame() {
-        // If there is no config, we can't build a proper Game record
         if (config == null) {
             return;
         }
 
-        // If the game already ended (WIN/LOSE) and was saved,
-        // don't also save a GIVE_UP on top of it.
         if (gameOver) {
             return;
         }
 
         GameResult result = GameResult.GIVE_UP;
 
-        // Logged-in players (registered users)
         Player p1 = SessionManager.getPlayer1();
         Player p2 = SessionManager.getPlayer2();
 
         String player1Official = (p1 != null) ? p1.getOfficialName() : null;
         String player2Official = (p2 != null) ? p2.getOfficialName() : null;
 
-        // Nicknames come from the GameConfig
         String player1Nick = config.getPlayer1Nickname();
         String player2Nick = config.getPlayer2Nickname();
 
@@ -1409,19 +1378,12 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         System.out.println("Saved GIVE_UP game: " + giveUpGame);
     }
 
-    // ============================================================
-    // DEBUG
-    // ============================================================
 
-    /**
-     * Helper method: prints the logical contents of a board to the console.
-     */
     private void printBoardDebug(String title, Board board) {
         System.out.println("========== " + title + " ==========");
         int rows = board.getRows();
         int cols = board.getCols();
 
-        // Print column indices header
         System.out.print("    ");
         for (int c = 0; c < cols; c++) {
             System.out.printf("%3d", c);
@@ -1434,7 +1396,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         System.out.println();
 
         for (int r = 0; r < rows; r++) {
-            // Row index on the left
             System.out.printf("%3d|", r);
 
             for (int c = 0; c < cols; c++) {
@@ -1447,11 +1408,8 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                     case SURPRISE -> ch = 'S';
                     case NUMBER -> {
                         int n = cell.getAdjacentMines();
-                        if (n >= 0 && n <= 9) {
-                            ch = (char) ('0' + n);
-                        } else {
-                            ch = 'N';
-                        }
+                        if (n >= 0 && n <= 9) ch = (char) ('0' + n);
+                        else ch = 'N';
                     }
                     case EMPTY -> ch = '.';
                     default -> ch = '?';
@@ -1464,25 +1422,10 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         System.out.println();
     }
 
-    // ============================================================
-    // SURPRISE ACTIVATION (SECOND CLICK)
-    // ============================================================
+  
 
-    /**
-     * Activates a surprise cell on second click:
-     * base activation score + random good/bad effect.
-     *
-     * Good:
-     *   - extra positive points
-     *   - +1 life (or convert life to points if at max)
-     *
-     * Bad:
-     *   - extra negative points
-     *   - -1 life
-     *
-     * After activation, the cell is disabled (cannot be clicked again).
-     */
     private void activateSurprise(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
+        resetIdleHintTimer();
 
         int livesBefore = sharedHearts;
         int scoreBefore = score;
@@ -1491,51 +1434,37 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         int goodBonus = getSurpriseGoodBonusPoints();
         int badPenalty = getSurpriseBadPenaltyPoints();
 
-        // Base activation points (positive)
         int scoreChange = activationPoints;
 
-        // 50% chance good / bad
         boolean good = Math.random() < 0.5;
 
         if (good) {
-            // Good surprise: extra positive points + possibly +1 life
             scoreChange += goodBonus;
 
             if (sharedHearts < TOTAL_HEART_SLOTS) {
-                // Gain 1 life
                 sharedHearts += 1;
             } else {
-                // Hearts already max → convert the would-be extra life into points
                 scoreChange += activationPoints;
             }
         } else {
-            // Bad surprise: extra negative points and -1 life
             scoreChange -= badPenalty;
             sharedHearts = Math.max(0, sharedHearts - 1);
         }
 
-        // Apply the total score change
         score += scoreChange;
 
-        // Update hearts bar
         buildHeartsBar();
-
-        // Disable this surprise cell so it cannot be activated again
         button.setDisable(true);
 
-        // Refresh score / mines labels
         updateScoreAndMineLabels();
 
         if (checkLoseAndHandle()) return;
-        
-        // Show popup with result
+
         int livesAfter = sharedHearts;
         int netScoreChange = score - scoreBefore;
         showSurprisePopup(good, netScoreChange, livesBefore, livesAfter);
     }
 
-
-    // Base score for activating a surprise/question (second click) per difficulty
     private int getActivationPoints() {
         return switch (difficulty) {
             case EASY -> 5;
@@ -1544,7 +1473,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         };
     }
 
-    // Extra score for GOOD surprise (on top of activation)
     private int getSurpriseGoodBonusPoints() {
         return switch (difficulty) {
             case EASY -> 8;
@@ -1553,7 +1481,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         };
     }
 
-    // Extra score (negative) for BAD surprise (on top of activation)
     private int getSurpriseBadPenaltyPoints() {
         return switch (difficulty) {
             case EASY -> 8;
@@ -1562,10 +1489,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         };
     }
 
-    /**
-     * Shows a popup describing the surprise result and the changes
-     * in score and lives.
-     */
     private void showSurprisePopup(boolean good, int netScoreChange, int livesBefore, int livesAfter) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Surprise Result");
@@ -1587,16 +1510,9 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         alert.showAndWait();
     }
 
-    // ============================================================
-    // QUESTION SYSTEM (SECOND CLICK ON QUESTION)
-    // ============================================================
+ 
 
-    /**
-     * Returns a random question from the CSV using QuestionsManagerController logic.
-     */
     private Question getRandomQuestionFromPool() {
-        // QuestionsManagerController is in the same package (control),
-        // so no import is required.
         List<Question> all = QuestionsManagerController.loadQuestionsForGame();
 
         if (all == null || all.isEmpty()) {
@@ -1608,9 +1524,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         return all.get(idx);
     }
 
-    /**
-     * Shows a multiple-choice question dialog and returns the chosen option (1-4).
-     */
     private int showQuestionDialog(Question q) {
         if (q == null) return 0;
 
@@ -1645,11 +1558,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         return -1;
     }
 
-    /**
-     * Adds lives but caps at TOTAL_HEART_SLOTS.
-     * Extra lives are converted to points at "pointsPerConvertedHeart".
-     * Returns the extra score gained from conversion.
-     */
     private int addLivesWithCap(int livesToAdd, int pointsPerConvertedHeart) {
         int extraScoreFromConversion = 0;
 
@@ -1664,10 +1572,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         return extraScoreFromConversion;
     }
 
-    /**
-     * Reveals one random mine visually (if any) on the given board for the given player,
-     * without affecting hearts. It does decrease the mines-left counter and updates labels.
-     */
     private void revealRandomMineReward(Board board, boolean isPlayer1) {
         StackPane[][] buttons = isPlayer1 ? p1Buttons : p2Buttons;
         List<int[]> mines = new ArrayList<>();
@@ -1698,12 +1602,22 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         int row = rc[0];
         int col = rc[1];
 
+        boolean[][] revealedArray = isPlayer1 ? revealedCellsP1 : revealedCellsP2;
+        if (revealedArray != null && !revealedArray[row][col]) {
+            revealedArray[row][col] = true;
+            if (isPlayer1) revealedCountP1++;
+            else revealedCountP2++;
+            recalcFlagsLeft(isPlayer1);
+        }
+
         StackPane tile = buttons[row][col];
         Button button = (Button) tile.getChildren().get(0);
 
-        // Show the mine but do NOT change hearts or trigger explosion
+        // (#4/#5) remove only visual flag; no refund
+        autoRemoveFlagIfPresent(board, row, col, button, isPlayer1);
+
         button.setText("💣");
-        button.getStyleClass().removeAll("cell-hidden", "cell-flagged");
+        button.getStyleClass().removeAll("cell-hidden");
         if (!button.getStyleClass().contains("cell-revealed")) {
             button.getStyleClass().add("cell-revealed");
         }
@@ -1712,26 +1626,26 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         }
         button.setDisable(true);
 
-        // Decrease mines-left count
         if (isPlayer1) {
             minesLeft1 = Math.max(0, minesLeft1 - 1);
         } else {
             minesLeft2 = Math.max(0, minesLeft2 - 1);
         }
+
         updateScoreAndMineLabels();
+
+        // (#2) Either board finishing ends the match (keep ||)
+        if (!gameOver && sharedHearts > 0 && (minesLeft1 == 0 || minesLeft2 == 0)) {
+            gameWon = true;
+            onGameOver();
+        }
     }
 
-    /**
-     * Reveals up to a 3x3 area of NON-MINE cells automatically for the given player.
-     * Uses normal revealSingleCell for non-mine cells (so score & safeCellsRemaining update),
-     * skips mines entirely to avoid punishing the player on a reward.
-     */
     private void revealArea3x3Reward(Board board, boolean isPlayer1) {
         StackPane[][] buttons = isPlayer1 ? p1Buttons : p2Buttons;
         int rows = board.getRows();
         int cols = board.getCols();
 
-        // Collect candidate centers (cells that are not mines and not disabled)
         List<int[]> centers = new ArrayList<>();
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -1763,25 +1677,20 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                 if (r < 0 || c < 0 || r >= rows || c >= cols) continue;
 
                 Cell cell = board.getCell(r, c);
-                if (cell.getType() == CellType.MINE) {
-                    // Skip mines in this reward area
-                    continue;
-                }
+                if (cell.getType() == CellType.MINE) continue;
 
                 StackPane tile = buttons[r][c];
                 if (tile == null || tile.getChildren().isEmpty()) continue;
                 Button btn = (Button) tile.getChildren().get(0);
                 if (btn.isDisable()) continue;
 
-                // Normal reveal for non-mine cells, so score & safeCellsRemaining work as usual
+                // (#4/#5) remove only visual flag; no refund
+                autoRemoveFlagIfPresent(board, r, c, btn, isPlayer1);
                 revealSingleCell(board, r, c, btn, tile, isPlayer1);
             }
         }
     }
 
-    /**
-     * Shows a popup describing what happened after answering a question.
-     */
     private void showQuestionResultPopup(Question q,
                                          boolean correct,
                                          int netScoreChange,
@@ -1813,27 +1722,17 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         alert.showAndWait();
     }
 
-    /**
-     * Activates a QUESTION cell on second click.
-     * - Always costs activation points (5/8/12 by game difficulty).
-     * - Loads random question from CSV.
-     * - Rewards/penalties depend on GAME difficulty and QUESTION difficulty.
-     * - Lives are capped at TOTAL_HEART_SLOTS; extra are converted to points.
-     * - Disables the cell and shows a result popup.
-     */
     private void activateQuestion(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
+        resetIdleHintTimer();
 
-        int activationPoints = getActivationPoints(); // 5 EASY, 8 MEDIUM, 12 HARD
+        int activationPoints = getActivationPoints();
         int livesBefore = sharedHearts;
         int scoreBefore = score;
 
-        // Always costs the player activation points
         score -= activationPoints;
 
-        // Get a random question
         Question q = getRandomQuestionFromPool();
         if (q == null) {
-            // No question available: just block the cell and update UI
             button.setDisable(true);
             updateScoreAndMineLabels();
             buildHeartsBar();
@@ -1842,7 +1741,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
 
         int chosenOption = showQuestionDialog(q);
         if (chosenOption == -1) {
-            // No answer chosen, just block cell
             button.setDisable(true);
             updateScoreAndMineLabels();
             buildHeartsBar();
@@ -1853,12 +1751,10 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         String qDiff = q.getDifficulty() != null ? q.getDifficulty().toLowerCase() : "easy";
         String extraInfo = "";
 
-        // GAME MODE: EASY
         if (this.difficulty == Difficulty.EASY) {
 
             if (qDiff.equals("easy")) {
                 if (correct) {
-                    // +1 life and +3 points (with cap & conversion)
                     score += 3;
                     int converted = addLivesWithCap(1, activationPoints);
                     score += converted;
@@ -1867,7 +1763,7 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                                 converted + " points.";
                     }
                 } else {
-                    // Wrong: -3 points or 0, 50% each
+                    mistakeMade = true;
                     if (Math.random() < 0.5) {
                         score -= 3;
                         extraInfo = "Wrong answer: you lost 3 points.";
@@ -1878,12 +1774,11 @@ private void recalcFlagsLeft(boolean isPlayer1) {
 
             } else if (qDiff.equals("medium")) {
                 if (correct) {
-                    // Reveal one mine automatically (no heart penalty) +6 points
                     revealRandomMineReward(board, isPlayer1);
                     score += 6;
                     extraInfo = "Correct! One mine was revealed automatically for you.";
                 } else {
-                    // Wrong: -6 points or 0, 50% each
+                    mistakeMade = true;
                     if (Math.random() < 0.5) {
                         score -= 6;
                         extraInfo = "Wrong answer: you lost 6 points.";
@@ -1894,19 +1789,17 @@ private void recalcFlagsLeft(boolean isPlayer1) {
 
             } else if (qDiff.equals("hard")) {
                 if (correct) {
-                    // Reveal 3x3 cells automatically +10 points
                     revealArea3x3Reward(board, isPlayer1);
                     score += 10;
                     extraInfo = "Correct! A 3×3 area of cells was revealed for you.";
                 } else {
-                    // Wrong: -10 points
                     score -= 10;
                     extraInfo = "Wrong answer: you lost 10 points.";
+                    mistakeMade = true;
                 }
 
             } else if (qDiff.equals("expert")) {
                 if (correct) {
-                    // +2 lives and +15 points, with cap & conversion
                     score += 15;
                     int converted = addLivesWithCap(2, activationPoints);
                     score += converted;
@@ -1915,35 +1808,32 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                                 converted + " points because you were at max lives.";
                     }
                 } else {
-                    // Wrong: -15 points and -1 life
                     score -= 15;
                     sharedHearts = Math.max(0, sharedHearts - 1);
+                    mistakeMade = true;
                     extraInfo = "Wrong answer: you lost 15 points and 1 life.";
                 }
             }
 
-        // GAME MODE: MEDIUM
         } else if (this.difficulty == Difficulty.MEDIUM) {
 
             if (qDiff.equals("easy")) {
                 if (correct) {
-                    // Correct: +1 life and +8 points
                     score += 8;
-                    int converted = addLivesWithCap(1, activationPoints); // 8 per extra life in MEDIUM
+                    int converted = addLivesWithCap(1, activationPoints);
                     score += converted;
                     if (converted > 0) {
                         extraInfo = "You were already at max lives, so the extra life was converted to +" +
                                 converted + " points.";
                     }
                 } else {
-                    // Wrong: -8 points
                     score -= 8;
                     extraInfo = "Wrong answer: you lost 8 points.";
+                    mistakeMade = true;
                 }
 
             } else if (qDiff.equals("medium")) {
                 if (correct) {
-                    // Correct: +1 life and +10 points
                     score += 10;
                     int converted = addLivesWithCap(1, activationPoints);
                     score += converted;
@@ -1952,7 +1842,7 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                                 converted + " points.";
                     }
                 } else {
-                    // Wrong: either (-10 points and -1 life) OR no penalty (50% each)
+                    mistakeMade = true;
                     if (Math.random() < 0.5) {
                         score -= 10;
                         sharedHearts = Math.max(0, sharedHearts - 1);
@@ -1964,7 +1854,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
 
             } else if (qDiff.equals("hard")) {
                 if (correct) {
-                    // Correct: +1 life and +15 points
                     score += 15;
                     int converted = addLivesWithCap(1, activationPoints);
                     score += converted;
@@ -1973,15 +1862,14 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                                 converted + " points.";
                     }
                 } else {
-                    // Wrong: -15 points and -1 life
                     score -= 15;
                     sharedHearts = Math.max(0, sharedHearts - 1);
+                    mistakeMade = true;
                     extraInfo = "Wrong answer: you lost 15 points and 1 life.";
                 }
 
             } else if (qDiff.equals("expert")) {
                 if (correct) {
-                    // Correct: +2 lives and +20 points
                     score += 20;
                     int converted = addLivesWithCap(2, activationPoints);
                     score += converted;
@@ -1990,7 +1878,7 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                                 converted + " points because you were at max lives.";
                     }
                 } else {
-                    // Wrong: either (-20 points and -1 life) OR (-20 points and -2 lives) (50% each)
+                    mistakeMade = true;
                     score -= 20;
                     if (Math.random() < 0.5) {
                         sharedHearts = Math.max(0, sharedHearts - 1);
@@ -2002,14 +1890,12 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                 }
             }
 
-        // GAME MODE: HARD
         } else if (this.difficulty == Difficulty.HARD) {
 
             if (qDiff.equals("easy")) {
                 if (correct) {
-                    // Correct: +1 life and +10 points
                     score += 10;
-                    int converted = addLivesWithCap(1, activationPoints); // 12 per extra life in HARD
+                    int converted = addLivesWithCap(1, activationPoints);
                     score += converted;
                     if (converted > 0) {
                         extraInfo = "You were already at max lives, so the extra life was converted to +" +
@@ -2018,15 +1904,14 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                         extraInfo = "Correct! You gained 1 life.";
                     }
                 } else {
-                    // Wrong: -10 points and -1 life
                     score -= 10;
                     sharedHearts = Math.max(0, sharedHearts - 1);
+                    mistakeMade = true;
                     extraInfo = "Wrong answer: you lost 10 points and 1 life.";
                 }
 
             } else if (qDiff.equals("medium")) {
                 if (correct) {
-                    // Correct: either +1 life and +15 points OR +2 lives and +15 points (50% each)
                     score += 15;
                     int livesToAdd = (Math.random() < 0.5) ? 1 : 2;
                     int converted = addLivesWithCap(livesToAdd, activationPoints);
@@ -2039,7 +1924,7 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                         extraInfo = "Correct! You gained " + livesToAdd + " lives.";
                     }
                 } else {
-                    // Wrong: either (-15 points and -1 life) OR (-15 points and -2 lives) (50% each)
+                    mistakeMade = true;
                     score -= 15;
                     int livesLost = (Math.random() < 0.5) ? 1 : 2;
                     sharedHearts = Math.max(0, sharedHearts - livesLost);
@@ -2049,7 +1934,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
 
             } else if (qDiff.equals("hard")) {
                 if (correct) {
-                    // Correct: +2 lives and +20 points
                     score += 20;
                     int converted = addLivesWithCap(2, activationPoints);
                     score += converted;
@@ -2060,7 +1944,7 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                         extraInfo = "Correct! You gained 2 lives.";
                     }
                 } else {
-                    // Wrong: -20 points and -2 lives
+                    mistakeMade = true;
                     score -= 20;
                     sharedHearts = Math.max(0, sharedHearts - 2);
                     extraInfo = "Wrong answer: you lost 20 points and 2 lives.";
@@ -2068,7 +1952,6 @@ private void recalcFlagsLeft(boolean isPlayer1) {
 
             } else if (qDiff.equals("expert")) {
                 if (correct) {
-                    // Correct: +3 lives and +40 points
                     score += 40;
                     int converted = addLivesWithCap(3, activationPoints);
                     score += converted;
@@ -2079,7 +1962,7 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                         extraInfo = "Correct! You gained 3 lives.";
                     }
                 } else {
-                    // Wrong: -40 points and -3 lives
+                    mistakeMade = true;
                     score -= 40;
                     sharedHearts = Math.max(0, sharedHearts - 3);
                     extraInfo = "Wrong answer: you lost 40 points and 3 lives.";
@@ -2087,15 +1970,11 @@ private void recalcFlagsLeft(boolean isPlayer1) {
             }
         }
 
-        // Update hearts bar after any life changes
         buildHeartsBar();
-
-        // Block this question cell so it can't be activated again
         button.setDisable(true);
 
-        // Update labels & show result popup
         updateScoreAndMineLabels();
-        
+
         if (checkLoseAndHandle()) return;
 
         int livesAfter = sharedHearts;
@@ -2103,86 +1982,7 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         showQuestionResultPopup(q, correct, netScoreChange, livesBefore, livesAfter, extraInfo);
     }
 
-    // ============================================================
-    // SMART HINTS
-    // ============================================================
-
-    /**
-     * Smart Hints feature:
-     * Applies only to NUMBER cells.
-     * If the number of flagged neighbors equals the number on the cell,
-     * highlight the remaining safe neighbors for 2 seconds.
-     */
-    private void applySmartHint(Board board, int row, int col, boolean isPlayer1) {
-        // feature disabled → do nothing
-        if (!SysData.isSmartHintsEnabled()) return;
-
-        Cell cell = board.getCell(row, col);
-
-        // smart hint applies only to NUMBER cells
-        if (cell.getType() != CellType.NUMBER) return;
-
-        int needed = cell.getAdjacentMines();
-        int flagged = 0;
-
-        StackPane[][] buttons = isPlayer1 ? p1Buttons : p2Buttons;
-
-        // 1) count flagged neighbors
-        for (int dr = -1; dr <= 1; dr++) {
-            for (int dc = -1; dc <= 1; dc++) {
-                if (dr == 0 && dc == 0) continue;
-
-                int nr = row + dr;
-                int nc = col + dc;
-
-                if (nr < 0 || nc < 0 || nr >= board.getRows() || nc >= board.getCols()) continue;
-
-                StackPane tile = buttons[nr][nc];
-                if (tile == null || tile.getChildren().isEmpty()) continue;
-
-                Button b = (Button) tile.getChildren().get(0);
-
-                if (b.getStyleClass().contains("cell-flagged")) {
-                    flagged++;
-                }
-            }
-        }
-/*
-        // 2) if all needed mines are flagged → highlight remaining safe cells
-        if (flagged == needed) {
-
-            for (int dr = -1; dr <= 1; dr++) {
-                for (int dc = -1; dc <= 1; dc++) {
-                    if (dr == 0 && dc == 0) continue;
-
-                    int nr = row + dr;
-                    int nc = col + dc;
-
-                    if (nr < 0 || nc < 0 || nr >= board.getRows() || nc >= board.getCols()) continue;
-
-                    StackPane tile = buttons[nr][nc];
-                    if (tile == null || tile.getChildren().isEmpty()) continue;
-
-                    Button b = (Button) tile.getChildren().get(0);
-
-                    // highlight only clickable, un-flagged cells
-                    if (!b.isDisable() && !b.getStyleClass().contains("cell-flagged")) {
-
-                        b.getStyleClass().add("smart-hint");
-
-                        // 3) highlight disappears after 2 seconds
-                        PauseTransition pause = new PauseTransition(Duration.seconds(2));
-                        pause.setOnFinished(e -> b.getStyleClass().remove("smart-hint"));
-                        pause.play();
-                    }
-                }
-            }
-        }*/
-    }
-
-    // ============================================================
-    // SOUND / MUSIC ICON HELPERS
-    // ============================================================
+ 
 
     private void refreshMusicIconFromSettings() {
         if (musicButton == null) return;
@@ -2190,23 +1990,14 @@ private void recalcFlagsLeft(boolean isPlayer1) {
 
         boolean enabled = SysData.isMusicEnabled();
 
-        // Sync SoundManager with SysData
         if (enabled && !SoundManager.isMusicOn()) {
             SoundManager.startMusic();
         } else if (!enabled && SoundManager.isMusicOn()) {
             SoundManager.stopMusic();
         }
 
-        String iconPath;
-        double size;
-
-        if (enabled) {
-            iconPath = "/Images/music.png";
-            size = 40;
-        } else {
-            iconPath = "/Images/music_mute.png";
-            size = 40;
-        }
+        String iconPath = enabled ? "/Images/music.png" : "/Images/music_mute.png";
+        double size = 40;
 
         Image img = new Image(getClass().getResourceAsStream(iconPath));
         iv.setImage(img);
@@ -2224,16 +2015,16 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         Image img = new Image(getClass().getResourceAsStream(iconPath));
         iv.setImage(img);
     }
-    
+
     private boolean checkLoseAndHandle() {
-        if (gameOver) return true; 
+        if (gameOver) return true;
         if (sharedHearts > 0) return false;
 
         gameWon = false;
         onGameOver();
         return true;
     }
-    
+
     private int countType(Board board, CellType type) {
         int count = 0;
         for (int r = 0; r < board.getRows(); r++) {
@@ -2244,8 +2035,7 @@ private void recalcFlagsLeft(boolean isPlayer1) {
         return count;
     }
 
-    
-    //Reveal both boards' cells at the end of the game 
+    // Reveal both boards' cells at the end of the game
     private void revealAllCellsOnBoardVisualOnly(Board board, StackPane[][] buttons) {
         if (board == null || buttons == null) return;
 
@@ -2260,28 +2050,23 @@ private void recalcFlagsLeft(boolean isPlayer1) {
                 Button btn = (Button) tile.getChildren().get(0);
                 Cell cell = board.getCell(r, c);
 
-                //skip already disabled/revealed buttons 
                 revealButtonVisualOnly(btn, cell);
             }
         }
     }
-    
-    
+
     private void revealButtonVisualOnly(Button button, Cell cell) {
         if (button == null || cell == null) return;
 
-        //Remove flag graphic
         button.setGraphic(null);
         button.setText("");
 
-        //Clear styles that represent "hidden" state
         button.getStyleClass().removeAll(
                 "cell-hidden", "cell-flagged",
                 "cell-mine", "cell-question", "cell-surprise",
                 "cell-number", "cell-empty"
         );
 
-        //Always show it as revealed and disable it (end of game)
         if (!button.getStyleClass().contains("cell-revealed")) {
             button.getStyleClass().add("cell-revealed");
         }
@@ -2328,10 +2113,9 @@ private void recalcFlagsLeft(boolean isPlayer1) {
             }
         }
     }
-    
+
     private void revealAllBoardsVisualOnly() {
         revealAllCellsOnBoardVisualOnly(board1, p1Buttons);
         revealAllCellsOnBoardVisualOnly(board2, p2Buttons);
     }
-
 }

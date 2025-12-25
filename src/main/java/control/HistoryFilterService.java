@@ -54,7 +54,6 @@ public final class HistoryFilterService {
     }
 
    
-     //Validation result model (no JavaFX Alerts here).
         public static final class ValidationResult {
         public final boolean ok;
         public final String title;

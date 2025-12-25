@@ -23,6 +23,7 @@ import model.Difficulty;
 import model.GameConfig;
 import model.SysData;
 import util.AvatarManager;
+import util.DialogUtil;
 import util.SoundManager;
 import util.UIAnimations;
 
@@ -181,13 +182,13 @@ public class NewGameController {
 
         if (nickname1 == null || nickname1.trim().isEmpty() ||
             nickname2 == null || nickname2.trim().isEmpty()) {
-            showError("Please enter both players names.");
+         	DialogUtil.show(AlertType.ERROR, null, "Input error", "Please enter both players names.");                  
             return;
         }
 
         Toggle selectedToggle = difficultyGroup.getSelectedToggle();
         if (selectedToggle == null) {
-            showError("Please select a difficulty level.");
+         	DialogUtil.show(AlertType.ERROR, null, "Input error", "Please select a difficulty level.");                  
             return;
         }
         
@@ -196,11 +197,7 @@ public class NewGameController {
 
         if (p1 == null || p1.isBlank() || p2 == null || p2.isBlank()) {
             // Show an alert manually
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setTitle("Avatar Required");
-            a.setHeaderText(null);
-            a.setContentText("Both players must choose an avatar before starting the game.");
-            a.showAndWait();
+         	DialogUtil.show(AlertType.ERROR, null, "Avatar Required", "Both players must choose an avatar before starting the game.");                  
             return;
         }
 
@@ -235,7 +232,7 @@ public class NewGameController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Failed to start the game due to an internal error.");
+         	DialogUtil.show(AlertType.ERROR, null, "Input error", "Failed to start the game due to an internal error.");                  
         }
     }
     
@@ -255,7 +252,7 @@ public class NewGameController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Failed to return to main screen.");
+         	DialogUtil.show(AlertType.ERROR, null, "Input error", "Failed to return to main screen.");                  
         }
     }
 
@@ -312,15 +309,6 @@ public class NewGameController {
     private void onAvatarClicked(MouseEvent event) {
         playClickSound();
         avatarManager.handleAvatarPaneClick(event);
-    }
-
-    // Shows an error dialog with a given message (input validation).
-    private void showError(String message) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Input Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     /** Update speaker icon according to SysData.isSoundEnabled(). */

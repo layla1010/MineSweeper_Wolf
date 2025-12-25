@@ -7,12 +7,13 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Question;
-
+import util.DialogUtil;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.event.ActionEvent;
 
 import java.io.BufferedReader;
@@ -480,12 +481,13 @@ public class QuestionsManagerController {
         if (q == null) return;
 
         // Confirm with the user
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete Question");
-        alert.setHeaderText("Are you sure you want to delete this question?");
-        alert.setContentText("ID #" + q.getId() + " – " + q.getText());
+        Optional<ButtonType> result = DialogUtil.showDialogWithResult(
+                AlertType.CONFIRMATION,
+                "Are you sure you want to delete this question?",
+                "Delete Question",
+                "ID #" + q.getId() + " - " + q.getText()
+        );
 
-        Optional<ButtonType> result = alert.showAndWait();
         if (result.isEmpty() || result.get() != ButtonType.OK) {
             // user cancelled -> do nothing
             return;

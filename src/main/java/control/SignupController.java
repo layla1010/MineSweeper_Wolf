@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -23,6 +24,7 @@ import model.Player;
 import model.Role;
 import model.SysData;
 import util.AvatarManager;
+import util.DialogUtil;
 import util.SessionManager;
 import util.SoundManager;
 
@@ -119,22 +121,6 @@ public class SignupController {
         }
     }
 
-    private void showError(String title, String message) {
-        Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle(title);
-        a.setHeaderText(null);
-        a.setContentText(message);
-        a.showAndWait();
-    }
-
-    private void showInfo(String title, String message) {
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setTitle(title);
-        a.setHeaderText(null);
-        a.setContentText(message);
-        a.showAndWait();
-    }
-
     private boolean isValidEmail(String email) {
         return email != null && email.contains("@") && email.contains(".");
     }
@@ -173,27 +159,26 @@ public class SignupController {
         String rePassword   = (rePasswordSignup1.getText() == null) ? "" : rePasswordSignup1.getText().trim();
 
         if (officialName.isEmpty() || email.isEmpty() || password.isEmpty() || rePassword.isEmpty()) {
-            showError("Missing Information", "Please fill in all fields.");
+         	DialogUtil.show(AlertType.ERROR, null, "Missing Information","Please fill in all fields");
             return;
         }
         if (!isValidEmail(email)) {
-            showError("Invalid Email", "Please enter a valid email address.");
-            return;
+         	DialogUtil.show(AlertType.ERROR, null, "Invalid Email","Please enter a valid email address.");
+         	return;
         }
         if (!password.equals(rePassword)) {
-            showError("Password Mismatch", "Password and confirmation do not match.");
+         	DialogUtil.show(AlertType.ERROR, null, "Password mismatch","Password and confirmation do not match.");
             return;
         }
         if (password.length() < 4) {
-            showError("Weak Password", "Password must be at least 4 characters long.");
+         	DialogUtil.show(AlertType.ERROR, null, "Weak Password","Password must be at least 4 characters long.");
             return;
         }
 
         SysData sysData = SysData.getInstance();
 
         if (sysData.findPlayerByOfficialName(officialName) != null) {
-            showError("Name Already Exists",
-                    "Official name is already in use. Please choose a different name.");
+         	DialogUtil.show(AlertType.ERROR, null, "Name Already Exists","Official name is already in use. Please choose a different name.");
             return;
         }
 
@@ -213,15 +198,12 @@ public class SignupController {
                     avatarId
             );
         } catch (IllegalArgumentException ex) {
-            showError("Sign-Up Failed", ex.getMessage());
+         	DialogUtil.show(AlertType.ERROR, null, "Sign up Failed",ex.getMessage());
             return;
         }
 
         SessionManager.setLoggedInUser(newPlayer);
-
-        showInfo("Sign-Up Successful",
-                "Account created successfully.\nYou can now log in and play.");
-
+     	DialogUtil.show(AlertType.INFORMATION, null, "Sign-Up successful","Account created successfully. \n You can now log in and play.");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));
             Parent root = loader.load();
@@ -234,7 +216,7 @@ public class SignupController {
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Navigation Error", "Could not return to login screen.");
+         	DialogUtil.show(AlertType.ERROR, null, "Navigation Error","Could not return to login screen.");
         }
     }
 

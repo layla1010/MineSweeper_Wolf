@@ -2,12 +2,14 @@ package control;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.Question;
+import util.DialogUtil;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -87,7 +89,8 @@ public class EditQuestionController {
                     optA, optB, optC, optD, correctLetter);
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Failed to update question in CSV.");
+        	DialogUtil.show(AlertType.INFORMATION,"", "Error","Failed to update question in CSV.");
+
             return;
         }
 
@@ -97,38 +100,45 @@ public class EditQuestionController {
     //Handling click button: Shows a confirmation dialog, and if the user agrees, discards changes and navigates back to the manager screen.
     @FXML
     private void onCancelButtonClicked(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Cancel");
-        alert.setHeaderText("Are you sure you want to cancel?");
-        alert.setContentText("Changes will not be saved.");
 
-        Optional<ButtonType> result = alert.showAndWait();
+        Optional<ButtonType> result = DialogUtil.showDialogWithResult(
+                AlertType.CONFIRMATION,
+                "Are you sure you want to cancel?",
+                "Cancel",
+                "Changes will not be saved."
+        );
+
         if (result.isPresent() && result.get() == ButtonType.OK) {
             goBackToManager();
         }
     }
+
 
     //Validation, Checks: Difficulty is selected, Correct answer is selected, Question text is not empty, All four options are filled and All four options are different
     //Shows an error alert if any rule is broken
 
     private boolean validateForm() {
         if (difficultyComboBox.getValue() == null) {
-            showError("Please select a difficulty.");
+        	DialogUtil.show(AlertType.ERROR, "Invalid Input", "Validation Error","Please select a difficulty.");
+
             return false;
         }
         if (correctAnswerComboBox.getValue() == null) {
-            showError("Please select the correct answer (A/B/C/D).");
+        	DialogUtil.show(AlertType.ERROR, "Invalid Input", "Validation Error","Please select the correct answer (A/B/C/D).");
+
             return false;
         }
         if (isEmpty(questionTextArea.getText())) {
-            showError("Question text cannot be empty.");
+        	DialogUtil.show(AlertType.ERROR, "Invalid Input", "Validation Error","Question text cannot be empty.");
+
             return false;
         }
         if (isEmpty(optionATextField.getText())
                 || isEmpty(optionBTextField.getText())
                 || isEmpty(optionCTextField.getText())
                 || isEmpty(optionDTextField.getText())) {
-            showError("All four options (A, B, C, D) must be filled.");
+        	DialogUtil.show(AlertType.ERROR, "Invalid Input", "Validation Error","All four options (A, B, C, D) must be filled.");
+
             return false;
         }
         String a = optionATextField.getText().trim();
@@ -137,7 +147,8 @@ public class EditQuestionController {
         String d = optionDTextField.getText().trim();
         
         if (!allDistinctIgnoreCase(a, b, c, d)) {
-            showError("All four options (A, B, C, D) must be different from each other.");
+        	DialogUtil.show(AlertType.ERROR, "Invalid Input", "Validation Error","All four options (A, B, C, D) must be different from each other.");
+
             return false;
         }
         return true;
@@ -158,16 +169,6 @@ public class EditQuestionController {
     private boolean isEmpty(String s) {
         return s == null || s.trim().isEmpty();
     }
-    
-    //Shows a simple error alert dialog with the given message
-    private void showError(String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Validation Error");
-        alert.setHeaderText("Invalid input");
-        alert.setContentText(msg);
-        alert.showAndWait();
-    }
-
 
     //CSV update logic: We respect the existing header order, just like in AddQuestionController
 
@@ -270,7 +271,8 @@ public class EditQuestionController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Failed to go back to Questions Management view.");
+        	DialogUtil.show(AlertType.ERROR, "", "Error","Failed to go back to Questions Management view.");
+
         }
     }
 }

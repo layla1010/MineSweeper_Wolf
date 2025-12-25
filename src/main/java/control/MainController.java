@@ -33,6 +33,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import util.DialogUtil;
 import util.SessionManager;
 import util.SoundManager;
 import util.UIAnimations;
@@ -100,11 +101,7 @@ public class MainController {
             stage.centerOnScreen();
 
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Failed to load New Game screen");
-            alert.setContentText("An unexpected error occurred:\n" + e.getMessage());
-            alert.showAndWait();
+         	DialogUtil.show(AlertType.ERROR, "Failed to load New Game screen", "Error", "An unexpected error occurred:\n" + e.getMessage());
         }
     }
 
@@ -116,12 +113,8 @@ public class MainController {
         	SoundManager.playClick();
         	
         	 if (!SessionManager.isAdminLoggedIn()) {
-        	        Alert alert = new Alert(AlertType.ERROR);
-        	        alert.setTitle("Access Denied");
-        	        alert.setHeaderText(null);
-        	        alert.setContentText("Only admins can access Question Management.");
-        	        alert.showAndWait();
-        	        return;
+             	DialogUtil.show(AlertType.INFORMATION, "Invalid User", "Access Denied","Only admins can access Question Management.");
+             	return;
         	    }
         	 
             try {
@@ -165,11 +158,8 @@ public class MainController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Failed to load History screen");
-            alert.setContentText("An unexpected error occurred:\n" + e.getMessage());
-            alert.showAndWait();
+           	DialogUtil.show(AlertType.INFORMATION, "Invalid User", "Access Denied","Only admins can access Question Management.");
+         	return;
         }
     }
 
@@ -406,11 +396,8 @@ public class MainController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Login navigation failed");
-            alert.setContentText(e.toString());
-            alert.showAndWait();
+          	DialogUtil.show(AlertType.ERROR, "Error", "Login navigation failed",e.toString());
+         	return;
         }
     }
     
@@ -424,8 +411,8 @@ public class MainController {
         model.Player p2 = util.SessionManager.getPlayer2();
 
         if (p1 == null || p2 == null) {
-            showInfo("Statistics are available only for logged-in players.\n" +
-                     "Please login as two players before opening the statistics screen.");
+        	DialogUtil.show(AlertType.INFORMATION, "","", "Statistics are available only for logged-in players.\n\n" +
+                    "Please login as two players before opening the statistics screen.");
             return;
         }
 
@@ -444,30 +431,10 @@ public class MainController {
             stage.centerOnScreen();
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Failed to load the Statistics screen.");
+        	DialogUtil.show(AlertType.ERROR, "Validation Error","Failed to load the Statistics screen.", e.toString());
+
         }
     }
-
-
-    //Shows an error dialog with the given message.
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Navigation Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    
-    //Shows an informational dialog with the given message.
-    private void showInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Not Implemented Yet");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
 
 
 }

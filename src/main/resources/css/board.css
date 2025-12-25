@@ -204,3 +204,10 @@
     -fx-border-radius: 4px;
     -fx-effect: dropshadow(gaussian, #00ff88, 15, 0.7, 0, 0);
 }
+
+.idle-hint-glow {
+    -fx-effect: dropshadow(gaussian, rgba(255,255,0,0.9), 25, 0.6, 0, 0);
+    -fx-border-color: gold;
+    -fx-border-width: 2;
+}
+

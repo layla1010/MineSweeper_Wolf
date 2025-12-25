@@ -2,10 +2,12 @@ package control;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import util.DialogUtil;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -127,7 +129,8 @@ public class AddQuestionController {
                     optA, optB, optC, optD, correctLetter);
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Failed to save question to CSV.");
+        	DialogUtil.show(AlertType.ERROR, "Invalid Input", "Validation Error","Failed to save question to CSV.");
+
             return;
         }
 
@@ -140,15 +143,16 @@ public class AddQuestionController {
     //discards changes and returns to the Questions Management screen
     @FXML
     private void onCancelButtonClicked(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Cancel");
-        alert.setHeaderText("Are you sure you want to cancel?");
-        alert.setContentText("Your changes will not be saved.");
+    	  Optional<ButtonType> result = DialogUtil.showDialogWithResult(
+                  AlertType.CONFIRMATION,
+                  "Are you sure you want to cancel?",
+                  "Cancel",
+                  "Your Changes will not be saved."
+          );
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            goBackToManager();
-        }
+          if (result.isPresent() && result.get() == ButtonType.OK) {
+              goBackToManager();
+          }
     }
 
     //Validation: Validates all form fields before saving
@@ -157,22 +161,24 @@ public class AddQuestionController {
     //Shows an error alert and returns false if any check fails
     private boolean validateForm() {
         if (difficultyComboBox.getValue() == null) {
-            showError("Please select a difficulty.");
+        	DialogUtil.show(AlertType.ERROR, "Invalid Input", "Validation Error", "Please select a difficulty.");
             return false;
         }
         if (correctAnswerComboBox.getValue() == null) {
-            showError("Please select the correct answer (A/B/C/D).");
+        	DialogUtil.show(AlertType.ERROR, "Invalid Input", "Validation Error", "Please select the correct answer (A/B/C/D).");
             return false;
         }
         if (isEmpty(questionTextArea.getText())) {
-            showError("Question text cannot be empty.");
+        	DialogUtil.show(AlertType.ERROR, "Invalid Input", "Validation Error","Question text cannot be empty.");
+
             return false;
         }
         if (isEmpty(optionATextField.getText())
                 || isEmpty(optionBTextField.getText())
                 || isEmpty(optionCTextField.getText())
                 || isEmpty(optionDTextField.getText())) {
-            showError("All four options (A, B, C, D) must be filled.");
+        	DialogUtil.show(AlertType.ERROR, "Invalid Input", "Validation Error","All four options (A, B, C, D) must be filled.");
+
             return false;
         }
         //all options must be different
@@ -182,7 +188,7 @@ public class AddQuestionController {
         String d = optionDTextField.getText().trim();
 
         if (!allDistinctIgnoreCase(a, b, c, d)) {
-            showError("All four options (A, B, C, D) must be different from each other.");
+        	DialogUtil.show(AlertType.ERROR, "Invalid Input", "Validation Error","All four options (A, B, C, D) must be different from each other.");
             return false;
         }
         return true;
@@ -203,15 +209,6 @@ public class AddQuestionController {
 
     private boolean isEmpty(String s) {
         return s == null || s.trim().isEmpty();
-    }
-    
-    //Shows a simple error alert with a given message
-    private void showError(String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Validation Error");
-        alert.setHeaderText("Invalid input");
-        alert.setContentText(msg);
-        alert.showAndWait();
     }
 
     //CSV append logic : Appends a new question row to the CSV file
@@ -327,7 +324,8 @@ public class AddQuestionController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Failed to go back to Questions Management view.");
+        	DialogUtil.show(AlertType.INFORMATION, "Invalid Input", "Validation Error","Failed to go back to Questions Management view.");
+
         }
     }
 }

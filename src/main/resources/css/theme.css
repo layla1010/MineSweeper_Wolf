@@ -60,3 +60,27 @@
     
     -fx-text-fill: white;
 }
+
+/* Background of the actual dialog area */
+.dialog-pane {
+    -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
+}
+
+/* Header bar inside the dialog (where "Invalid input" is) */
+.dialog-pane .header-panel {
+    -fx-background-color: transparent; /* or a semi-transparent overlay */
+}
+
+.dialog-pane .header-panel .label {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+	-fx-font-family: "Copperplate Gothic Bold", "Georgia", "Serif";
+	
+}
+
+/* Content text ("Question text cannot be empty.") */
+.dialog-pane .content.label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+	-fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
+}
