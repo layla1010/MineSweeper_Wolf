@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import javafx.animation.PauseTransition;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import model.Board;
@@ -19,6 +21,7 @@ import model.CellType;
 import model.Difficulty;
 import model.Question;
 import model.SysData;
+import util.DialogUtil;
 
 public class GameBonusServiceController {
 
@@ -133,26 +136,22 @@ public class GameBonusServiceController {
         int scoreBefore = s.score;
 
         int activationPoints = getActivationPoints();
-        int goodBonus = getSurpriseGoodBonusPoints();
-        int badPenalty = getSurpriseBadPenaltyPoints();
+        int surprisePoints = getSurprisePoints();
 
-        int scoreChange = activationPoints;
+        int scoreChange;
 
         boolean good = Math.random() < 0.5;
 
         if (good) {
-            scoreChange += goodBonus;
-
-            if (s.sharedHearts < GameStateController.TOTAL_HEART_SLOTS) {
-                s.sharedHearts += 1;
-            } else {
-                scoreChange += activationPoints;
-            }
-        } else {
-            scoreChange -= badPenalty;
-            s.sharedHearts = Math.max(0, s.sharedHearts - 1);
+        	  scoreChange = +surprisePoints - activationPoints;
+              if (s.sharedHearts < GameStateController.TOTAL_HEART_SLOTS) {
+                  s.sharedHearts += 1;
+              }
+        }else {
+        	  scoreChange = -surprisePoints - activationPoints;
+        	  s.sharedHearts = Math.max(0, s.sharedHearts - 1);
         }
-
+        
         s.score += scoreChange;
 
         ui.buildHeartsBar();
@@ -164,7 +163,7 @@ public class GameBonusServiceController {
 
         int livesAfter = s.sharedHearts;
         int netScoreChange = s.score - scoreBefore;
-        showSurprisePopup(good, netScoreChange, livesBefore, livesAfter);
+        showSurprisePopup(good, scoreBefore, netScoreChange, livesBefore, livesAfter, activationPoints, surprisePoints);
     }
 
     private int getActivationPoints() {
@@ -175,7 +174,7 @@ public class GameBonusServiceController {
         };
     }
 
-    private int getSurpriseGoodBonusPoints() {
+    private int getSurprisePoints() {
         return switch (s.difficulty) {
             case EASY -> 8;
             case MEDIUM -> 12;
@@ -183,32 +182,46 @@ public class GameBonusServiceController {
         };
     }
 
-    private int getSurpriseBadPenaltyPoints() {
-        return switch (s.difficulty) {
-            case EASY -> 8;
-            case MEDIUM -> 12;
-            case HARD -> 16;
-        };
-    }
-
-    private void showSurprisePopup(boolean good, int netScoreChange, int livesBefore, int livesAfter) {
+    private void showSurprisePopup(boolean good,  int scoreBefore, int netScoreChange, int livesBefore, int livesAfter, int activationPoints, int surprisePoints) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Surprise Result");
 
-        String typeText = good ? "GOOD surprise!" : "BAD surprise!";
+        String typeText = good ? "GOOD SURPRISE!" : "BAD SURPRISE!";
         int livesDelta = livesAfter - livesBefore;
         String scoreChangeText = (netScoreChange >= 0 ? "+" : "") + netScoreChange;
         String livesChangeText = (livesDelta > 0 ? "+" : "") + livesDelta;
+        String rewardText = (good ? "+" : "-") + surprisePoints + " POINTS FOR SURPRISE";
+        String activationText = "-" + activationPoints + " POINTS FOR ACTIVATION";
 
         StringBuilder msg = new StringBuilder();
-        msg.append(typeText).append("\n\n");
-        msg.append("Score change: ").append(scoreChangeText).append("\n");
-        msg.append("Lives change: ").append(livesChangeText).append("\n");
-        msg.append("\nNew score: ").append(s.score).append("\n");
-        msg.append("New lives: ").append(s.sharedHearts).append("/").append(GameStateController.TOTAL_HEART_SLOTS);
+        msg.append("Score Before: ").append(scoreBefore).append("\n");
+        msg.append("Lives Before: ").append(livesBefore).append("/")
+           .append(GameStateController.TOTAL_HEART_SLOTS).append("\n\n");
 
-        alert.setHeaderText(null);
+        msg.append("Score change: ").append(scoreChangeText)
+           .append(" (").append(rewardText).append(" ").append(activationText).append(")\n\n");
+
+        msg.append("Lives change: ").append(livesChangeText).append("\n\n");
+        msg.append("New score: ").append(s.score).append("\n");
+        msg.append("New lives: ").append(s.sharedHearts).append("/")
+           .append(GameStateController.TOTAL_HEART_SLOTS);
+
+        alert.setHeaderText(typeText);
+
         alert.setContentText(msg.toString());
+        javafx.scene.control.Label content = new javafx.scene.control.Label(msg.toString());
+        content.setWrapText(true);
+        content.setMaxWidth(520); // controls wrapping width (tune this)
+        alert.getDialogPane().setContent(content);
+
+        // Force dialog to size to content
+        alert.getDialogPane().setMinHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
+        alert.getDialogPane().setMinWidth(560);
+
+
+        alert.getDialogPane().getStylesheets()
+             .add(GameBonusServiceController.class.getResource("/css/theme.css").toExternalForm());
+
         alert.showAndWait();
     }
 
@@ -225,39 +238,50 @@ public class GameBonusServiceController {
     }
 
     private int showQuestionDialog(Question q) {
-        if (q == null) return 0;
+        if (q == null) return -1;
 
-        Alert alert = new Alert(Alert.AlertType.NONE);
-        alert.setTitle("Trivia Question");
-        alert.setHeaderText("Question (" + q.getDifficulty() + ")");
+        Dialog<Integer> dialog = new Dialog<>();
+        dialog.setTitle("Trivia Question");
+        dialog.setHeaderText("You Got a " + q.getDifficulty() + " Question");
 
-        StringBuilder content = new StringBuilder();
-        content.append(q.getText()).append("\n\n");
-        content.append("1) ").append(q.getOptA()).append("\n");
-        content.append("2) ").append(q.getOptB()).append("\n");
-        content.append("3) ").append(q.getOptC()).append("\n");
-        content.append("4) ").append(q.getOptD()).append("\n");
+        Label questionLabel = new Label(q.getText());
+        questionLabel.setWrapText(true);
+        questionLabel.getStyleClass().add("question-text");
 
-        alert.setContentText(content.toString());
+        VBox optionsBox = new VBox(10);
+        optionsBox.setAlignment(Pos.CENTER_LEFT);
 
-        ButtonType btn1 = new ButtonType("1");
-        ButtonType btn2 = new ButtonType("2");
-        ButtonType btn3 = new ButtonType("3");
-        ButtonType btn4 = new ButtonType("4");
+        Button btn1 = new Button("1. " + q.getOptA());
+        Button btn2 = new Button("2. " + q.getOptB());
+        Button btn3 = new Button("3. " + q.getOptC());
+        Button btn4 = new Button("4. " + q.getOptD());
 
-        alert.getButtonTypes().setAll(btn1, btn2, btn3, btn4);
+        btn1.setMaxWidth(Double.MAX_VALUE);
+        btn2.setMaxWidth(Double.MAX_VALUE);
+        btn3.setMaxWidth(Double.MAX_VALUE);
+        btn4.setMaxWidth(Double.MAX_VALUE);
 
-        Optional<ButtonType> result = alert.showAndWait();
+        btn1.setOnAction(e -> { dialog.setResult(1); dialog.close(); });
+        btn2.setOnAction(e -> { dialog.setResult(2); dialog.close(); });
+        btn3.setOnAction(e -> { dialog.setResult(3); dialog.close(); });
+        btn4.setOnAction(e -> { dialog.setResult(4); dialog.close(); });
 
-        if (result.isPresent()) {
-            if (result.get() == btn1) return 1;
-            if (result.get() == btn2) return 2;
-            if (result.get() == btn3) return 3;
-            if (result.get() == btn4) return 4;
-        }
+        optionsBox.getChildren().addAll(btn1, btn2, btn3, btn4);
 
-        return -1;
+        VBox root = new VBox(15, questionLabel, optionsBox);
+        root.setAlignment(Pos.CENTER_LEFT);
+
+        dialog.getDialogPane().setContent(root);
+
+        dialog.getDialogPane().getStylesheets().add(
+                getClass().getResource("/css/theme.css").toExternalForm()
+        );
+
+        Optional<Integer> result = dialog.showAndWait();
+        return result.orElse(-1);
     }
+
+
 
     private int addLivesWithCap(int livesToAdd, int pointsPerConvertedHeart) {
         int extraScoreFromConversion = 0;
@@ -397,43 +421,74 @@ public class GameBonusServiceController {
     }
 
     private void showQuestionResultPopup(Question q,
-                                         boolean correct,
-                                         int netScoreChange,
-                                         int livesBefore,
-                                         int livesAfter,
-                                         String extraInfo) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Question Result");
+            int scoreBefore,
+            boolean correct,
+            int netScoreChange,
+            int livesBefore,
+            int livesAfter,
+            String extraInfo) {
 
-        String difficultyText = q != null ? q.getDifficulty() : "Unknown";
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setTitle("Question Result");
+		
+		int activationPoints = getActivationPoints();
+		
+		String difficultyText = (q != null && q.getDifficulty() != null) ? q.getDifficulty() : "Unknown";
+		boolean useAn = difficultyText.equalsIgnoreCase("easy") || difficultyText.equalsIgnoreCase("expert");
+		
+		String scoreChangeText = (netScoreChange >= 0 ? "+" : "") + netScoreChange;
+		int livesDelta = livesAfter - livesBefore;
+		String livesChangeText = (livesDelta >= 0 ? "+" : "") + livesDelta;
+		
+		StringBuilder msg = new StringBuilder();
+		
+		msg.append(correct ? "Your answer is CORRECT!\n" : "Your answer is WRONG!\n\n");
+		
+		msg.append("Score Before: ").append(scoreBefore).append("\n");
+		msg.append("Lives Before: ").append(livesBefore).append("/")
+		.append(GameStateController.TOTAL_HEART_SLOTS).append("\n\n");
+		
+		// Add activation cost mention 
+		msg.append("Score change: ").append(scoreChangeText)
+		.append(" ( -").append(activationPoints).append(" POINTS FOR ACTIVATION )\n");
+		
+		msg.append("Lives change: ").append(livesChangeText).append("\n");
+		
+		if (extraInfo != null && !extraInfo.isBlank()) {
+		msg.append("\n").append(extraInfo).append("\n");
+		}
+		
+		msg.append("\nNew score: ").append(s.score).append("\n");
+		msg.append("New lives: ").append(s.sharedHearts).append("/")
+		.append(GameStateController.TOTAL_HEART_SLOTS);
+		
+		alert.setHeaderText("You answered " + (useAn ? "an " : "a ") + difficultyText + " question.");		
 
-        StringBuilder msg = new StringBuilder();
-        msg.append("You answered a ").append(difficultyText).append(" question.\n\n");
-        msg.append(correct ? "Your answer is CORRECT!\n" : "Your answer is WRONG.\n");
-        msg.append("Score change: ").append(netScoreChange >= 0 ? "+" : "").append(netScoreChange).append("\n");
+		
+		// Use wrapped Label so nothing gets clipped
+		Label content = new Label(msg.toString());
+		content.setWrapText(true);
+		content.setMaxWidth(520);
+		alert.getDialogPane().setContent(content);
+		alert.getDialogPane().setMinHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
+		alert.getDialogPane().setMinWidth(560);
+		
+		alert.getDialogPane().getStylesheets().add(
+		GameBonusServiceController.class.getResource("/css/theme.css").toExternalForm()
+		);
+		
+		alert.showAndWait();
+		}
 
-        int livesDelta = livesAfter - livesBefore;
-        msg.append("Lives change: ").append(livesDelta >= 0 ? "+" : "").append(livesDelta).append("\n");
-
-        if (extraInfo != null && !extraInfo.isBlank()) {
-            msg.append("\n").append(extraInfo).append("\n");
-        }
-
-        msg.append("\nNew score: ").append(s.score).append("\n");
-        msg.append("New lives: ").append(s.sharedHearts).append("/").append(GameStateController.TOTAL_HEART_SLOTS);
-
-        alert.setHeaderText(null);
-        alert.setContentText(msg.toString());
-        alert.showAndWait();
-    }
 
     private void activateQuestion(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
         resetIdleHintTimer();
 
-        int activationPoints = getActivationPoints();
+        int activationPoints = getActivationPoints(); // game difficulty based
         int livesBefore = s.sharedHearts;
         int scoreBefore = s.score;
 
+        // activation cost happens for every question activation
         s.score -= activationPoints;
 
         Question q = getRandomQuestionFromPool();
@@ -453,7 +508,10 @@ public class GameBonusServiceController {
         }
 
         boolean correct = (chosenOption == q.getCorrectOption());
-        String qDiff = q.getDifficulty() != null ? q.getDifficulty().toLowerCase() : "easy";
+        String qDiff = (q.getDifficulty() != null) ? q.getDifficulty().toLowerCase() : "easy";
+
+        // Always attach activation cost mention to the popup text
+        String activationSuffix = " (-" + activationPoints + " points for activation).";
         String extraInfo = "";
 
         if (s.difficulty == Difficulty.EASY) {
@@ -463,17 +521,20 @@ public class GameBonusServiceController {
                     s.score += 3;
                     int converted = addLivesWithCap(1, activationPoints);
                     s.score += converted;
+
                     if (converted > 0) {
                         extraInfo = "You were already at max lives, so the extra life was converted to +" +
-                                converted + " points.";
+                                    converted + " points" + activationSuffix;
+                    } else {
+                        extraInfo = "Correct! You gained +3 points" + activationSuffix;
                     }
                 } else {
                     s.mistakeMade = true;
                     if (Math.random() < 0.5) {
                         s.score -= 3;
-                        extraInfo = "Wrong answer: you lost 3 points.";
+                        extraInfo = "you lost 3 points" + activationSuffix;
                     } else {
-                        extraInfo = "Wrong answer: no additional penalty this time.";
+                        extraInfo = "no additional penalty this time" + activationSuffix;
                     }
                 }
 
@@ -481,14 +542,14 @@ public class GameBonusServiceController {
                 if (correct) {
                     revealRandomMineReward(board, isPlayer1);
                     s.score += 6;
-                    extraInfo = "Correct! One mine was revealed automatically for you.";
+                    extraInfo = "Correct! One mine was revealed automatically and you gained +6 points" + activationSuffix;
                 } else {
                     s.mistakeMade = true;
                     if (Math.random() < 0.5) {
                         s.score -= 6;
-                        extraInfo = "Wrong answer: you lost 6 points.";
+                        extraInfo = "you lost 6 points" + activationSuffix;
                     } else {
-                        extraInfo = "Wrong answer: no additional penalty this time.";
+                        extraInfo = "no additional penalty this time" + activationSuffix;
                     }
                 }
 
@@ -496,11 +557,11 @@ public class GameBonusServiceController {
                 if (correct) {
                     revealArea3x3Reward(board, isPlayer1);
                     s.score += 10;
-                    extraInfo = "Correct! A 3×3 area of cells was revealed for you.";
+                    extraInfo = "Correct! A 3×3 area was revealed and you gained +10 points" + activationSuffix;
                 } else {
-                    s.score -= 10;
-                    extraInfo = "Wrong answer: you lost 10 points.";
                     s.mistakeMade = true;
+                    s.score -= 10;
+                    extraInfo = "you lost 10 points" + activationSuffix;
                 }
 
             } else if (qDiff.equals("expert")) {
@@ -508,15 +569,18 @@ public class GameBonusServiceController {
                     s.score += 15;
                     int converted = addLivesWithCap(2, activationPoints);
                     s.score += converted;
+
                     if (converted > 0) {
-                        extraInfo = "You gained 2 lives, but some were converted to +" +
-                                converted + " points because you were at max lives.";
+                        extraInfo = "Correct! You gained 2 lives, but some were converted to +" +
+                                    converted + " points because you were at max lives" + activationSuffix;
+                    } else {
+                        extraInfo = "Correct! You gained +15 points and 2 lives" + activationSuffix;
                     }
                 } else {
+                    s.mistakeMade = true;
                     s.score -= 15;
                     s.sharedHearts = Math.max(0, s.sharedHearts - 1);
-                    s.mistakeMade = true;
-                    extraInfo = "Wrong answer: you lost 15 points and 1 life.";
+                    extraInfo = "you lost 15 points and 1 life" + activationSuffix;
                 }
             }
 
@@ -527,14 +591,17 @@ public class GameBonusServiceController {
                     s.score += 8;
                     int converted = addLivesWithCap(1, activationPoints);
                     s.score += converted;
+
                     if (converted > 0) {
                         extraInfo = "You were already at max lives, so the extra life was converted to +" +
-                                converted + " points.";
+                                    converted + " points" + activationSuffix;
+                    } else {
+                        extraInfo = "Correct! You gained +8 points and 1 life" + activationSuffix;
                     }
                 } else {
-                    s.score -= 8;
-                    extraInfo = "Wrong answer: you lost 8 points.";
                     s.mistakeMade = true;
+                    s.score -= 8;
+                    extraInfo = "you lost 8 points" + activationSuffix;
                 }
 
             } else if (qDiff.equals("medium")) {
@@ -542,18 +609,21 @@ public class GameBonusServiceController {
                     s.score += 10;
                     int converted = addLivesWithCap(1, activationPoints);
                     s.score += converted;
+
                     if (converted > 0) {
                         extraInfo = "You were already at max lives, so the extra life was converted to +" +
-                                converted + " points.";
+                                    converted + " points" + activationSuffix;
+                    } else {
+                        extraInfo = "Correct! You gained +10 points and 1 life" + activationSuffix;
                     }
                 } else {
                     s.mistakeMade = true;
                     if (Math.random() < 0.5) {
                         s.score -= 10;
                         s.sharedHearts = Math.max(0, s.sharedHearts - 1);
-                        extraInfo = "Wrong answer: you lost 10 points and 1 life.";
+                        extraInfo = "you lost 10 points and 1 life" + activationSuffix;
                     } else {
-                        extraInfo = "Wrong answer: no additional penalty this time.";
+                        extraInfo = "no additional penalty this time" + activationSuffix;
                     }
                 }
 
@@ -562,15 +632,18 @@ public class GameBonusServiceController {
                     s.score += 15;
                     int converted = addLivesWithCap(1, activationPoints);
                     s.score += converted;
+
                     if (converted > 0) {
                         extraInfo = "You were already at max lives, so the extra life was converted to +" +
-                                converted + " points.";
+                                    converted + " points" + activationSuffix;
+                    } else {
+                        extraInfo = "Correct! You gained +15 points and 1 life" + activationSuffix;
                     }
                 } else {
+                    s.mistakeMade = true;
                     s.score -= 15;
                     s.sharedHearts = Math.max(0, s.sharedHearts - 1);
-                    s.mistakeMade = true;
-                    extraInfo = "Wrong answer: you lost 15 points and 1 life.";
+                    extraInfo = "you lost 15 points and 1 life" + activationSuffix;
                 }
 
             } else if (qDiff.equals("expert")) {
@@ -578,19 +651,22 @@ public class GameBonusServiceController {
                     s.score += 20;
                     int converted = addLivesWithCap(2, activationPoints);
                     s.score += converted;
+
                     if (converted > 0) {
-                        extraInfo = "You gained 2 lives, but some were converted to +" +
-                                converted + " points because you were at max lives.";
+                        extraInfo = "Correct! You gained 2 lives, but some were converted to +" +
+                                    converted + " points because you were at max lives" + activationSuffix;
+                    } else {
+                        extraInfo = "Correct! You gained +20 points and 2 lives" + activationSuffix;
                     }
                 } else {
                     s.mistakeMade = true;
                     s.score -= 20;
                     if (Math.random() < 0.5) {
                         s.sharedHearts = Math.max(0, s.sharedHearts - 1);
-                        extraInfo = "Wrong answer: you lost 20 points and 1 life.";
+                        extraInfo = "you lost 20 points and 1 life" + activationSuffix;
                     } else {
                         s.sharedHearts = Math.max(0, s.sharedHearts - 2);
-                        extraInfo = "Wrong answer: you lost 20 points and 2 lives.";
+                        extraInfo = "you lost 20 points and 2 lives" + activationSuffix;
                     }
                 }
             }
@@ -602,17 +678,18 @@ public class GameBonusServiceController {
                     s.score += 10;
                     int converted = addLivesWithCap(1, activationPoints);
                     s.score += converted;
+
                     if (converted > 0) {
                         extraInfo = "You were already at max lives, so the extra life was converted to +" +
-                                converted + " points.";
+                                    converted + " points" + activationSuffix;
                     } else {
-                        extraInfo = "Correct! You gained 1 life.";
+                        extraInfo = "Correct! You gained +10 points and 1 life" + activationSuffix;
                     }
                 } else {
+                    s.mistakeMade = true;
                     s.score -= 10;
                     s.sharedHearts = Math.max(0, s.sharedHearts - 1);
-                    s.mistakeMade = true;
-                    extraInfo = "Wrong answer: you lost 10 points and 1 life.";
+                    extraInfo = "you lost 10 points and 1 life" + activationSuffix;
                 }
 
             } else if (qDiff.equals("medium")) {
@@ -621,20 +698,21 @@ public class GameBonusServiceController {
                     int livesToAdd = (Math.random() < 0.5) ? 1 : 2;
                     int converted = addLivesWithCap(livesToAdd, activationPoints);
                     s.score += converted;
+
                     if (converted > 0) {
                         extraInfo = "Correct! You gained " + livesToAdd +
-                                " lives, but some were converted to +" + converted +
-                                " points because you were at max lives.";
+                                    " lives, but some were converted to +" + converted +
+                                    " points because you were at max lives" + activationSuffix;
                     } else {
-                        extraInfo = "Correct! You gained " + livesToAdd + " lives.";
+                        extraInfo = "Correct! You gained +15 points and " + livesToAdd + " lives" + activationSuffix;
                     }
                 } else {
                     s.mistakeMade = true;
                     s.score -= 15;
                     int livesLost = (Math.random() < 0.5) ? 1 : 2;
                     s.sharedHearts = Math.max(0, s.sharedHearts - livesLost);
-                    extraInfo = "Wrong answer: you lost 15 points and " +
-                            livesLost + " life" + (livesLost > 1 ? "s." : ".");
+                    extraInfo = "you lost 15 points and " + livesLost +
+                                " life" + (livesLost > 1 ? "s" : "") + activationSuffix;
                 }
 
             } else if (qDiff.equals("hard")) {
@@ -642,17 +720,18 @@ public class GameBonusServiceController {
                     s.score += 20;
                     int converted = addLivesWithCap(2, activationPoints);
                     s.score += converted;
+
                     if (converted > 0) {
                         extraInfo = "Correct! You gained 2 lives, but some were converted to +" +
-                                converted + " points because you were at max lives.";
+                                    converted + " points because you were at max lives" + activationSuffix;
                     } else {
-                        extraInfo = "Correct! You gained 2 lives.";
+                        extraInfo = "Correct! You gained +20 points and 2 lives" + activationSuffix;
                     }
                 } else {
                     s.mistakeMade = true;
                     s.score -= 20;
                     s.sharedHearts = Math.max(0, s.sharedHearts - 2);
-                    extraInfo = "Wrong answer: you lost 20 points and 2 lives.";
+                    extraInfo = "you lost 20 points and 2 lives" + activationSuffix;
                 }
 
             } else if (qDiff.equals("expert")) {
@@ -660,30 +739,32 @@ public class GameBonusServiceController {
                     s.score += 40;
                     int converted = addLivesWithCap(3, activationPoints);
                     s.score += converted;
+
                     if (converted > 0) {
                         extraInfo = "Correct! You gained 3 lives, but some were converted to +" +
-                                converted + " points because you were at max lives.";
+                                    converted + " points because you were at max lives" + activationSuffix;
                     } else {
-                        extraInfo = "Correct! You gained 3 lives.";
+                        extraInfo = "Correct! You gained +40 points and 3 lives" + activationSuffix;
                     }
                 } else {
                     s.mistakeMade = true;
                     s.score -= 40;
                     s.sharedHearts = Math.max(0, s.sharedHearts - 3);
-                    extraInfo = "Wrong answer: you lost 40 points and 3 lives.";
+                    extraInfo = "you lost 40 points and 3 lives" + activationSuffix;
                 }
             }
         }
 
         ui.buildHeartsBar();
         button.setDisable(true);
-
         ui.updateScoreAndMineLabels();
 
         if (play.checkLoseAndHandle()) return;
 
         int livesAfter = s.sharedHearts;
         int netScoreChange = s.score - scoreBefore;
-        showQuestionResultPopup(q, correct, netScoreChange, livesBefore, livesAfter, extraInfo);
+
+        showQuestionResultPopup(q, scoreBefore, correct, netScoreChange, livesBefore, livesAfter, extraInfo);
     }
+
 }

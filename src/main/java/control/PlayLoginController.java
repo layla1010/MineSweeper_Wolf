@@ -20,8 +20,12 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import util.DialogUtil;
 import util.EmailService;
+import util.OnboardingManager;
+import util.OnboardingPolicy;
+import util.OnboardingStep;
 import util.SoundManager;
 
+import java.util.List;
 import java.util.Optional;
 
 import javafx.scene.control.Alert;
@@ -69,6 +73,7 @@ public class PlayLoginController {
 
     @FXML
     private void initialize() {
+    	
         if (p1PasswordField != null && p1PasswordVisibleField != null) {
             p1PasswordVisibleField.textProperty()
                     .bindBidirectional(p1PasswordField.textProperty());
@@ -114,8 +119,31 @@ public class PlayLoginController {
                 "-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);"
             );
         }
-
+        
         playIntroAnimation();
+        
+     // Guided onboarding (login must ALWAYS show because user not known yet)
+        List<OnboardingStep> loginSteps = List.of(
+                new OnboardingStep("#playersTab", "Players login",
+                        "Use this tab for a 2-player match. Each player logs in with their own account."),
+                new OnboardingStep("#adminTab", "Admin login",
+                        "Use Admin only for admin features. Regular matches do not require admin login."),
+                new OnboardingStep("#playersLoginButton", "Login",
+                        "After entering both players’ names and passwords, press Login to continue."),
+                new OnboardingStep("#skipLoginButton", "Play as guest",
+                        "Skip enters Guest Mode. Your match won’t be linked to registered player accounts."),
+                new OnboardingStep("#forgotPasswordText", "Forgot password",
+                        "Enter your email to receive a one-time password (OTP). Use it as your password on this login screen.")
+        );
+
+        OnboardingManager.runWithPolicy(
+                "onboarding.login",
+                mainPane,
+                loginSteps,
+                OnboardingPolicy.ALWAYS,
+                null
+        );
+    
     }
 
 
@@ -413,18 +441,21 @@ public class PlayLoginController {
     @FXML
     public void onSkipLoginClicked() {
         playClickSound();
+        SessionManager.clear();
+        SessionManager.setGuestMode(true);
         goToMainPage(false);
     }
 
     @FXML
     private void onForgotPasswordClicked() {
-        playClickSound();  // optional
+        playClickSound();  
 
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Forgot Password");
         dialog.setHeaderText("Reset your password");
         dialog.setContentText("Please enter your email:");
-
+        dialog.getDialogPane().getStylesheets().add(PlayLoginController.class.getResource("/css/theme.css").toExternalForm());
+      
         Optional<String> result = dialog.showAndWait();
         if (!result.isPresent()) {
             // user cancelled

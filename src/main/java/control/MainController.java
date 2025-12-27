@@ -39,6 +39,7 @@ import util.SoundManager;
 import util.UIAnimations;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
+import javafx.scene.control.Hyperlink;
 
 
 public class MainController {
@@ -49,6 +50,9 @@ public class MainController {
     @FXML private Rectangle newGameShimmer;
     @FXML private HBox loginBox;
     @FXML private Button statisticsBtn;
+    @FXML private Hyperlink loginLink;
+    @FXML private Button logoutBtn;
+
 
 
     private Stage stage;
@@ -67,6 +71,7 @@ public class MainController {
         setupBackgroundOrbs();
         setupEnergyRings();
         setupSparkles();
+        refreshLoginUI();
 
         UIAnimations.applyHoverZoomToAllButtons(mainGrid);
         UIAnimations.applyFloatingToCards(mainGrid);
@@ -82,6 +87,49 @@ public class MainController {
         this.adminMode = adminMode;
     }
     
+    private void refreshLoginUI() {
+        boolean isGuest = SessionManager.isGuestMode();
+        boolean hasLoggedInSession =
+                SessionManager.getLoggedInUser() != null
+                || SessionManager.getPlayer1() != null
+                || SessionManager.getPlayer2() != null;
+
+        // Login link only when guest
+        if (loginBox != null) {
+            loginBox.setVisible(isGuest);
+            loginBox.setManaged(isGuest);
+        }
+
+        // Logout only when there is an actual logged-in session (players/admin)
+        if (logoutBtn != null) {
+            logoutBtn.setVisible(hasLoggedInSession && !isGuest);
+            logoutBtn.setManaged(hasLoggedInSession && !isGuest);
+        }
+    }
+
+    private boolean isGuestSession() {
+        return SessionManager.getLoggedInUser() == null
+                && SessionManager.getPlayer1() == null
+                && SessionManager.getPlayer2() == null;
+    }
+    
+    @FXML
+    private void onLogoutClicked() {
+
+        boolean confirm = DialogUtil.confirm(
+                "Logout",
+                "Logout",
+                "Are you sure you want to log out?\n\nThis will clear the current session.\n\n"
+        );
+
+        if (!confirm) return;
+
+        SessionManager.clear();
+        SessionManager.setGuestMode(false); // important: user is not in guest mode anymore
+
+        goToLoginView();
+    }
+
     
     //Handles the "New Game" button click: Plays click sound, loads new_game_view.fxml, and navigates to the New Game setup screen.
     @FXML
@@ -383,6 +431,10 @@ public class MainController {
     @FXML
     private void onLoginClicked(ActionEvent event) {
     	System.out.println("LOGIN LINK CLICKED!");
+    	 if (!SessionManager.isGuestMode()) {
+    	        DialogUtil.show(AlertType.INFORMATION, "Already logged in", "You already have an active session. Log out first to switch users.", null);
+    	        return;
+    	    }
 
         SoundManager.playClick();
         try {
@@ -399,6 +451,36 @@ public class MainController {
           	DialogUtil.show(AlertType.ERROR, "Error", "Login navigation failed",e.toString());
          	return;
         }
+    }
+    
+    private void goToLoginView() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/view/players_login_view.fxml")); 
+            Stage stage = (Stage) ((logoutBtn != null) ? logoutBtn.getScene().getWindow()
+                    : (loginBox != null ? loginBox.getScene().getWindow()
+                    : null));
+
+            if (stage == null) {
+                // As a fallback, you can throw; but better to fail loudly during dev.
+                throw new IllegalStateException("Cannot resolve Stage in MainController.");
+            }
+            Scene scene = new Scene(root, 800, 400);
+            stage.setScene(scene);
+            stage.setTitle("Login");
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+
+
+
+        } catch (IOException ex) {
+            DialogUtil.show(AlertType.ERROR, "Navigation error", "Could not open Login screen.", null);
+            ex.printStackTrace();
+        }
+    }
+    
+    public void onEnteredMainView() {
+        refreshLoginUI();
     }
     
   //Opens the statistics view

@@ -42,7 +42,7 @@
         <!-- TOP TITLE BAR -->
         <AnchorPane maxHeight="75.0" maxWidth="1200.0" minHeight="15.0" minWidth="1200.0" prefHeight="20.0" prefWidth="1200.0">
             <children>
-            <Button layoutX="20.0" layoutY="18.0" mnemonicParsing="false" onAction="#onBackClicked" prefHeight="32.0" prefWidth="32.0" styleClass="game-back-button" text="←" />
+            <Button fx:id="backBtn" layoutX="20.0" layoutY="18.0" mnemonicParsing="false" onAction="#onBackClicked" prefHeight="32.0" prefWidth="32.0" styleClass="game-back-button" text="←" />
             
                 <Text fill="#F6F7FF" layoutX="504.0" layoutY="35.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-effect: dropshadow(gaussian, #f973c5, 20, 0.5, 0, 0);" text="Game Setup" textAlignment="CENTER" wrappingWidth="200.0">
                     <font>
@@ -776,7 +776,7 @@
                 </AnchorPane>
 
                 <!-- START GAME BUTTON -->
-                <Button layoutX="509.0" layoutY="208.0" mnemonicParsing="false" onAction="#onStartGameClicked" onMouseClicked="#playClickSound" prefHeight="47.0" prefWidth="182.0" style="-fx-cursor: hand;                                -fx-background-color: linear-gradient(#f973c5, #a855f7);                                -fx-background-radius: 30;                                -fx-effect: dropshadow(gaussian, rgba(248, 113, 182, 0.5), 20, 0.5, 0, 0);" styleClass="zoom-on-hover" text="start game" textFill="#f6f7ff">
+                <Button fx:id="startGameBtn" layoutX="509.0" layoutY="208.0" mnemonicParsing="false" onAction="#onStartGameClicked" onMouseClicked="#playClickSound" prefHeight="47.0" prefWidth="182.0" style="-fx-cursor: hand;                                -fx-background-color: linear-gradient(#f973c5, #a855f7);                                -fx-background-radius: 30;                                -fx-effect: dropshadow(gaussian, rgba(248, 113, 182, 0.5), 20, 0.5, 0, 0);" styleClass="zoom-on-hover" text="start game" textFill="#f6f7ff">
                     <font>
                         <Font name="Copperplate Gothic Light" size="24.0" />
                     </font>

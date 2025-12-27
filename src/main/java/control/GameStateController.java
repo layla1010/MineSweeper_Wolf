@@ -9,8 +9,8 @@ import model.GameConfig;
 
 public class GameStateController {
 
-    GameConfig config;
-    Difficulty difficulty;
+   GameConfig config;
+   Difficulty difficulty;
 
     Board board1;
     Board board2;

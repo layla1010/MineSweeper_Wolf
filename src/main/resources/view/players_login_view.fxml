@@ -60,7 +60,7 @@
 						</Text>
 
 
-                        <Button mnemonicParsing="false" onAction="#onPlayersLoginClicked" prefHeight="33.0" prefWidth="138.0" style="-fx-cursor: hand;" text="Login" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                        <Button fx:id="playersLoginButton" mnemonicParsing="false" onAction="#onPlayersLoginClicked" prefHeight="33.0" prefWidth="138.0" style="-fx-cursor: hand;" text="Login" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="18.0" />
                             </font>
@@ -69,7 +69,7 @@
                             </GridPane.margin>
                         </Button>
 
-                        <Button mnemonicParsing="false" onAction="#onSkipLoginClicked" prefHeight="33.0" prefWidth="138.0" style="-fx-cursor: hand;" text="Skip" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <Button fx:id="skipLoginButton" mnemonicParsing="false" onAction="#onSkipLoginClicked" prefHeight="33.0" prefWidth="138.0" style="-fx-cursor: hand;" text="Skip" GridPane.columnIndex="1" GridPane.rowIndex="2">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="18.0" />
                             </font>

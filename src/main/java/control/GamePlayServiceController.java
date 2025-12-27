@@ -234,37 +234,8 @@ public class GamePlayServiceController {
         ui.updateScoreAndMineLabels();
     }
 
-    /**
-     * Handles a cell click: reveal, cascade if empty/question/surprise, and trigger surprise/question activation
-     * on second click. Always returns true → turn consumed.
-     */
-    public boolean handleCellClick(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
-        Cell cell = board.getCell(row, col);
-        boolean[][] revealedArray = isPlayer1 ? s.revealedCellsP1 : s.revealedCellsP2;
-
-        if (button.getStyleClass().contains("cell-flagged")) {
-            autoRemoveFlagIfPresent(board, row, col, button, isPlayer1);
-        }
-
-        if (cell.getType() == CellType.SURPRISE &&
-                revealedArray != null &&
-                revealedArray[row][col]) {
-
-            // delegate to bonus service via static access pattern:
-            // UI service wires bonus into itself; simplest is to call through tile logic.
-            // We expose activation through SysData flags only here by leaving activation to UI wiring.
-            // Actual activation is triggered in GameBonusService via the same condition.
-            // In this refactor, we keep activation inside GameBonusService by calling a helper:
-            // (done in GameBonusService by calling playService.activateSurpriseFromPlay)
-            // So here we just signal by returning true, but we must actually activate.
-        }
-
-        return revealAndMaybeActivate(board, row, col, button, tile, isPlayer1);
-    }
-
-    // This method exists to keep GameUIService->click handler simple: call play.handleCellClick(...)
-    // but still allow GameBonusService activations without circular dependencies in click handler.
-    // GameBonusService calls this method directly when needed.
+  
+   
     public boolean revealAndMaybeActivate(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
         Cell cell = board.getCell(row, col);
         boolean[][] revealedArray = isPlayer1 ? s.revealedCellsP1 : s.revealedCellsP2;

@@ -1,6 +1,7 @@
 package control;
 
 import java.io.IOException;
+import java.util.List;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,7 +18,11 @@ import javafx.stage.Stage;
 import model.GameConfig;
 import model.SysData;
 import util.DialogUtil;
+import util.OnboardingManager;
+import util.OnboardingPolicy;
+import util.OnboardingStep;
 import util.SoundManager;
+import util.SessionManager;
 import util.UIAnimations;
 
 public class GameController {
@@ -70,10 +75,10 @@ public class GameController {
         uiService.setBonusService(bonusService);
         uiService.setPlayService(playService);
 
-        // setup boards + counters (same as your init)
+        // setup boards + counters 
         playService.initializeNewMatch();
 
-        // Apply generic animations to buttons/cards (same as your init)
+        // Apply generic animations to buttons/cards
         UIAnimations.applyHoverZoomToAllButtons(root);
         UIAnimations.applyFloatingToCards(root);
 
@@ -86,7 +91,7 @@ public class GameController {
         uiService.initForbiddenCursor();
         uiService.applyTurnStateToBoards();
 
-        // TIMER SETTINGS (same behavior)
+        // TIMER SETTINGS 
         state.elapsedSeconds = 0;
         if (SysData.isTimerEnabled()) {
             uiService.updateTimeLabel();
@@ -99,6 +104,35 @@ public class GameController {
         // SYNC ICONS WITH SETTINGS
         uiService.refreshSoundIconFromSettings();
         uiService.refreshMusicIconFromSettings();
+        
+        
+        List<OnboardingStep> gameSteps = List.of(
+        		   new OnboardingStep("#exitBtn", "Exit",
+                           "Exit closes the application immediately."),
+                   new OnboardingStep("#pauseBtn", "Pause",
+                           "Pause temporarily blocks gameplay and freezes interaction."),
+                   new OnboardingStep("#soundButton", "Sound effects",
+                           "Toggle click and UI sounds."),
+                   new OnboardingStep("#musicButton", "Music",
+                           "Toggle background music."),
+                   new OnboardingStep("#label", "Difficulty + timer",
+                           "Track current difficulty and elapsed time."),
+                   new OnboardingStep("#player1BombsLeftLabel", "Mines left",
+                           "Shows remaining mines,flags,questions and surprises for each board."),
+                   new OnboardingStep("#heartsBox", "Shared hearts",
+                           "These are shared between both players. Losing all hearts ends the match."),
+                   new OnboardingStep("#scoreLabel", "Score",
+                           "Score increases based on progress and correct actions.")
+           
+   );
+        OnboardingPolicy policy =
+                SessionManager.isAdminMode() ? OnboardingPolicy.NEVER :
+                SessionManager.isGuestMode() ? OnboardingPolicy.ALWAYS :
+                OnboardingPolicy.ONCE_THEN_HOVER;
+
+        String userKey = SessionManager.getOnboardingUserKey();
+
+        OnboardingManager.runWithPolicy("onboarding.game", root, gameSteps, policy, userKey);
 
         // start/reset idle smart-hint timer
         bonusService.resetIdleHintTimer();
@@ -174,7 +208,6 @@ public class GameController {
 
     @FXML
     private void showEndGameScreen() {
-        // This method body stays identical to your original logic, just moved here.
         try {
             String fxmlPath = state.gameWon ? "/view/win_view.fxml" : "/view/lose_view.fxml";
 

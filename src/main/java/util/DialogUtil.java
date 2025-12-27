@@ -42,5 +42,20 @@ public final class DialogUtil {
 
         return alert.showAndWait();   // <-- THIS is the key difference
     }
+    
+    public static boolean confirm(String header, String title, String message) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(message);
+
+        alert.getDialogPane().getStylesheets().add(
+                DialogUtil.class.getResource("/css/theme.css").toExternalForm()
+        );
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
 
 }

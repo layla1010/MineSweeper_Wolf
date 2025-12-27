@@ -1,6 +1,7 @@
 package control;
 
 import java.io.IOException;
+import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,6 +25,10 @@ import model.GameConfig;
 import model.SysData;
 import util.AvatarManager;
 import util.DialogUtil;
+import util.OnboardingManager;
+import util.OnboardingPolicy;
+import util.OnboardingStep;
+import util.SessionManager;
 import util.SoundManager;
 import util.UIAnimations;
 
@@ -84,6 +89,34 @@ public class NewGameController {
         // Sync icons with global settings (SysData + SoundManager)
         refreshSoundIconFromSettings();
         refreshMusicIconFromSettings();
+        
+        
+        List<OnboardingStep> newGameSteps = List.of(
+        		 new OnboardingStep("#backBtn", "Back",
+                         "Return to the main menu."),
+                 new OnboardingStep("#easyToggle", "Difficulty",
+                         "Pick a difficulty. Each option changes grid size, mines, questions, and surprises."),
+                 new OnboardingStep("#player1Nickname", "Player names",
+                         "Enter both nicknames. These appear in-game."),
+                 new OnboardingStep("#anchor", "Avatars",
+                         "Choose an avatar for each player. Click the player card first to select who you’re editing."),
+                 new OnboardingStep("#setUpSoundButton", "Sound effects",
+                         "Toggle click and UI sound effects."),
+                 new OnboardingStep("#setUpMusicButton", "Music",
+                         "Toggle background music."),
+                 new OnboardingStep("#startGameBtn", "Start game",
+                         "Starts the match using your current setup.")
+         );
+         
+        OnboardingPolicy policy =
+                SessionManager.isAdminMode() ? OnboardingPolicy.NEVER :
+                SessionManager.isGuestMode() ? OnboardingPolicy.ALWAYS :
+                OnboardingPolicy.ONCE_THEN_HOVER;
+
+        String userKey = SessionManager.getOnboardingUserKey();
+
+        OnboardingManager.runWithPolicy("onboarding.newgame", root, newGameSteps, policy, userKey);
+
     }
 
     // Utility method to play a standard click sound.
