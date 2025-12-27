@@ -17,6 +17,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -28,6 +29,7 @@ import javafx.stage.Stage;
 import model.Game;
 import model.GameResult;
 import model.SysData;
+import util.DialogUtil;
 import util.SoundManager;
 
 /**
@@ -74,9 +76,7 @@ public class HistoryController {
         onFilterTypeChanged();
 
         if (allGames.isEmpty()) {
-            showAlert(Alert.AlertType.INFORMATION,
-                    "No history yet",
-                    "There are no games in the history yet.\nPlay some games first, then come back to this screen.");
+         	DialogUtil.show(AlertType.INFORMATION, "", "No history yet", "There are no games in the history yet.\nPlay some games first, then come back to this screen.");                  
         }
 
         refreshHistoryView(HistoryFilterService.OPT_ALL);
@@ -131,7 +131,7 @@ public class HistoryController {
 
         HistoryFilterService.ValidationResult vr = service.validate(effectiveType, typed, selectedDate);
         if (!vr.ok) {
-            showAlert(Alert.AlertType.WARNING, vr.title, vr.message);
+         	DialogUtil.show(AlertType.WARNING, "", vr.title,vr.message);                  
             return;
         }
 
@@ -151,9 +151,7 @@ public class HistoryController {
         if (HistoryFilterService.OPT_DATE.equals(effectiveType)
                 && sorted.isEmpty()
                 && selectedDate != null) {
-            showAlert(Alert.AlertType.WARNING,
-                    "No games on this date",
-                    "No games were found on " + selectedDate + ".");
+         	DialogUtil.show(AlertType.WARNING, "", "No games on this date." ,"No games were found on " + selectedDate + ".");                  
         }
     }
 
@@ -281,22 +279,6 @@ public class HistoryController {
         } catch (Exception e) {
             return null;
         }
-    }
-
-    private void showAlert(Alert.AlertType type, String title, String message) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-
-        Label label = new Label(message);
-        label.setWrapText(true);
-        label.setMaxWidth(380);
-
-        VBox box = new VBox(label);
-        box.setSpacing(10);
-        alert.getDialogPane().setContent(box);
-
-        alert.showAndWait();
     }
 
     @FXML

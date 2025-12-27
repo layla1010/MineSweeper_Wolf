@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="770.0" prefWidth="1300.0" style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);" stylesheets="@../css/board.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.GameController">
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="770.0" prefWidth="1300.0" style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);" stylesheets="@../css/board.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.GameController">
 
     <columnConstraints>
         <ColumnConstraints maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
@@ -38,7 +38,7 @@
         <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="1200.0" spacing="10.0" GridPane.columnSpan="5" GridPane.rowIndex="0">
             <children>
 
-                <Button onAction="#onExitBtnClicked" prefHeight="32.0" prefWidth="90.0" style="-fx-background-color: #ef4444;                                -fx-text-fill: white;                                -fx-background-radius: 20;                                -fx-cursor: hand;" styleClass="zoom-on-hover" text="Exit">
+                <Button fx:id="exitBtn" onAction="#onExitBtnClicked" prefHeight="32.0" prefWidth="90.0" style="-fx-background-color: #ef4444;                                -fx-text-fill: white;                                -fx-background-radius: 20;                                -fx-cursor: hand;" styleClass="zoom-on-hover" text="Exit">
                     <font>
                         <Font name="Copperplate Gothic Bold" size="16.0" />
                     </font>
@@ -47,13 +47,13 @@
                     </HBox.margin>
                 </Button>
 
-                <Button onAction="#onHelpBtnClicked" prefHeight="32.0" prefWidth="90.0" style="-fx-background-color: #22c55e;                                -fx-text-fill: white;                                -fx-background-radius: 20;                                -fx-cursor: hand;" styleClass="zoom-on-hover" text="Help">
+                <Button fx:id="helpBtn" onAction="#onHelpBtnClicked" prefHeight="32.0" prefWidth="90.0" style="-fx-background-color: #22c55e;                                -fx-text-fill: white;                                -fx-background-radius: 20;                                -fx-cursor: hand;" styleClass="zoom-on-hover" text="Help">
                     <font>
                         <Font name="Copperplate Gothic Bold" size="16.0" />
                     </font>
                 </Button>
 
-                <Button onAction="#onBackBtnClicked" prefHeight="32.0" prefWidth="90.0" style="-fx-background-color: #4b5563;                                -fx-text-fill: white;                                -fx-background-radius: 20;                                -fx-cursor: hand;" styleClass="zoom-on-hover" text="Back">
+                <Button fx:id="backBtn" onAction="#onBackBtnClicked" prefHeight="32.0" prefWidth="90.0" style="-fx-background-color: #4b5563;                                -fx-text-fill: white;                                -fx-background-radius: 20;                                -fx-cursor: hand;" styleClass="zoom-on-hover" text="Back">
                     <font>
                         <Font name="Copperplate Gothic Bold" size="16.0" />
                     </font>
@@ -97,7 +97,7 @@
         <!-- Difficulty + Time bar -->
         <StackPane GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
             <children>
-                <Label prefHeight="50.0" prefWidth="900.0" style="-fx-background-color: rgba(15,23,42,0.65);                               -fx-background-radius: 30;                               -fx-border-color: rgba(255,255,255,0.3);                               -fx-border-radius: 30;                               -fx-border-width: 1.5;" />
+                <Label fx:id="label" prefHeight="50.0" prefWidth="900.0" style="-fx-background-color: rgba(15,23,42,0.65);                               -fx-background-radius: 30;                               -fx-border-color: rgba(255,255,255,0.3);                               -fx-border-radius: 30;                               -fx-border-width: 1.5;" />
 
                 <HBox alignment="CENTER" spacing="200.0">
                     <children>

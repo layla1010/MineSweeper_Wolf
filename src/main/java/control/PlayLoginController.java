@@ -18,9 +18,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import util.DialogUtil;
 import util.EmailService;
+import util.OnboardingManager;
+import util.OnboardingPolicy;
+import util.OnboardingStep;
 import util.SoundManager;
 
+import java.util.List;
 import java.util.Optional;
 
 import javafx.scene.control.Alert;
@@ -68,6 +73,7 @@ public class PlayLoginController {
 
     @FXML
     private void initialize() {
+    	
         if (p1PasswordField != null && p1PasswordVisibleField != null) {
             p1PasswordVisibleField.textProperty()
                     .bindBidirectional(p1PasswordField.textProperty());
@@ -113,8 +119,31 @@ public class PlayLoginController {
                 "-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);"
             );
         }
-
+        
         playIntroAnimation();
+        
+     // Guided onboarding (login must ALWAYS show because user not known yet)
+        List<OnboardingStep> loginSteps = List.of(
+                new OnboardingStep("#playersTab", "Players login",
+                        "Use this tab for a 2-player match. Each player logs in with their own account."),
+                new OnboardingStep("#adminTab", "Admin login",
+                        "Use Admin only for admin features. Regular matches do not require admin login."),
+                new OnboardingStep("#playersLoginButton", "Login",
+                        "After entering both players’ names and passwords, press Login to continue."),
+                new OnboardingStep("#skipLoginButton", "Play as guest",
+                        "Skip enters Guest Mode. Your match won’t be linked to registered player accounts."),
+                new OnboardingStep("#forgotPasswordText", "Forgot password",
+                        "Enter your email to receive a one-time password (OTP). Use it as your password on this login screen.")
+        );
+
+        OnboardingManager.runWithPolicy(
+                "onboarding.login",
+                mainPane,
+                loginSteps,
+                OnboardingPolicy.ALWAYS,
+                null
+        );
+    
     }
 
 
@@ -211,11 +240,7 @@ public class PlayLoginController {
 
         if (p1Name.isEmpty() || p2Name.isEmpty() ||
                 p1Pass.isEmpty() || p2Pass.isEmpty()) {
-            Alert a = new Alert(AlertType.ERROR);
-            a.setTitle("Login failed");
-            a.setHeaderText(null);
-            a.setContentText("Both players must enter name and password.");
-            a.showAndWait();
+         	DialogUtil.show(AlertType.ERROR, null, "Login failed", "Both players must enter name and password.");                
             return;
         }
 
@@ -225,27 +250,27 @@ public class PlayLoginController {
         Player p2 = sys.findPlayerByOfficialName(p2Name);
 
         if (p1 == null) {
-            showError("Login failed", "Player 1 is not a registered user.");
+         	DialogUtil.show(AlertType.ERROR, null, "Login failed", "Player 1 is not a registered user");                 
             return;
         }
 
         if (p2 == null) {
-            showError("Login failed", "Player 2 is not a registered user.");
+         	DialogUtil.show(AlertType.ERROR, null, "Login failed", "Player 2 is not a registered user.");                 
             return;
         }
 
         if (!p1.checkPassword(p1Pass)) {
-            showError("Login failed", "Incorrect password for Player 1.");
+         	DialogUtil.show(AlertType.ERROR, null, "Login failed", "Incorrect password for player 1.");                 
             return;
         }
 
         if (!p2.checkPassword(p2Pass)) {
-            showError("Login failed", "Incorrect password for Player 2.");
+         	DialogUtil.show(AlertType.ERROR, null, "Login failed", "Incorrect password for player 2.");                 
             return;
         }
 
         if (p1 == p2) {
-            showError("Login failed", "Player 1 and Player 2 must be different users.");
+         	DialogUtil.show(AlertType.ERROR, null, "Login failed", "Player 1 and 2 must be different users.");                 
             return;
         }
 
@@ -265,12 +290,12 @@ public class PlayLoginController {
         AdminLoginResult result = evaluateAdminLogin(admin, adminPass);
         
         if (result == AdminLoginResult.INVALID_CREDENTIALS) {
-            showError("Login failed", "Invalid Name or Password.");
-            return;
+         	DialogUtil.show(AlertType.ERROR, null, "Login failed", "Invalid Name or Password.");                 
+         	return;
         }
         
         if (result == AdminLoginResult.NOT_ADMIN) {
-            showError("Login failed", "Not a saved Admin.");
+         	DialogUtil.show(AlertType.ERROR, null, "Login failed", "Not a saved Admin.");                  
             return;
         }
 
@@ -416,18 +441,21 @@ public class PlayLoginController {
     @FXML
     public void onSkipLoginClicked() {
         playClickSound();
+        SessionManager.clear();
+        SessionManager.setGuestMode(true);
         goToMainPage(false);
     }
 
     @FXML
     private void onForgotPasswordClicked() {
-        playClickSound();  // optional
+        playClickSound();  
 
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Forgot Password");
         dialog.setHeaderText("Reset your password");
         dialog.setContentText("Please enter your email:");
-
+        dialog.getDialogPane().getStylesheets().add(PlayLoginController.class.getResource("/css/theme.css").toExternalForm());
+      
         Optional<String> result = dialog.showAndWait();
         if (!result.isPresent()) {
             // user cancelled
@@ -436,11 +464,7 @@ public class PlayLoginController {
 
         String email = result.get().trim();
         if (email.isEmpty()) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Email cannot be empty.");
-            alert.showAndWait();
+         	DialogUtil.show(AlertType.ERROR, null, "Error", "Email cannot be empty.");                
             return;
         }
 
@@ -448,21 +472,13 @@ public class PlayLoginController {
         Player player = sysData.findPlayerByEmail(email);
 
         if (player == null) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Unknown Email");
-            alert.setHeaderText(null);
-            alert.setContentText("No player found for this email.");
-            alert.showAndWait();
+         	DialogUtil.show(AlertType.ERROR, null, "Unknown Email", "No player found for this email.");                
             return;
         }
 
         if (adminLoginCard.isVisible()) {
             if (player.getRole() != Role.ADMIN) {
-                Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Access Denied");
-                alert.setHeaderText(null);
-                alert.setContentText("This email does not belong to an Admin account.");
-                alert.showAndWait();
+             	DialogUtil.show(AlertType.ERROR, null, "Access Denied", "This email does not belong to an admin account.");                 
                 return;
             }
         }
@@ -473,11 +489,7 @@ public class PlayLoginController {
             sysData.updatePlayerPassword(email, otp);
         } catch (Exception e) {
             e.printStackTrace();
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Could not update password. Please try again.");
-            alert.showAndWait();
+         	DialogUtil.show(AlertType.ERROR, null, "Error", "Could not update password. Please try again.");                 
             return;
         }
 
@@ -486,16 +498,7 @@ public class PlayLoginController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Alert info = new Alert(AlertType.INFORMATION);
-        info.setTitle("Password Reset");
-        info.setHeaderText("One-time password has been set");
-        info.setContentText(
-            "A one-time password has been sent to " + email +
-            ".\nUse it as your password on the login screen.\n" +
-            "You can change it later if you want."
-        );
-        info.showAndWait();
+     	DialogUtil.show(AlertType.INFORMATION, "One-time password has been set", "Password Reset",   "A one-time password has been sent to " + email +  ".\nUse it as your password on the login screen.\n" +  "You can change it later if you want.");                 
     }
 
 
@@ -509,13 +512,6 @@ public class PlayLoginController {
         SoundManager.playClick();
     }
 
-    private void showError(String title, String msg) {
-        Alert a = new Alert(AlertType.ERROR);
-        a.setTitle(title);
-        a.setHeaderText(null);
-        a.setContentText(msg);
-        a.showAndWait();
-    }
     
     public enum AdminLoginResult {
         INVALID_CREDENTIALS,   // admin == null OR wrong password

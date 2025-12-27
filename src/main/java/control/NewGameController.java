@@ -1,6 +1,7 @@
 package control;
 
 import java.io.IOException;
+import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,6 +24,11 @@ import model.Difficulty;
 import model.GameConfig;
 import model.SysData;
 import util.AvatarManager;
+import util.DialogUtil;
+import util.OnboardingManager;
+import util.OnboardingPolicy;
+import util.OnboardingStep;
+import util.SessionManager;
 import util.SoundManager;
 import util.UIAnimations;
 
@@ -83,6 +89,34 @@ public class NewGameController {
         // Sync icons with global settings (SysData + SoundManager)
         refreshSoundIconFromSettings();
         refreshMusicIconFromSettings();
+        
+        
+        List<OnboardingStep> newGameSteps = List.of(
+        		 new OnboardingStep("#backBtn", "Back",
+                         "Return to the main menu."),
+                 new OnboardingStep("#easyToggle", "Difficulty",
+                         "Pick a difficulty. Each option changes grid size, mines, questions, and surprises."),
+                 new OnboardingStep("#player1Nickname", "Player names",
+                         "Enter both nicknames. These appear in-game."),
+                 new OnboardingStep("#anchor", "Avatars",
+                         "Choose an avatar for each player. Click the player card first to select who you’re editing."),
+                 new OnboardingStep("#setUpSoundButton", "Sound effects",
+                         "Toggle click and UI sound effects."),
+                 new OnboardingStep("#setUpMusicButton", "Music",
+                         "Toggle background music."),
+                 new OnboardingStep("#startGameBtn", "Start game",
+                         "Starts the match using your current setup.")
+         );
+         
+        OnboardingPolicy policy =
+                SessionManager.isAdminMode() ? OnboardingPolicy.NEVER :
+                SessionManager.isGuestMode() ? OnboardingPolicy.ALWAYS :
+                OnboardingPolicy.ONCE_THEN_HOVER;
+
+        String userKey = SessionManager.getOnboardingUserKey();
+
+        OnboardingManager.runWithPolicy("onboarding.newgame", root, newGameSteps, policy, userKey);
+
     }
 
     // Utility method to play a standard click sound.
@@ -181,13 +215,13 @@ public class NewGameController {
 
         if (nickname1 == null || nickname1.trim().isEmpty() ||
             nickname2 == null || nickname2.trim().isEmpty()) {
-            showError("Please enter both players names.");
+         	DialogUtil.show(AlertType.ERROR, null, "Input error", "Please enter both players names.");                  
             return;
         }
 
         Toggle selectedToggle = difficultyGroup.getSelectedToggle();
         if (selectedToggle == null) {
-            showError("Please select a difficulty level.");
+         	DialogUtil.show(AlertType.ERROR, null, "Input error", "Please select a difficulty level.");                  
             return;
         }
         
@@ -196,11 +230,7 @@ public class NewGameController {
 
         if (p1 == null || p1.isBlank() || p2 == null || p2.isBlank()) {
             // Show an alert manually
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setTitle("Avatar Required");
-            a.setHeaderText(null);
-            a.setContentText("Both players must choose an avatar before starting the game.");
-            a.showAndWait();
+         	DialogUtil.show(AlertType.ERROR, null, "Avatar Required", "Both players must choose an avatar before starting the game.");                  
             return;
         }
 
@@ -235,7 +265,7 @@ public class NewGameController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Failed to start the game due to an internal error.");
+         	DialogUtil.show(AlertType.ERROR, null, "Input error", "Failed to start the game due to an internal error.");                  
         }
     }
     
@@ -255,7 +285,7 @@ public class NewGameController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Failed to return to main screen.");
+         	DialogUtil.show(AlertType.ERROR, null, "Input error", "Failed to return to main screen.");                  
         }
     }
 
@@ -312,15 +342,6 @@ public class NewGameController {
     private void onAvatarClicked(MouseEvent event) {
         playClickSound();
         avatarManager.handleAvatarPaneClick(event);
-    }
-
-    // Shows an error dialog with a given message (input validation).
-    private void showError(String message) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Input Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     /** Update speaker icon according to SysData.isSoundEnabled(). */

@@ -60,3 +60,48 @@
     
     -fx-text-fill: white;
 }
+
+/* Background of the actual dialog area */
+.dialog-pane {
+    -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
+}
+
+/* Header bar inside the dialog (where "Invalid input" is) */
+.dialog-pane .header-panel {
+    -fx-background-color: transparent; /* or a semi-transparent overlay */
+}
+
+.dialog-pane .header-panel .label {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+	-fx-font-family: "Copperplate Gothic Bold", "Georgia", serif;
+}
+
+/* Content text ("Question text cannot be empty.") */
+.dialog-pane .content.label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+	-fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
+}
+
+.question-text {
+    -fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+}
+
+.help-popup {
+    -fx-background-color: rgba(20, 20, 20, 0.92);
+    -fx-padding: 10;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #813d54;
+    -fx-border-width: 1;
+}
+
+.help-popup Label {
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+}
+
+

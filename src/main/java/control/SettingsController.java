@@ -8,8 +8,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import util.DialogUtil;
 import util.SoundManager;
 
 public class SettingsController {
@@ -42,7 +44,7 @@ public class SettingsController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Failed to load the main menu screen.");
+         	DialogUtil.show(AlertType.ERROR, null, "Navigation error", "Failed to load the main menu screen.");                  
         }
     }
 
@@ -60,37 +62,20 @@ public class SettingsController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Failed to load the Filters screen.");
+         	DialogUtil.show(AlertType.ERROR, null, "Navigation error", "Failed to load the Filters screen.");                  
         }
     }
 
     @FXML
     private void onCustomizeClicked() {
         SoundManager.playClick();
-        showInfo("Customize screen is not implemented yet.\n" +
-                 "In the future, this screen will allow changing themes, colors and avatars.");
+     	DialogUtil.show(AlertType.INFORMATION, null, "Not implemented yet","Customize screen is not implemented yet.\n" + "In the future, this screen will allow changing themes, colors and avatars.");      
     }
 
     @FXML
     private void onHowToPlayClicked() {
         SoundManager.playClick();
-        showInfo("How To Play screen is not implemented yet.\n" +
-                 "In the future, this screen will explain Minesweeper WOLF rules and strategies.");
+     	DialogUtil.show(AlertType.INFORMATION, null, "Not implemented yet","How To Play screen is not implemented yet.\n" + "In the future, this screen will explain Minesweeper WOLF rules and strategies.");  
     }
 
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Navigation Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void showInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Not Implemented Yet");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 }
