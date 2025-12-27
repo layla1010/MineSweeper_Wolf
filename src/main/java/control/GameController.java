@@ -29,8 +29,6 @@ public class GameController {
 
     @FXML private GridPane player1Grid;
     @FXML private GridPane player2Grid;
-    @FXML private Label player1BombsLeftLabel;
-    @FXML private Label player2BombsLeftLabel;
     @FXML private Label difficultyLabel;
     @FXML private Label timeLabel;
     @FXML private Label scoreLabel;
@@ -38,7 +36,8 @@ public class GameController {
     @FXML private Button pauseBtn;
     @FXML private Button soundButton;
     @FXML private Button musicButton;
-
+    @FXML private HBox player1StatsBox;
+    @FXML private HBox player2StatsBox;
     @FXML private Parent root;
     @FXML private ImageView player1AvatarImage;
     @FXML private ImageView player2AvatarImage;
@@ -63,7 +62,7 @@ public class GameController {
         historyService = new GameHistoryServiceController();
         uiService = new GameUIServiceController(state,
                 player1Grid, player2Grid,
-                player1BombsLeftLabel, player2BombsLeftLabel,
+                player1StatsBox, player2StatsBox,
                 difficultyLabel, timeLabel, scoreLabel,
                 heartsBox, pauseBtn, soundButton, musicButton,
                 root, player1AvatarImage, player2AvatarImage);

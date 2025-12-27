@@ -211,3 +211,35 @@
     -fx-border-width: 2;
 }
 
+.stats-value {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.75), 2, 0, 0, 1);
+}
+.player-name {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+
+.player-name {
+    -fx-text-fill: white;
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 14px;
+}
+
+.stats-value {
+    -fx-text-fill: white;
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+}
+
+.stats-sep {
+    -fx-text-fill: rgba(255,255,255,0.7);
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 14px;
+}
+

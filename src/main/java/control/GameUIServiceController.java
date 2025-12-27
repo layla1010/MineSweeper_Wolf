@@ -7,6 +7,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
@@ -26,8 +27,6 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 import model.Board;
-import model.Cell;
-import model.CellType;
 import model.SysData;
 import util.SoundManager;
 
@@ -41,8 +40,10 @@ public class GameUIServiceController {
     private final GridPane player1Grid;
     private final GridPane player2Grid;
 
-    private final Label player1BombsLeftLabel;
-    private final Label player2BombsLeftLabel;
+    // ✅ Replaced player1BombsLeftLabel/player2BombsLeftLabel with HBoxes
+    private final HBox player1StatsBox;
+    private final HBox player2StatsBox;
+
     private final Label difficultyLabel;
     private final Label timeLabel;
     private final Label scoreLabel;
@@ -59,25 +60,25 @@ public class GameUIServiceController {
     private final ImageView player2AvatarImage;
 
     public GameUIServiceController(GameStateController s,
-                         GridPane player1Grid,
-                         GridPane player2Grid,
-                         Label player1BombsLeftLabel,
-                         Label player2BombsLeftLabel,
-                         Label difficultyLabel,
-                         Label timeLabel,
-                         Label scoreLabel,
-                         HBox heartsBox,
-                         Button pauseBtn,
-                         Button soundButton,
-                         Button musicButton,
-                         Parent root,
-                         ImageView player1AvatarImage,
-                         ImageView player2AvatarImage) {
+                                   GridPane player1Grid,
+                                   GridPane player2Grid,
+                                   HBox player1StatsBox,
+                                   HBox player2StatsBox,
+                                   Label difficultyLabel,
+                                   Label timeLabel,
+                                   Label scoreLabel,
+                                   HBox heartsBox,
+                                   Button pauseBtn,
+                                   Button soundButton,
+                                   Button musicButton,
+                                   Parent root,
+                                   ImageView player1AvatarImage,
+                                   ImageView player2AvatarImage) {
         this.s = s;
         this.player1Grid = player1Grid;
         this.player2Grid = player2Grid;
-        this.player1BombsLeftLabel = player1BombsLeftLabel;
-        this.player2BombsLeftLabel = player2BombsLeftLabel;
+        this.player1StatsBox = player1StatsBox;
+        this.player2StatsBox = player2StatsBox;
         this.difficultyLabel = difficultyLabel;
         this.timeLabel = timeLabel;
         this.scoreLabel = scoreLabel;
@@ -98,6 +99,66 @@ public class GameUIServiceController {
         this.bonusService = bonusService;
     }
 
+    // =======================
+    // Icons-based stats bar
+    // =======================
+    private ImageView icon(String path, double size) {
+        var stream = getClass().getResourceAsStream(path);
+        if (stream == null) {
+            System.err.println("Missing resource: " + path);
+            return new ImageView();
+        }
+        ImageView iv = new ImageView(new Image(stream));
+        iv.setFitWidth(size);
+        iv.setFitHeight(size);
+        iv.setPreserveRatio(true);
+        return iv;
+    }
+
+    private HBox statItem(String iconPath, String value) {
+        ImageView iv = icon(iconPath, 18);
+
+        Label valueLbl = new Label(value);
+        valueLbl.getStyleClass().add("stats-value"); // optional css
+
+        HBox item = new HBox(6, iv, valueLbl);
+        item.setAlignment(Pos.CENTER_LEFT);
+        item.setPickOnBounds(false);
+        return item;
+    }
+
+    private Label sep() {
+        Label l = new Label("|");
+        l.getStyleClass().add("stats-sep");
+        return l;
+    }
+
+    private void buildPlayerStats(HBox box, String nickname,
+                                  int mines, int flags, int surprises, int questions) {
+        if (box == null) return;
+
+        box.getChildren().clear();
+
+        Label name = new Label(nickname + ",");
+        name.getStyleClass().add("player-name"); 
+        box.getChildren().add(name);
+        box.getChildren().add(sep());
+
+        box.getChildren().add(statItem("/Images/bomb.png", String.valueOf(mines)));
+        box.getChildren().add(sep());
+
+        box.getChildren().add(statItem("/Images/red-flag.png", String.valueOf(flags)));
+        box.getChildren().add(sep());
+
+        box.getChildren().add(statItem("/Images/giftbox.png", String.valueOf(surprises)));
+        box.getChildren().add(sep());
+
+        box.getChildren().add(statItem("/Images/question-mark.png", String.valueOf(questions)));
+    }
+
+    // =======================
+    // UI Build
+    // =======================
     public void loadAvatars() {
         setBoardAvatar(player1AvatarImage, s.config.getPlayer1AvatarPath());
         setBoardAvatar(player2AvatarImage, s.config.getPlayer2AvatarPath());
@@ -175,21 +236,18 @@ public class GameUIServiceController {
     public void updateScoreAndMineLabels() {
         scoreLabel.setText("Score: " + s.score);
 
-        player1BombsLeftLabel.setText(
-                s.config.getPlayer1Nickname() + ", Mines left: " + s.minesLeft1
-                        + " | Flags left: " + s.flagsLeft1
-                        + " | Surprises left: " + s.surprisesLeft1
-                        + " | Questions left: " + s.questionsLeft1
-        );
+        buildPlayerStats(player1StatsBox,
+                s.config.getPlayer1Nickname(),
+                s.minesLeft1, s.flagsLeft1, s.surprisesLeft1, s.questionsLeft1);
 
-        player2BombsLeftLabel.setText(
-                s.config.getPlayer2Nickname() + ", Mines left: " + s.minesLeft2
-                        + " | Flags left: " + s.flagsLeft2
-                        + " | Surprises left: " + s.surprisesLeft2
-                        + " | Questions left: " + s.questionsLeft2
-        );
+        buildPlayerStats(player2StatsBox,
+                s.config.getPlayer2Nickname(),
+                s.minesLeft2, s.flagsLeft2, s.surprisesLeft2, s.questionsLeft2);
     }
 
+    // =======================
+    // Cursor + Boards State
+    // =======================
     public void initForbiddenCursor() {
         try {
             var stream = getClass().getResourceAsStream("/Images/cursor_forbidden.png");
@@ -204,12 +262,59 @@ public class GameUIServiceController {
         }
     }
 
+    public void applyTurnStateToBoards() {
+        if (player1Grid == null || player2Grid == null) return;
+
+        if (s.isPlayer1Turn) {
+            setBoardActive(player1Grid, player1StatsBox);
+            setBoardInactive(player2Grid, player2StatsBox);
+        } else {
+            setBoardInactive(player1Grid, player1StatsBox);
+            setBoardActive(player2Grid, player2StatsBox);
+        }
+    }
+
+    private void setBoardActive(GridPane grid, HBox box) {
+        grid.setDisable(false);
+
+        grid.getStyleClass().remove("inactive-board");
+        if (!grid.getStyleClass().contains("active-board")) {
+            grid.getStyleClass().add("active-board");
+        }
+
+        grid.setCursor(Cursor.HAND);
+
+        box.getStyleClass().remove("inactive-player-label");
+        if (!box.getStyleClass().contains("active-player-label")) {
+            box.getStyleClass().add("active-player-label");
+        }
+    }
+
+    private void setBoardInactive(GridPane grid, HBox box) {
+        grid.setDisable(true);
+
+        grid.getStyleClass().remove("active-board");
+        if (!grid.getStyleClass().contains("inactive-board")) {
+            grid.getStyleClass().add("inactive-board");
+        }
+
+        grid.setCursor(s.forbiddenCursor != null ? s.forbiddenCursor : Cursor.DEFAULT);
+
+        box.getStyleClass().remove("active-player-label");
+        if (!box.getStyleClass().contains("inactive-player-label")) {
+            box.getStyleClass().add("inactive-player-label");
+        }
+    }
+
+    // =======================
+    // Grids
+    // =======================
     public void buildGrids() {
         buildGridForPlayer(player1Grid, s.board1, true);
         buildGridForPlayer(player2Grid, s.board2, false);
     }
 
-    private void buildGridForPlayer(GridPane grid, Board board, boolean isPlayer1) {
+    private void buildGridForPlayer(GridPane grid, model.Board board, boolean isPlayer1) {
         grid.getChildren().clear();
         grid.getColumnConstraints().clear();
         grid.getRowConstraints().clear();
@@ -248,7 +353,7 @@ public class GameUIServiceController {
         else s.p2Buttons = buttons;
     }
 
-    private StackPane createCellTile(Board board, int row, int col, boolean isPlayer1) {
+    private StackPane createCellTile(model.Board board, int row, int col, boolean isPlayer1) {
         Button button = new Button();
         button.setMinSize(0, 0);
         button.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
@@ -280,7 +385,7 @@ public class GameUIServiceController {
 
             if (button.isDisable()) return;
 
-            bonusService.resetIdleHintTimer();
+            if (bonusService != null) bonusService.resetIdleHintTimer();
 
             if (e.getButton() == MouseButton.SECONDARY) {
                 if (!button.getStyleClass().contains("cell-hidden")) return;
@@ -289,8 +394,6 @@ public class GameUIServiceController {
             }
 
             if (e.getButton() == MouseButton.PRIMARY) {
-
-                // handle second-click activation FIRST
                 boolean activated = bonusService.tryHandleSecondClickActivation(board, r, c, button, tile, tileIsPlayer1);
                 if (activated) {
                     playService.switchTurn();
@@ -306,54 +409,9 @@ public class GameUIServiceController {
         return tile;
     }
 
-    public void applyTurnStateToBoards() {
-        if (player1Grid == null || player2Grid == null) return;
-
-        if (s.isPlayer1Turn) {
-            setBoardActive(player1Grid, player1BombsLeftLabel);
-            setBoardInactive(player2Grid, player2BombsLeftLabel);
-        } else {
-            setBoardInactive(player1Grid, player1BombsLeftLabel);
-            setBoardActive(player2Grid, player2BombsLeftLabel);
-        }
-    }
-
-    private void setBoardActive(GridPane grid, Label label) {
-        grid.setDisable(false);
-
-        grid.getStyleClass().remove("inactive-board");
-        if (!grid.getStyleClass().contains("active-board")) {
-            grid.getStyleClass().add("active-board");
-        }
-
-        grid.setCursor(Cursor.HAND);
-
-        label.getStyleClass().remove("inactive-player-label");
-        if (!label.getStyleClass().contains("active-player-label")) {
-            label.getStyleClass().add("active-player-label");
-        }
-    }
-
-    private void setBoardInactive(GridPane grid, Label label) {
-        grid.setDisable(true);
-
-        grid.getStyleClass().remove("active-board");
-        if (!grid.getStyleClass().contains("inactive-board")) {
-            grid.getStyleClass().add("inactive-board");
-        }
-
-        if (s.forbiddenCursor != null) {
-            grid.setCursor(s.forbiddenCursor);
-        } else {
-            grid.setCursor(Cursor.DEFAULT);
-        }
-
-        label.getStyleClass().remove("active-player-label");
-        if (!label.getStyleClass().contains("inactive-player-label")) {
-            label.getStyleClass().add("inactive-player-label");
-        }
-    }
-
+    // =======================
+    // Timer
+    // =======================
     public void startTimer() {
         if (s.timer != null) s.timer.stop();
 
@@ -387,6 +445,9 @@ public class GameUIServiceController {
         timeLabel.setText(String.format("Time: %02d:%02d", minutes, seconds));
     }
 
+    // =======================
+    // Sound/Music/Pause Icons
+    // =======================
     public void refreshMusicIconFromSettings() {
         if (musicButton == null) return;
         if (!(musicButton.getGraphic() instanceof ImageView iv)) return;
@@ -433,6 +494,9 @@ public class GameUIServiceController {
         iv.setImage(img);
     }
 
+    // =======================
+    // Misc
+    // =======================
     public void setBoardsOpacity(double opacity) {
         if (player1Grid != null) player1Grid.setOpacity(opacity);
         if (player2Grid != null) player2Grid.setOpacity(opacity);
