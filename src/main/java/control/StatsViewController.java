@@ -388,26 +388,38 @@ public class StatsViewController {
     }
     
     private Image loadAvatarImage(String avatarId) {
-        String resource = "/Images/S5.png";
-
-        if (avatarId != null && !avatarId.isBlank()) {
-            resource = "/Images/" + avatarId;
-        }
+        // default
+        String defaultRes = "/Images/S5.png";
 
         try {
-            var url = getClass().getResource(resource);
-            if (url == null) {
-                // Fallback to default if something is wrong
-                url = getClass().getResource("/Images/S5.png");
+            if (avatarId == null || avatarId.isBlank()) {
+                return new Image(getClass().getResource(defaultRes).toExternalForm());
             }
-            if (url != null) {
-                return new Image(url.toExternalForm());
+
+            // first case: user picked image/avatar from file explorer -> store it in a uri
+            if (avatarId.startsWith("file:")) {
+                return new Image(avatarId, true);
             }
+
+            // second case: full resource path
+            if (avatarId.startsWith("/")) {
+                var url = getClass().getResource(avatarId);
+                if (url != null) return new Image(url.toExternalForm(), true);
+            }
+
+            // third case: user picked image from the Images package
+            var url = getClass().getResource("/Images/" + avatarId);
+            if (url != null) return new Image(url.toExternalForm(), true);
+
+            // fallback
+            return new Image(getClass().getResource(defaultRes).toExternalForm(), true);
+
         } catch (Exception e) {
             e.printStackTrace();
+            return new Image(getClass().getResource(defaultRes).toExternalForm(), true);
         }
-        return null;
     }
+
     
     @FXML
     private void onBackToMainClicked() {
