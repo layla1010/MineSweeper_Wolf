@@ -1,9 +1,15 @@
 package control;
 
-import javafx.animation.*;
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
 import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
@@ -11,6 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TutorialEngine {
+
+    // ===== EASY SETTINGS =====
+    private static final int EASY_SHARED_HEARTS = 10;   // مثل الصورة
+    private static final double HEART_SIZE = 34;        // تقدري تكبّري/تصغّري
+    private static final Image HEART_IMG =
+            new Image(TutorialEngine.class.getResourceAsStream("/Images/heart.png"));
 
     private final DemoBoard b1, b2;
     private final StackPane[][] tilesP1, tilesP2;
@@ -21,7 +33,17 @@ public class TutorialEngine {
     private final StackPane demoLayer;
     private final StackPane highlight;
 
-    private final Label turnLabel, p1ScoreLabel, p2ScoreLabel, heartsLabel, giftsLabel, minesLabel, questionsLabel;
+    // P1 HUD
+    private final ImageView p1Avatar;
+    private final Label p1NameLabel, p1ScoreLabel, p1MinesLabel, p1GiftsLabel, p1QuestionsLabel;
+
+    // P2 HUD
+    private final ImageView p2Avatar;
+    private final Label p2NameLabel, p2ScoreLabel, p2MinesLabel, p2GiftsLabel, p2QuestionsLabel;
+
+    // Bottom bar
+    private final HBox heartsBox;
+    private final Label totalScoreLabel;
 
     private final List<Runnable> steps = new ArrayList<>();
     private int stepIndex = 0;
@@ -31,13 +53,21 @@ public class TutorialEngine {
 
     // demo state
     private boolean p1Turn = true;
+
     private int p1Score = 0;
     private int p2Score = 0;
-    private int hearts = 3;
 
-    private int giftsLeft = 1;
-    private int minesLeft = 5;
-    private int questionsLeft = 2;
+    private int hearts = EASY_SHARED_HEARTS; // shared (EASY = 10)
+
+    // Per-player counters
+    private int p1GiftsLeft = 1;
+    private int p2GiftsLeft = 1;
+
+    private int p1MinesLeft = 5;
+    private int p2MinesLeft = 5;
+
+    private int p1QuestionsLeft = 2;
+    private int p2QuestionsLeft = 2;
 
     public TutorialEngine(
             DemoBoard boardP1,
@@ -48,31 +78,54 @@ public class TutorialEngine {
             Button playPauseBtn,
             StackPane demoLayer,
             StackPane highlight,
-            Label turnLabel,
+
+            // P1 HUD
+            ImageView p1Avatar,
+            Label p1NameLabel,
             Label p1ScoreLabel,
+            Label p1MinesLabel,
+            Label p1GiftsLabel,
+            Label p1QuestionsLabel,
+
+            // P2 HUD
+            ImageView p2Avatar,
+            Label p2NameLabel,
             Label p2ScoreLabel,
-            Label heartsLabel,
-            Label giftsLabel,
-            Label minesLabel,
-            Label questionsLabel
+            Label p2MinesLabel,
+            Label p2GiftsLabel,
+            Label p2QuestionsLabel,
+
+            // bottom bar
+            HBox heartsBox,
+            Label totalScoreLabel
     ) {
         this.b1 = boardP1;
         this.b2 = boardP2;
         this.tilesP1 = tilesP1;
         this.tilesP2 = tilesP2;
+
         this.caption = captionLabel;
         this.playPauseBtn = playPauseBtn;
 
         this.demoLayer = demoLayer;
         this.highlight = highlight;
 
-        this.turnLabel = turnLabel;
+        this.p1Avatar = p1Avatar;
+        this.p1NameLabel = p1NameLabel;
         this.p1ScoreLabel = p1ScoreLabel;
+        this.p1MinesLabel = p1MinesLabel;
+        this.p1GiftsLabel = p1GiftsLabel;
+        this.p1QuestionsLabel = p1QuestionsLabel;
+
+        this.p2Avatar = p2Avatar;
+        this.p2NameLabel = p2NameLabel;
         this.p2ScoreLabel = p2ScoreLabel;
-        this.heartsLabel = heartsLabel;
-        this.giftsLabel = giftsLabel;
-        this.minesLabel = minesLabel;
-        this.questionsLabel = questionsLabel;
+        this.p2MinesLabel = p2MinesLabel;
+        this.p2GiftsLabel = p2GiftsLabel;
+        this.p2QuestionsLabel = p2QuestionsLabel;
+
+        this.heartsBox = heartsBox;
+        this.totalScoreLabel = totalScoreLabel;
 
         initUIState();
         buildSteps();
@@ -81,20 +134,53 @@ public class TutorialEngine {
     private void initUIState() {
         setHighlightVisible(false);
         setCaption("Welcome! This demo shows how to play — step by step.");
+
+        p1NameLabel.setText("Player 1");
+        p2NameLabel.setText("Player 2");
+
         updateHud();
         setPlayButtonText();
         renderAllHidden();
     }
 
     private void updateHud() {
-        turnLabel.setText("Turn: " + (p1Turn ? "Player 1" : "Player 2"));
-        p1ScoreLabel.setText("P1 Score: " + p1Score);
-        p2ScoreLabel.setText("P2 Score: " + p2Score);
+        // turn indicator
+        p1NameLabel.setText(p1Turn ? "Player 1 (Turn)" : "Player 1");
+        p2NameLabel.setText(!p1Turn ? "Player 2 (Turn)" : "Player 2");
 
-        heartsLabel.setText("Hearts: " + hearts);
-        giftsLabel.setText("Gifts: " + giftsLeft);
-        minesLabel.setText("Mines left: " + minesLeft);
-        questionsLabel.setText("Questions left: " + questionsLeft);
+        // scores
+        p1ScoreLabel.setText("Score: " + p1Score);
+        p2ScoreLabel.setText("Score: " + p2Score);
+
+        // per-player counters
+        p1MinesLabel.setText("Mines: " + p1MinesLeft);
+        p2MinesLabel.setText("Mines: " + p2MinesLeft);
+
+        p1GiftsLabel.setText("Gifts: " + p1GiftsLeft);
+        p2GiftsLabel.setText("Gifts: " + p2GiftsLeft);
+
+        p1QuestionsLabel.setText("Questions: " + p1QuestionsLeft);
+        p2QuestionsLabel.setText("Questions: " + p2QuestionsLeft);
+
+        // hearts bar (images)
+        renderHeartsImages(hearts);
+
+        // bottom score label like original
+        totalScoreLabel.setText("SCORE: " + (p1Score + p2Score));
+    }
+
+    private void renderHeartsImages(int count) {
+        heartsBox.getChildren().clear();
+
+        int safe = Math.max(0, count);
+        for (int i = 0; i < safe; i++) {
+            ImageView iv = new ImageView(HEART_IMG);
+            iv.setFitWidth(HEART_SIZE);
+            iv.setFitHeight(HEART_SIZE);
+            iv.setPreserveRatio(true);
+            iv.setSmooth(true);
+            heartsBox.getChildren().add(iv);
+        }
     }
 
     private void setCaption(String text) {
@@ -134,7 +220,6 @@ public class TutorialEngine {
         if (autoplay != null) autoplay.stop();
         autoplay = new SequentialTransition();
 
-        // run current step now
         runStepSilently(stepIndex);
 
         for (int i = stepIndex + 1; i < steps.size(); i++) {
@@ -179,7 +264,7 @@ public class TutorialEngine {
 
             setCaption("Step 2: Player 1 clicks a tile. A number appears (adjacent mines). +1 score.");
             animateClick(tilesP1, 1, 1, () -> {
-                reveal(tilesP1, b1, 1, 1);
+                reveal(tilesP1, b1, 1, 1, true);
                 p1Score += 1;
                 updateHud();
                 switchTurn();
@@ -189,13 +274,14 @@ public class TutorialEngine {
         steps.add(() -> {
             resetDemo();
             p1Turn = true;
-            reveal(tilesP1, b1, 1, 1);
+            reveal(tilesP1, b1, 1, 1, true);
             p1Score = 1;
+            updateHud();
             switchTurn();
 
             setCaption("Step 3: Player 2 clicks a mine. One shared heart is lost.");
             animateClick(tilesP2, 1, 2, () -> {
-                reveal(tilesP2, b2, 1, 2);
+                reveal(tilesP2, b2, 1, 2, false);
                 hearts = Math.max(0, hearts - 1);
                 updateHud();
                 switchTurn();
@@ -204,16 +290,17 @@ public class TutorialEngine {
 
         steps.add(() -> {
             resetDemo();
-            reveal(tilesP1, b1, 1, 1); p1Score = 1;
-            p1Turn = false;
-            reveal(tilesP2, b2, 1, 2); hearts = 2;
+            reveal(tilesP1, b1, 1, 1, true); p1Score = 1;
+            updateHud();
+            switchTurn();
+            reveal(tilesP2, b2, 1, 2, false); hearts = EASY_SHARED_HEARTS - 1; // بعد لغم
+            updateHud();
             switchTurn();
 
             setCaption("Step 4: Question tiles trigger trivia (in the real game). Here we show the icon. +1 score.");
             animateClick(tilesP1, 2, 2, () -> {
-                reveal(tilesP1, b1, 2, 2);
+                reveal(tilesP1, b1, 2, 2, true);
                 p1Score += 1;
-                questionsLeft = Math.max(0, questionsLeft - 1);
                 updateHud();
                 switchTurn();
             });
@@ -221,18 +308,17 @@ public class TutorialEngine {
 
         steps.add(() -> {
             resetDemo();
-            reveal(tilesP1, b1, 1, 1); p1Score = 1;
-            p1Turn = false;
-            reveal(tilesP2, b2, 1, 2); hearts = 2;
-            switchTurn();
-            reveal(tilesP1, b1, 2, 2); p1Score = 2; questionsLeft = 1;
-            switchTurn();
+            reveal(tilesP1, b1, 1, 1, true); p1Score = 1;
+            reveal(tilesP2, b2, 1, 2, false); hearts = EASY_SHARED_HEARTS - 1;
+            updateHud();
 
             setCaption("Step 5: Surprise tiles give a bonus effect. Here we show a gift icon. +1 score.");
+            p1Turn = false;
+            updateHud();
+
             animateClick(tilesP2, 3, 3, () -> {
-                reveal(tilesP2, b2, 3, 3);
+                reveal(tilesP2, b2, 3, 3, false);
                 p2Score += 1;
-                giftsLeft = Math.max(0, giftsLeft - 1);
                 updateHud();
                 switchTurn();
             });
@@ -261,12 +347,21 @@ public class TutorialEngine {
     private void resetDemo() {
         stopAutoplay();
         p1Turn = true;
+
         p1Score = 0;
         p2Score = 0;
-        hearts = 3;
-        giftsLeft = 1;
-        minesLeft = 5;
-        questionsLeft = 2;
+
+        hearts = EASY_SHARED_HEARTS;
+
+        p1GiftsLeft = 1;
+        p2GiftsLeft = 1;
+
+        p1MinesLeft = 5;
+        p2MinesLeft = 5;
+
+        p1QuestionsLeft = 2;
+        p2QuestionsLeft = 2;
+
         updateHud();
         renderAllHidden();
         setHighlightVisible(false);
@@ -296,7 +391,7 @@ public class TutorialEngine {
         }
     }
 
-    private void reveal(StackPane[][] tiles, DemoBoard board, int r, int c) {
+    private void reveal(StackPane[][] tiles, DemoBoard board, int r, int c, boolean isP1) {
         var btn = (javafx.scene.control.Button) tiles[r][c].getChildren().get(0);
 
         btn.getStyleClass().remove("cell-hidden");
@@ -315,15 +410,20 @@ public class TutorialEngine {
             case MINE -> {
                 btn.getStyleClass().add("cell-mine");
                 btn.setText("💣");
-                minesLeft = Math.max(0, minesLeft - 1);
+                if (isP1) p1MinesLeft = Math.max(0, p1MinesLeft - 1);
+                else      p2MinesLeft = Math.max(0, p2MinesLeft - 1);
             }
             case QUESTION -> {
                 btn.getStyleClass().add("cell-question");
                 btn.setText("?");
+                if (isP1) p1QuestionsLeft = Math.max(0, p1QuestionsLeft - 1);
+                else      p2QuestionsLeft = Math.max(0, p2QuestionsLeft - 1);
             }
             case SURPRISE -> {
                 btn.getStyleClass().add("cell-surprise");
                 btn.setText("★");
+                if (isP1) p1GiftsLeft = Math.max(0, p1GiftsLeft - 1);
+                else      p2GiftsLeft = Math.max(0, p2GiftsLeft - 1);
             }
             case EMPTY -> {
                 btn.getStyleClass().add("cell-empty");
@@ -341,7 +441,7 @@ public class TutorialEngine {
     }
 
     // =======================
-    // Turn / focus / overlays
+    // Turn / overlays
     // =======================
     private void switchTurn() {
         p1Turn = !p1Turn;
@@ -374,7 +474,7 @@ public class TutorialEngine {
     }
 
     // =======================
-    // Animations (click feel)
+    // Animations
     // =======================
     private void animateClick(StackPane[][] tiles, int r, int c, Runnable onReveal) {
         moveOverlayToCell(tiles, r, c);
