@@ -69,7 +69,20 @@ public class SettingsController {
     @FXML
     private void onCustomizeClicked() {
         SoundManager.playClick();
-     	DialogUtil.show(AlertType.INFORMATION, null, "Not implemented yet","Customize screen is not implemented yet.\n" + "In the future, this screen will allow changing themes, colors and avatars.");      
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/customize_theme_view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) rootGrid.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+         	DialogUtil.show(AlertType.ERROR, null, "Navigation error", "Failed to load the Customize screen.");                  
+        }
+     	// DialogUtil.show(AlertType.INFORMATION, null, "Not implemented yet","Customize screen is not implemented yet.\n" + "In the future, this screen will allow changing themes, colors and avatars.");      
     }
 
     @FXML

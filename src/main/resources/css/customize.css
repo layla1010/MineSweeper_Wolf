@@ -1,0 +1,83 @@
+/* Root background similar to Filters (blue/purple gradient) */
+.filters-root {
+    -fx-background-color: linear-gradient(to bottom right, #6f7eea, #b36ad6);
+}
+
+/* Big title */
+.filters-title {
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 12, 0.3, 0, 3);
+}
+
+/* Subtitle */
+.filters-subtitle {
+    -fx-text-fill: rgba(255,255,255,0.90);
+}
+
+/* Back button: circular glass */
+.filters-back-btn {
+    -fx-background-color: rgba(255,255,255,0.18);
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-border-color: rgba(255,255,255,0.65);
+    -fx-border-width: 2;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-min-width: 52;
+    -fx-min-height: 52;
+    -fx-pref-width: 52;
+    -fx-pref-height: 52;
+}
+
+/* Rows container spacing */
+.filters-list {
+    -fx-padding: 10 0 0 0;
+}
+
+/* Row style like Filters rectangles */
+.filters-row {
+    -fx-background-color: rgba(255,255,255,0.16);
+    -fx-border-color: rgba(255,255,255,0.55);
+    -fx-border-width: 2;
+    -fx-padding: 16 18 16 18;
+}
+
+/* Row label */
+.filters-row-label {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* Select ToggleButton styled like a pill selector */
+.theme-select-btn {
+    -fx-background-color: rgba(255,255,255,0.20);
+    -fx-border-color: rgba(40,20,80,0.55);
+    -fx-border-width: 3;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-text-fill: rgba(40,20,80,0.85);
+    -fx-font-family: "Copperplate Gothic Bold";
+    -fx-font-size: 14;
+    -fx-cursor: hand;
+    -fx-padding: 6 16 6 16;
+}
+
+/* Selected state */
+.theme-select-btn:selected {
+    -fx-background-color: rgba(255,255,255,0.28);
+    -fx-text-fill: rgba(20,10,60,0.95);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 10, 0.2, 0, 2);
+}
+
+/* Disabled "Customized" button style */
+.theme-disabled-btn {
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-border-color: rgba(255,255,255,0.45);
+    -fx-border-width: 2;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-text-fill: rgba(255,255,255,0.85);
+    -fx-font-family: "Copperplate Gothic Bold";
+    -fx-font-size: 14;
+    -fx-cursor: hand;
+    -fx-padding: 6 16 6 16;
+}

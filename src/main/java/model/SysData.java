@@ -23,7 +23,9 @@ public class SysData {
         return INSTANCE;
     }
 
-
+    /** Set the default game theme to WOLF theme. */
+    private static Theme currentTheme = Theme.WOLF;
+    
     /** Stores all game history records. */
     private final History history = new History();
 
@@ -750,5 +752,14 @@ public class SysData {
         }
 
         return "-";
+    }
+    
+    public static Theme getCurrentTheme() {
+        return currentTheme;
+    }
+
+    public static void setCurrentTheme(Theme theme) {
+        if (theme == null) theme = Theme.WOLF;
+        currentTheme = theme;
     }
 }
