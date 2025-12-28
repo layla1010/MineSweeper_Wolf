@@ -312,7 +312,9 @@ public class PlayLoginController {
             mainController.setStage(stage);
 
             Stage currentStage = (Stage) mainPane.getScene().getWindow();
-            currentStage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            currentStage.setScene(scene);
             currentStage.centerOnScreen();
             currentStage.show();
 
@@ -429,7 +431,9 @@ public class PlayLoginController {
             SignupController controller = loader.getController();
             controller.setStage(stage);
 
-            stage.setScene(new Scene(newRoot));
+            Scene scene = new Scene(newRoot);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
 

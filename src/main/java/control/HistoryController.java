@@ -313,7 +313,10 @@ public class HistoryController {
         MainController mainController = loader.getController();
         mainController.setStage(s);
 
-        s.setScene(new Scene(mainRoot, 1200, 750));
+        
+        Scene scene = new Scene(mainRoot, 1200, 750);
+        util.ThemeManager.applyTheme(scene);
+        s.setScene(scene);
         s.centerOnScreen();
         s.show();
     }

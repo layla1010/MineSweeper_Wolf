@@ -259,7 +259,9 @@ public class NewGameController {
             controller.init(config);
 
             Stage stage = (Stage) player1Nickname.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
 
@@ -280,7 +282,9 @@ public class NewGameController {
             Parent mainRoot = loader.load();
 
             Stage stage = (Stage) root.getScene().getWindow();
-            stage.setScene(new Scene(mainRoot));
+            Scene scene = new Scene(mainRoot);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {

@@ -1,3 +1,4 @@
+
 package model;
 
 //Abstract base class that represents a single logical cell on the board.

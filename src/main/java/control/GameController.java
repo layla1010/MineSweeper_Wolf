@@ -171,9 +171,11 @@ public class GameController {
         MainController controller = loader.getController();
         controller.setStage(stage);
 
-        stage.setScene(new Scene(root));
-        stage.show();
+        Scene scene = new Scene(root);
+        util.ThemeManager.applyTheme(scene);
+        stage.setScene(scene);
         stage.centerOnScreen();
+        stage.show();
     }
 
     @FXML
@@ -226,7 +228,9 @@ public class GameController {
                     state.gameWon
             );
 
+            
             Scene endScene = new Scene(endRoot, 700, 450);
+            util.ThemeManager.applyTheme(endScene);
             stage.setScene(endScene);
             stage.centerOnScreen();
             stage.show();

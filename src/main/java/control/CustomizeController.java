@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import model.SysData;
 import model.Theme; // optional (see below)
 import util.SoundManager;
+import util.ThemeManager;
 
 public class CustomizeController {
 
@@ -57,10 +58,11 @@ public class CustomizeController {
         wolfThemeBtn.setSelected(true);
         colorfulThemeBtn.setSelected(false);
 
-        // save (optional)
-        try {
-            SysData.setCurrentTheme(Theme.WOLF);
-        } catch (Exception ignore) {}
+        util.ThemeManager.setTheme(util.ThemeManager.Theme.WOLF);
+
+     // Apply immediately to current window:
+     Scene scene = root.getScene();
+     util.ThemeManager.applyTheme(scene);
 
         refreshButtonTexts();
 
@@ -74,9 +76,9 @@ public class CustomizeController {
         colorfulThemeBtn.setSelected(true);
         wolfThemeBtn.setSelected(false);
 
-        try {
-            SysData.setCurrentTheme(Theme.DEFAULT);
-        } catch (Exception ignore) {}
+        util.ThemeManager.setTheme(util.ThemeManager.Theme.COLORFUL);
+        Scene scene = root.getScene();
+        util.ThemeManager.applyTheme(scene);
 
         refreshButtonTexts();
     }
@@ -106,7 +108,9 @@ public class CustomizeController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(backView));
             Parent p = loader.load();
 
-            stage.setScene(new Scene(p));
+            Scene scene = new Scene(p);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {

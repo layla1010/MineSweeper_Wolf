@@ -430,7 +430,9 @@ public class StatsViewController {
             Parent root = loader.load();
 
             Stage stage = (Stage) mainPane.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {

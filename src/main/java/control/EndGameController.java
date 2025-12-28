@@ -82,6 +82,7 @@ public class EndGameController {
             controller.setStage(stage);
 
             Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
             stage.setScene(scene);
             stage.centerOnScreen();
         } catch (Exception e) {
@@ -101,6 +102,7 @@ public class EndGameController {
             controller.setStage(stage); // if you have such a method
 
             Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
             stage.setScene(scene);
             stage.centerOnScreen();
         } catch (Exception e) {

@@ -211,7 +211,9 @@ public class SignupController {
             PlayLoginController loginController = loader.getController();
             loginController.setStage(stage);
 
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
         } catch (Exception e) {
@@ -286,7 +288,9 @@ public class SignupController {
             Parent root = loader.load();
 
             Stage stage = (Stage) signupRoot.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {

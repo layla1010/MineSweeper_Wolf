@@ -317,7 +317,9 @@ public class AddQuestionController {
             Parent root = loader.load();
 
             Stage stage = (Stage) saveButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.setTitle("Questions Management");
             stage.centerOnScreen();
             stage.show();

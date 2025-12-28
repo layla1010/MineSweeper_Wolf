@@ -38,7 +38,9 @@ public class SettingsController {
             Parent root = loader.load();
 
             Stage stage = (Stage) rootGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
 
@@ -56,7 +58,9 @@ public class SettingsController {
             Parent root = loader.load();
 
             Stage stage = (Stage) rootGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
 
@@ -74,7 +78,9 @@ public class SettingsController {
             Parent root = loader.load();
 
             Stage stage = (Stage) rootGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
 

@@ -144,7 +144,9 @@ public class MainController {
             NewGameController controller = loader.getController();
             controller.setStage(stage);
 
-            stage.setScene(new Scene(newRoot));
+            Scene scene = new Scene(newRoot);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.show();
             stage.centerOnScreen();
 
@@ -175,7 +177,9 @@ public class MainController {
                 Stage stage = (Stage) ((javafx.scene.Node) event.getSource())
                                 .getScene().getWindow();
 
-                stage.setScene(new Scene(root));
+                Scene scene = new Scene(root);
+                util.ThemeManager.applyTheme(scene);
+                stage.setScene(scene);
                 stage.centerOnScreen();
                 stage.setTitle("Questions Management");
                 stage.show();
@@ -200,9 +204,13 @@ public class MainController {
             HistoryController historyController = loader.getController();
             historyController.setStage(stage);
 
-            stage.setScene(new Scene(historyRoot, 1200, 750));
-            stage.show();
+            
+            Scene scene = new Scene(historyRoot, 1200, 750);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
+            stage.show();
+            
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -419,7 +427,9 @@ public class MainController {
 
             SettingsController controller = loader.getController();
 
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
 
@@ -442,7 +452,9 @@ public class MainController {
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.show();
 
@@ -464,7 +476,9 @@ public class MainController {
                 // As a fallback, you can throw; but better to fail loudly during dev.
                 throw new IllegalStateException("Cannot resolve Stage in MainController.");
             }
+            
             Scene scene = new Scene(root, 800, 400);
+            util.ThemeManager.applyTheme(scene);
             stage.setScene(scene);
             stage.setTitle("Login");
             stage.setResizable(false);
@@ -509,6 +523,7 @@ public class MainController {
             controller.setStage(stage);
 
             Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
             stage.setScene(scene);
             stage.centerOnScreen();
         } catch (Exception e) {

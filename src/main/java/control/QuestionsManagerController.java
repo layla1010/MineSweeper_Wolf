@@ -81,7 +81,9 @@ public class QuestionsManagerController {
             Parent root = loader.load();
 
             Stage stage = (Stage) backButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.setTitle("Main Menu");
             stage.centerOnScreen();
             stage.show();
@@ -103,7 +105,9 @@ public class QuestionsManagerController {
             Parent root = loader.load();
 
             Stage stage = (Stage) newQuestionButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.centerOnScreen();
             stage.setTitle("Add New Question");
             stage.show();
@@ -461,7 +465,9 @@ public class QuestionsManagerController {
             editController.setQuestion(q);
 
             Stage stage = (Stage) questionsContainerVBox.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            util.ThemeManager.applyTheme(scene);
+            stage.setScene(scene);
             stage.setTitle("Edit Question");
             stage.centerOnScreen();
             stage.show();

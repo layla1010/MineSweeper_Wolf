@@ -21,11 +21,14 @@ public class Main extends Application {
         Parent root = loader.load(); 
 
         Scene scene = new Scene(root);//, 1200, 740);
+        util.ThemeManager.applyTheme(scene);
         primaryStage.setScene(scene);
         primaryStage.setTitle("MineSweeper_Wolf");
         primaryStage.setResizable(false);
         primaryStage.centerOnScreen();
         primaryStage.show();
+        
+        
 
         SoundManager.init();
         SoundManager.startMusic();
