@@ -6,9 +6,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import util.DialogUtil;
@@ -21,13 +20,11 @@ public class SettingsController {
     @FXML private Button filtersBtn;
     @FXML private Button customizeBtn;
     @FXML private Button howToPlayBtn;
-
     @FXML private Button backBtn;
 
     @FXML
     private void initialize() {
-        // FXML calls this automatically (no args).
-        // Keep empty or add init logic.
+        // nothing required
     }
 
     @FXML
@@ -44,7 +41,8 @@ public class SettingsController {
 
         } catch (IOException e) {
             e.printStackTrace();
-         	DialogUtil.show(AlertType.ERROR, null, "Navigation error", "Failed to load the main menu screen.");                  
+            DialogUtil.show(AlertType.ERROR, null, "Navigation error",
+                    "Failed to load the main menu screen.");
         }
     }
 
@@ -62,20 +60,35 @@ public class SettingsController {
 
         } catch (IOException e) {
             e.printStackTrace();
-         	DialogUtil.show(AlertType.ERROR, null, "Navigation error", "Failed to load the Filters screen.");                  
+            DialogUtil.show(AlertType.ERROR, null, "Navigation error",
+                    "Failed to load the Filters screen.");
         }
     }
 
     @FXML
     private void onCustomizeClicked() {
         SoundManager.playClick();
-     	DialogUtil.show(AlertType.INFORMATION, null, "Not implemented yet","Customize screen is not implemented yet.\n" + "In the future, this screen will allow changing themes, colors and avatars.");      
+        DialogUtil.show(AlertType.INFORMATION, null, "Not implemented yet",
+                "Customize screen is not implemented yet.\n"
+                        + "In the future, this screen will allow changing themes, colors and avatars.");
     }
 
     @FXML
     private void onHowToPlayClicked() {
         SoundManager.playClick();
-     	DialogUtil.show(AlertType.INFORMATION, null, "Not implemented yet","How To Play screen is not implemented yet.\n" + "In the future, this screen will explain Minesweeper WOLF rules and strategies.");  
-    }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/how_to_play_view.fxml"));
+            Parent root = loader.load();
 
+            Stage stage = (Stage) rootGrid.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            DialogUtil.show(AlertType.ERROR, null, "Navigation error",
+                    "Failed to load the How To Play screen.");
+        }
+    }
 }

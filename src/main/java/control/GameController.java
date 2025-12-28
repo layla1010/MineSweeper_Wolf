@@ -153,8 +153,18 @@ public class GameController {
     @FXML
     private void onHelpBtnClicked() {
         bonusService.resetIdleHintTimer();
-        System.out.println("Help clicked but screen not created yet!");
+
+        try {
+            Stage stage = (Stage) player1Grid.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource("/view/how_to_play_view.fxml"));
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
     @FXML
     private void onBackBtnClicked() throws IOException {
