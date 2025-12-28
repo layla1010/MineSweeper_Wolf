@@ -230,7 +230,7 @@
       </Button>
    </children>
    <stylesheets>
-      <URL value="@../css/board.css" />
       <URL value="@../css/theme.css" />
+      <URL value="@../css/board.css" />   
    </stylesheets>
 </GridPane>
