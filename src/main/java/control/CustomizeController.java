@@ -33,17 +33,17 @@ public class CustomizeController {
         // Load existing selection (if you implement Theme in SysData)
         try {
             Theme current = SysData.getCurrentTheme();
-            if (current == Theme.COLORFUL) {
+            if (current == Theme.DEFAULT) {
                 colorfulThemeBtn.setSelected(true);
                 wolfThemeBtn.setSelected(false);
             } else {
                 // default WOLF
-                wolfThemeBtn.setSelected(true);
-                colorfulThemeBtn.setSelected(false);
+                wolfThemeBtn.setSelected(false);
+                colorfulThemeBtn.setSelected(true);
             }
         } catch (Exception ignore) {
-            // If you didn't add Theme yet -> default to wolf selected
-            wolfThemeBtn.setSelected(true);
+            // If you didn't add Theme yet -> default to colorful selected
+        	colorfulThemeBtn.setSelected(true);
         }
 
         refreshButtonTexts();
@@ -75,7 +75,7 @@ public class CustomizeController {
         wolfThemeBtn.setSelected(false);
 
         try {
-            SysData.setCurrentTheme(Theme.COLORFUL);
+            SysData.setCurrentTheme(Theme.DEFAULT);
         } catch (Exception ignore) {}
 
         refreshButtonTexts();
