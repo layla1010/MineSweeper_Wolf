@@ -1,5 +1,7 @@
 package control;
 
+import javafx.geometry.Pos;
+
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -85,10 +87,7 @@ public class HowToPlayController {
 	@FXML
 	private Button restartBtn;
 
-	@FXML
-	private Label p1InfoLabel;
-	@FXML
-	private Label p2InfoLabel;
+
 	@FXML
 	private Label turnLabel;
 
@@ -99,6 +98,9 @@ public class HowToPlayController {
 	private Button playBtn;
 	@FXML
 	private Button stopBtn;
+
+	@FXML private HBox p1StatsBox;
+	@FXML private HBox p2StatsBox;
 
 	private Timeline autoPlay;
 	private boolean isAutoPlaying = false;
@@ -639,17 +641,79 @@ public class HowToPlayController {
 		}
 	}
 
+	private ImageView icon(String path, double size) {
+	    var stream = getClass().getResourceAsStream(path);
+	    if (stream == null) {
+	        System.err.println("Missing resource: " + path);
+	        return new ImageView();
+	    }
+	    ImageView iv = new ImageView(new Image(stream));
+	    iv.setFitWidth(size);
+	    iv.setFitHeight(size);
+	    iv.setPreserveRatio(true);
+	    return iv;
+	}
+
+	private HBox statItem(String iconPath, String value) {
+	    ImageView iv = icon(iconPath, 18);
+
+	    Label valueLbl = new Label(value);
+	    valueLbl.getStyleClass().add("stats-value"); // (إذا عندك CSS من اللعبة)
+	    // إذا ما عندك css، ممكن تعملي inline:
+	    // valueLbl.setStyle("-fx-text-fill: #E5E7EB; -fx-font-size: 14; -fx-font-family: 'Copperplate Gothic Light';");
+
+	    HBox item = new HBox(6, iv, valueLbl);
+	    item.setAlignment(Pos.CENTER_LEFT);
+	    item.setPickOnBounds(false);
+	    return item;
+	}
+
+	private Label sep() {
+	    Label l = new Label("|");
+	    l.getStyleClass().add("stats-sep");
+	    return l;
+	}
+
+	private void buildPlayerStats(HBox box, String nickname,
+	                              int mines, int flags, int surprises, int questions) {
+	    if (box == null) return;
+
+	    box.getChildren().clear();
+
+	    Label name = new Label(nickname + ",");
+	    name.getStyleClass().add("player-name");
+	    // أو inline:
+	    // name.setStyle("-fx-text-fill: #E5E7EB; -fx-font-size: 14; -fx-font-family: 'Copperplate Gothic Bold';");
+
+	    box.getChildren().add(name);
+	    box.getChildren().add(sep());
+
+	    box.getChildren().add(statItem("/Images/bomb.png", String.valueOf(mines)));
+	    box.getChildren().add(sep());
+
+	    box.getChildren().add(statItem("/Images/red-flag.png", String.valueOf(flags)));
+	    box.getChildren().add(sep());
+
+	    box.getChildren().add(statItem("/Images/giftbox.png", String.valueOf(surprises)));
+	    box.getChildren().add(sep());
+
+	    box.getChildren().add(statItem("/Images/question-mark.png", String.valueOf(questions)));
+	}
+
 	private void updateInfoBar() {
-		p1InfoLabel.setText("Player 1 | Mines left: " + p1Mines + " | Flags left: " + p1Flags + " | Surprises left: "
-				+ p1Surprises + " | Questions left: " + p1Questions);
 
-		p2InfoLabel.setText("Player 2 | Mines left: " + p2Mines + " | Flags left: " + p2Flags + " | Surprises left: "
-				+ p2Surprises + " | Questions left: " + p2Questions);
+	    buildPlayerStats(p1StatsBox,
+	            "Player 1", 
+	            p1Mines, p1Flags, p1Surprises, p1Questions);
 
-		turnLabel.setText("Turn: " + (isP1Turn ? "Player 1" : "Player 2"));
+	    buildPlayerStats(p2StatsBox,
+	            "Player 2",
+	            p2Mines, p2Flags, p2Surprises, p2Questions);
 
-		if (scoreLabel != null)
-			scoreLabel.setText("Score: 0"); // or demoScore if you add it
+	    turnLabel.setText("Turn: " + (isP1Turn ? "Player 1" : "Player 2"));
+
+	    if (scoreLabel != null)
+	        scoreLabel.setText("Score: 0");
 	}
 
 	// JavaFX BoundingBox helper (since we used it above)

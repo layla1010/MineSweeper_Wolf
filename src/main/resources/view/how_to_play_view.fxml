@@ -50,38 +50,33 @@
             <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="1228.0" style="-fx-background-color: rgba(15,23,42,0.65);                            -fx-background-radius: 30;                            -fx-border-color: rgba(255,255,255,0.25);                            -fx-border-radius: 30;                            -fx-border-width: 1.2;" />
             <GridPane alignment="CENTER" hgap="40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="1206.0">
                <columnConstraints>
-                  <ColumnConstraints hgrow="ALWAYS" percentWidth="45" />
-                  <ColumnConstraints hgrow="ALWAYS" percentWidth="10" />
-                  <ColumnConstraints hgrow="ALWAYS" percentWidth="45" />
+                  <ColumnConstraints hgrow="ALWAYS" percentWidth="42" />
+				  <ColumnConstraints hgrow="ALWAYS" percentWidth="16" />
+				  <ColumnConstraints hgrow="ALWAYS" percentWidth="42" />
+
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints />
                </rowConstraints>
                <children>
-                  <Label fx:id="p1InfoLabel" prefHeight="46.0" prefWidth="478.0" textFill="#E5E7EB" wrapText="true" GridPane.columnIndex="0">
-                     <font>
-                        <Font name="Copperplate Gothic Bold" size="14" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets left="10.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label fx:id="turnLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="127.0" text="Turn: Player 1" textFill="#E5E7EB" GridPane.columnIndex="1">
-                     <font>
-                        <Font name="Copperplate Gothic Bold" size="15.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets left="-20.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label fx:id="p2InfoLabel" prefHeight="46.0" prefWidth="488.0" textFill="#E5E7EB" wrapText="true" GridPane.columnIndex="2">
-                     <font>
-                        <Font name="Copperplate Gothic Bold" size="14" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets />
-                     </GridPane.margin>
-                  </Label>
+                  <HBox fx:id="p1StatsBox" alignment="CENTER_LEFT" spacing="10" GridPane.columnIndex="0">
+    				<GridPane.margin>
+        			<Insets left="10.0" />
+    				</GridPane.margin>
+					</HBox>
+
+				<Label fx:id="turnLabel" text="Turn: Player 1" textFill="#E5E7EB" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+    				<font>
+        			<Font name="Copperplate Gothic Bold" size="15.0" />
+    				</font>
+				</Label>
+				
+				<HBox fx:id="p2StatsBox" alignment="CENTER_LEFT" spacing="10" GridPane.columnIndex="2">
+    				<GridPane.margin>
+        			<Insets right="10.0" />
+    				</GridPane.margin>
+				</HBox>
+				
                </children>
             </GridPane>
          </children>
