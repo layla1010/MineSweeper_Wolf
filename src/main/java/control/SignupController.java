@@ -1,6 +1,9 @@
 package control;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
@@ -9,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
@@ -30,6 +32,10 @@ import util.SoundManager;
 
 public class SignupController {
 
+	 private static final Pattern EMAIL = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$");
+	 private static final Logger LOG = Logger.getLogger(SignupController.class.getName());
+
+	
     @FXML private GridPane signupRoot;
     @FXML private AnchorPane anchor;   
 
@@ -63,6 +69,25 @@ public class SignupController {
     private AvatarManager avatarManager;
     private Stage stage;
 
+    
+    private Stage resolveStage() {
+        if (stage != null) return stage;
+        if (signupRoot != null && signupRoot.getScene() != null) {
+            return (Stage) signupRoot.getScene().getWindow();
+        }
+        return null;
+    }
+
+    private Image loadIcon(String path) {
+        var in = getClass().getResourceAsStream(path);
+        if (in == null) {
+            DialogUtil.show(AlertType.ERROR, null, "Missing Resource", "Missing image: " + path);
+            return null;
+        }
+        return new Image(in);
+    }
+
+    
     public SignupController() {
     }
 
@@ -91,8 +116,8 @@ public class SignupController {
         repasswordTextFieldSignUp1.setManaged(false);
 
         // Set initial icons
-        eyeIconSignup.setImage(new Image(getClass().getResourceAsStream("/Images/view.png")));
-        eyeIconReSignup.setImage(new Image(getClass().getResourceAsStream("/Images/view.png")));
+        eyeIconSignup.setImage(loadIcon("/Images/view.png"));
+        eyeIconReSignup.setImage(loadIcon("/Images/view.png"));
 
         // Play intro animation
         playIntroAnimation();
@@ -121,9 +146,6 @@ public class SignupController {
         }
     }
 
-    private boolean isValidEmail(String email) {
-        return email != null && email.contains("@") && email.contains(".");
-    }
 
     @FXML
     private void playClickSound() {
@@ -145,8 +167,8 @@ public class SignupController {
     @FXML
     private void onPlus() {
         playClickSound();
-        Stage stage = (Stage) playerAvatar.getScene().getWindow();
-        avatarManager.handlePlus(stage);
+        Stage s = resolveStage();
+        if (s != null) avatarManager.handlePlus(s);
     }
 
     @FXML
@@ -162,10 +184,11 @@ public class SignupController {
          	DialogUtil.show(AlertType.ERROR, null, "Missing Information","Please fill in all fields");
             return;
         }
-        if (!isValidEmail(email)) {
-         	DialogUtil.show(AlertType.ERROR, null, "Invalid Email","Please enter a valid email address.");
-         	return;
+        if (!EMAIL.matcher(email).matches()) {
+            DialogUtil.show(AlertType.ERROR, null, "Invalid Email", "Please enter a valid email address.");
+            return;
         }
+
         if (!password.equals(rePassword)) {
          	DialogUtil.show(AlertType.ERROR, null, "Password mismatch","Password and confirmation do not match.");
             return;
@@ -208,15 +231,20 @@ public class SignupController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));
             Parent root = loader.load();
 
-            PlayLoginController loginController = loader.getController();
-            loginController.setStage(stage);
+            Stage s = resolveStage();
+            if (s == null) {
+                DialogUtil.show(AlertType.ERROR, null, "Navigation Error", "Could not determine window (Stage).");
+                return;
+            }
 
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-            stage.show();
+            PlayLoginController loginController = loader.getController();
+            loginController.setStage(s);
+
+            s.setScene(new Scene(root));
+            s.centerOnScreen();
+            s.show();
         } catch (Exception e) {
-            e.printStackTrace();
-         	DialogUtil.show(AlertType.ERROR, null, "Navigation Error","Could not return to login screen.");
+        	LOG.log(Level.SEVERE, "Failed to navigate to login screen after signup", e);
         }
     }
 
@@ -233,8 +261,7 @@ public class SignupController {
         PasswordSignup.setVisible(false);
         PasswordSignup.setManaged(false);
 
-        eyeIconSignup.setImage(new Image(
-                getClass().getResourceAsStream("/Images/hide.png")));
+        eyeIconSignup.setImage(loadIcon("/Images/hide.png"));
     }
 
     @FXML
@@ -246,8 +273,7 @@ public class SignupController {
         passwordTextFieldSignUp.setVisible(false);
         passwordTextFieldSignUp.setManaged(false);
 
-        eyeIconSignup.setImage(new Image(
-                getClass().getResourceAsStream("/Images/view.png")));
+        eyeIconSignup.setImage(loadIcon("/Images/view.png"));
     }
 
     // Password #2: press to show, release to hide
@@ -261,8 +287,7 @@ public class SignupController {
         rePasswordSignup1.setVisible(false);
         rePasswordSignup1.setManaged(false);
 
-        eyeIconReSignup.setImage(new Image(
-                getClass().getResourceAsStream("/Images/hide.png")));
+        eyeIconReSignup.setImage(loadIcon("/Images/hide.png"));
     }
 
     @FXML
@@ -273,8 +298,7 @@ public class SignupController {
         repasswordTextFieldSignUp1.setVisible(false);
         repasswordTextFieldSignUp1.setManaged(false);
 
-        eyeIconReSignup.setImage(new Image(
-                getClass().getResourceAsStream("/Images/view.png")));
+        eyeIconReSignup.setImage(loadIcon("/Images/view.png"));
     }
     
     @FXML

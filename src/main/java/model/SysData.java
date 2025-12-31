@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Logger;
 
 public class SysData {
 
@@ -23,7 +25,12 @@ public class SysData {
         return INSTANCE;
     }
 
+    private static final Logger LOG = Logger.getLogger(SysData.class.getName());
 
+    private final AtomicBoolean historyLoaded = new AtomicBoolean(false);
+    private final AtomicBoolean playersLoaded = new AtomicBoolean(false);
+
+    
     /** Stores all game history records. */
     private final History history = new History();
 
@@ -150,15 +157,15 @@ public class SysData {
     }
 
     /** Loads all game history from the history CSV file into memory. */
-    public void loadHistoryFromCsv() {
+    private void loadHistoryFromCsvInternal() {
         history.clear();
 
         String csvPath = getHistoryCsvPath();
-        System.out.println("Loading history from: " + csvPath);
+        LOG.info("Loading history from: " + csvPath);
 
         Path path = Paths.get(csvPath);
         if (!Files.exists(path)) {
-            System.out.println("History file not found, skipping load.");
+        	LOG.warning("History file not found, skipping load.");
             return;
         }
 
@@ -313,12 +320,13 @@ public class SysData {
 
 
     /** Loads all Players data from the Player CSV file into memory. */
-    public void loadPlayersFromCsv() {
+    private void loadPlayersFromCsvInternal() {
         playersByEmail.clear();
         playersByName.clear();
 
         String csvPath = getPlayersCsvPath();
-        System.out.println("Loading players from: " + csvPath);
+        LOG.info("Loading players from: " + csvPath);
+
 
         Path path = Paths.get(csvPath);
         if (!Files.exists(path)) {
@@ -629,7 +637,7 @@ public class SysData {
 
             // best time (MIN duration, but ONLY among WINS)
             if (res == GameResult.WIN) {
-                int durationSeconds = parseDuration(game.getDurationFormatted());
+            	int durationSeconds = game.getDurationSeconds();
                 if (durationSeconds > 0 && durationSeconds < bestTimeSeconds) {
                     bestTimeSeconds = durationSeconds;
                     bestTimeOpponent = opponent;
@@ -751,4 +759,37 @@ public class SysData {
 
         return "-";
     }
+    
+    /**
+     * Loads history from CSV only once per application run.
+     * Safe to call from any controller.
+     */
+    public void ensureHistoryLoaded() {
+        if (historyLoaded.compareAndSet(false, true)) {
+            loadHistoryFromCsvInternal();
+        }
+    }
+
+    /**
+     * Loads players from CSV only once per application run.
+     * Safe to call from any controller.
+     */
+    public void ensurePlayersLoaded() {
+        if (playersLoaded.compareAndSet(false, true)) {
+            loadPlayersFromCsvInternal();
+        }
+    }
+    
+    public void reloadHistoryFromCsv() {
+        loadHistoryFromCsvInternal();
+        historyLoaded.set(true);
+    }
+
+    public void reloadPlayersFromCsv() {
+        loadPlayersFromCsvInternal();
+        playersLoaded.set(true);
+    }
+
+
+
 }

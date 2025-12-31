@@ -61,7 +61,7 @@ public class HistoryController {
 
     @FXML
     private void initialize() {
-        SysData.getInstance().loadHistoryFromCsv();
+    	SysData.getInstance().ensureHistoryLoaded();
         allGames.clear();
         allGames.addAll(SysData.getInstance().getHistory().getGames());
 

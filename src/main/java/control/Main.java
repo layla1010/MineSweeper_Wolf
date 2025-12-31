@@ -13,8 +13,9 @@ public class Main extends Application {
 	//Entry point of the application.
     @Override
     public void start(Stage primaryStage) throws Exception {
-        SysData.getInstance().loadHistoryFromCsv();
-        SysData.getInstance().loadPlayersFromCsv();
+    	SysData.getInstance().ensureHistoryLoaded();
+    	SysData.getInstance().ensurePlayersLoaded();
+
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));
        // FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/board_view.fxml"));
