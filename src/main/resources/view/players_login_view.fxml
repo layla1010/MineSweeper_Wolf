@@ -193,6 +193,6 @@
     </children>
    <stylesheets>
       <URL value="@../css/login.css" />
-      <URL value="@../css/theme.css" />
+      <URL value="@../css/base.css" />
    </stylesheets>
 </AnchorPane>

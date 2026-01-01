@@ -78,9 +78,7 @@ public class SettingsController {
     @FXML
     private void onCustomizeClicked() {
         SoundManager.playClick();
-        DialogUtil.show(AlertType.INFORMATION, null, "Not implemented yet",
-                "Customize screen is not implemented yet.\n" +
-                "In the future, this screen will allow changing themes, colors and avatars.");
+        navigateTo("/view/customize.fxml", "Failed to load the Filters screen.");
     }
 
     @FXML

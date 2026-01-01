@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="520.0" prefWidth="720.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="control.CustomizeController"
+            stylesheets="@../css/base.css"
+>
+
+    <children>
+        <VBox fx:id="root"
+              alignment="TOP_CENTER"
+              spacing="22"
+              styleClass="themed-bg"
+              AnchorPane.topAnchor="0.0"
+              AnchorPane.rightAnchor="0.0"
+              AnchorPane.bottomAnchor="0.0"
+              AnchorPane.leftAnchor="0.0">
+
+            <padding>
+                <Insets top="22" right="26" bottom="26" left="26"/>
+            </padding>
+
+            <!-- Top bar: back button -->
+            <HBox alignment="CENTER_LEFT" prefHeight="60">
+                <children>
+                    <Button fx:id="backBtn"
+                            text="←"
+                            onAction="#onBackClicked"
+                            styleClass="settings-back-button">
+                        <font>
+                            <Font name="Copperplate Gothic Bold" size="18"/>
+                        </font>
+                    </Button>
+                    <Region HBox.hgrow="ALWAYS"/>
+                </children>
+            </HBox>
+
+            <!-- Title -->
+            <Label text="CUSTOMIZE THEMES" styleClass="settings-title">
+                <font>
+                    <Font name="Copperplate Gothic Bold" size="44"/>
+                </font>
+            </Label>
+
+            <Label text="Choose how your game looks. Changes apply immediately."
+                   styleClass="settings-subtitle">
+                <font>
+                    <Font name="Copperplate Gothic Light" size="16"/>
+                </font>
+            </Label>
+
+            <!-- Options -->
+            <VBox spacing="16" maxWidth="560">
+                <children>
+
+                    <!-- Default -->
+                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="filter-row">
+                        <children>
+                            <Label text="Colorful (Default)" styleClass="filter-label">
+                                <font>
+                                    <Font name="Copperplate Gothic Light" size="20"/>
+                                </font>
+                            </Label>
+
+                            <Region HBox.hgrow="ALWAYS"/>
+
+                            <ToggleButton fx:id="defaultBtn"
+                                          text="SELECT"
+                                          onAction="#onDefaultSelected"
+                                          styleClass="theme-select-btn"/>
+                        </children>
+                    </HBox>
+
+                    <!-- Wolf -->
+                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="filter-row">
+                        <children>
+                            <Label text="Wolf Theme" styleClass="filter-label">
+                                <font>
+                                    <Font name="Copperplate Gothic Light" size="20"/>
+                                </font>
+                            </Label>
+
+                            <Region HBox.hgrow="ALWAYS"/>
+
+                            <ToggleButton fx:id="wolfBtn"
+                                          text="SELECT"
+                                          onAction="#onWolfSelected"
+                                          styleClass="theme-select-btn"/>
+                        </children>
+                    </HBox>
+
+                </children>
+            </VBox>
+
+        </VBox>
+    </children>
+</AnchorPane>

@@ -147,7 +147,6 @@
 
     </children>
    <stylesheets>
-      <URL value="@../css/theme.css" />
-      <URL value="@../css/style.css" />
+      <URL value="@../css/base.css" />
    </stylesheets>
 </GridPane>

@@ -1,0 +1,76 @@
+/* =========================
+   WOLF THEME
+   ========================= */
+
+.root {
+    -fx-background-image: url("../Images/wolf_bg.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+    -fx-background-size: cover;
+
+    -fx-background-color: rgba(0,0,0,0.40);
+    -fx-background-blend-mode: multiply;
+}
+
+/* If you use themed-bg in screens */
+.themed-bg {
+    -fx-background-image: url("../Images/wolf_bg.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+    -fx-background-size: cover;
+
+    -fx-background-color: rgba(0,0,0,0.40);
+    -fx-background-blend-mode: multiply;
+}
+
+/* Text defaults */
+.label {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* Wolf theme buttons (same shape, different colors) */
+.button {
+    -fx-background-color: rgba(255,255,255,0.14);
+    -fx-border-color: rgba(255,255,255,0.35);
+    -fx-border-width: 2;
+
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+
+    -fx-cursor: hand;
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* Dialog background for wolf theme */
+.dialog-pane {
+    -fx-background-color: rgba(10, 10, 12, 0.92);
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: transparent;
+}
+
+.dialog-pane .header-panel .label,
+.dialog-pane .content.label {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* ComboBox popup for wolf */
+.combo-box {
+    -fx-text-fill: rgba(255,255,255,0.92);
+    -fx-cursor: hand;
+}
+.combo-box .list-cell {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: rgba(10, 10, 12, 0.92);
+    -fx-background-radius: 12;
+    -fx-padding: 4;
+}
+
+.combo-box-popup .list-cell {
+    -fx-text-fill: rgba(255,255,255,0.92);
+    -fx-background-color: transparent;
+}

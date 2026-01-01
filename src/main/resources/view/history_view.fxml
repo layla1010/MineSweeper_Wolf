@@ -115,7 +115,7 @@
     </center>
    <stylesheets>
       <URL value="@../css/history.css" />
-      <URL value="@../css/theme.css" />
+      <URL value="@../css/base.css" />
    </stylesheets>
 
 </BorderPane>

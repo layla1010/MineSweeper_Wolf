@@ -176,7 +176,7 @@
         </Button>
     </children>
    <stylesheets>
-      <URL value="@../css/theme.css" />
+      <URL value="@../css/base.css" />
       <URL value="@../css/win.css" />
    </stylesheets>
 </GridPane>

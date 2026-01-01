@@ -109,7 +109,7 @@
       </rowConstraints>
 </GridPane>
    <stylesheets>
-      <URL value="@../css/theme.css" />
+      <URL value="@../css/base.css" />
       <URL value="@../css/questions.css" />
    </stylesheets>
 
