@@ -14,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.SysData;
 import util.SoundManager;
+import util.UIAnimations;
 
 /**
  * Controller for the Filters screen.
@@ -41,6 +42,8 @@ public class FiltersController {
     // ====== Lifecycle ======
     @FXML
     private void initialize() {
+    	UIAnimations.fadeIn(rootGrid);
+    	
         syncToggle(musicToggle, SysData.isMusicEnabled());
         syncToggle(soundToggle, SysData.isSoundEnabled());
         syncToggle(timerToggle, SysData.isTimerEnabled());

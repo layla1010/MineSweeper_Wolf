@@ -8,6 +8,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Difficulty;
 import model.GameConfig;
+import util.UIAnimations;
 
 public class EndGameController {
 
@@ -33,6 +34,8 @@ public class EndGameController {
     //Called automatically when the End Game screen is loaded
 	@FXML
 	private void initialize() {
+		UIAnimations.fadeIn(root);
+		
 	    util.UIAnimations.applyHoverZoomToAllButtons(root);
 	    util.UIAnimations.applyFloatingToCards(root);
 	}

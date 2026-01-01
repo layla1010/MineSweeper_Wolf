@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import model.Question;
 import model.SysData;
 import util.DialogUtil;
+import util.UIAnimations;
 import util.ValidationUtil;
 
 import java.io.*;
@@ -33,6 +34,7 @@ public class EditQuestionController {
 
     @FXML
     public void initialize() {
+    	
     	difficultyComboBox.setValue("EASY");
     	correctAnswerComboBox.setValue("A");        
     }

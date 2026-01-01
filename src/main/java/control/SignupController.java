@@ -27,6 +27,7 @@ import util.AvatarManager;
 import util.DialogUtil;
 import util.SessionManager;
 import util.SoundManager;
+import util.UIAnimations;
 
 public class SignupController {
 
@@ -95,30 +96,7 @@ public class SignupController {
         eyeIconReSignup.setImage(new Image(getClass().getResourceAsStream("/Images/view.png")));
 
         // Play intro animation
-        playIntroAnimation();
-    }
-
-    private void playIntroAnimation() {
-        if (signupRoot == null) return;
-
-        // Fade in whole screen
-        signupRoot.setOpacity(0.0);
-        FadeTransition fade = new FadeTransition(Duration.millis(600), signupRoot);
-        fade.setFromValue(0.0);
-        fade.setToValue(1.0);
-
-        // Slide avatar card up slightly
-        if (anchor != null) {
-            anchor.setTranslateY(30);
-            TranslateTransition slide = new TranslateTransition(Duration.millis(600), anchor);
-            slide.setFromY(30);
-            slide.setToY(0);
-
-            ParallelTransition pt = new ParallelTransition(fade, slide);
-            pt.play();
-        } else {
-            fade.play();
-        }
+        UIAnimations.fadeInWithSlide(signupRoot, anchor);
     }
 
     private boolean isValidEmail(String email) {

@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import util.DialogUtil;
+import util.UIAnimations;
 import util.ValidationUtil;
 import javafx.stage.Stage;
 import model.SysData;
@@ -32,6 +33,7 @@ public class AddQuestionController {
     //Called automatically by JavaFX after the FXML is loaded, Sets the next available question ID and makes the ID field read-only
     @FXML
     public void initialize() {
+    	
         int nextId = SysData.getInstance().getNextQuestionId();
         idTextField.setText(String.valueOf(nextId));
         

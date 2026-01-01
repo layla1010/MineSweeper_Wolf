@@ -13,6 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import util.DialogUtil;
 import util.SoundManager;
+import util.UIAnimations;
 
 public class SettingsController {
 
@@ -28,6 +29,8 @@ public class SettingsController {
     private void initialize() {
         // FXML calls this automatically (no args).
         // Keep empty or add init logic.
+    	
+    	UIAnimations.fadeIn(rootGrid);
     }
 
     @FXML

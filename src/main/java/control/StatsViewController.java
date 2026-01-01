@@ -25,6 +25,7 @@ import model.PlayerStats;
 import model.SysData;
 import util.SessionManager;
 import util.SoundManager;
+import util.UIAnimations;
 
 
 public class StatsViewController {
@@ -149,6 +150,8 @@ public class StatsViewController {
     
     @FXML
     private void initialize() {
+    	UIAnimations.fadeIn(mainPane);
+    	
         SysData.getInstance().loadHistoryFromCsv();
        configureProgressChart(p1ProgressChart, "Player 1 Progress");
         configureProgressChart(p2ProgressChart, "Player 2 Progress");

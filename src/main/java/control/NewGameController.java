@@ -74,6 +74,8 @@ public class NewGameController {
      */
     @FXML
     private void initialize() {
+    	UIAnimations.fadeIn(root);
+    	
         selectPlayer(1);
 
         avatarManager = new AvatarManager(player1avatar, player2avatar);

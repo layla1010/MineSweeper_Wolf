@@ -58,6 +58,8 @@ public class GameController {
         // init state
         state.config = config;
         state.difficulty = config.getDifficulty();
+        
+        UIAnimations.fadeIn(root);
 
         // create services in correct order (due to dependencies)
         historyService = new GameHistoryServiceController();

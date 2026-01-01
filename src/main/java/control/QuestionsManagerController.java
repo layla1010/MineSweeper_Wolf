@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import model.Question;
 import model.SysData;
 import util.DialogUtil;
+import util.UIAnimations;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -107,6 +108,8 @@ public class QuestionsManagerController implements QuestionCardActions {
      */
     @FXML
     public void initialize() {
+    	UIAnimations.fadeIn(questionsContainerVBox);
+    	
         sysData.loadQuestionsFromCsv();
         allQuestions = sysData.getAllQuestions();
 

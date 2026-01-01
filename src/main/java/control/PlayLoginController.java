@@ -24,6 +24,7 @@ import util.OnboardingManager;
 import util.OnboardingPolicy;
 import util.OnboardingStep;
 import util.SoundManager;
+import util.UIAnimations;
 
 import java.util.List;
 import java.util.Optional;
@@ -120,7 +121,7 @@ public class PlayLoginController {
             );
         }
         
-        playIntroAnimation();
+        UIAnimations.fadeIn(mainPane);
         
      // Guided onboarding (login must ALWAYS show because user not known yet)
         List<OnboardingStep> loginSteps = List.of(
@@ -144,18 +145,6 @@ public class PlayLoginController {
                 null
         );
     
-    }
-
-
-    private void playIntroAnimation() {
-        if (mainPane == null) return;
-
-        mainPane.setOpacity(0.0);
-
-        FadeTransition fade = new FadeTransition(Duration.millis(600), mainPane);
-        fade.setFromValue(0.0);
-        fade.setToValue(1.0);
-        fade.play();
     }
 
     private void setLoginMode(boolean showPlayers, boolean animate) {
