@@ -7,41 +7,29 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Question;
+import model.SysData;
 import util.DialogUtil;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.event.ActionEvent;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
  * Controller for the Questions Management screen.
  *
  * Responsibilities:
- *  - Load all questions from the CSV file.
- *  - Display each question as a "card" in a VBox.
- *  - Support filters by difficulty, question ID, and text search.
- *  - Navigate to "Add Question" and "Edit Question" screens.
- *  - Delete questions and save the updated list back to CSV.
+ *  - Display questions as UI cards.
+ *  - Apply filters (difficulty, ID, search).
+ *  - Handle navigation between screens.
+ *  - Delegate all data operations to SysData.
  */
-public class QuestionsManagerController {
+
+public class QuestionsManagerController implements QuestionCardActions {
 
     @FXML
     private VBox questionsContainerVBox;
@@ -60,15 +48,14 @@ public class QuestionsManagerController {
 
     @FXML
     private TextField searchTextField;
-
-    /** Unfiltered list of all questions (used as the base for filtering). */
-    private List<Question> allQuestions = new ArrayList<>();
-
-    /** Current working list of questions (e.g. after delete). */
-    private List<Question> questions = new ArrayList<>();
+    
+    
+    
+    private final SysData sysData = SysData.getInstance();
+    private List<Question> allQuestions;
+    
 
     // ================== Navigation ==================
-
     /**
      * Returns to the main menu screen (main_view.fxml).
      */
@@ -120,36 +107,14 @@ public class QuestionsManagerController {
      */
     @FXML
     public void initialize() {
-        // First load questions from CSV into both allQuestions and questions
-        questions.clear();
-        questions.addAll(loadQuestionsFromCsv());
-        allQuestions.clear();
-        allQuestions.addAll(questions);
+        sysData.loadQuestionsFromCsv();
+        allQuestions = sysData.getAllQuestions();
 
-        // Build initial UI from the list
-        reloadQuestionsUI();
-
-        // Prepare filter combo boxes (difficulty + ID)
         setupFilters();
-
-        // Search listener: whenever user types → re-apply filters
-        if (searchTextField != null) {
-            searchTextField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
-        }
-
-        // Show all questions initially with filters applied
         applyFilters();
-    }
 
-    /**
-     * Reloads the questions UI from the current allQuestions list.
-     * Clears the VBox and re-adds all question cards.
-     */
-    private void reloadQuestionsUI() {
-        questionsContainerVBox.getChildren().clear();
-        for (Question q : allQuestions) {
-            addQuestionCard(q);
-        }
+        searchTextField.textProperty()
+            .addListener((obs, o, n) -> applyFilters());
     }
 
     // ================== Filters & Search ==================
@@ -237,193 +202,7 @@ public class QuestionsManagerController {
         }
     }
 
-    // ================== CSV Path & Loading ==================
-
-    /**
-     * Resolves the actual CSV file path for Data/Questionsss.csv.
-     * Works both from IDE (classes folder) and from the JAR.
-     */
-    private static String getQuestionsCsvPath() {
-        try {
-            String path = QuestionsManagerController.class
-                    .getProtectionDomain()
-                    .getCodeSource()
-                    .getLocation()
-                    .getPath();
-
-            String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
-
-            // Running from a JAR
-            if (decoded.contains(".jar")) {
-                decoded = decoded.substring(0, decoded.lastIndexOf('/'));   // folder of jar
-                return decoded + "/Data/Questionsss.csv";
-            } else {
-                // Running from IDE - strip build folder and point to src/main/resources
-                if (decoded.contains("target/classes/")) {
-                    decoded = decoded.substring(0, decoded.lastIndexOf("target/classes/"));
-                } else if (decoded.contains("bin/")) {
-                    decoded = decoded.substring(0, decoded.lastIndexOf("bin/"));
-                } else {
-                    // fallback, relative path
-                    return "Data/Questionsss.csv";
-                }
-
-                return decoded + "src/main/resources/Data/Questionsss.csv";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Data/Questionsss.csv";
-        }
-    }
-
-
-    //Loads questions from the CSV file into a List<Question> and validates rows and logs any invalid entries to stderr.
-    public List<Question> loadQuestionsFromCsv() {
-        List<Question> result = new ArrayList<>();
-
-        String csvPath = getQuestionsCsvPath();
-        System.out.println("Loading questions from: " + csvPath);
-
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(csvPath), StandardCharsets.UTF_8))) {
-
-            String headerLine = reader.readLine();
-            if (headerLine == null) {
-                return result;
-            }
-
-            String delimiter = headerLine.contains(";") ? ";" : ",";
-
-            String[] headers = headerLine.split(delimiter, -1);
-            Map<String, Integer> col = new HashMap<>();
-            for (int i = 0; i < headers.length; i++) {
-                String h = headers[i].trim().replace("\uFEFF", "");
-                col.put(h, i);
-            }
-
-            System.out.println("CSV headers (normalized): " + col.keySet());
-
-            String line;
-            int rowNumber = 1;
-
-            while ((line = reader.readLine()) != null) {
-                rowNumber++;
-                if (line.trim().isEmpty()) continue;
-
-                String[] cells = line.split(delimiter, -1);
-
-                Integer iA          = col.get("A");
-                Integer iB          = col.get("B");
-                Integer iC          = col.get("C");
-                Integer iD          = col.get("D");
-                Integer iDifficulty = col.get("Difficulty");
-                Integer iId         = col.get("ID");
-                Integer iQuestion   = col.get("Question");
-                Integer iCorrect    = col.get("Correct Answer");
-
-                // Basic safety check: enough columns
-                int maxIndex = Math.max(Math.max(iA, iB),
-                        Math.max(iC, Math.max(iD,
-                        Math.max(iDifficulty, Math.max(iId,
-                        Math.max(iQuestion, iCorrect))))));
-
-                if (cells.length <= maxIndex) {
-                    System.err.println("Skipping row " + rowNumber + " – not enough columns: " + line);
-                    continue;
-                }
-
-                String optA          = cells[iA].trim();
-                String optB          = cells[iB].trim();
-                String optC          = cells[iC].trim();
-                String optD          = cells[iD].trim();
-                String difficultyRaw = cells[iDifficulty].trim();
-                String idStr         = cells[iId].trim();
-                String questionText  = cells[iQuestion].trim();
-                String correctLetter = cells[iCorrect].trim();
-
-                // Validation checks
-                if (!idStr.matches("\\d+")) {
-                    System.err.println("Skipping row " + rowNumber + " – invalid ID: '" + idStr + "'");
-                    continue;
-                }
-                String difficultyNum;
-                
-                if (difficultyRaw.matches("[1-4]")) {
-                    difficultyNum = difficultyRaw;
-                } else {
-                    difficultyNum = mapDifficultyToNumber(difficultyRaw); // you already have this method
-                    if (difficultyNum == null) {
-                        System.err.println("Skipping row " + rowNumber + " – invalid difficulty: '" + difficultyRaw + "'");
-                        continue;
-                    }
-                }
-                String difficultyText = mapDifficulty(difficultyNum);
-
-                if (!correctLetter.matches("[A-Da-d]")) {
-                    System.err.println("Skipping row " + rowNumber + " – invalid correct answer: '" + correctLetter + "'");
-                    continue;
-                }
-                if (questionText.isEmpty()) {
-                    System.err.println("Skipping row " + rowNumber + " – empty question text");
-                    continue;
-                }
-
-                int id = Integer.parseInt(idStr);
-                int correctOption     = mapCorrectLetter(correctLetter);
-
-                Question q = new Question(
-                        id,
-                        difficultyText,
-                        questionText,
-                        optA,
-                        optB,
-                        optC,
-                        optD,
-                        correctOption
-                );
-                result.add(q);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
-    
-    public static List<Question> loadQuestionsForGame() {
-        QuestionsManagerController temp = new QuestionsManagerController();
-        return temp.loadQuestionsFromCsv();
-    }
-
-
-    /**
-     * Converts difficulty number to text.
-     */
-    private String mapDifficulty(String num) {
-        return switch (num) {
-            case "1" -> "Easy";
-            case "2" -> "Medium";
-            case "3" -> "Hard";
-            case "4" -> "Expert";
-            default -> "Unknown";
-        };
-    }
-
-    /**
-     * Converts correct answer letter A/B/C/D to index 1..4.
-     */
-    private int mapCorrectLetter(String letter) {
-        return switch (letter.toUpperCase()) {
-            case "A" -> 1;
-            case "B" -> 2;
-            case "C" -> 3;
-            case "D" -> 4;
-            default -> 1; // fallback
-        };
-    }
-
-    // ================== UI Cards ==================
+   // ================== UI Cards ==================
 
     /**
      * Creates a visual Question card from FXML and adds it to the container VBox.
@@ -471,7 +250,7 @@ public class QuestionsManagerController {
         }
     }
 
-    // ================== Delete & Save ==================
+    // ================== Delete ==================
 
     /**
      * Deletes a question after user confirmation and saves the updated list
@@ -480,111 +259,29 @@ public class QuestionsManagerController {
     public void deleteQuestion(Question q) {
         if (q == null) return;
 
-        // Confirm with the user
         Optional<ButtonType> result = DialogUtil.showDialogWithResult(
-                AlertType.CONFIRMATION,
-                "Are you sure you want to delete this question?",
+                Alert.AlertType.CONFIRMATION,
                 "Delete Question",
-                "ID #" + q.getId() + " - " + q.getText()
+                "Are you sure?",
+                "ID #" + q.getId()
         );
 
-        if (result.isEmpty() || result.get() != ButtonType.OK) {
-            // user cancelled -> do nothing
-            return;
-        }
-
-        // Remove from in-memory lists
-        questions.removeIf(qq -> qq.getId() == q.getId());
-        allQuestions.removeIf(qq -> qq.getId() == q.getId());
-
-        // Save the updated list back to the CSV (with IDs renumbered)
-        saveQuestionsToCsv(allQuestions);
-
-        // Reload UI from updated list
-        reloadQuestionsUI();
-        // Rebuild filters because IDs changed
-        setupFilters();
-        applyFilters();
-
-        System.out.println("Deleted question id=" + q.getId());
-    }
-
-    /**
-     * Writes the given list of questions back to the CSV file.
-     * IDs are renumbered sequentially (1..N) after delete.
-     */
-    private void saveQuestionsToCsv(List<Question> questions) {
-        String filePath = getQuestionsCsvPath();
-        System.out.println("Saving questions to: " + filePath);
-
-        try (PrintWriter pw = new PrintWriter(
-                new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
-
-            // CSV header – column names
-            pw.println("ID,Question,Difficulty,A,B,C,D,Correct Answer");
-
-            int newId = 1;
-            for (Question q : questions) {
-                // Renumber IDs to keep them serial after delete
-                q.setId(newId++);
-
-                String difficultyNum = mapDifficultyToNumber(q.getDifficulty());
-                String correctLetter = mapCorrectNumberToLetter(q.getCorrectOption());
-
-                String line = String.join(",",
-                        String.valueOf(q.getId()),      // ID
-                        escapeCsv(q.getText()),         // Question
-                        difficultyNum,                  // Difficulty (1–4)
-                        escapeCsv(q.getOptA()),         // A
-                        escapeCsv(q.getOptB()),         // B
-                        escapeCsv(q.getOptC()),         // C
-                        escapeCsv(q.getOptD()),         // D
-                        correctLetter                   // Correct Answer
-                );
-                pw.println(line);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            sysData.deleteQuestionById(q.getId());
+            allQuestions = sysData.getAllQuestions();
+            applyFilters();
         }
     }
 
-    /**
-     * Escapes values that contain commas/quotes/newlines for CSV.
-     */
-    private String escapeCsv(String s) {
-        if (s == null) return "";
-        if (s.contains(",") || s.contains("\"") || s.contains("\n")) {
-            s = s.replace("\"", "\"\"");  // " -> ""
-            return "\"" + s + "\"";
-        }
-        return s;
-    }
+	@Override
+	public void onEditQuestion(Question question) {
+		openEditScreen(question);
+		
+	}
 
-    /**
-     * Difficulty text (Easy/Medium/Hard/Expert) to number (1..4).
-     */
-    static String mapDifficultyToNumber(String difficultyText) {
-        if (difficultyText == null) return "1";
-        switch (difficultyText.toLowerCase()) {
-            case "easy":   return "1";
-            case "medium": return "2";
-            case "hard":   return "3";
-            case "expert": return "4";
-            default:       return "1";
-        }
-    }
-
-    /**
-     * correctOption 1..4 → "A..D".
-     */
-    private String mapCorrectNumberToLetter(int correctOption) {
-        switch (correctOption) {
-            case 1:  return "A";
-            case 2:  return "B";
-            case 3:  return "C";
-            case 4:  return "D";
-            default: return "A";
-        }
-    }
+	@Override
+	public void onDeleteQuestion(Question question) {
+		deleteQuestion(question);
+		
+	}
 }
