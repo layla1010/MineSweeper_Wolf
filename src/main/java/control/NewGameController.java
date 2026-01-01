@@ -209,48 +209,17 @@ public class NewGameController {
     @FXML
     private void onStartGameClicked() {
         playClickSound();
-
-        String nickname1 = player1Nickname.getText();
-        String nickname2 = player2Nickname.getText();
-
-        if (nickname1 == null || nickname1.trim().isEmpty() ||
-            nickname2 == null || nickname2.trim().isEmpty()) {
-         	DialogUtil.show(AlertType.ERROR, null, "Input error", "Please enter both players names.");                  
-            return;
-        }
-
-        Toggle selectedToggle = difficultyGroup.getSelectedToggle();
-        if (selectedToggle == null) {
-         	DialogUtil.show(AlertType.ERROR, null, "Input error", "Please select a difficulty level.");                  
-            return;
-        }
         
-        String p1 = avatarManager.getSelectedAvatarIdForPlayer1();
-        String p2 = avatarManager.getSelectedAvatarIdForPlayer2();
-
-        if (p1 == null || p1.isBlank() || p2 == null || p2.isBlank()) {
-            // Show an alert manually
-         	DialogUtil.show(AlertType.ERROR, null, "Avatar Required", "Both players must choose an avatar before starting the game.");                  
-            return;
-        }
-
-        Difficulty difficulty;
-        if (selectedToggle == easyToggle) {
-            difficulty = Difficulty.EASY;
-        } else if (selectedToggle == medToggle) {
-            difficulty = Difficulty.MEDIUM;
-        } else {
-            difficulty = Difficulty.HARD;
-        }
-
+        if (!validateInputs()) return;
+        
         GameConfig config = new GameConfig(
-                nickname1.trim(),
-                nickname2.trim(),
-                difficulty,
-                p1,
-                p2
+                player1Nickname.getText().trim(),
+                player2Nickname.getText().trim(),
+                resolveDifficulty(),
+                avatarManager.getSelectedAvatarIdForPlayer1(),
+                avatarManager.getSelectedAvatarIdForPlayer2()
         );
-
+        
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/board_view.fxml"));
             Parent root = loader.load();
@@ -389,4 +358,40 @@ public class NewGameController {
         iv.setFitWidth(size);
         iv.setFitHeight(size);
     }
+    
+    
+    private boolean validateInputs() {
+        if (player1Nickname.getText().trim().isEmpty()
+            || player2Nickname.getText().trim().isEmpty()) {
+
+            DialogUtil.show(AlertType.ERROR, null,
+                    "Input error", "Please enter both players names.");
+            return false;
+        }
+
+        if (difficultyGroup.getSelectedToggle() == null) {
+            DialogUtil.show(AlertType.ERROR, null,
+                    "Input error", "Please select a difficulty level.");
+            return false;
+        }
+
+        if (!avatarManager.hasBothAvatarsSelected()) {
+            DialogUtil.show(AlertType.ERROR, null,
+                    "Avatar Required",
+                    "Both players must choose an avatar before starting the game.");
+            return false;
+        }
+
+        return true;
+    }
+    
+    private Difficulty resolveDifficulty() {
+        Toggle t = difficultyGroup.getSelectedToggle();
+        if (t == easyToggle) return Difficulty.EASY;
+        if (t == medToggle) return Difficulty.MEDIUM;
+        return Difficulty.HARD;
+    }
+
+
+    
 }

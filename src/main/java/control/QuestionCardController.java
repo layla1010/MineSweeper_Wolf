@@ -23,23 +23,23 @@ public class QuestionCardController {
     @FXML private ImageView deleteImg;
 
     private Question question;
-    private QuestionsManagerController parentController;
+    private QuestionCardActions parentController;
 
-    public void setParentController(QuestionsManagerController parent) {
+    public void setParentController(QuestionCardActions parent) {
         this.parentController = parent;
     }
 
     @FXML
     private void onEditClicked(MouseEvent event) {
         if (parentController != null && question != null) {
-            parentController.openEditScreen(question);
+            parentController.onEditQuestion(question);
         }
     }
 
     @FXML
     private void onDeleteClicked(MouseEvent event) {
         if (parentController != null && question != null) {
-            parentController.deleteQuestion(question);
+            parentController.onDeleteQuestion(question);
             System.out.println("Delete clicked for question id=" + question.getId());
         }
     }

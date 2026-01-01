@@ -12,7 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -112,17 +112,22 @@ public class HistoryController {
     @FXML
     private void onFilterApplyClicked() {
         SoundManager.playClick();
-        runFilterAndRender(/*smartSortAlso*/ false);
+        //runFilterAndRender(/*smartSortAlso*/ false);
+        runFilterAndRender();
     }
 
     @FXML
     private void onSortBtnClicked() {
         SoundManager.playClick();
         // Sort should sort the same filtered view -> smart inference consistent with Apply
-        runFilterAndRender(/*smartSortAlso*/ true);
+        //runFilterAndRender(/*smartSortAlso*/ true);
+        
+        //Apply sort on the current filtered results
+        runFilterAndRender();
     }
 
-    private void runFilterAndRender(boolean smartSortAlso) {
+    //private void runFilterAndRender(boolean smartSortAlso) {
+    private void runFilterAndRender() {
         String selectedType = (filterTypeCombo != null) ? filterTypeCombo.getValue() : HistoryFilterService.OPT_ALL;
         String typed = getFilterText();
         LocalDate selectedDate = (dateFilterPicker != null) ? dateFilterPicker.getValue() : null;

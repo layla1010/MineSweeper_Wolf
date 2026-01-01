@@ -226,7 +226,8 @@ public class GameBonusServiceController {
     }
 
     private Question getRandomQuestionFromPool() {
-        List<Question> all = QuestionsManagerController.loadQuestionsForGame();
+        //List<Question> all = QuestionsManagerController.loadQuestionsForGame();
+    	List<Question> all = SysData.getInstance().getAllQuestions();
 
         if (all == null || all.isEmpty()) {
             System.out.println("No questions found.");

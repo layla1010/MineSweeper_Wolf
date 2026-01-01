@@ -2,7 +2,12 @@ package model;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -11,6 +16,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
@@ -58,6 +64,9 @@ public class SysData {
 
     /** Controls whether flags are automatically removed in some situations. */
     private static boolean autoRemoveFlagEnabled = true;
+    
+    
+    private final List<Question> questions = new ArrayList<>();
 
     /** Private constructor (singleton). */
     private SysData() {
@@ -68,7 +77,23 @@ public class SysData {
     public History getHistory() {
         return history;
     }
+    
+    public List<Question> getAllQuestions() {
+        return new ArrayList<>(questions);
+    }
 
+    public void deleteQuestionById(int id) {
+        questions.removeIf(q -> q.getId() == id);
+        renumberQuestionIds();
+        saveQuestionsToCsv();
+    }
+    
+    private void renumberQuestionIds() {
+        int id = 1;
+        for (Question q : questions) {
+            q.setId(id++);
+        }
+    }
 
     /** Resolves the full path to the history CSV file. */
     private static String getHistoryCsvPath() {
@@ -779,7 +804,7 @@ public class SysData {
             loadPlayersFromCsvInternal();
         }
     }
-    
+
     public void reloadHistoryFromCsv() {
         loadHistoryFromCsvInternal();
         historyLoaded.set(true);
@@ -790,6 +815,322 @@ public class SysData {
         playersLoaded.set(true);
     }
 
+    //================= Questions Manager =================//
 
+    /**
+     * Loads all questions from the CSV file into the internal questions list.
+     * Invalid rows are skipped with an error message.
+     */
+    public void loadQuestionsFromCsv() {
+        questions.clear();
 
-}
+        String csvPath = getQuestionsCsvPath();
+        System.out.println("Loading questions from: " + csvPath);
+
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(csvPath), StandardCharsets.UTF_8))) {
+
+            String headerLine = reader.readLine();
+            if (headerLine == null) {
+                return;
+            }
+
+            String delimiter = headerLine.contains(";") ? ";" : ",";
+
+            String[] headers = headerLine.split(delimiter, -1);
+            Map<String, Integer> col = new HashMap<>();
+
+            for (int i = 0; i < headers.length; i++) {
+                String h = headers[i].trim().replace("\uFEFF", ""); // remove BOM if present
+                col.put(h, i);
+            }
+
+            String line;
+            int rowNumber = 1;
+
+            while ((line = reader.readLine()) != null) {
+                rowNumber++;
+                if (line.trim().isEmpty()) continue;
+
+                String[] cells = line.split(delimiter, -1);
+
+                Integer iA = col.get("A");
+                Integer iB = col.get("B");
+                Integer iC = col.get("C");
+                Integer iD = col.get("D");
+                Integer iDifficulty = col.get("Difficulty");
+                Integer iId = col.get("ID");
+                Integer iQuestion = col.get("Question");
+                Integer iCorrect = col.get("Correct Answer");
+
+                // Basic header validation
+                if (iA == null || iB == null || iC == null || iD == null ||
+                        iDifficulty == null || iId == null || iQuestion == null || iCorrect == null) {
+                    System.err.println("Questions CSV header is missing required columns.");
+                    return;
+                }
+
+                int maxIndex = Math.max(
+                        Math.max(iA, iB),
+                        Math.max(iC, Math.max(iD,
+                        Math.max(iDifficulty, Math.max(iId,
+                        Math.max(iQuestion, iCorrect)))))
+                );
+
+                if (cells.length <= maxIndex) {
+                    System.err.println("Skipping row " + rowNumber + " – not enough columns");
+                    continue;
+                }
+
+                String optA = cells[iA].trim();
+                String optB = cells[iB].trim();
+                String optC = cells[iC].trim();
+                String optD = cells[iD].trim();
+                String difficultyRaw = cells[iDifficulty].trim();
+                String idStr = cells[iId].trim();
+                String questionText = cells[iQuestion].trim();
+                String correctLetter = cells[iCorrect].trim();
+
+                if (!idStr.matches("\\d+")) {
+                    System.err.println("Skipping row " + rowNumber + " – invalid ID");
+                    continue;
+                }
+
+                String difficultyNum = difficultyRaw.matches("[1-4]")
+                        ? difficultyRaw
+                        : mapDifficultyToNumber(difficultyRaw);
+
+                if (difficultyNum == null) {
+                    System.err.println("Skipping row " + rowNumber + " – invalid difficulty");
+                    continue;
+                }
+
+                if (!correctLetter.matches("[A-Da-d]")) {
+                    System.err.println("Skipping row " + rowNumber + " – invalid correct answer");
+                    continue;
+                }
+
+                if (questionText.isEmpty()) {
+                    System.err.println("Skipping row " + rowNumber + " – empty question");
+                    continue;
+                }
+
+                Question q = new Question(
+                        Integer.parseInt(idStr),
+                        mapDifficulty(difficultyNum),   // "1..4" -> "Easy..Expert"
+                        questionText,
+                        optA,
+                        optB,
+                        optC,
+                        optD,
+                        mapCorrectLetter(correctLetter) // "A..D" -> 1..4
+                );
+
+                questions.add(q);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Saves the internal questions list back to the CSV file.
+     * Question IDs are renumbered sequentially before saving.
+     */
+    private void saveQuestionsToCsv() {
+        String filePath = getQuestionsCsvPath();
+        System.out.println("Saving questions to: " + filePath);
+
+        try (PrintWriter pw = new PrintWriter(
+                new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
+
+            pw.println("ID,Question,Difficulty,A,B,C,D,Correct Answer");
+
+            int newId = 1;
+            for (Question q : questions) {
+                q.setId(newId++);
+
+                String line = String.join(",",
+                        String.valueOf(q.getId()),
+                        escapeCsv(q.getText()),
+                        mapDifficultyToNumber(q.getDifficulty()),
+                        escapeCsv(q.getOptA()),
+                        escapeCsv(q.getOptB()),
+                        escapeCsv(q.getOptC()),
+                        escapeCsv(q.getOptD()),
+                        mapCorrectNumberToLetter(q.getCorrectOption())
+                );
+
+                pw.println(line);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Escapes values that contain commas/quotes/newlines for CSV.
+     */
+    private String escapeCsv(String s) {
+        if (s == null) return "";
+        if (s.contains(",") || s.contains("\"") || s.contains("\n")) {
+            s = s.replace("\"", "\"\"");
+            return "\"" + s + "\"";
+        }
+        return s;
+    }
+
+    /**
+     * Resolves the actual CSV file path for Data/Questionsss.csv.
+     * Works both from IDE (classes folder) and from the JAR.
+     */
+    private static String getQuestionsCsvPath() {
+        try {
+            String path = SysData.class
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .getPath();
+
+            String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
+
+            // Windows fix (same logic as history/users)
+            if (decoded.length() > 2
+                    && decoded.charAt(0) == '/'
+                    && Character.isLetter(decoded.charAt(1))
+                    && decoded.charAt(2) == ':') {
+                decoded = decoded.substring(1);
+            }
+
+            if (decoded.contains(".jar")) {
+                decoded = decoded.substring(0, decoded.lastIndexOf('/'));
+                return decoded + "/Data/Questionsss.csv";
+            } else {
+                if (decoded.contains("target/classes/")) {
+                    decoded = decoded.substring(0, decoded.lastIndexOf("target/classes/"));
+                } else if (decoded.contains("bin/")) {
+                    decoded = decoded.substring(0, decoded.lastIndexOf("bin/"));
+                } else {
+                    return "Data/Questionsss.csv";
+                }
+
+                return decoded + "src/main/resources/Data/Questionsss.csv";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Data/Questionsss.csv";
+        }
+    }
+
+    /**
+     * Converts difficulty number to text.
+     */
+    private String mapDifficulty(String num) {
+        return switch (num) {
+            case "1" -> "Easy";
+            case "2" -> "Medium";
+            case "3" -> "Hard";
+            case "4" -> "Expert";
+            default -> "Unknown";
+        };
+    }
+
+    /**
+     * Converts correct answer letter A/B/C/D to index 1..4.
+     */
+    private int mapCorrectLetter(String letter) {
+        return switch (letter.toUpperCase()) {
+            case "A" -> 1;
+            case "B" -> 2;
+            case "C" -> 3;
+            case "D" -> 4;
+            default -> 1;
+        };
+    }
+
+    /**
+     * Difficulty text (Easy/Medium/Hard/Expert) to number (1..4).
+     */
+    static String mapDifficultyToNumber(String difficultyText) {
+        if (difficultyText == null) return null;
+        return switch (difficultyText.trim().toLowerCase()) {
+            case "easy" -> "1";
+            case "medium" -> "2";
+            case "hard" -> "3";
+            case "expert" -> "4";
+            default -> null; // IMPORTANT: return null so caller can treat as invalid
+        };
+    }
+
+    /**
+     * correctOption 1..4 → "A..D".
+     */
+    private String mapCorrectNumberToLetter(int correctOption) {
+        return switch (correctOption) {
+            case 1 -> "A";
+            case 2 -> "B";
+            case 3 -> "C";
+            case 4 -> "D";
+            default -> "A";
+        };
+    }
+
+    public void addQuestion(
+            String difficultyText,
+            String questionText,
+            String optA,
+            String optB,
+            String optC,
+            String optD,
+            String correctLetter
+    ) {
+        loadQuestionsFromCsv(); // ensure up-to-date
+
+        int nextId = questions.size() + 1;
+
+        Question q = new Question(
+                nextId,
+                difficultyText,
+                questionText,
+                optA,
+                optB,
+                optC,
+                optD,
+                mapCorrectLetter(correctLetter)
+        );
+
+        questions.add(q);
+        saveQuestionsToCsv();
+    }
+
+    public void updateQuestion(
+            int id,
+            String difficultyText,
+            String questionText,
+            String optA,
+            String optB,
+            String optC,
+            String optD,
+            String correctLetter
+    ) {
+        for (Question q : questions) {
+            if (q.getId() == id) {
+                q.setDifficulty(difficultyText);
+                q.setText(questionText);
+                q.setOptA(optA);
+                q.setOptB(optB);
+                q.setOptC(optC);
+                q.setOptD(optD);
+                q.setCorrectOption(mapCorrectLetter(correctLetter));
+                break;
+            }
+        }
+
+        saveQuestionsToCsv();
+    }
+
+    public int getNextQuestionId() {
+        return questions.size() + 1;
+    }

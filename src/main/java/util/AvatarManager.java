@@ -222,4 +222,13 @@ public class AvatarManager {
             selectedThumb.getStyleClass().add(SELECTED_CLASS);
         }
     }
+    
+    public boolean hasBothAvatarsSelected() {
+        String p1 = getSelectedAvatarIdForPlayer1();
+        String p2 = getSelectedAvatarIdForPlayer2();
+
+        return p1 != null && !p1.isBlank()
+            && p2 != null && !p2.isBlank();
+    }
+
 }
