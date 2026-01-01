@@ -72,11 +72,13 @@ public class FiltersController {
     private void onMusicToggled() {
         SoundManager.playClick();
 
-        boolean newState = !SysData.isMusicEnabled();
-        SysData.setMusicEnabled(newState);
-        syncToggle(musicToggle, newState);
+        boolean enabled = toggleAndSync(
+                musicToggle,
+                SysData.isMusicEnabled(),
+                SysData::setMusicEnabled
+        );
 
-        if (newState != SoundManager.isMusicOn()) {
+        if (enabled != SoundManager.isMusicOn()) {
             SoundManager.toggleMusic();
         }
     }
@@ -85,36 +87,42 @@ public class FiltersController {
     private void onSoundToggled() {
         SoundManager.playClick();
 
-        boolean newState = !SysData.isSoundEnabled();
-        SysData.setSoundEnabled(newState);
-        syncToggle(soundToggle, newState);
+        toggleAndSync(
+                soundToggle,
+                SysData.isSoundEnabled(),
+                SysData::setSoundEnabled
+        );
     }
 
     @FXML
     private void onTimerToggled() {
-        SoundManager.playClick();
-
-        boolean newState = !SysData.isTimerEnabled();
-        SysData.setTimerEnabled(newState);
-        syncToggle(timerToggle, newState);
+    	toggleAndSync(
+                timerToggle,
+                SysData.isTimerEnabled(),
+                SysData::setTimerEnabled
+        );
     }
 
     @FXML
     private void onSmartHintsToggled() {
         SoundManager.playClick();
 
-        boolean newState = !SysData.isSmartHintsEnabled();
-        SysData.setSmartHintsEnabled(newState);
-        syncToggle(smartHintsToggle, newState);
+        toggleAndSync(
+                smartHintsToggle,
+                SysData.isSmartHintsEnabled(),
+                SysData::setSmartHintsEnabled
+        );
     }
 
     @FXML
     private void onAutoRemoveFlagToggled() {
         SoundManager.playClick();
 
-        boolean newState = !SysData.isAutoRemoveFlagEnabled();
-        SysData.setAutoRemoveFlagEnabled(newState);
-        syncToggle(autoRemoveFlagToggle, newState);
+        toggleAndSync(
+                autoRemoveFlagToggle,
+                SysData.isAutoRemoveFlagEnabled(),
+                SysData::setAutoRemoveFlagEnabled
+        );
     }
 
     // ====== Helper ======
@@ -125,4 +133,12 @@ public class FiltersController {
     private void syncToggle(ImageView toggle, boolean enabled) {
         toggle.setImage(enabled ? SWITCH_ON : SWITCH_OFF);
     }
+    
+    private boolean toggleAndSync(ImageView toggle, boolean currentState, java.util.function.Consumer<Boolean> setter) {
+        boolean newState = !currentState;
+        setter.accept(newState);
+        syncToggle(toggle, newState);
+        return newState;
+    }
+
 }
