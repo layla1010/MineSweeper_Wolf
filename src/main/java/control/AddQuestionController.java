@@ -3,6 +3,7 @@ package control;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 public class AddQuestionController {
 
-
+	@FXML private AnchorPane AddQuestionRoot;
     @FXML private Label idTextField;
     @FXML private ComboBox<String> difficultyComboBox;
     @FXML private TextArea questionTextArea;
@@ -33,6 +34,7 @@ public class AddQuestionController {
     //Called automatically by JavaFX after the FXML is loaded, Sets the next available question ID and makes the ID field read-only
     @FXML
     public void initialize() {
+    	UIAnimations.fadeIn(AddQuestionRoot);
     	
         int nextId = SysData.getInstance().getNextQuestionId();
         idTextField.setText(String.valueOf(nextId));

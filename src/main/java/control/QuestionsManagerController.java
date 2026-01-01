@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Question;
@@ -31,7 +32,10 @@ import java.util.Optional;
  */
 
 public class QuestionsManagerController implements QuestionCardActions {
-
+	
+	@FXML
+	private AnchorPane QuestionManagerRoot;
+	
     @FXML
     private VBox questionsContainerVBox;
 
@@ -108,7 +112,7 @@ public class QuestionsManagerController implements QuestionCardActions {
      */
     @FXML
     public void initialize() {
-    	UIAnimations.fadeIn(questionsContainerVBox);
+    	UIAnimations.fadeIn(QuestionManagerRoot);
     	
         sysData.loadQuestionsFromCsv();
         allQuestions = sysData.getAllQuestions();

@@ -3,6 +3,7 @@ package control;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,7 +19,7 @@ import java.io.*;
 import java.util.*;
 
 public class EditQuestionController {
-
+	@FXML private AnchorPane EditQuestionRoot;
     @FXML private Label idTextField;
     @FXML private ComboBox<String> difficultyComboBox;
     @FXML private TextArea questionTextArea;
@@ -34,6 +35,7 @@ public class EditQuestionController {
 
     @FXML
     public void initialize() {
+    	UIAnimations.fadeIn(EditQuestionRoot);
     	
     	difficultyComboBox.setValue("EASY");
     	correctAnswerComboBox.setValue("A");        
