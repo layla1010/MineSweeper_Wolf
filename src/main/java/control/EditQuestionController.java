@@ -4,16 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.Question;
 import model.SysData;
 import util.DialogUtil;
 import util.ValidationUtil;
-
-import java.io.*;
 import java.util.*;
 
 public class EditQuestionController {
@@ -148,21 +143,16 @@ public class EditQuestionController {
     //Navigates back to the Questions Management view.
     private void goBackToManager() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/view/Questions_Management_view.fxml"));
-            Parent root = loader.load();
-
             Stage stage = (Stage) saveButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Questions Management");
+            util.ViewNavigator.switchTo(stage, "/view/Questions_Management_view.fxml");
+            stage.setTitle("Questions Management"); // optional: keep your title behavior
             stage.centerOnScreen();
-            stage.show();
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        	DialogUtil.show(AlertType.ERROR, "", "Error","Failed to go back to Questions Management view.");
-
+            DialogUtil.show(AlertType.ERROR, "", "Error",
+                    "Failed to go back to Questions Management view.");
         }
     }
+
 }
 

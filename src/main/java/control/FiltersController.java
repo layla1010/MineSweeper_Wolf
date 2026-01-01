@@ -2,18 +2,14 @@ package control;
 
 // Aya Ala Deen – Filters Screen Implementation
 
-import java.io.IOException;
-
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.SysData;
 import util.SoundManager;
+import util.ViewNavigator;
 
 /**
  * Controller for the Filters screen.
@@ -52,18 +48,9 @@ public class FiltersController {
     @FXML
     private void onBackToSettingsClicked() {
         SoundManager.playClick();
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/settings_view.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) rootGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Stage stage = (Stage) rootGrid.getScene().getWindow();
+        // Change path if your settings view path differs
+        ViewNavigator.switchTo(stage, "/view/settings_view.fxml");
     }
 
     // ====== Toggle handlers ======

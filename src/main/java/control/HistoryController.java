@@ -1,18 +1,12 @@
 package control;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -25,7 +19,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 import model.Game;
 import model.GameResult;
 import model.SysData;
@@ -46,7 +39,6 @@ public class HistoryController {
     @FXML private ComboBox<String> sortTypeCombo;
     @FXML private DatePicker dateFilterPicker;
 
-    private Stage stage;
 
     private final List<Game> allGames = new ArrayList<>();
 
@@ -55,9 +47,6 @@ public class HistoryController {
 
     private final HistoryFilterService service = new HistoryFilterService(CSV_DATE_FORMATTER);
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
 
     @FXML
     private void initialize() {
@@ -305,21 +294,11 @@ public class HistoryController {
     }
 
     @FXML
-    private void onBackButtonClicked() throws IOException {
+    private void onBackButtonClicked() {
         SoundManager.playClick();
 
-        Stage s = (stage != null)
-                ? stage
-                : (Stage) root.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
-        Parent mainRoot = loader.load();
-
-        MainController mainController = loader.getController();
-        mainController.setStage(s);
-
-        s.setScene(new Scene(mainRoot, 1200, 750));
-        s.centerOnScreen();
-        s.show();
+        Stage s = (Stage) root.getScene().getWindow();
+        util.ViewNavigator.switchTo(s, "/view/main_view.fxml", 1200, 750);
     }
+
 }

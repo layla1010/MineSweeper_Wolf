@@ -24,7 +24,6 @@ import javafx.util.Duration;
 import model.Board;
 import model.Cell;
 import model.CellType;
-import model.Difficulty;
 import model.SysData;
 import util.DialogUtil;
 

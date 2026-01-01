@@ -1,8 +1,5 @@
 package control;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.HPos;
@@ -26,8 +23,6 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 import model.Board;
-import model.Cell;
-import model.CellType;
 import model.SysData;
 import util.SoundManager;
 

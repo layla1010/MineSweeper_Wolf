@@ -5,9 +5,7 @@ import java.util.List;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -164,16 +162,7 @@ public class GameController {
         uiService.stopTimer();
 
         Stage stage = (Stage) player1Grid.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
-        Parent root = loader.load();
-
-        MainController controller = loader.getController();
-        controller.setStage(stage);
-
-        stage.setScene(new Scene(root));
-        stage.show();
-        stage.centerOnScreen();
+        util.ViewNavigator.switchTo(stage, "/view/main_view.fxml");
     }
 
     @FXML
@@ -210,15 +199,12 @@ public class GameController {
     private void showEndGameScreen() {
         try {
             String fxmlPath = state.gameWon ? "/view/win_view.fxml" : "/view/lose_view.fxml";
-
             Stage stage = (Stage) player1Grid.getScene().getWindow();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent endRoot = loader.load();
+            EndGameController controller =
+                    util.ViewNavigator.switchToWithController(stage, fxmlPath, 700, 450);
 
-            EndGameController controller = loader.getController();
             controller.init(
-                    stage,
                     state.config,
                     state.score,
                     state.elapsedSeconds,
@@ -226,17 +212,15 @@ public class GameController {
                     state.gameWon
             );
 
-            Scene endScene = new Scene(endRoot, 700, 450);
-            stage.setScene(endScene);
-            stage.centerOnScreen();
-            stage.show();
-
             Platform.runLater(playService::showHeartsBonusPopupIfNeeded);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            DialogUtil.show(javafx.scene.control.Alert.AlertType.ERROR, "Navigation Error",
-                    "Failed to load end-game screen.", e.getMessage());
+            DialogUtil.show(javafx.scene.control.Alert.AlertType.ERROR,
+                    "Navigation Error",
+                    "Failed to load end-game screen.",
+                    e.getMessage());
         }
     }
+
 }

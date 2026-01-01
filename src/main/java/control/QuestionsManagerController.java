@@ -2,8 +2,6 @@ package control;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Question;
@@ -62,21 +60,16 @@ public class QuestionsManagerController implements QuestionCardActions {
     @FXML
     private void onBackButtonClicked(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/view/main_view.fxml")
-            );
-            Parent root = loader.load();
-
             Stage stage = (Stage) backButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Main Menu");
-            stage.centerOnScreen();
-            stage.show();
-
-        } catch (IOException e) {
+            util.ViewNavigator.switchTo(stage, "/view/main_view.fxml");
+            stage.setTitle("Main Menu"); // optional
+        } catch (Exception e) {
             e.printStackTrace();
+            // optional: show a dialog (recommended)
+            // DialogUtil.show(AlertType.ERROR, "Navigation Error", "Failed to open Main Menu", e.getMessage());
         }
     }
+
 
     /**
      * Navigates to the Add Question screen (Add_Question_view.fxml).
@@ -84,21 +77,15 @@ public class QuestionsManagerController implements QuestionCardActions {
     @FXML
     private void onNewQuestionButtonClicked(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/view/Add_Question_view.fxml")
-            );
-            Parent root = loader.load();
-
             Stage stage = (Stage) newQuestionButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-            stage.setTitle("Add New Question");
-            stage.show();
-
-        } catch (IOException e) {
+            util.ViewNavigator.switchTo(stage, "/view/Add_Question_view.fxml");
+            stage.setTitle("Add New Question"); // optional
+        } catch (Exception e) {
             e.printStackTrace();
+            // optional: DialogUtil.show(AlertType.ERROR, "Navigation Error", "Failed to open Add Question", e.getMessage());
         }
     }
+
 
     // ================== Initialization ==================
 
@@ -231,24 +218,20 @@ public class QuestionsManagerController implements QuestionCardActions {
      */
     public void openEditScreen(Question q) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/view/Edit_Question_view.fxml")
-            );
-            Parent root = loader.load();
+            Stage stage = (Stage) questionsContainerVBox.getScene().getWindow();
 
-            EditQuestionController editController = loader.getController();
+            EditQuestionController editController =
+                    util.ViewNavigator.switchToWithController(stage, "/view/Edit_Question_view.fxml");
+
             editController.setQuestion(q);
 
-            Stage stage = (Stage) questionsContainerVBox.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Edit Question");
-            stage.centerOnScreen();
-            stage.show();
-
-        } catch (IOException e) {
+            stage.setTitle("Edit Question"); // optional
+        } catch (Exception e) {
             e.printStackTrace();
+            // optional: DialogUtil.show(AlertType.ERROR, "Navigation Error", "Failed to open Edit Question", e.getMessage());
         }
     }
+
 
     // ================== Delete ==================
 

@@ -90,19 +90,13 @@ public class StatsViewController {
     
     private static final String DEFAULT_AVATAR_RES = "/Images/S5.png";
     private URL defaultAvatarUrl;
-    
-    private Stage stage;
-    public void setStage(Stage stage) { this.stage = stage; }
-    
+
     private Stage resolveStage() {
-        if (stage != null) return stage;
         if (mainPane != null && mainPane.getScene() != null) {
             return (Stage) mainPane.getScene().getWindow();
         }
         return null;
     }
-
-
 
     public ScrollPane getMainPane() {
         return mainPane;
@@ -527,29 +521,20 @@ public class StatsViewController {
     private void onBackToMainClicked() {
         SoundManager.playClick();
 
+        Stage s = resolveStage();
+        if (s == null) {
+            DialogUtil.show(AlertType.ERROR, "", "Navigation failed",
+                    "Could not determine the application window (Stage).");
+            return;
+        }
+
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
-            Parent root = loader.load();
-
-            Stage s = resolveStage();
-            if (s == null) {
-                DialogUtil.show(AlertType.ERROR, "", "Navigation failed",
-                        "Could not determine the application window (Stage).");
-                return;
-            }
-
-            s.setScene(new Scene(root));
-            s.centerOnScreen();
-            s.show();
-
-        } catch (IOException e) {
+            util.ViewNavigator.switchTo(s, "/view/main_view.fxml");
+        } catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed to navigate back to main_view.fxml", e);
             DialogUtil.show(AlertType.ERROR, "", "Navigation failed",
                     "Could not return to the main screen. Please try again.");
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Unexpected error during navigation", e);
-            DialogUtil.show(AlertType.ERROR, "", "Navigation failed",
-                    "An unexpected error occurred while returning to the main screen.");
         }
     }
+
 }

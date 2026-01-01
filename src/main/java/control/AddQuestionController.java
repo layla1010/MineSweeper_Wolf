@@ -4,15 +4,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import util.DialogUtil;
 import util.ValidationUtil;
 import javafx.stage.Stage;
 import model.SysData;
-
-import java.io.*;
 import java.util.Optional;
 
 public class AddQuestionController {
@@ -121,21 +116,8 @@ public class AddQuestionController {
 
     //Navigation back to Questions_Management_view
     private void goBackToManager() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/view/Questions_Management_view.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) saveButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Questions Management");
-            stage.centerOnScreen();
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        	DialogUtil.show(AlertType.INFORMATION, "Invalid Input", "Validation Error","Failed to go back to Questions Management view.");
-
-        }
+        Stage stage = (Stage) saveButton.getScene().getWindow();
+        util.ViewNavigator.switchTo(stage, "/view/Questions_Management_view.fxml");
     }
+
 }

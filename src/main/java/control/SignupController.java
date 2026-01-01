@@ -1,6 +1,5 @@
 package control;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -9,9 +8,6 @@ import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
@@ -69,7 +65,7 @@ public class SignupController {
     private AvatarManager avatarManager;
     private Stage stage;
 
-    
+ 
     private Stage resolveStage() {
         if (stage != null) return stage;
         if (signupRoot != null && signupRoot.getScene() != null) {
@@ -181,31 +177,30 @@ public class SignupController {
         String rePassword   = (rePasswordSignup1.getText() == null) ? "" : rePasswordSignup1.getText().trim();
 
         if (officialName.isEmpty() || email.isEmpty() || password.isEmpty() || rePassword.isEmpty()) {
-         	DialogUtil.show(AlertType.ERROR, null, "Missing Information","Please fill in all fields");
+            DialogUtil.show(AlertType.ERROR, null, "Missing Information", "Please fill in all fields");
             return;
         }
         if (!EMAIL.matcher(email).matches()) {
             DialogUtil.show(AlertType.ERROR, null, "Invalid Email", "Please enter a valid email address.");
             return;
         }
-
         if (!password.equals(rePassword)) {
-         	DialogUtil.show(AlertType.ERROR, null, "Password mismatch","Password and confirmation do not match.");
+            DialogUtil.show(AlertType.ERROR, null, "Password mismatch", "Password and confirmation do not match.");
             return;
         }
         if (password.length() < 4) {
-         	DialogUtil.show(AlertType.ERROR, null, "Weak Password","Password must be at least 4 characters long.");
+            DialogUtil.show(AlertType.ERROR, null, "Weak Password", "Password must be at least 4 characters long.");
             return;
         }
 
         SysData sysData = SysData.getInstance();
 
         if (sysData.findPlayerByOfficialName(officialName) != null) {
-         	DialogUtil.show(AlertType.ERROR, null, "Name Already Exists","Official name is already in use. Please choose a different name.");
+            DialogUtil.show(AlertType.ERROR, null, "Name Already Exists",
+                    "Official name is already in use. Please choose a different name.");
             return;
         }
 
-        // avatar id from AvatarManager
         String avatarId = avatarManager.getSelectedAvatarIdForPlayer1();
         if (avatarId == null || avatarId.isBlank()) {
             avatarId = "S4.png";
@@ -221,32 +216,28 @@ public class SignupController {
                     avatarId
             );
         } catch (IllegalArgumentException ex) {
-         	DialogUtil.show(AlertType.ERROR, null, "Sign up Failed",ex.getMessage());
+            DialogUtil.show(AlertType.ERROR, null, "Sign up Failed", ex.getMessage());
             return;
         }
 
         SessionManager.setLoggedInUser(newPlayer);
-     	DialogUtil.show(AlertType.INFORMATION, null, "Sign-Up successful","Account created successfully. \n You can now log in and play.");
+        DialogUtil.show(AlertType.INFORMATION, null, "Sign-Up successful",
+                "Account created successfully.\nYou can now log in and play.");
+
+        Stage s = resolveStage();
+        if (s == null) {
+            DialogUtil.show(AlertType.ERROR, null, "Navigation Error", "Could not determine window (Stage).");
+            return;
+        }
+
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));
-            Parent root = loader.load();
-
-            Stage s = resolveStage();
-            if (s == null) {
-                DialogUtil.show(AlertType.ERROR, null, "Navigation Error", "Could not determine window (Stage).");
-                return;
-            }
-
-            PlayLoginController loginController = loader.getController();
-            loginController.setStage(s);
-
-            s.setScene(new Scene(root));
-            s.centerOnScreen();
-            s.show();
+            util.ViewNavigator.switchTo(s, "/view/players_login_view.fxml");
         } catch (Exception e) {
-        	LOG.log(Level.SEVERE, "Failed to navigate to login screen after signup", e);
+            LOG.log(Level.SEVERE, "Failed to navigate to login screen after signup", e);
+            DialogUtil.show(AlertType.ERROR, null, "Navigation Error", "Could not open the login screen.");
         }
     }
+
 
 
     // Password #1: press to show, release to hide
@@ -305,16 +296,18 @@ public class SignupController {
     private void onBackToSignUPClicked() {
         SoundManager.playClick();
 
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));
-            Parent root = loader.load();
+        Stage s = resolveStage();
+        if (s == null) {
+            DialogUtil.show(AlertType.ERROR, null, "Navigation Error", "Could not determine window (Stage).");
+            return;
+        }
 
-            Stage stage = (Stage) signupRoot.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        try {
+            util.ViewNavigator.switchTo(s, "/view/players_login_view.fxml");
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Failed to navigate back to login screen", e);
+            DialogUtil.show(AlertType.ERROR, null, "Navigation Error", "Could not open the login screen.");
         }
     }
+
 }

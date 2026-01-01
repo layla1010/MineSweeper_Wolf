@@ -1,7 +1,6 @@
 package control;
 
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
@@ -37,15 +36,14 @@ public class EndGameController {
 	    util.UIAnimations.applyFloatingToCards(root);
 	}
 	
-	//Initialises the End Game screen with the results of the match. This method receives all game result data from the GameController
-    public void init(Stage stage,
+	//Initializes the End Game screen with the results of the match. This method receives all game result data from the GameController
+    public void init(
                      GameConfig config,
                      int score,
                      int elapsedSeconds,
                      int remainingLives,
                      boolean gameWon) {
 
-        this.stage = stage;
         this.config = config;
         this.score = score;
         this.elapsedSeconds = elapsedSeconds;
@@ -74,37 +72,24 @@ public class EndGameController {
     @FXML
     private void onMainMenu() {
         try {
-            javafx.fxml.FXMLLoader loader =
-                    new javafx.fxml.FXMLLoader(getClass().getResource("/view/main_view.fxml"));
-            javafx.scene.Parent root = loader.load();
-
-            MainController controller = loader.getController();
-            controller.setStage(stage);
-
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.centerOnScreen();
+            Stage stage = (Stage) this.stage; 
+            util.ViewNavigator.switchTo(stage, "/view/main_view.fxml");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
     
     //Handles the "Play Again" button: Loads the new game setup screen (new_game_view.fxml), allowing the players to start a completely new match
     @FXML
     private void onPlayAgain() {
         try {
-            javafx.fxml.FXMLLoader loader =
-                    new javafx.fxml.FXMLLoader(getClass().getResource("/view/new_game_view.fxml"));
-            javafx.scene.Parent root = loader.load();
-
-            NewGameController controller = loader.getController();
-            controller.setStage(stage); // if you have such a method
-
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.centerOnScreen();
+            Stage stage = (Stage) root.getScene().getWindow(); // 
+            util.ViewNavigator.switchTo(stage, "/view/new_game_view.fxml");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

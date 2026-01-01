@@ -1,13 +1,8 @@
 package control;
 
-import java.io.IOException;
 import java.util.List;
-
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
@@ -61,12 +56,7 @@ public class NewGameController {
     @FXML private Button setUpSoundButton;
     @FXML private Button setUpMusicButton;
 
-    private Stage stage;
     private AvatarManager avatarManager;
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
 
     /**
      * Sets player 1 as active by default, wires avatar thumbnails,
@@ -209,9 +199,9 @@ public class NewGameController {
     @FXML
     private void onStartGameClicked() {
         playClickSound();
-        
+
         if (!validateInputs()) return;
-        
+
         GameConfig config = new GameConfig(
                 player1Nickname.getText().trim(),
                 player2Nickname.getText().trim(),
@@ -219,45 +209,36 @@ public class NewGameController {
                 avatarManager.getSelectedAvatarIdForPlayer1(),
                 avatarManager.getSelectedAvatarIdForPlayer2()
         );
-        
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/board_view.fxml"));
-            Parent root = loader.load();
 
-            GameController controller = loader.getController();
+        try {
+            Stage stage = (Stage) player1Nickname.getScene().getWindow();
+
+            GameController controller =
+                    util.ViewNavigator.switchToWithController(stage, "/view/board_view.fxml");
+
             controller.init(config);
 
-            Stage stage = (Stage) player1Nickname.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-            stage.show();
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-         	DialogUtil.show(AlertType.ERROR, null, "Input error", "Failed to start the game due to an internal error.");                  
+            DialogUtil.show(AlertType.ERROR, null, "Input error",
+                    "Failed to start the game due to an internal error.");
         }
     }
-    
+
     
     @FXML
     private void onBackClicked() {
         playClickSound();
 
         try {
-           
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
-            Parent mainRoot = loader.load();
-
             Stage stage = (Stage) root.getScene().getWindow();
-            stage.setScene(new Scene(mainRoot));
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
+            util.ViewNavigator.switchTo(stage, "/view/main_view.fxml");
+        } catch (Exception e) {
             e.printStackTrace();
-         	DialogUtil.show(AlertType.ERROR, null, "Input error", "Failed to return to main screen.");                  
+            DialogUtil.show(AlertType.ERROR, null, "Input error",
+                    "Failed to return to main screen.");
         }
     }
-
 
 
     /**

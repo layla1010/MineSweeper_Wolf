@@ -6,12 +6,8 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -20,7 +16,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -74,20 +69,11 @@ public class PlayLoginController {
     @FXML private Text forgotPasswordText;
     @FXML private Text forgotPasswordTextAdmin;
 
-    private Stage stage;
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
+    private Stage getStage() {
+        return (Stage) mainPane.getScene().getWindow();
     }
 
-    private Stage resolveStage() {
-        if (stage != null) return stage;
-        if (mainPane != null && mainPane.getScene() != null) {
-            return (Stage) mainPane.getScene().getWindow();
-        }
-        return null;
-    }
-
+    
     private Image loadIcon(String path) {
         var in = getClass().getResourceAsStream(path);
         if (in == null) {
@@ -106,10 +92,6 @@ public class PlayLoginController {
         if (p1EyeIcon != null) p1EyeIcon.setImage(loadIcon(ICON_VIEW));
         if (p2EyeIcon != null) p2EyeIcon.setImage(loadIcon(ICON_VIEW));
         if (adminEyeIcon != null) adminEyeIcon.setImage(loadIcon(ICON_VIEW));
-
-        if (mainPane != null) {
-            mainPane.setStyle("-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);");
-        }
 
         playIntroAnimation();
         runOnboarding();
@@ -272,52 +254,27 @@ public class PlayLoginController {
 
     private void goToMainPage(boolean asAdmin) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_view.fxml"));
-            Parent root = loader.load();
-
-            MainController mainController = loader.getController();
-            Stage s = resolveStage();
-            if (s == null) {
-                DialogUtil.show(AlertType.ERROR, null, "Navigation Error", "Could not determine window (Stage).");
-                return;
-            }
-            mainController.setStage(s);
-
-            s.setScene(new Scene(root));
-            s.centerOnScreen();
-            s.show();
-
+            Stage s = getStage();
+            util.ViewNavigator.switchTo(s, "/view/main_view.fxml");
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed to navigate to main_view", e);
             DialogUtil.show(AlertType.ERROR, null, "Navigation Error", "Could not open the main screen.");
         }
     }
 
+
     @FXML
     private void onSignUpClicked() {
         playClickSound();
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/signup_view.fxml"));
-            Pane root = loader.load();
-
-            Stage s = resolveStage();
-            if (s == null) {
-                DialogUtil.show(AlertType.ERROR, null, "Navigation Error", "Could not determine window (Stage).");
-                return;
-            }
-
-            SignupController controller = loader.getController();
-            controller.setStage(s);
-
-            s.setScene(new Scene(root));
-            s.centerOnScreen();
-            s.show();
-
+            Stage s = getStage();
+            util.ViewNavigator.switchTo(s, "/view/signup_view.fxml");
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed to open signup_view", e);
             DialogUtil.show(AlertType.ERROR, null, "Navigation Error", "Could not open sign-up screen.");
         }
     }
+
 
     @FXML
     public void onSkipLoginClicked() {
@@ -335,13 +292,19 @@ public class PlayLoginController {
         dialog.setTitle("Forgot Password");
         dialog.setHeaderText("Reset your password");
         dialog.setContentText("Please enter your email:");
-
+        
+        
         try {
-            var css = PlayLoginController.class.getResource("/css/theme.css");
-            if (css != null) dialog.getDialogPane().getStylesheets().add(css.toExternalForm());
+            var base = PlayLoginController.class.getResource("/css/base.css");
+            if (base != null) dialog.getDialogPane().getStylesheets().add(base.toExternalForm());
+
+            // add CURRENT theme css
+            var theme = PlayLoginController.class.getResource(util.ThemeManager.getTheme().getCssPath());
+            if (theme != null) dialog.getDialogPane().getStylesheets().add(theme.toExternalForm());
         } catch (Exception e) {
             LOG.log(Level.WARNING, "Failed to apply dialog css", e);
         }
+
 
         Optional<String> result = dialog.showAndWait();
         if (result.isEmpty()) return;

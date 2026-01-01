@@ -30,56 +30,47 @@ public class SettingsController {
     private void initialize() {
     }
 
-    private Stage resolveStage() {
-        if (rootGrid != null && rootGrid.getScene() != null) {
-            return (Stage) rootGrid.getScene().getWindow();
-        }
-        return null;
+    private Stage getStage() {
+        return (Stage) rootGrid.getScene().getWindow();
     }
 
-    private void navigateTo(String fxmlPath, String failureMessage) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-
-            Stage stage = resolveStage();
-            if (stage == null) {
-                DialogUtil.show(AlertType.ERROR, null, "Navigation error",
-                        "Could not determine the application window (Stage).");
-                return;
-            }
-
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-            stage.show();
-
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Failed to navigate to: " + fxmlPath, e);
-            DialogUtil.show(AlertType.ERROR, null, "Navigation error", failureMessage);
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Unexpected navigation failure to: " + fxmlPath, e);
-            DialogUtil.show(AlertType.ERROR, null, "Navigation error",
-                    "An unexpected error occurred while opening the screen.");
-        }
-    }
 
     @FXML
     private void onBackToMainClicked() {
         SoundManager.playClick();
-        navigateTo("/view/main_view.fxml", "Failed to load the main menu screen.");
+        try {
+            util.ViewNavigator.switchTo(getStage(), "/view/main_view.fxml");
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Failed to navigate to main_view", e);
+            DialogUtil.show(AlertType.ERROR, null, "Navigation error",
+                    "Failed to load the main menu screen.");
+        }
     }
 
     @FXML
     private void onFiltersClicked() {
         SoundManager.playClick();
-        navigateTo("/view/filters_view.fxml", "Failed to load the Filters screen.");
+        try {
+            util.ViewNavigator.switchTo(getStage(), "/view/filters_view.fxml");
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Failed to navigate to filters_view", e);
+            DialogUtil.show(AlertType.ERROR, null, "Navigation error",
+                    "Failed to load the Filters screen.");
+        }
     }
 
     @FXML
     private void onCustomizeClicked() {
         SoundManager.playClick();
-        navigateTo("/view/customize.fxml", "Failed to load the Filters screen.");
+        try {
+            util.ViewNavigator.switchTo(getStage(), "/view/customize.fxml");
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Failed to navigate to customize", e);
+            DialogUtil.show(AlertType.ERROR, null, "Navigation error",
+                    "Failed to load the Customize screen.");
+        }
     }
+
 
     @FXML
     private void onHowToPlayClicked() {
