@@ -58,7 +58,7 @@ public class CustomizeController {
         wolfThemeBtn.setSelected(true);
         colorfulThemeBtn.setSelected(false);
 
-        util.ThemeManager.setTheme(util.ThemeManager.Theme.WOLF);
+        util.ThemeManager.setTheme(model.Theme.WOLF);
 
      // Apply immediately to current window:
      Scene scene = root.getScene();
@@ -76,7 +76,7 @@ public class CustomizeController {
         colorfulThemeBtn.setSelected(true);
         wolfThemeBtn.setSelected(false);
 
-        util.ThemeManager.setTheme(util.ThemeManager.Theme.COLORFUL);
+        util.ThemeManager.setTheme(model.Theme.DEFAULT);
         Scene scene = root.getScene();
         util.ThemeManager.applyTheme(scene);
 

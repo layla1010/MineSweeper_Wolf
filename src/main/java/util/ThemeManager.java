@@ -1,14 +1,13 @@
 package util;
 
 import javafx.scene.Scene;
+import model.SysData;
+import model.Theme;
 
 public final class ThemeManager {
 
-    public enum Theme {
-        COLORFUL, WOLF
-    }
 
-    private static Theme currentTheme = Theme.COLORFUL;
+    private static Theme currentTheme = Theme.DEFAULT;
 
     private ThemeManager() {}
 
@@ -17,22 +16,19 @@ public final class ThemeManager {
     }
 
     public static void setTheme(Theme theme) {
-        currentTheme = (theme == null) ? Theme.COLORFUL : theme;
+        currentTheme = (theme == null) ? Theme.DEFAULT : theme;
     }
 
     public static void applyTheme(Scene scene) {
         if (scene == null) return;
 
-        // Remove old theme(s) if you want strict switching:
-        scene.getStylesheets().removeIf(s ->
-                s.endsWith("/css/wolf.css")
-        );
-
-        if (currentTheme == Theme.WOLF) {
-            String wolfCss = ThemeManager.class.getResource("/css/wolf.css").toExternalForm();
-            if (!scene.getStylesheets().contains(wolfCss)) {
-                scene.getStylesheets().add(wolfCss);
-            }
+        String base = ThemeManager.class.getResource("/css/theme.css").toExternalForm();
+        if (SysData.getCurrentTheme() == model.Theme.WOLF) {
+            String wolf = ThemeManager.class.getResource("/css/wolf.css").toExternalForm();
+            scene.getStylesheets().setAll(base, wolf);
+        } else {
+            scene.getStylesheets().setAll(base);
         }
     }
+
 }
