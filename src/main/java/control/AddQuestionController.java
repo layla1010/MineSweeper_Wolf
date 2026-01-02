@@ -72,16 +72,22 @@ public class AddQuestionController {
     //discards changes and returns to the Questions Management screen
     @FXML
     private void onCancelButtonClicked(ActionEvent event) {
-    	  Optional<ButtonType> result = DialogUtil.showDialogWithResult(
-                  AlertType.CONFIRMATION,
-                  "Are you sure you want to cancel?",
-                  "Cancel",
-                  "Your Changes will not be saved."
-          );
 
-          if (result.isPresent() && result.get() == ButtonType.OK) {
-              goBackToManager();
-          }
+        ButtonType yesCancel = new ButtonType("Yes, Cancel", ButtonBar.ButtonData.YES);
+        ButtonType noKeepEditing = new ButtonType("No, continue adding", ButtonBar.ButtonData.NO);
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Cancel");
+        alert.setHeaderText("Are you sure you want to cancel?");
+        alert.setContentText("Changes will not be saved.");
+
+        alert.getButtonTypes().setAll(yesCancel, noKeepEditing);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == yesCancel) {
+            goBackToManager();
+        }
     }
 
     //Validation: Validates all form fields before saving

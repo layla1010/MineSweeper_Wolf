@@ -92,21 +92,27 @@ public class EditQuestionController {
     }
 
 
-    //Handling click button: Shows a confirmation dialog, and if the user agrees, discards changes and navigates back to the manager screen.
+    //Handling click button: Shows a confirmation dialog, and if the user agrees, discards changes and navigates back to the manager screen.  
     @FXML
     private void onCancelButtonClicked(ActionEvent event) {
 
-        Optional<ButtonType> result = DialogUtil.showDialogWithResult(
-                AlertType.CONFIRMATION,
-                "Are you sure you want to cancel?",
-                "Cancel",
-                "Changes will not be saved."
-        );
+        ButtonType yesCancel = new ButtonType("Yes, Cancel", ButtonBar.ButtonData.YES);
+        ButtonType noKeepEditing = new ButtonType("No, continue editing", ButtonBar.ButtonData.NO);
 
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Cancel");
+        alert.setHeaderText("Are you sure you want to cancel?");
+        alert.setContentText("Changes will not be saved.");
+
+        alert.getButtonTypes().setAll(yesCancel, noKeepEditing);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == yesCancel) {
             goBackToManager();
         }
     }
+
 
 
     //Validation, Checks: Difficulty is selected, Correct answer is selected, Question text is not empty, All four options are filled and All four options are different
