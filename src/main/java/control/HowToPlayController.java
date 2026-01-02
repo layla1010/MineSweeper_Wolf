@@ -141,10 +141,9 @@ public class HowToPlayController {
     private void onRestart() {
         stopAutoplayIfRunning();
         resetDemoState();
-        resetScenario();     
+        resetScenario();
         runStep(0);
     }
-
 
     @FXML
     private void onPlay() {
@@ -200,7 +199,7 @@ public class HowToPlayController {
         steps.add(new TourStep(
                 "Start (Easy Mode)",
                 "Both boards start fully hidden. Each player can act ONLY on their own board. " +
-                "Turns alternate after every single action.",
+                        "Reveal / Activate ends the turn. Flags do NOT end the turn.",
                 () -> {
                     hideAllHighlights();
                     setSnapshot(10, 40, 6, 2, 10, 40, 6, 2, 10, true, 0);
@@ -208,22 +207,20 @@ public class HowToPlayController {
                 }
         ));
 
-        // STEP 2: P1 reveal empty -> cascade (still ONE action)
+        // STEP 2: P1 reveal empty -> cascade (ONE action, ends turn)
         steps.add(new TourStep(
                 "Player 1: Reveal Empty (Cascade = One Action)",
                 "Player 1 reveals one empty safe cell. The board opens adjacent empty cells automatically (cascade). " +
-                "Even though multiple cells open, it still counts as ONE action in the turn.",
+                        "Even though multiple cells open, it still counts as ONE action and ends the turn.",
                 () -> {
                     hideAllHighlights();
                     setSnapshot(10, 40, 6, 2, 10, 40, 6, 2, 10, true, 0);
 
-                    // cascade demo
                     setEmptyRevealed(p1Tiles[4][4]);
                     setEmptyRevealed(p1Tiles[4][5]);
                     setEmptyRevealed(p1Tiles[5][4]);
                     setEmptyRevealed(p1Tiles[5][5]);
 
-                    // border numbers stop the cascade
                     setRevealedNumber(p1Tiles[3][4], 1);
                     setRevealedNumber(p1Tiles[3][5], 2);
                     setRevealedNumber(p1Tiles[6][4], 1);
@@ -233,10 +230,10 @@ public class HowToPlayController {
                 }
         ));
 
-        // STEP 3: switch turn to P2 (always after one action)
+        // STEP 3: switch turn to P2
         steps.add(new TourStep(
                 "Turn Switch",
-                "After Player 1 performed ONE action, the turn ends immediately and switches to Player 2.",
+                "After the reveal action, the turn switches to Player 2.",
                 () -> {
                     hideAllHighlights();
                     setSnapshot(10, 40, 6, 2, 10, 40, 6, 2, 10, false, 0);
@@ -244,15 +241,15 @@ public class HowToPlayController {
                 }
         ));
 
-        // STEP 4: P2 flag correct (one action)
+        // STEP 4: P2 places a flag (does NOT end turn)
         steps.add(new TourStep(
-                "Player 2: Flag (One Action)",
-                "Player 2 places a flag on a suspected mine. This is ONE action. " +
-                "If the flag is correct: +1 score (Easy).",
+                "Player 2: Flag (Does NOT End Turn)",
+                "Player 2 places a flag. Flagging does NOT end the turn, so Player 2 can place more flags.",
                 () -> {
                     hideAllHighlights();
 
-                    // flags decrease by 1, score +1
+                    // show example: flags decrease by 1, score +1 (if correct)
+                    // IMPORTANT: turn stays Player 2
                     setSnapshot(10, 40, 6, 2, 10, 39, 6, 2, 10, false, 1);
 
                     setFlag(p2Tiles[4][4]);
@@ -260,28 +257,115 @@ public class HowToPlayController {
                 }
         ));
 
-        // STEP 5: turn switches to P1
+        // STEP 5: P2 places another flag (still same turn)
         steps.add(new TourStep(
-                "Turn Switch",
-                "After ONE action (flag), the turn switches back to Player 1 immediately.",
+                "Player 2: Another Flag (Still Same Turn)",
+                "Player 2 places another flag in the same turn. The turn still does NOT end.",
                 () -> {
                     hideAllHighlights();
-                    setSnapshot(10, 40, 6, 2, 10, 39, 6, 2, 10, true, 0);
+
+                    // another correct flag example: flags -1 again, score +1 again (illustration)
+                    // turn remains Player 2
+                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, 2);
+
+                    setFlag(p2Tiles[4][5]);
+                    highlightCell(false, 4, 5);
+                }
+        ));
+
+        // STEP 6: P2 reveal number (ends turn)
+        steps.add(new TourStep(
+                "Player 2: Reveal (Ends Turn)",
+                "Player 2 reveals a cell. Reveal ends the turn immediately.",
+                () -> {
+                    hideAllHighlights();
+
+                    // still Player 2 during this action
+                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, 2);
+
+                    setRevealedNumber(p2Tiles[5][5], 2);
+                    highlightCell(false, 5, 5);
+                    highlightNeighborhood(false, 5, 5);
+                }
+        ));
+
+        // STEP 7: switch to P1
+        steps.add(new TourStep(
+                "Turn Switch",
+                "After the reveal action, the turn switches to Player 1.",
+                () -> {
+                    hideAllHighlights();
+                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, true, 2);
                     highlightCell(true, 2, 6);
                 }
         ));
 
-        // STEP 6: P1 activates Question (cost -5) + dialog (one action total)
+        // STEP 8: P1 REVEALS Question cell (NO activation, ends turn)
         steps.add(new TourStep(
-                "Player 1: Question Cell (Activation = One Action)",
-                "Player 1 activates a Question cell. Activation costs 5 points (Easy). " +
-                "A multiple-choice question appears. Activation + answering is treated as ONE action for the turn.",
+                "Player 1: Reveal Question (Ends Turn)",
+                "Player 1 reveals a Question cell. Reveal is ONE action and ends the turn. " +
+                        "Activation happens on a later turn (a different action).",
                 () -> {
                     hideAllHighlights();
 
-                    // after paying activation cost
-                    setSnapshot(10, 40, 6, 2, 10, 39, 6, 2, 10, true, -5);
+                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, true, 2);
 
+                    // reveal only
+                    setQuestion(p1Tiles[2][6]);
+                    highlightCell(true, 2, 6);
+                }
+        ));
+
+        // STEP 9: switch to P2 (because reveal ended)
+        steps.add(new TourStep(
+                "Turn Switch",
+                "After Player 1 revealed the Question cell, the turn switches to Player 2.",
+                () -> {
+                    hideAllHighlights();
+                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, 2);
+                    highlightCell(false, 2, 2);
+                }
+        ));
+
+        // STEP 10: P2 REVEALS Surprise cell (NO activation/result, ends turn)
+        steps.add(new TourStep(
+                "Player 2: Reveal Surprise (Ends Turn)",
+                "Player 2 reveals a Surprise cell. Reveal ends the turn. " +
+                        "Activation + result happen on a later turn (different action).",
+                () -> {
+                    hideAllHighlights();
+
+                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, 2);
+
+                    // reveal only
+                    setSurprise(p2Tiles[2][2]);
+                    highlightCell(false, 2, 2);
+                }
+        ));
+
+        // STEP 11: switch to P1
+        steps.add(new TourStep(
+                "Turn Switch",
+                "After Player 2 revealed the Surprise cell, the turn switches to Player 1.",
+                () -> {
+                    hideAllHighlights();
+                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, true, 2);
+                    highlightCell(true, 2, 6);
+                }
+        ));
+
+        // STEP 12: P1 ACTIVATES Question (separate action, ends turn)
+        steps.add(new TourStep(
+                "Player 1: Activate Question (Ends Turn)",
+                "Player 1 activates the already revealed Question cell. Activation is a DIFFERENT action than reveal, " +
+                        "costs points, shows the question dialog, and ends the turn.",
+                () -> {
+                    hideAllHighlights();
+
+                    // activation cost example
+                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, true, -3);
+
+                    // keep cell as question (already revealed)
                     setQuestion(p1Tiles[2][6]);
                     highlightCell(true, 2, 6);
 
@@ -290,68 +374,36 @@ public class HowToPlayController {
                         alert.setTitle("Question");
                         alert.setHeaderText("Question (Demo)");
                         alert.setContentText(
-                                "A multiple-choice question appears.\n" +
-                                "In the real game: score/hearts update based on the answer.\n\n" +
-                                "Note: This whole interaction counts as ONE action."
+                                "This is the activation step.\n" +
+                                        "Activation is separate from reveal.\n" +
+                                        "Activation ends the turn."
                         );
                         alert.showAndWait();
                     });
                 }
         ));
 
-        // STEP 7: switch to P2
+        // STEP 13: switch to P2
         steps.add(new TourStep(
                 "Turn Switch",
-                "After Player 1 completes the Question action, the turn switches to Player 2.",
+                "After Player 1 activated the Question, the turn switches to Player 2.",
                 () -> {
                     hideAllHighlights();
-                    setSnapshot(10, 40, 6, 2, 10, 39, 6, 2, 10, false, 0);
-                    highlightCell(false, 5, 5);
+                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, -3);
+                    highlightCell(false, 2, 2);
                 }
         ));
 
-        // STEP 8: P2 reveals a numbered cell (one action) + neighborhood highlight
+        // STEP 14: P2 ACTIVATES Surprise (separate action, ends turn)
         steps.add(new TourStep(
-                "Player 2: Reveal Number (One Action)",
-                "Player 2 reveals one cell and gets a number. The number tells how many mines exist in the 8 neighboring cells. " +
-                "This is ONE action, then the turn ends.",
+                "Player 2: Activate Surprise (Ends Turn)",
+                "Player 2 activates the already revealed Surprise cell. Activation is separate from reveal, costs points, " +
+                        "shows GOOD/BAD result, and ends the turn.",
                 () -> {
                     hideAllHighlights();
 
-                    setSnapshot(10, 40, 6, 2, 10, 39, 6, 2, 10, false, 0);
-                    setRevealedNumber(p2Tiles[5][5], 2);
-
-                    highlightCell(false, 5, 5);
-                    highlightNeighborhood(false, 5, 5);
-                }
-        ));
-
-        // STEP 9: P1 makes a wrong flag (one action, penalty -3)
-        steps.add(new TourStep(
-                "Player 1: Wrong Flag (One Action)",
-                "Player 1 places a flag but it's NOT a real mine. In Easy mode this costs -3 points. " +
-                "Still ONE action, then turn switches.",
-                () -> {
-                    hideAllHighlights();
-
-                    setSnapshot(10, 39, 6, 2, 10, 39, 6, 2, 10, true, -3);
-
-                    setFlag(p1Tiles[6][2]);
-                    highlightCell(true, 6, 2);
-                }
-        ));
-
-        // STEP 10: P2 activates Surprise (cost -5) + GOOD result (one action total)
-        steps.add(new TourStep(
-                "Player 2: Surprise Cell (Activation + Result = One Action)",
-                "Player 2 activates a Surprise cell. Activation costs 5 points (Easy). " +
-                "Result is GOOD/BAD (50/50). The cell becomes USED. This whole thing is ONE action.",
-                () -> {
-                    hideAllHighlights();
-
-                    // Example: activation -5, then GOOD +8 and +1 heart => net +3 score, hearts 11? (but capped)
-                    // We'll keep hearts within 10 (cap), so assume hearts stayed at 10.
-                    setSnapshot(10, 39, 6, 2, 10, 39, 6, 2, 10, false, 3);
+                    // activation cost (-5) + example GOOD (+8) => net +3 (illustration)
+                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, 0);
 
                     setSurprise(p2Tiles[2][2]);
                     highlightCell(false, 2, 2);
@@ -359,43 +411,38 @@ public class HowToPlayController {
                     Platform.runLater(() -> {
                         var alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
                         alert.setTitle("Surprise Result");
-                        alert.setHeaderText("GOOD SURPRISE");
+                        alert.setHeaderText("Surprise (Demo)");
                         alert.setContentText(
-                                "Activation cost: -5 points\n" +
-                                "Surprise effect: +8 points (example)\n\n" +
-                                "Net change: +3\n" +
-                                "Hearts remain capped at 10/10\n\n" +
-                                "Note: Still ONE action for the turn."
+                                "This is the activation step.\n" +
+                                        "Activation is separate from reveal.\n" +
+                                        "Activation ends the turn."
                         );
                         alert.showAndWait();
                     });
                 }
         ));
 
-        // STEP 11: P1 hits a mine (one action -> -1 heart)
+        // STEP 15: P1 hits a mine (reveal ends turn)
         steps.add(new TourStep(
-                "Player 1: Mine Hit (One Action)",
-                "Player 1 reveals a mine. Shared hearts decrease by 1 immediately. " +
-                "Even a mine hit is still only ONE action, then the turn ends.",
+                "Player 1: Mine Hit (Ends Turn)",
+                "Player 1 reveals a mine. Shared hearts decrease immediately. Reveal ends the turn.",
                 () -> {
                     hideAllHighlights();
 
-                    // hearts decreased by 1
-                    setSnapshot(10, 39, 6, 2, 10, 39, 6, 2, 9, true, 0);
+                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 9, true, 0);
 
                     setMine(p1Tiles[3][3]);
                     highlightCell(true, 3, 3);
                 }
         ));
 
-        // STEP 12: wrap-up rule reminder
+        // STEP 16: wrap-up
         steps.add(new TourStep(
-                "Key Rule Reminder",
-                "In Easy mode: every turn = exactly ONE action. " +
-                "Reveal / Flag / Question / Surprise all end the turn immediately after they happen.",
+                "Key Rules Summary",
+                "Reveal ends the turn. Activate (Question/Surprise) ends the turn. Flags do NOT end the turn.",
                 () -> {
                     hideAllHighlights();
-                    setSnapshot(10, 39, 6, 2, 10, 39, 6, 2, 9, false, 0);
+                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 9, false, 0);
                     highlightCell(false, 4, 4);
                 }
         ));
@@ -406,7 +453,7 @@ public class HowToPlayController {
 
         stepIndex = idx;
 
-        hideAllHighlights(); 
+        hideAllHighlights();
 
         TourStep s = steps.get(idx);
         stepTitle.setText(s.title);
@@ -418,7 +465,6 @@ public class HowToPlayController {
 
         s.action.run();
     }
-
 
     // ----------------- Scenario Reset -----------------
 
@@ -673,9 +719,7 @@ public class HowToPlayController {
         var b = btn(tile);
         clearCellState(b);
 
-        // image only
         setIcon(b, "/Images/red-flag.png", 22);
-
         b.getStyleClass().add("cell-flagged");
     }
 
@@ -683,7 +727,6 @@ public class HowToPlayController {
         var b = btn(tile);
         clearCellState(b);
 
-        // image only
         setIcon(b, "/Images/bomb.png", 22);
 
         b.setDisable(true);
@@ -694,7 +737,6 @@ public class HowToPlayController {
         var b = btn(tile);
         clearCellState(b);
 
-        // image only
         setIcon(b, "/Images/question-mark.png", 20);
 
         b.getStyleClass().addAll("cell-revealed", "cell-question");
@@ -704,7 +746,6 @@ public class HowToPlayController {
         var b = btn(tile);
         clearCellState(b);
 
-        // image only
         setIcon(b, "/Images/giftbox.png", 20);
 
         b.getStyleClass().addAll("cell-revealed", "cell-surprise");
