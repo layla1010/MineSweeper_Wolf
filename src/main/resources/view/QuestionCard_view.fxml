@@ -2,6 +2,7 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox minHeight="134.0" prefWidth="541.0" spacing="8" styleClass="question-card" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.QuestionCardController">
+<VBox minHeight="134.0" prefWidth="541.0" spacing="8" styleClass="question-card" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.QuestionCardController">
 
     <padding>
         <Insets bottom="10" left="10" right="10" top="10" />
@@ -40,7 +41,8 @@
         <!-- Spacer pushes icons to the right -->
 		<Region HBox.hgrow="ALWAYS" />
 
-		         <HBox alignment="CENTER_RIGHT" spacing="10">
+		         <HBox alignment="CENTER_RIGHT" prefHeight="24.0" prefWidth="77.0" spacing="10">
+            <CheckBox mnemonicParsing="false" prefHeight="17.0" prefWidth="47.0" />
         <ImageView fx:id="editImg" fitHeight="24.0" fitWidth="20.0" onMouseClicked="#onEditClicked" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
             <image><Image url="@/Images/editing.png" /></image>
         </ImageView>

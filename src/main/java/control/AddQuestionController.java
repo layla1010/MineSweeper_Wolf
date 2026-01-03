@@ -74,21 +74,21 @@ public class AddQuestionController {
     private void onCancelButtonClicked(ActionEvent event) {
 
         ButtonType yesCancel = new ButtonType("Yes, Cancel", ButtonBar.ButtonData.YES);
-        ButtonType noKeepEditing = new ButtonType("No, continue adding", ButtonBar.ButtonData.NO);
+        ButtonType noContinue = new ButtonType("No, continue adding", ButtonBar.ButtonData.NO);
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Cancel");
-        alert.setHeaderText("Are you sure you want to cancel?");
-        alert.setContentText("Changes will not be saved.");
-
-        alert.getButtonTypes().setAll(yesCancel, noKeepEditing);
-
-        Optional<ButtonType> result = alert.showAndWait();
+        Optional<ButtonType> result = DialogUtil.confirmWithCustomButtons(
+                "Cancel",
+                "Are you sure you want to cancel?",
+                "Changes will not be saved.",
+                yesCancel,
+                noContinue
+        );
 
         if (result.isPresent() && result.get() == yesCancel) {
             goBackToManager();
         }
     }
+
 
     //Validation: Validates all form fields before saving
     //Checks: Difficulty selected, Correct answer selected, Question text not empty,
