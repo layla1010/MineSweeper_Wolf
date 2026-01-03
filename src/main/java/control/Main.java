@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.SysData;
 import util.SoundManager;
+import util.ThemeManager;
 
 public class Main extends Application {
 	
@@ -22,6 +23,7 @@ public class Main extends Application {
         Parent root = loader.load(); 
 
         Scene scene = new Scene(root);//, 1200, 740);
+        ThemeManager.applyTheme(scene);
         primaryStage.setScene(scene);
         primaryStage.setTitle("MineSweeper_Wolf");
         primaryStage.setResizable(false);

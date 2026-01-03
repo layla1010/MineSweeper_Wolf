@@ -25,6 +25,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import model.Theme;
 
 public class UIAnimations {
 	
@@ -77,6 +78,11 @@ public class UIAnimations {
         Set<Node> nodes = root.lookupAll(".zoom-on-hover");
         nodes.forEach(UIAnimations::applyHoverZoom);
     }
+    
+    private static boolean isColorfulTheme() {
+        return ThemeManager.getTheme() == Theme.COLORFUL;
+    }
+
 
     public static void applyFloating(Node node) {
         TranslateTransition tt = new TranslateTransition(Duration.seconds(3), node);
@@ -95,6 +101,18 @@ public class UIAnimations {
     
     //Plays the entrance animation for the logo and slides it in from the left and fades it in.
     public static void playLogoAnimation(ImageView logoImage) {
+    	if (logoImage == null) return;
+
+        // Wolf theme: hide the logo completely
+        if (!isColorfulTheme()) {
+            logoImage.setVisible(false);
+            logoImage.setManaged(false);
+            return;
+        }
+
+        // Colorful: ensure it shows and animate it
+        logoImage.setVisible(true);
+        logoImage.setManaged(true);
         TranslateTransition slide = new TranslateTransition(Duration.millis(1200), logoImage);
         slide.setFromX(-600);
         slide.setToX(50);
@@ -188,6 +206,11 @@ public class UIAnimations {
 
     //Creates and animates several large glowing orbs in the background to give the main menu a dynamic, colorful look.
     public static void setupBackgroundOrbs(GridPane mainGrid) {
+    	if (mainGrid == null) return;
+    	
+    	// Wolf theme: no orbs
+        if (!isColorfulTheme()) return;
+        
         Circle orb1 = createOrb(220, "#ff6ec7", "#ff1493");
         orb1.setTranslateX(-300);
         orb1.setTranslateY(-220);
@@ -213,6 +236,11 @@ public class UIAnimations {
 
     //Creates multiple "energy ring" animations that expand outwards from the center of the screen, giving a pulse effect behind the UI.
     public static void setupEnergyRings(GridPane mainGrid) {
+    	if (mainGrid == null) return;
+    	
+    	// Wolf theme: no rings
+        if (!isColorfulTheme()) return;
+        
         createEnergyRing(mainGrid, 0);
         createEnergyRing(mainGrid, 1);
         createEnergyRing(mainGrid, 2);
