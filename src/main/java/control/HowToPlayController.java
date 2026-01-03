@@ -79,7 +79,6 @@ public class HowToPlayController {
     @FXML private HBox p2StatsBox;
     private boolean tutorialPopupsEnabled = true;
 
-
     // ----- FIXED DEMO QUESTION FOR HOW TO PLAY -----
     private static final model.Question DEMO_EXPERT_QUESTION =
             new model.Question(
@@ -183,8 +182,7 @@ public class HowToPlayController {
     @FXML
     private void onRestart() {
         stopAutoplayIfRunning();
-        resetDemoState();
-        resetScenario();
+        // runStep(0) כבר עושה resetDemoState + resetScenario + hideAllHighlights
         runStep(0);
     }
 
@@ -196,13 +194,17 @@ public class HowToPlayController {
         playBtn.setDisable(true);
         stopBtn.setDisable(false);
 
+        if (autoPlay != null) autoPlay.stop(); // ליתר ביטחון
+
         autoPlay = new Timeline(new KeyFrame(Duration.seconds(2.5), e -> {
             if (stepIndex < steps.size() - 1) {
-                runStep(stepIndex + 1);
+                stepIndex++;
+                runStepInternal(stepIndex, true);   // ✅ לא runStep
             } else {
                 onStop();
             }
         }));
+
         autoPlay.setCycleCount(Timeline.INDEFINITE);
         autoPlay.play();
     }
@@ -211,6 +213,7 @@ public class HowToPlayController {
         if (isAutoPlaying) onStop();
     }
 
+    
     @FXML
     private void onStop() {
         isAutoPlaying = false;
@@ -238,7 +241,6 @@ public class HowToPlayController {
             runStepInternal(stepIndex, true);
         }
     }
-
 
     // ----------------- Steps -----------------
 
@@ -505,7 +507,7 @@ public class HowToPlayController {
         buildHeartsBar();
         updateInfoBar();
 
-        // NEW: styled tutorial popup that shows BOTH GOOD and BAD scenarios
+        // styled tutorial popup that shows BOTH GOOD and BAD scenarios
         showSurpriseTutorialDialog(scoreBefore, livesBefore, DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES, ACTIVATION_COST_EASY);
     }
 
@@ -727,7 +729,7 @@ public class HowToPlayController {
         return lbl;
     }
 
-    // ----------------- NEW: Surprise Tutorial Popup (GOOD + BAD) -----------------
+    // ----------------- Surprise Tutorial Popup (GOOD + BAD) -----------------
 
     private void showSurpriseTutorialDialog(
             int scoreBefore,
@@ -736,11 +738,9 @@ public class HowToPlayController {
             int surpriseLives,
             int activationCost
     ) {
-        // GOOD scenario
         int goodNetScore = -activationCost + surprisePoints;
         int goodNetLives = +surpriseLives;
 
-        // BAD scenario
         int badNetScore = -activationCost - surprisePoints;
         int badNetLives = -surpriseLives;
 
@@ -1378,7 +1378,7 @@ public class HowToPlayController {
         buildHeartsBar();
         updateInfoBar();
     }
-    
+
     private void runStepInternal(int idx, boolean allowPopups) {
         TourStep s = steps.get(idx);
 
@@ -1393,21 +1393,20 @@ public class HowToPlayController {
 
         s.action.run();
     }
-    
+
+    // ✅✅✅ FIXED: לא להריץ את ה-step האחרון פעמיים
     private void replayToStep(int targetIdx) {
         resetDemoState();
         resetScenario();
         hideAllHighlights();
 
-        for (int i = 0; i <= targetIdx; i++) {
-            // בריפליי לא רוצים פופאפים, רק מצב לוח
+        // מריצים עד לפני היעד (בלי popups)
+        for (int i = 0; i < targetIdx; i++) {
             runStepInternal(i, false);
         }
 
-        // ובסוף מעדכנים את הטקסט/כפתורים על השלב הנוכחי
+        // מריצים את היעד עצמו פעם אחת בלבד
         stepIndex = targetIdx;
-        runStepInternal(targetIdx, true); // אם את רוצה שבשלב עצמו כן יופיעו פופאפים
+        runStepInternal(targetIdx, true);
     }
-
-
 }
