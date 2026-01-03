@@ -23,7 +23,7 @@
          <children>
             <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="702.0" spacing="10.0">
                <children>
-                  <Button fx:id="backButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onBackButtonClicked" prefHeight="40.0" prefWidth="50.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-width: 1; -fx-border-color: rgba(255,255,255,0.50); -fx-cursor: hand;" text="←" textAlignment="CENTER" textFill="WHITE">
+                  <Button fx:id="backButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onBackButtonClicked" prefHeight="40.0" prefWidth="50.0" styleClass="qm-back" text="←">
                      <font>
                         <Font name="Copperplate Gothic Bold" size="20.0" />
                      </font>
@@ -51,7 +51,7 @@
                   </ImageView>
                </children>
             </HBox>
-            <Button fx:id="newQuestionButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onNewQuestionButtonClicked" prefHeight="30.0" prefWidth="161.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-background-radius: 50; -fx-border-color: rgba(255,255,255,0.50); -fx-border-width: 1; -fx-border-radius: 50; -fx-cursor: hand;" styleClass="primary-button" text="+ New Question" textAlignment="CENTER" textFill="WHITE" VBox.vgrow="NEVER">
+            <Button fx:id="newQuestionButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onNewQuestionButtonClicked" prefHeight="30.0" prefWidth="161.0" styleClass="qm-primary" text="+ New Question">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
@@ -61,12 +61,12 @@
             </Button>
             <HBox alignment="CENTER" prefHeight="34.0" prefWidth="560.0" spacing="10.0">
                <children>
-                  <ComboBox fx:id="levelFilterCombo" prefWidth="120.0" promptText="All Levels" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" />
-                  <ComboBox fx:id="idFilterCombo" prefWidth="120.0" promptText="All IDs" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" />
-                  <TextField fx:id="searchTextField" prefHeight="25.0" prefWidth="241.0" promptText="Search Questions" HBox.hgrow="ALWAYS" />
+                  <ComboBox fx:id="levelFilterCombo" prefWidth="120.0" promptText="All Levels" styleClass="qm-combo" />
+                  <ComboBox fx:id="idFilterCombo" prefWidth="120.0" promptText="All IDs" styleClass="qm-combo" />
+                  <TextField fx:id="searchTextField" prefHeight="25.0" prefWidth="241.0" promptText="Search Questions" HBox.hgrow="ALWAYS" styleClass="qm-search" />
                </children>
             </HBox>
-			<ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+			<ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="questions-scroll">
                <content>
                     <VBox fx:id="questionsContainerVBox" alignment="TOP_CENTER" spacing="10.0">
     					<padding>
@@ -80,7 +80,5 @@
       </VBox>
    </children>
    <stylesheets>
-      <URL value="@../css/base.css" />
       <URL value="@../css/questions.css" />
-   </stylesheets>
 </AnchorPane>

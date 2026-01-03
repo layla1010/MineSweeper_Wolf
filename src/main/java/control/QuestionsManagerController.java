@@ -104,6 +104,7 @@ public class QuestionsManagerController implements QuestionCardActions {
             .addListener((obs, o, n) -> applyFilters());
     }
 
+
     // ================== Filters & Search ==================
 
     /**

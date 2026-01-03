@@ -12,6 +12,12 @@
     -fx-background-blend-mode: multiply;
 }
 
+/* Wolf only: slight dark overlay for root-background containers */
+.root-background {
+    -fx-background-color: rgba(0,0,0,0.35);
+}
+
+
 /* If you use themed-bg in screens */
 .themed-bg {
     -fx-background-image: url("../Images/wolf_bg.png");
@@ -74,3 +80,21 @@
     -fx-text-fill: rgba(255,255,255,0.92);
     -fx-background-color: transparent;
 }
+
+/* --- Questions screen: make ScrollPane transparent --- */
+.questions-scroll,
+.questions-scroll > .viewport,
+.questions-scroll .content {
+    -fx-background-color: transparent;
+}
+
+/* optional: nicer scrollbar to match wolf */
+.questions-scroll .scroll-bar:vertical,
+.questions-scroll .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+.questions-scroll .thumb {
+    -fx-background-color: rgba(255,255,255,0.22);
+    -fx-background-radius: 10;
+}
+
