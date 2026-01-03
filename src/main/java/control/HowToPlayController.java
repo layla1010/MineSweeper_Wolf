@@ -77,6 +77,8 @@ public class HowToPlayController {
 
     @FXML private HBox p1StatsBox;
     @FXML private HBox p2StatsBox;
+    private boolean tutorialPopupsEnabled = true;
+
 
     // ----- FIXED DEMO QUESTION FOR HOW TO PLAY -----
     private static final model.Question DEMO_EXPERT_QUESTION =
@@ -222,14 +224,21 @@ public class HowToPlayController {
     @FXML
     private void onPrev() {
         stopAutoplayIfRunning();
-        if (stepIndex > 0) runStep(stepIndex - 1);
+        if (stepIndex > 0) {
+            replayToStep(stepIndex - 1);
+        }
     }
 
     @FXML
     private void onNext() {
         stopAutoplayIfRunning();
-        if (stepIndex < steps.size() - 1) runStep(stepIndex + 1);
+        if (stepIndex < steps.size() - 1) {
+            // NEXT נשאר מצטבר: לא עושים reset
+            stepIndex++;
+            runStepInternal(stepIndex, true);
+        }
     }
+
 
     // ----------------- Steps -----------------
 
@@ -386,7 +395,9 @@ public class HowToPlayController {
                     setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, true, score);
                     highlightCell(true, 2, 6);
 
-                    Platform.runLater(() -> activateQuestionHowTo(true, 2, 6));
+                    if (tutorialPopupsEnabled) {
+                        Platform.runLater(() -> activateQuestionHowTo(true, 2, 6));
+                    }
                 }
         ));
 
@@ -405,7 +416,9 @@ public class HowToPlayController {
                     setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, score);
                     highlightCell(false, 2, 2);
 
-                    Platform.runLater(() -> activateSurpriseHowTo(false, 2, 2));
+                    if (tutorialPopupsEnabled) {
+                        Platform.runLater(() -> activateSurpriseHowTo(false, 2, 2));
+                    }
                 }
         ));
     }
@@ -908,11 +921,16 @@ public class HowToPlayController {
     private void runStep(int idx) {
         if (idx < 0 || idx >= steps.size()) return;
 
+        stopAutoplayIfRunning();
+
         stepIndex = idx;
 
+        resetDemoState();
+        resetScenario();
         hideAllHighlights();
 
         TourStep s = steps.get(idx);
+
         stepTitle.setText(s.title);
         stepBody.setText(s.body);
         stepCounter.setText((idx + 1) + " / " + steps.size());
@@ -1360,4 +1378,36 @@ public class HowToPlayController {
         buildHeartsBar();
         updateInfoBar();
     }
+    
+    private void runStepInternal(int idx, boolean allowPopups) {
+        TourStep s = steps.get(idx);
+
+        stepTitle.setText(s.title);
+        stepBody.setText(s.body);
+        stepCounter.setText((idx + 1) + " / " + steps.size());
+
+        prevBtn.setDisable(idx == 0);
+        nextBtn.setDisable(idx == steps.size() - 1);
+
+        this.tutorialPopupsEnabled = allowPopups;
+
+        s.action.run();
+    }
+    
+    private void replayToStep(int targetIdx) {
+        resetDemoState();
+        resetScenario();
+        hideAllHighlights();
+
+        for (int i = 0; i <= targetIdx; i++) {
+            // בריפליי לא רוצים פופאפים, רק מצב לוח
+            runStepInternal(i, false);
+        }
+
+        // ובסוף מעדכנים את הטקסט/כפתורים על השלב הנוכחי
+        stepIndex = targetIdx;
+        runStepInternal(targetIdx, true); // אם את רוצה שבשלב עצמו כן יופיעו פופאפים
+    }
+
+
 }
