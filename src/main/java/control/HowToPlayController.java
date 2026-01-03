@@ -1,7 +1,5 @@
 package control;
 
-import javafx.geometry.Pos;
-
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -10,27 +8,28 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import util.SoundManager;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class HowToPlayController {
 
@@ -79,6 +78,24 @@ public class HowToPlayController {
     @FXML private HBox p1StatsBox;
     @FXML private HBox p2StatsBox;
 
+    // ----- FIXED DEMO QUESTION FOR HOW TO PLAY -----
+    private static final model.Question DEMO_EXPERT_QUESTION =
+            new model.Question(
+                    999,
+                    "expert",
+                    "In the SQA defect removal cost model, why is solving a defect during operation extremely expensive?",
+                    "It requires rewriting documentation",
+                    "It delays integration",
+                    "It must be solved by senior managers",
+                    "The defect impacts real users and may require large-scale fixes",
+                    3 // D is correct (0=A,1=B,2=C,3=D)
+            );
+
+    // ----- FIXED DEMO SURPRISE FOR HOW TO PLAY -----
+    private static final boolean DEMO_SURPRISE_IS_GOOD = true; // always GOOD in HowToPlay
+    private static final int DEMO_SURPRISE_SCORE = 8;          // points effect
+    private static final int DEMO_SURPRISE_LIVES = 1;          // lives effect
+
     private Timeline autoPlay;
     private boolean isAutoPlaying = false;
 
@@ -108,16 +125,16 @@ public class HowToPlayController {
 
     private enum DemoCellType { HIDDEN, EMPTY, NUMBER, FLAG, MINE, QUESTION, SURPRISE }
 
-    private DemoCellType[][] p1Type = new DemoCellType[SIZE][SIZE];
-    private DemoCellType[][] p2Type = new DemoCellType[SIZE][SIZE];
+    private final DemoCellType[][] p1Type = new DemoCellType[SIZE][SIZE];
+    private final DemoCellType[][] p2Type = new DemoCellType[SIZE][SIZE];
 
-    private boolean[][] p1Revealed = new boolean[SIZE][SIZE];
-    private boolean[][] p2Revealed = new boolean[SIZE][SIZE];
+    private final boolean[][] p1Revealed = new boolean[SIZE][SIZE];
+    private final boolean[][] p2Revealed = new boolean[SIZE][SIZE];
 
-    private boolean[][] p1Used = new boolean[SIZE][SIZE];   // activated (question/surprise)
-    private boolean[][] p2Used = new boolean[SIZE][SIZE];
+    private final boolean[][] p1Used = new boolean[SIZE][SIZE];   // activated (question/surprise)
+    private final boolean[][] p2Used = new boolean[SIZE][SIZE];
 
-    // Easy-mode constants (match the “real game style” rules we used before)
+    // Easy-mode constants
     private static final int ACTIVATION_COST_EASY = 5;
     private static final int SURPRISE_POINTS_EASY = 8;
 
@@ -131,7 +148,7 @@ public class HowToPlayController {
         stopBtn.setDisable(true);
 
         resetDemoState();
-        resetScenario();         // only once at start
+        resetScenario();
         hideAllHighlights();
         buildSteps();
 
@@ -152,7 +169,7 @@ public class HowToPlayController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/settings_view.fxml"));
             Parent newRoot = loader.load();
 
-            Stage stage = (Stage) this.backBtn.getScene().getWindow();
+            Stage stage = (Stage) backBtn.getScene().getWindow();
             stage.setScene(new Scene(newRoot));
             stage.centerOnScreen();
             stage.show();
@@ -165,7 +182,7 @@ public class HowToPlayController {
     private void onRestart() {
         stopAutoplayIfRunning();
         resetDemoState();
-        resetScenario();     // restart = new clean demo board
+        resetScenario();
         runStep(0);
     }
 
@@ -219,7 +236,6 @@ public class HowToPlayController {
     private void buildSteps() {
         steps.clear();
 
-        // STEP 1
         steps.add(new TourStep(
                 "Start (Easy Mode)",
                 "Both boards start fully hidden. Each player can act ONLY on their own board. " +
@@ -232,7 +248,6 @@ public class HowToPlayController {
                 }
         ));
 
-        // STEP 2: P1 reveal empty -> cascade (ONE action ends turn)
         steps.add(new TourStep(
                 "Player 1: Reveal Empty (Cascade = One Action)",
                 "Player 1 reveals one empty safe cell. The board opens adjacent empty cells automatically (cascade). " +
@@ -255,7 +270,6 @@ public class HowToPlayController {
                 }
         ));
 
-        // STEP 3: switch turn to P2 (because reveal ended P1 turn)
         steps.add(new TourStep(
                 "Turn Switch",
                 "Because Player 1 performed a turn-ending action (Reveal), the turn switches to Player 2.",
@@ -266,13 +280,11 @@ public class HowToPlayController {
                 }
         ));
 
-        // STEP 4: P2 places a flag (does NOT end turn)
         steps.add(new TourStep(
                 "Player 2: Flag (Does NOT End Turn)",
                 "Player 2 places a flag. Flags do NOT end the turn, so Player 2 can keep placing more flags or choose another action.",
                 () -> {
                     hideAllHighlights();
-
                     setSnapshot(10, 40, 6, 2, 10, 39, 6, 2, 10, false, 0);
 
                     setFlag(p2Tiles[4][4]); markFlag(false, 4, 4);
@@ -280,13 +292,11 @@ public class HowToPlayController {
                 }
         ));
 
-        // STEP 5: P2 places ANOTHER flag (still same turn)
         steps.add(new TourStep(
                 "Player 2: Another Flag (Still Same Turn)",
                 "Player 2 places another flag. Still the same turn (flags do NOT switch turns).",
                 () -> {
                     hideAllHighlights();
-
                     setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, 0);
 
                     setFlag(p2Tiles[4][4]); markFlag(false, 4, 4);
@@ -295,14 +305,12 @@ public class HowToPlayController {
                 }
         ));
 
-        // STEP 6: P2 reveals a numbered cell (THIS ends turn)
         steps.add(new TourStep(
                 "Player 2: Reveal Number (Ends Turn)",
                 "Now Player 2 reveals a cell (turn-ending action). The number tells how many mines exist in the 8 neighboring cells. " +
                         "After a reveal, the turn ends and switches.",
                 () -> {
                     hideAllHighlights();
-
                     setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, 0);
 
                     setFlag(p2Tiles[4][4]); markFlag(false, 4, 4);
@@ -315,7 +323,6 @@ public class HowToPlayController {
                 }
         ));
 
-        // STEP 7: turn switches to P1 (because reveal ended P2 turn)
         steps.add(new TourStep(
                 "Turn Switch",
                 "After Player 2 revealed a cell, the turn switches to Player 1.",
@@ -326,24 +333,20 @@ public class HowToPlayController {
                 }
         ));
 
-        // STEP 8: P1 REVEALS a Question cell (ONLY reveal, no activation yet)
         steps.add(new TourStep(
                 "Player 1: Reveal Question Cell (Reveal ≠ Activate)",
                 "Player 1 reveals a Question cell. This reveal is ONE action and ENDS the turn. " +
                         "Important: revealing the Question cell does NOT activate it automatically.",
                 () -> {
                     hideAllHighlights();
-
                     setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, true, 0);
 
                     setQuestion(p1Tiles[2][6]);
                     markRevealed(true, 2, 6, DemoCellType.QUESTION);
-
                     highlightCell(true, 2, 6);
                 }
         ));
 
-        // STEP 9: switch to P2 (because reveal ended P1 turn)
         steps.add(new TourStep(
                 "Turn Switch",
                 "Because Player 1 performed a turn-ending action (Reveal), the turn switches to Player 2.",
@@ -354,61 +357,52 @@ public class HowToPlayController {
                 }
         ));
 
-        // STEP 10: P2 REVEALS a Surprise cell (ONLY reveal, no activation yet)
         steps.add(new TourStep(
                 "Player 2: Reveal Surprise Cell (Reveal ≠ Activate)",
                 "Player 2 reveals a Surprise cell. This reveal is ONE action and ENDS the turn. " +
                         "Important: revealing the Surprise cell does NOT activate it automatically.",
                 () -> {
                     hideAllHighlights();
-
                     setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, 0);
 
                     setSurprise(p2Tiles[2][2]);
                     markRevealed(false, 2, 2, DemoCellType.SURPRISE);
-
                     highlightCell(false, 2, 2);
                 }
         ));
 
-        // STEP 11: Back to P1 - ACTIVATE Question cell (separate action) - REAL RULES (Easy-mode style)
         steps.add(new TourStep(
                 "Player 1: Activate Question (Separate Action)",
-                "Now Player 1 activates the previously revealed Question cell. Activation is a separate action (different turn). " +
-                        "A multiple-choice question appears. Tutorial: correct answer is highlighted in green, wrong answers in red, and the result screen shows what would happen for each option.",
+                "Now Player 1 activates the previously revealed Question cell. " +
+                        "Tutorial: correct answer is highlighted in green, wrong answers in red, and the result screen shows what would happen for each option.",
                 () -> {
                     hideAllHighlights();
 
-                    // keep visible
                     setQuestion(p1Tiles[2][6]);
                     setSurprise(p2Tiles[2][2]);
                     markRevealed(true, 2, 6, DemoCellType.QUESTION);
                     markRevealed(false, 2, 2, DemoCellType.SURPRISE);
 
                     setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, true, score);
-
                     highlightCell(true, 2, 6);
 
                     Platform.runLater(() -> activateQuestionHowTo(true, 2, 6));
                 }
         ));
 
-        // STEP 12: Back to P2 - ACTIVATE Surprise (separate action) - REAL RULES (Easy-mode style)
         steps.add(new TourStep(
                 "Player 2: Activate Surprise (Separate Action)",
-                "Now Player 2 activates the previously revealed Surprise cell. Activation is a separate action (different turn). " +
-                        "A GOOD/BAD effect happens, score/lives update, and the cell becomes used (cannot be activated again).",
+                "Now Player 2 activates the previously revealed Surprise cell. " +
+                        "Tutorial: we show BOTH GOOD and BAD outcomes in a styled popup, but the demo applies a fixed outcome.",
                 () -> {
                     hideAllHighlights();
 
-                    // keep visible
                     setQuestion(p1Tiles[2][6]);
                     setSurprise(p2Tiles[2][2]);
                     markRevealed(true, 2, 6, DemoCellType.QUESTION);
                     markRevealed(false, 2, 2, DemoCellType.SURPRISE);
 
                     setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, score);
-
                     highlightCell(false, 2, 2);
 
                     Platform.runLater(() -> activateSurpriseHowTo(false, 2, 2));
@@ -419,7 +413,6 @@ public class HowToPlayController {
     // ----------------- REAL-GAME-LIKE ACTIVATIONS (HowToPlay) -----------------
 
     private void activateQuestionHowTo(boolean isP1, int row, int col) {
-        // must be revealed, must be Question, must NOT be used
         if (!isQuestionCell(isP1, row, col)) return;
         if (!isRevealed(isP1, row, col)) return;
         if (isUsed(isP1, row, col)) return;
@@ -430,16 +423,10 @@ public class HowToPlayController {
         // activation cost
         score -= ACTIVATION_COST_EASY;
 
-        // pull a real question if possible (reflection-safe), otherwise show fallback demo question
-        model.Question q = tryLoadRandomQuestion();
-        if (q == null) {
-            showFallbackQuestionDemo(scoreBefore, livesBefore, isP1, row, col);
-            return;
-        }
+        model.Question q = DEMO_EXPERT_QUESTION;
 
-        int picked = showQuestionPickDialogTutorial(q, true); // tutorial mode -> colors
+        int picked = showQuestionPickDialogTutorial(q, true);
         if (picked < 0) {
-            // closed -> still consume activation and mark used (like using it)
             markUsed(isP1, row, col);
             buildHeartsBar();
             updateInfoBar();
@@ -451,89 +438,22 @@ public class HowToPlayController {
 
         int scoreChange = 0;
         int livesChange = 0;
-        String extraLine;
 
-        // EASY MODE scoring style
         switch (qDiff) {
-            case "easy" -> {
-                scoreChange = correct ? +3 : -3;
-                extraLine = correct ? "Correct! You gained +3 points (-5 activation already applied)."
-                        : "Wrong! You lost 3 points (-5 activation already applied).";
-            }
-            case "medium" -> {
-                scoreChange = correct ? +6 : -6;
-                extraLine = correct ? "Correct! You gained +6 points (-5 activation already applied)."
-                        : "Wrong! You lost 6 points (-5 activation already applied).";
-            }
-            case "hard" -> {
-                scoreChange = correct ? +10 : -10;
-                extraLine = correct ? "Correct! You gained +10 points (-5 activation already applied)."
-                        : "Wrong! You lost 10 points (-5 activation already applied).";
-            }
-            default -> { // expert (or unknown -> treat as expert for demo)
-                if (correct) {
-                    scoreChange = +15;
-                    livesChange = +2;
-                    extraLine = "Correct! +15 points and +2 lives (-5 activation already applied).";
-                } else {
-                    scoreChange = -15;
-                    livesChange = -1;
-                    extraLine = "Wrong! -15 points and -1 life (-5 activation already applied).";
-                }
+            case "easy" -> scoreChange = correct ? +3 : -3;
+            case "medium" -> scoreChange = correct ? +6 : -6;
+            case "hard" -> scoreChange = correct ? +10 : -10;
+            default -> {
+                if (correct) { scoreChange = +15; livesChange = +2; }
+                else { scoreChange = -15; livesChange = -1; }
             }
         }
 
-        // apply
         score += scoreChange;
         sharedHearts = clamp(sharedHearts + livesChange, 0, TOTAL_HEART_SLOTS);
 
-        // mark used so it won't activate again
         markUsed(isP1, row, col);
 
-        // UI updates
-        buildHeartsBar();
-        updateInfoBar();
-
-        // NEW: show a richer results screen (shows what happens for each option)
-        showQuestionResultDialogWithAllOptions(
-                q,
-                picked,
-                scoreBefore,
-                livesBefore,
-                score,
-                sharedHearts,
-                ACTIVATION_COST_EASY
-        );
-
-        // (If you still want the old result dialog too, uncomment)
-        // int totalScoreChangeFromBefore = score - scoreBefore;
-        // int totalLivesChangeFromBefore = sharedHearts - livesBefore;
-        // String diffText = (q.getDifficulty() == null) ? "Question" : q.getDifficulty();
-        // showQuestionResultDialog(diffText, correct, scoreBefore, livesBefore, totalScoreChangeFromBefore, totalLivesChangeFromBefore, extraLine);
-    }
-
-    private void showFallbackQuestionDemo(int scoreBefore, int livesBefore, boolean isP1, int row, int col) {
-        // In fallback we still show the tutorial colored dialog + full outcomes screen
-        model.Question q = new model.Question(
-                0, "easy",
-                "Demo Question (Fallback): Which option is correct?",
-                "Wrong option", "Correct option", "Wrong option", "Wrong option",
-                1 // correct = B (0=A,1=B,2=C,3=D)
-        );
-
-        int picked = showQuestionPickDialogTutorial(q, true);
-        if (picked < 0) {
-            markUsed(isP1, row, col);
-            buildHeartsBar();
-            updateInfoBar();
-            return;
-        }
-
-        boolean correct = (picked == q.getCorrectOption());
-        int scoreChange = correct ? +3 : -3;   // easy fallback
-        score += scoreChange;
-
-        markUsed(isP1, row, col);
         buildHeartsBar();
         updateInfoBar();
 
@@ -549,7 +469,6 @@ public class HowToPlayController {
     }
 
     private void activateSurpriseHowTo(boolean isP1, int row, int col) {
-        // must be revealed, must be Surprise, must NOT be used
         if (!isSurpriseCell(isP1, row, col)) return;
         if (!isRevealed(isP1, row, col)) return;
         if (isUsed(isP1, row, col)) return;
@@ -560,10 +479,11 @@ public class HowToPlayController {
         // activation cost
         score -= ACTIVATION_COST_EASY;
 
-        boolean good = Math.random() < 0.5;
+        // fixed outcome for HowToPlay (no randomness)
+        boolean good = DEMO_SURPRISE_IS_GOOD;
 
-        int scoreDeltaFromEffect = good ? +SURPRISE_POINTS_EASY : -SURPRISE_POINTS_EASY;
-        int livesDeltaFromEffect = good ? +1 : -1;
+        int scoreDeltaFromEffect = good ? +DEMO_SURPRISE_SCORE : -DEMO_SURPRISE_SCORE;
+        int livesDeltaFromEffect = good ? +DEMO_SURPRISE_LIVES : -DEMO_SURPRISE_LIVES;
 
         score += scoreDeltaFromEffect;
         sharedHearts = clamp(sharedHearts + livesDeltaFromEffect, 0, TOTAL_HEART_SLOTS);
@@ -572,59 +492,8 @@ public class HowToPlayController {
         buildHeartsBar();
         updateInfoBar();
 
-        int netScoreChange = score - scoreBefore;
-        int netLivesChange = sharedHearts - livesBefore;
-
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setTitle("Surprise Result");
-        a.setHeaderText(good ? "GOOD SURPRISE!" : "BAD SURPRISE!");
-        a.setContentText(
-                "Score Before: " + scoreBefore + "\n" +
-                        "Lives Before: " + livesBefore + "/10\n\n" +
-                        "Score Change: " + (netScoreChange >= 0 ? "+" : "") + netScoreChange +
-                        "  ( " + (good ? "+" : "-") + SURPRISE_POINTS_EASY + " surprise"
-                        + "  -" + ACTIVATION_COST_EASY + " activation )\n" +
-                        "Lives Change: " + (netLivesChange >= 0 ? "+" : "") + netLivesChange + "\n\n" +
-                        "New Score: " + score + "\n" +
-                        "New Lives: " + sharedHearts + "/10"
-        );
-        a.showAndWait();
-    }
-
-    // Try to load a real question pool without hard dependencies (won't break compile)
-    @SuppressWarnings("unchecked")
-    private model.Question tryLoadRandomQuestion() {
-        try {
-            // 1) control.QuestionsManagerController.loadQuestionsForGame()
-            Class<?> cls = Class.forName("control.QuestionsManagerController");
-            Method m = cls.getDeclaredMethod("loadQuestionsForGame");
-            Object res = m.invoke(null);
-            if (res instanceof List<?> list) {
-                List<model.Question> q = new ArrayList<>();
-                for (Object o : list) {
-                    if (o instanceof model.Question qq) q.add(qq);
-                }
-                if (!q.isEmpty()) return q.get((int) (Math.random() * q.size()));
-            }
-        } catch (Exception ignored) { }
-
-        try {
-            // 2) model.SysData.getInstance().getQuestions()
-            Class<?> sys = Class.forName("model.SysData");
-            Method getInstance = sys.getDeclaredMethod("getInstance");
-            Object inst = getInstance.invoke(null);
-            Method getQuestions = sys.getDeclaredMethod("getQuestions");
-            Object res = getQuestions.invoke(inst);
-            if (res instanceof List<?> list) {
-                List<model.Question> q = new ArrayList<>();
-                for (Object o : list) {
-                    if (o instanceof model.Question qq) q.add(qq);
-                }
-                if (!q.isEmpty()) return q.get((int) (Math.random() * q.size()));
-            }
-        } catch (Exception ignored) { }
-
-        return null;
+        // NEW: styled tutorial popup that shows BOTH GOOD and BAD scenarios
+        showSurpriseTutorialDialog(scoreBefore, livesBefore, DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES, ACTIVATION_COST_EASY);
     }
 
     private int clamp(int v, int lo, int hi) {
@@ -633,14 +502,14 @@ public class HowToPlayController {
         return v;
     }
 
-    // ----------------- NEW: Tutorial Question Dialog (colors) -----------------
+    // ----------------- Tutorial Question Dialog (colors) -----------------
 
     private int showQuestionPickDialogTutorial(model.Question q, boolean tutorialMode) {
         Stage stage = new Stage();
         stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
         stage.setTitle("Question");
 
-        javafx.scene.layout.VBox root = new javafx.scene.layout.VBox(12);
+        VBox root = new VBox(12);
         root.setPadding(new Insets(18));
         root.setStyle("""
             -fx-background-color: linear-gradient(to bottom right, #5b5bb6, #8a57b8, #c26ad6);
@@ -660,7 +529,7 @@ public class HowToPlayController {
         hint.setVisible(tutorialMode);
         hint.setManaged(tutorialMode);
 
-        int correctIdx = q.getCorrectOption(); // assume 0..3
+        int correctIdx = q.getCorrectOption();
 
         Button btnA = createAnswerBtn("A", q.getOptA());
         Button btnB = createAnswerBtn("B", q.getOptB());
@@ -681,8 +550,7 @@ public class HowToPlayController {
         btnC.setOnAction(e -> { chosen[0] = 2; stage.close(); });
         btnD.setOnAction(e -> { chosen[0] = 3; stage.close(); });
 
-        javafx.scene.layout.VBox answersBox = new javafx.scene.layout.VBox(10, btnA, btnB, btnC, btnD);
-
+        VBox answersBox = new VBox(10, btnA, btnB, btnC, btnD);
         root.getChildren().addAll(title, questionText, hint, answersBox);
 
         stage.setScene(new Scene(root, 620, 460));
@@ -693,12 +561,8 @@ public class HowToPlayController {
     }
 
     private void styleAnswerForTutorial(Button b, boolean correct) {
-        String border = correct
-                ? "rgba(70, 255, 140, 0.85)"   // green
-                : "rgba(255, 90, 90, 0.80)";   // red
-        String bg = correct
-                ? "rgba(70, 255, 140, 0.12)"
-                : "rgba(255, 90, 90, 0.10)";
+        String border = correct ? "rgba(70, 255, 140, 0.85)" : "rgba(255, 90, 90, 0.80)";
+        String bg = correct ? "rgba(70, 255, 140, 0.12)" : "rgba(255, 90, 90, 0.10)";
 
         b.setStyle(b.getStyle() + """
             ; -fx-border-color: %s;
@@ -707,32 +571,26 @@ public class HowToPlayController {
         """.formatted(border, bg));
     }
 
-    // ----------------- NEW: Result Dialog with ALL options outcomes -----------------
+    // ----------------- Result Dialog with ALL options outcomes -----------------
 
     private static final class Outcome {
         final int scoreDelta;
         final int livesDelta;
-        final String text;
 
-        Outcome(int scoreDelta, int livesDelta, String text) {
+        Outcome(int scoreDelta, int livesDelta) {
             this.scoreDelta = scoreDelta;
             this.livesDelta = livesDelta;
-            this.text = text;
         }
     }
 
     private Outcome outcomeForDifficulty(String diff, boolean isCorrect) {
         diff = (diff == null) ? "easy" : diff.toLowerCase();
-        switch (diff) {
-            case "easy":
-                return isCorrect ? new Outcome(+3, 0, "+3 score") : new Outcome(-3, 0, "-3 score");
-            case "medium":
-                return isCorrect ? new Outcome(+6, 0, "+6 score") : new Outcome(-6, 0, "-6 score");
-            case "hard":
-                return isCorrect ? new Outcome(+10, 0, "+10 score") : new Outcome(-10, 0, "-10 score");
-            default:
-                return isCorrect ? new Outcome(+15, +2, "+15 score, +2 lives") : new Outcome(-15, -1, "-15 score, -1 life");
-        }
+        return switch (diff) {
+            case "easy" -> isCorrect ? new Outcome(+3, 0) : new Outcome(-3, 0);
+            case "medium" -> isCorrect ? new Outcome(+6, 0) : new Outcome(-6, 0);
+            case "hard" -> isCorrect ? new Outcome(+10, 0) : new Outcome(-10, 0);
+            default -> isCorrect ? new Outcome(+15, +2) : new Outcome(-15, -1);
+        };
     }
 
     private void showQuestionResultDialogWithAllOptions(
@@ -751,7 +609,7 @@ public class HowToPlayController {
         stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
         stage.setTitle("Question Result");
 
-        javafx.scene.layout.AnchorPane root = new javafx.scene.layout.AnchorPane();
+        AnchorPane root = new AnchorPane();
         root.setStyle("""
             -fx-background-color: linear-gradient(to bottom right, #5b5bb6, #8a57b8, #c26ad6);
         """);
@@ -759,7 +617,7 @@ public class HowToPlayController {
         boolean isCorrectChosen = (chosenIdx == correctIdx);
 
         Label header = new Label(
-                "YOU ANSWERED A " + (diff == null ? "QUESTION" : diff.toUpperCase() + " QUESTION") + ".\n\n" +
+                "YOU ANSWERED A " + diff.toUpperCase() + " QUESTION.\n\n" +
                         (isCorrectChosen ? "YOUR ANSWER IS CORRECT!" : "YOUR ANSWER IS WRONG!")
         );
         header.setStyle("""
@@ -778,14 +636,14 @@ public class HowToPlayController {
             -fx-font-size: 15px;
         """);
 
-        javafx.scene.layout.VBox outcomes = new javafx.scene.layout.VBox(8,
+        VBox outcomes = new VBox(8,
                 makeOutcomeLine("A", 0, correctIdx, chosenIdx, diff, activationCost),
                 makeOutcomeLine("B", 1, correctIdx, chosenIdx, diff, activationCost),
                 makeOutcomeLine("C", 2, correctIdx, chosenIdx, diff, activationCost),
                 makeOutcomeLine("D", 3, correctIdx, chosenIdx, diff, activationCost)
         );
 
-        javafx.scene.layout.VBox box = new javafx.scene.layout.VBox(12, header, beforeAfter, outcomes);
+        VBox box = new VBox(12, header, beforeAfter, outcomes);
         box.setPadding(new Insets(26));
 
         Button ok = new Button("OK");
@@ -802,12 +660,12 @@ public class HowToPlayController {
         """);
         ok.setOnAction(e -> stage.close());
 
-        javafx.scene.layout.AnchorPane.setTopAnchor(box, 0.0);
-        javafx.scene.layout.AnchorPane.setLeftAnchor(box, 0.0);
-        javafx.scene.layout.AnchorPane.setRightAnchor(box, 0.0);
+        AnchorPane.setTopAnchor(box, 0.0);
+        AnchorPane.setLeftAnchor(box, 0.0);
+        AnchorPane.setRightAnchor(box, 0.0);
 
-        javafx.scene.layout.AnchorPane.setBottomAnchor(ok, 22.0);
-        javafx.scene.layout.AnchorPane.setRightAnchor(ok, 26.0);
+        AnchorPane.setBottomAnchor(ok, 22.0);
+        AnchorPane.setRightAnchor(ok, 26.0);
 
         root.getChildren().addAll(box, ok);
 
@@ -816,7 +674,7 @@ public class HowToPlayController {
         stage.showAndWait();
     }
 
-    private javafx.scene.Node makeOutcomeLine(String letter, int idx, int correctIdx, int chosenIdx, String diff, int activationCost) {
+    private Node makeOutcomeLine(String letter, int idx, int correctIdx, int chosenIdx, String diff, int activationCost) {
         boolean wouldBeCorrect = (idx == correctIdx);
         Outcome o = outcomeForDifficulty(diff, wouldBeCorrect);
 
@@ -827,7 +685,9 @@ public class HowToPlayController {
                 (wouldBeCorrect ? "CORRECT" : "WRONG") +
                 "  →  Score " + (netScore >= 0 ? "+" : "") + netScore +
                 " , Lives " + (netLives >= 0 ? "+" : "") + netLives +
-                "   (" + o.text + " , -" + activationCost + " activation)";
+                "   (" + (wouldBeCorrect ? "+" : "") + o.scoreDelta +
+                " score, " + (o.livesDelta >= 0 ? "+" : "") + o.livesDelta +
+                " lives, -" + activationCost + " activation)";
 
         Label lbl = new Label(text);
         lbl.setWrapText(true);
@@ -851,54 +711,173 @@ public class HowToPlayController {
                 : "";
 
         lbl.setStyle(base + " -fx-border-color: " + border + ";" + chosenExtra);
-
         return lbl;
     }
 
-    // ----------------- Your existing dialogs (kept as-is, but still used by createAnswerBtn) -----------------
+    // ----------------- NEW: Surprise Tutorial Popup (GOOD + BAD) -----------------
 
-    private int showQuestionPickDialog(model.Question q) {
+    private void showSurpriseTutorialDialog(
+            int scoreBefore,
+            int livesBefore,
+            int surprisePoints,
+            int surpriseLives,
+            int activationCost
+    ) {
+        // GOOD scenario
+        int goodNetScore = -activationCost + surprisePoints;
+        int goodNetLives = +surpriseLives;
+
+        // BAD scenario
+        int badNetScore = -activationCost - surprisePoints;
+        int badNetLives = -surpriseLives;
+
+        int goodScoreAfter = scoreBefore + goodNetScore;
+        int badScoreAfter = scoreBefore + badNetScore;
+
+        int goodLivesAfter = clamp(livesBefore + goodNetLives, 0, TOTAL_HEART_SLOTS);
+        int badLivesAfter = clamp(livesBefore + badNetLives, 0, TOTAL_HEART_SLOTS);
+
         Stage stage = new Stage();
         stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-        stage.setTitle("Question");
+        stage.setTitle("Surprise Result");
 
-        javafx.scene.layout.VBox root = new javafx.scene.layout.VBox(12);
-        root.setPadding(new Insets(18));
+        AnchorPane root = new AnchorPane();
         root.setStyle("""
             -fx-background-color: linear-gradient(to bottom right, #5b5bb6, #8a57b8, #c26ad6);
         """);
 
-        Label title = new Label(
-                "You got a " + (q.getDifficulty() == null ? "Question" : q.getDifficulty() + " Question") + "!"
+        Label header = new Label("SURPRISE TUTORIAL RESULT");
+        header.setStyle("""
+            -fx-text-fill: white;
+            -fx-font-size: 26px;
+            -fx-font-family: 'Copperplate Gothic Bold';
+        """);
+        AnchorPane.setTopAnchor(header, 26.0);
+        AnchorPane.setLeftAnchor(header, 28.0);
+
+        Label info = new Label(
+                "Score: " + scoreBefore + "\n" +
+                        "Lives: " + livesBefore + "/" + TOTAL_HEART_SLOTS + "\n" +
+                        "Activation cost: -" + activationCost + " score\n\n" +
+                        "Tutorial mode: we show BOTH outcomes (GOOD and BAD)."
         );
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 24px; -fx-font-family: 'Copperplate Gothic Bold';");
+        info.setStyle("""
+            -fx-text-fill: rgba(255,255,255,0.90);
+            -fx-font-size: 15px;
+            -fx-font-family: 'Copperplate Gothic Light';
+        """);
+        AnchorPane.setTopAnchor(info, 78.0);
+        AnchorPane.setLeftAnchor(info, 30.0);
 
-        Label questionText = new Label(q.getText());
-        questionText.setWrapText(true);
-        questionText.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-family: 'Copperplate Gothic Light';");
+        VBox cards = new VBox(14);
+        cards.setPadding(new Insets(10, 30, 10, 30));
 
-        Button btnA = createAnswerBtn("A", q.getOptA());
-        Button btnB = createAnswerBtn("B", q.getOptB());
-        Button btnC = createAnswerBtn("C", q.getOptC());
-        Button btnD = createAnswerBtn("D", q.getOptD());
+        HBox goodCard = buildSurpriseOutcomeCard(
+                "GOOD SURPRISE",
+                goodNetScore, goodNetLives,
+                surprisePoints, activationCost,
+                goodScoreAfter, goodLivesAfter,
+                true
+        );
 
-        final int[] chosen = { -1 };
+        HBox badCard = buildSurpriseOutcomeCard(
+                "BAD SURPRISE",
+                badNetScore, badNetLives,
+                surprisePoints, activationCost,
+                badScoreAfter, badLivesAfter,
+                false
+        );
 
-        btnA.setOnAction(e -> { chosen[0] = 0; stage.close(); });
-        btnB.setOnAction(e -> { chosen[0] = 1; stage.close(); });
-        btnC.setOnAction(e -> { chosen[0] = 2; stage.close(); });
-        btnD.setOnAction(e -> { chosen[0] = 3; stage.close(); });
+        cards.getChildren().addAll(goodCard, badCard);
 
-        javafx.scene.layout.VBox answersBox = new javafx.scene.layout.VBox(10, btnA, btnB, btnC, btnD);
+        AnchorPane.setTopAnchor(cards, 200.0);
+        AnchorPane.setLeftAnchor(cards, 0.0);
+        AnchorPane.setRightAnchor(cards, 0.0);
 
-        root.getChildren().addAll(title, questionText, answersBox);
+        Button ok = new Button("OK");
+        ok.setStyle("""
+            -fx-background-color: rgba(255,255,255,0.20);
+            -fx-background-radius: 18;
+            -fx-border-radius: 18;
+            -fx-border-color: rgba(255,255,255,0.55);
+            -fx-border-width: 1;
+            -fx-text-fill: white;
+            -fx-font-size: 16px;
+            -fx-padding: 8 26 8 26;
+            -fx-cursor: hand;
+        """);
+        ok.setOnAction(e -> stage.close());
 
-        stage.setScene(new Scene(root, 620, 420));
+        AnchorPane.setBottomAnchor(ok, 22.0);
+        AnchorPane.setRightAnchor(ok, 28.0);
+
+        Label icon = new Label("i");
+        icon.setAlignment(Pos.CENTER);
+        icon.setStyle("""
+            -fx-background-color: rgba(255,255,255,0.12);
+            -fx-text-fill: white;
+            -fx-font-size: 22px;
+            -fx-font-family: 'Copperplate Gothic Bold';
+            -fx-background-radius: 999;
+            -fx-border-radius: 999;
+            -fx-border-color: rgba(255,255,255,0.55);
+            -fx-border-width: 2;
+        """);
+        icon.setPrefSize(42, 42);
+        Tooltip.install(icon, new Tooltip("This popup explains Surprise outcomes in tutorial mode."));
+
+        AnchorPane.setTopAnchor(icon, 18.0);
+        AnchorPane.setRightAnchor(icon, 22.0);
+
+        root.getChildren().addAll(header, info, cards, ok, icon);
+
+        stage.setScene(new Scene(root, 820, 520));
         stage.centerOnScreen();
         stage.showAndWait();
-
-        return chosen[0];
     }
+
+    private HBox buildSurpriseOutcomeCard(
+            String title,
+            int netScore,
+            int netLives,
+            int surprisePoints,
+            int activationCost,
+            int scoreAfter,
+            int livesAfter,
+            boolean good
+    ) {
+        String border = good ? "rgba(100,255,140,0.95)" : "rgba(255,80,80,0.95)";
+        String bg = good ? "rgba(80,220,120,0.12)" : "rgba(255,80,80,0.10)";
+
+        Label txt = new Label(
+                title + "  →  " +
+                        "Score " + (netScore >= 0 ? "+" : "") + netScore +
+                        ", Lives " + (netLives >= 0 ? "+" : "") + netLives +
+                        "   (" + (good ? "+" : "-") + surprisePoints + " surprise, -" + activationCost + " activation)\n" +
+                        "After: Score " + scoreAfter + ", Lives " + livesAfter + "/" + TOTAL_HEART_SLOTS
+        );
+        txt.setWrapText(true);
+        txt.setStyle("""
+            -fx-text-fill: white;
+            -fx-font-size: 16px;
+            -fx-font-family: 'Copperplate Gothic Light';
+        """);
+
+        HBox box = new HBox(txt);
+        box.setPadding(new Insets(14));
+        box.setStyle("""
+            -fx-background-color: %s;
+            -fx-background-radius: 16;
+            -fx-border-radius: 16;
+            -fx-border-color: %s;
+            -fx-border-width: 2;
+        """.formatted(bg, border));
+
+        HBox.setHgrow(txt, javafx.scene.layout.Priority.ALWAYS);
+        return box;
+    }
+
+    // ----------------- UI helpers -----------------
 
     private Button createAnswerBtn(String letter, String text) {
         if (text == null) text = "";
@@ -918,103 +897,12 @@ public class HowToPlayController {
             -fx-cursor: hand;
         """);
 
-        javafx.scene.control.Tooltip tp = new javafx.scene.control.Tooltip(text);
+        Tooltip tp = new Tooltip(text);
         tp.setWrapText(true);
         tp.setMaxWidth(420);
         b.setTooltip(tp);
 
         return b;
-    }
-
-    private void showQuestionResultDialog(
-            String difficultyText,
-            boolean isCorrect,
-            int scoreBefore,
-            int livesBefore,
-            int scoreChange,
-            int livesChange,
-            String extraLine
-    ) {
-        int newScore = scoreBefore + scoreChange;
-        int newLives = Math.max(0, livesBefore + livesChange);
-
-        Stage stage = new Stage();
-        stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-        stage.setTitle("Question Result");
-
-        javafx.scene.layout.AnchorPane root = new javafx.scene.layout.AnchorPane();
-        root.setStyle("""
-            -fx-background-color: linear-gradient(to bottom right, #5b5bb6, #8a57b8, #c26ad6);
-        """);
-
-        String headerLine = "YOU ANSWERED A " + difficultyText.toUpperCase() + " QUESTION.";
-        String correctnessLine = isCorrect ? "YOUR ANSWER IS CORRECT!" : "YOUR ANSWER IS WRONG!";
-
-        String body = ""
-                + headerLine + "\n\n"
-                + correctnessLine + "\n\n"
-                + "Score Before: " + scoreBefore + "\n"
-                + "Lives Before: " + livesBefore + "/10\n\n"
-                + "Score Change: " + (scoreChange >= 0 ? "+" : "") + scoreChange + "\n"
-                + "Lives Change: " + (livesChange >= 0 ? "+" : "") + livesChange + "\n\n"
-                + (extraLine == null ? "" : (extraLine + "\n\n"))
-                + "New Score: " + newScore + "\n"
-                + "New Lives: " + newLives + "/10\n";
-
-        Label text = new Label(body);
-        text.setWrapText(true);
-        text.setStyle("""
-            -fx-text-fill: white;
-            -fx-font-size: 18px;
-            -fx-font-family: 'Copperplate Gothic Light';
-        """);
-
-        javafx.scene.layout.AnchorPane.setTopAnchor(text, 35.0);
-        javafx.scene.layout.AnchorPane.setLeftAnchor(text, 30.0);
-        javafx.scene.layout.AnchorPane.setRightAnchor(text, 30.0);
-
-        Button ok = new Button("OK");
-        ok.setStyle("""
-            -fx-background-color: rgba(255,255,255,0.20);
-            -fx-background-radius: 18;
-            -fx-border-radius: 18;
-            -fx-border-color: rgba(255,255,255,0.55);
-            -fx-border-width: 1;
-            -fx-text-fill: white;
-            -fx-font-size: 16px;
-            -fx-padding: 8 26 8 26;
-            -fx-cursor: hand;
-        """);
-        ok.setOnAction(e -> stage.close());
-
-        javafx.scene.layout.AnchorPane.setBottomAnchor(ok, 25.0);
-        javafx.scene.layout.AnchorPane.setRightAnchor(ok, 30.0);
-
-        Label info = new Label("i");
-        info.setAlignment(Pos.CENTER);
-        info.setStyle("""
-            -fx-background-color: rgba(255,255,255,0.12);
-            -fx-text-fill: white;
-            -fx-font-size: 22px;
-            -fx-font-family: 'Copperplate Gothic Bold';
-            -fx-background-radius: 999;
-            -fx-border-radius: 999;
-            -fx-border-color: rgba(255,255,255,0.55);
-            -fx-border-width: 2;
-        """);
-        info.setPrefSize(42, 42);
-
-        javafx.scene.control.Tooltip.install(info,
-                new javafx.scene.control.Tooltip("This screen summarizes the question outcome."));
-
-        javafx.scene.layout.AnchorPane.setTopAnchor(info, 18.0);
-        javafx.scene.layout.AnchorPane.setRightAnchor(info, 22.0);
-
-        root.getChildren().addAll(text, ok, info);
-
-        stage.setScene(new Scene(root, 820, 520));
-        stage.centerOnScreen();
-        stage.showAndWait();
     }
 
     private void runStep(int idx) {
@@ -1134,8 +1022,6 @@ public class HowToPlayController {
         updateInfoBar();
     }
 
-    
-
     // ----------------- Highlight logic -----------------
 
     private void hideAllHighlights() {
@@ -1194,7 +1080,8 @@ public class HowToPlayController {
         int rr0 = Math.max(0, Math.min(r0, r1));
         int cc0 = Math.max(0, Math.min(c0, c1));
         int rr1 = Math.min(SIZE - 1, Math.max(r0, r1));
-        int cc1 = Math.min(SIZE - 1, Math.max(c0, c1));
+        int cc1 = Math.max(0, Math.min(c0, c1));
+        cc1 = Math.min(SIZE - 1, Math.max(c0, c1));
 
         Bounds a = nodeBoundsInLayer(tiles[rr0][cc0], layer);
         Bounds b = nodeBoundsInLayer(tiles[rr1][cc1], layer);
@@ -1285,49 +1172,41 @@ public class HowToPlayController {
     }
 
     private void setHidden(StackPane tile) {
-        var b = btn(tile);
+        Button b = btn(tile);
         clearCellState(b);
         b.getStyleClass().add("cell-hidden");
     }
 
     private void setRevealedNumber(StackPane tile, int n) {
-        var b = btn(tile);
+        Button b = btn(tile);
         clearCellState(b);
         b.setText(String.valueOf(n));
         b.getStyleClass().addAll("cell-revealed", "cell-number");
     }
 
     private void setEmptyRevealed(StackPane tile) {
-        var b = btn(tile);
+        Button b = btn(tile);
         clearCellState(b);
         b.setText("");
         b.getStyleClass().add("cell-revealed");
     }
 
     private void setFlag(StackPane tile) {
-        var b = btn(tile);
+        Button b = btn(tile);
         clearCellState(b);
         setIcon(b, "/Images/red-flag.png", 22);
         b.getStyleClass().add("cell-flagged");
     }
 
-    private void setMine(StackPane tile) {
-        var b = btn(tile);
-        clearCellState(b);
-        setIcon(b, "/Images/bomb.png", 22);
-        b.setDisable(true);
-        b.getStyleClass().addAll("cell-revealed", "cell-mine");
-    }
-
     private void setQuestion(StackPane tile) {
-        var b = btn(tile);
+        Button b = btn(tile);
         clearCellState(b);
         setIcon(b, "/Images/question-mark.png", 20);
         b.getStyleClass().addAll("cell-revealed", "cell-question");
     }
 
     private void setSurprise(StackPane tile) {
-        var b = btn(tile);
+        Button b = btn(tile);
         clearCellState(b);
         setIcon(b, "/Images/giftbox.png", 20);
         b.getStyleClass().addAll("cell-revealed", "cell-surprise");
