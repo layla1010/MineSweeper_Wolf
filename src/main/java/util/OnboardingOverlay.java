@@ -1,35 +1,23 @@
 package util;
 
-import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Popup;
-import javafx.stage.Screen;
-import javafx.stage.PopupWindow;
-import javafx.stage.Window;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-final class OnboardingOverlay {
+final class OnboardingOverlay extends Pane {
 
-    private final Popup popup = new Popup();
-
-    private final Pane rootLayer = new Pane();
     private final Rectangle dim = new Rectangle();
     private final Rectangle highlight = new Rectangle();
     private final VBox card = new VBox(10);
@@ -46,8 +34,6 @@ final class OnboardingOverlay {
     private final Runnable onNext;
     private final Runnable onSkip;
 
-    private Scene scene;
-
     OnboardingOverlay(
             Consumer<Void> onFinish,
             Runnable onBack,
@@ -63,17 +49,17 @@ final class OnboardingOverlay {
     }
 
     private void buildUI() {
-        popup.setAutoHide(false);
-        popup.getContent().add(rootLayer);
-        popup.setAutoFix(false);
-        popup.setAnchorLocation(PopupWindow.AnchorLocation.CONTENT_TOP_LEFT);
+        setPickOnBounds(true);
 
-
-        // Dim layer
-        dim.setFill(Color.rgb(0, 0, 0, 0.55));
+        // Dim layer: blocks interaction with underlying UI
+        dim.setFill(Color.rgb(0, 0, 0, 0.35)); // adjust if you want darker
         dim.setMouseTransparent(false);
 
-        // Highlight
+        // Bind dim to overlay size
+        dim.widthProperty().bind(widthProperty());
+        dim.heightProperty().bind(heightProperty());
+
+        // Highlight rectangle
         highlight.setFill(Color.TRANSPARENT);
         highlight.setStroke(Color.rgb(255, 255, 255, 0.95));
         highlight.setStrokeWidth(3);
@@ -82,7 +68,7 @@ final class OnboardingOverlay {
         highlight.setEffect(new DropShadow(25, Color.rgb(255, 255, 255, 0.55)));
         highlight.setMouseTransparent(true);
 
-        // Card
+        // Card UI
         card.setStyle(
                 "-fx-background-color: rgba(15,23,42,0.92);" +
                 "-fx-background-radius: 16;" +
@@ -98,7 +84,7 @@ final class OnboardingOverlay {
         textLabel.setWrapText(true);
 
         Region spacer = new Region();
-        spacer.setMinWidth(10);
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
         HBox actions = new HBox(10, backBtn, spacer, skipBtn, nextBtn);
         actions.setStyle("-fx-alignment: center-right;");
@@ -113,7 +99,7 @@ final class OnboardingOverlay {
 
         card.getChildren().addAll(titleLabel, textLabel, actions);
 
-        rootLayer.getChildren().addAll(dim, highlight, card);
+        getChildren().addAll(dim, highlight, card);
     }
 
     private String buttonStyle() {
@@ -130,63 +116,7 @@ final class OnboardingOverlay {
                "-fx-cursor: hand;";
     }
 
-    void show(Window owner, Scene scene) {
-        this.scene = scene;
-        if (scene == null || scene.getRoot() == null) return;
-
-        // Ensure scene is laid out once
-        scene.getRoot().applyCss();
-        scene.getRoot().layout();
-
-        // Force correct overlay sizing BEFORE showing
-        resizeToScene();
-
-        // Compute content top-left
-        Point2D topLeft = scene.getRoot().localToScreen(0, 0);
-        if (topLeft == null) return;
-
-        if (!popup.isShowing()) {
-            popup.show(owner, topLeft.getX(), topLeft.getY());
-        } else {
-            popup.setX(topLeft.getX());
-            popup.setY(topLeft.getY());
-        }
-
-        // Keep aligned on resize
-        scene.widthProperty().addListener((obs, o, n) -> Platform.runLater(() -> {
-            resizeToScene();
-            anchorToSceneRoot();
-        }));
-        scene.heightProperty().addListener((obs, o, n) -> Platform.runLater(() -> {
-            resizeToScene();
-            anchorToSceneRoot();
-        }));
-
-        // Keep aligned when window moves
-        owner.xProperty().addListener((obs, o, n) -> Platform.runLater(this::anchorToSceneRoot));
-        owner.yProperty().addListener((obs, o, n) -> Platform.runLater(this::anchorToSceneRoot));
-    }
-
-    private void anchorToSceneRoot() {
-        if (scene == null || scene.getRoot() == null) return;
-
-        scene.getRoot().applyCss();
-        scene.getRoot().layout();
-
-        Point2D topLeft = scene.getRoot().localToScreen(0, 0);
-        if (topLeft == null) return;
-
-        popup.setX(topLeft.getX());
-        popup.setY(topLeft.getY());
-    }
-
-    void hide() {
-        popup.hide();
-    }
-
     void renderStep(List<OnboardingStep> steps, int index, Node target) {
-        if (scene == null) return;
-
         boolean first = index <= 0;
         boolean last = index >= steps.size() - 1;
 
@@ -205,25 +135,6 @@ final class OnboardingOverlay {
         }
     }
 
-    private void resizeToScene() {
-        if (scene == null) return;
-
-        double w = scene.getWidth();
-        double h = scene.getHeight();
-
-        rootLayer.setMinSize(w, h);
-        rootLayer.setPrefSize(w, h);
-        rootLayer.setMaxSize(w, h);
-
-        dim.setWidth(w);
-        dim.setHeight(h);
-
-        rootLayer.autosize();
-        rootLayer.layout();
-    }
-
-
-    
     private void layoutHighlightAndCard(Node target) {
         if (target == null || target.getScene() == null) {
             highlight.setVisible(false);
@@ -233,21 +144,21 @@ final class OnboardingOverlay {
 
         highlight.setVisible(true);
 
+        // Convert target bounds to this overlay's local coordinates
         Bounds bScene = target.localToScene(target.getBoundsInLocal());
+        Point2D pMin = this.sceneToLocal(bScene.getMinX(), bScene.getMinY());
 
         double pad = 10;
-        double x = clamp(bScene.getMinX() - pad, 0, scene.getWidth());
-        double y = clamp(bScene.getMinY() - pad, 0, scene.getHeight());
-        double w = clamp(bScene.getWidth() + 2 * pad, 0, scene.getWidth());
-        double h = clamp(bScene.getHeight() + 2 * pad, 0, scene.getHeight());
+        double x = clamp(pMin.getX() - pad, 0, getWidth());
+        double y = clamp(pMin.getY() - pad, 0, getHeight());
+        double w = clamp(bScene.getWidth() + 2 * pad, 0, getWidth());
+        double h = clamp(bScene.getHeight() + 2 * pad, 0, getHeight());
 
         highlight.setX(x);
         highlight.setY(y);
-        highlight.setWidth(Math.min(w, scene.getWidth() - x));
-        highlight.setHeight(Math.min(h, scene.getHeight() - y));    
+        highlight.setWidth(Math.min(w, getWidth() - x));
+        highlight.setHeight(Math.min(h, getHeight() - y));
 
-
-        // place card below the highlight if possible, else above
         card.applyCss();
         card.layout();
 
@@ -255,27 +166,24 @@ final class OnboardingOverlay {
         double cardH = card.prefHeight(cardW);
 
         double gap = 12;
-
         double belowY = highlight.getY() + highlight.getHeight() + gap;
         double aboveY = highlight.getY() - cardH - gap;
 
-        double chosenY = (belowY + cardH <= scene.getHeight() - 12) ? belowY
-                : (aboveY >= 12 ? aboveY : clamp(scene.getHeight() - cardH - 12, 12, scene.getHeight()));
+        double chosenY = (belowY + cardH <= getHeight() - 12) ? belowY
+                : (aboveY >= 12 ? aboveY : clamp(getHeight() - cardH - 12, 12, getHeight()));
 
         boolean narrowTarget = highlight.getWidth() < 120;
 
         double chosenX = narrowTarget
-                ? (scene.getWidth() - cardW) / 2
+                ? (getWidth() - cardW) / 2
                 : clamp(
                       highlight.getX() + (highlight.getWidth() - cardW) / 2,
                       12,
-                      scene.getWidth() - cardW - 12
+                      getWidth() - cardW - 12
                   );
-
 
         card.resizeRelocate(chosenX, chosenY, cardW, cardH);
     }
-
 
     private void centerCard() {
         card.applyCss();
@@ -284,13 +192,63 @@ final class OnboardingOverlay {
         double cardW = Math.min(card.prefWidth(-1), 360);
         double cardH = card.prefHeight(cardW);
 
-        double x = (scene.getWidth() - cardW) / 2;
-        double y = (scene.getHeight() - cardH) / 2;
+        double x = (getWidth() - cardW) / 2;
+        double y = (getHeight() - cardH) / 2;
 
         card.resizeRelocate(x, y, cardW, cardH);
     }
 
     private double clamp(double v, double min, double max) {
         return Math.max(min, Math.min(max, v));
+    }
+
+    // Attach/remove helpers (called from OnboardingManager)
+    static OnboardingOverlay attachToScene(Scene scene, OnboardingOverlay overlay) {
+        if (scene == null || scene.getRoot() == null) return overlay;
+
+        Parent oldRoot = scene.getRoot();
+        StackPane stack;
+
+        if (oldRoot instanceof StackPane sp) {
+            stack = sp;
+        } else {
+            // Wrap old root
+            stack = new StackPane(oldRoot);
+
+            // CRITICAL: preserve identity that CSS selectors depend on
+            stack.setId(oldRoot.getId());
+            stack.getStyleClass().addAll(oldRoot.getStyleClass());
+
+            // Optional but recommended: preserve inline style too
+            stack.setStyle(oldRoot.getStyle());
+
+            // Avoid duplicated style classes (not mandatory, but clean)
+            oldRoot.setId(null);
+            oldRoot.getStyleClass().clear();
+            oldRoot.setStyle("");
+
+            scene.setRoot(stack);
+        }
+
+        // Ensure overlay stretches
+        StackPane.setAlignment(overlay, javafx.geometry.Pos.TOP_LEFT);
+        overlay.prefWidthProperty().bind(stack.widthProperty());
+        overlay.prefHeightProperty().bind(stack.heightProperty());
+
+        if (!stack.getChildren().contains(overlay)) {
+            stack.getChildren().add(overlay);
+        } else {
+            overlay.toFront();
+        }
+
+        return overlay;
+    }
+
+
+    static void detachFromScene(Scene scene, OnboardingOverlay overlay) {
+        if (scene == null || overlay == null) return;
+        if (scene.getRoot() instanceof StackPane sp) {
+            sp.getChildren().remove(overlay);
+        }
     }
 }

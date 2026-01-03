@@ -14,6 +14,13 @@ public final class ThemeManager {
 
     private static final String PREF_KEY = "ui.theme";
 
+    // Base stylesheet (always kept)
+    private static final String BASE_CSS = "/css/base.css";
+
+    // Theme variants (swap between these)
+    private static final String COLORFUL_CSS = "/css/theme.css";
+    private static final String WOLF_CSS     = "/css/wolf.css";
+
     private static Theme currentTheme = loadTheme();
 
     private ThemeManager() {}
@@ -28,37 +35,53 @@ public final class ThemeManager {
         PREFS.put(PREF_KEY, theme.name());
     }
 
-    /** Apply current theme CSS to the provided scene, safely and idempotently. */
+    /**
+     * Apply current theme CSS to the provided scene.
+     * Rules:
+     *  - base.css is always present
+     *  - exactly one variant is present: theme.css (COLORFUL) OR wolf.css (WOLF)
+     *  - never clears all stylesheets (so any screen-specific css can remain)
+     */
     public static void applyTheme(Scene scene) {
         if (scene == null) return;
 
-        // Remove any theme CSS previously applied
-        scene.getStylesheets().removeIf(ThemeManager::isThemeStylesheet);
+        // 1) Ensure base is present
+        addIfMissing(scene, BASE_CSS);
 
-        // Ensure base.css exists (optional but recommended)
-        addIfMissing(scene, "/css/base.css");
+        // 2) Remove ONLY our known variants (do not touch other stylesheets)
+        removeIfPresent(scene, COLORFUL_CSS);
+        removeIfPresent(scene, WOLF_CSS);
 
-        // Add selected theme CSS
-        addIfMissing(scene, currentTheme.getCssPath());
-    }
+        // 3) Add selected variant
+        String variant = (currentTheme == Theme.WOLF) ? WOLF_CSS : COLORFUL_CSS;
+        addIfMissing(scene, variant);
 
-    private static boolean isThemeStylesheet(String stylesheetUrl) {
-        // robust detection by known filenames
-        return stylesheetUrl != null && (
-                stylesheetUrl.endsWith("theme.css") ||
-                stylesheetUrl.endsWith("wolf.css")
-        );
+        // 4) Force re-apply (helps immediate visual update)
+        if (scene.getRoot() != null) {
+            scene.getRoot().applyCss();
+            scene.getRoot().layout();
+        }
     }
 
     private static void addIfMissing(Scene scene, String resourcePath) {
+        String external = toExternal(resourcePath);
+        if (!scene.getStylesheets().contains(external)) {
+            scene.getStylesheets().add(external);
+        }
+    }
+
+    private static void removeIfPresent(Scene scene, String resourcePath) {
+        URL url = ThemeManager.class.getResource(resourcePath);
+        if (url == null) return;
+        scene.getStylesheets().remove(url.toExternalForm());
+    }
+
+    private static String toExternal(String resourcePath) {
         URL url = ThemeManager.class.getResource(resourcePath);
         if (url == null) {
             throw new IllegalStateException("Missing CSS resource: " + resourcePath);
         }
-        String external = url.toExternalForm();
-        if (!scene.getStylesheets().contains(external)) {
-            scene.getStylesheets().add(external);
-        }
+        return url.toExternalForm();
     }
 
     private static Theme loadTheme() {
