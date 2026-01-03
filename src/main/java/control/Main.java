@@ -16,6 +16,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
     	SysData.getInstance().ensureHistoryLoaded();
     	SysData.getInstance().ensurePlayersLoaded();
+    	SysData.getInstance().ensureQuestionsLoaded();
 
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));
@@ -23,7 +24,7 @@ public class Main extends Application {
         Parent root = loader.load(); 
 
         Scene scene = new Scene(root);//, 1200, 740);
-        ThemeManager.applyTheme(scene);
+        ThemeManager.applyTheme(scene); 
         primaryStage.setScene(scene);
         primaryStage.setTitle("MineSweeper_Wolf");
         primaryStage.setResizable(false);

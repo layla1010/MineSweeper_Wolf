@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Window;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -23,27 +22,22 @@ public final class OnboardingManager {
 
     private OnboardingManager() {}
 
-  
     public static boolean isDone(String flowKey, String userKey) {
         if (userKey == null || userKey.isBlank()) return false; // guest/admin -> never "done"
         String uk = shortKey(userKey);
         return PREFS.getBoolean(KEY_PREFIX + flowKey + "." + uk, false);
     }
-    
+
     private static String shortKey(String s) {
         if (s == null) return "";
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(s.getBytes(StandardCharsets.UTF_8));
 
-            // 12 bytes => 24 hex chars (short but collision-resistant for this use case)
             StringBuilder sb = new StringBuilder(24);
-            for (int i = 0; i < 12; i++) {
-                sb.append(String.format("%02x", hash[i]));
-            }
+            for (int i = 0; i < 12; i++) sb.append(String.format("%02x", hash[i]));
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            // fallback: still shorten
             return Integer.toHexString(s.hashCode());
         }
     }
@@ -59,7 +53,6 @@ public final class OnboardingManager {
         String uk = shortKey(userKey);
         PREFS.remove(KEY_PREFIX + flowKey + "." + uk);
     }
-
 
     public static void runWithPolicy(
             String flowKey,
@@ -77,16 +70,15 @@ public final class OnboardingManager {
         if (policy == OnboardingPolicy.NEVER) return;
 
         if (policy == OnboardingPolicy.ALWAYS) {
-            Platform.runLater(() -> start(flowKey, root, steps, null)); // no persistence
+            Platform.runLater(() -> start(flowKey, root, steps, null));
             return;
         }
 
-        // ONCE_THEN_HOVER
         boolean done = isDone(flowKey, userKey);
         if (!done) {
-            Platform.runLater(() -> start(flowKey, root, steps, userKey)); // persist per user
+            Platform.runLater(() -> start(flowKey, root, steps, userKey));
         } else {
-            Platform.runLater(() -> installHoverHints(root, steps)); // hover-only
+            Platform.runLater(() -> installHoverHints(root, steps));
         }
     }
 
@@ -108,23 +100,18 @@ public final class OnboardingManager {
         }
     }
 
-  
     public static void start(String flowKey, Parent root, List<OnboardingStep> steps, String userKey) {
         Scene scene = root.getScene();
         if (scene == null) return;
 
-        Window window = scene.getWindow();
-        if (window == null) return;
-
         final int[] idx = {0};
-
         AtomicReference<OnboardingOverlay> overlayRef = new AtomicReference<>();
 
         OnboardingOverlay overlay = new OnboardingOverlay(
                 v -> { // finish
                     markDone(flowKey, userKey);
                     OnboardingOverlay o = overlayRef.get();
-                    if (o != null) o.hide();
+                    if (o != null) OnboardingOverlay.detachFromScene(scene, o);
                 },
                 () -> { // back
                     if (idx[0] > 0) idx[0]--;
@@ -139,19 +126,22 @@ public final class OnboardingManager {
                 () -> { // skip
                     markDone(flowKey, userKey);
                     OnboardingOverlay o = overlayRef.get();
-                    if (o != null) o.hide();
+                    if (o != null) OnboardingOverlay.detachFromScene(scene, o);
                 }
         );
 
         overlayRef.set(overlay);
 
-        overlay.show(window, scene);
+        // Attach overlay INSIDE the scene graph (no popup)
+        OnboardingOverlay.attachToScene(scene, overlay);
+
+        // Render after layout is ready
         Platform.runLater(() -> render(overlay, root, steps, idx[0]));
     }
 
     private static void render(OnboardingOverlay overlay, Parent root, List<OnboardingStep> steps, int index) {
         root.applyCss();
-        root.layout();   
+        root.layout();
 
         OnboardingStep step = steps.get(index);
         Node target = null;
@@ -163,5 +153,4 @@ public final class OnboardingManager {
 
         overlay.renderStep(steps, index, target);
     }
-
 }

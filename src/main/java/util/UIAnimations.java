@@ -101,18 +101,8 @@ public class UIAnimations {
     
     //Plays the entrance animation for the logo and slides it in from the left and fades it in.
     public static void playLogoAnimation(ImageView logoImage) {
-    	if (logoImage == null) return;
-
-        // Wolf theme: hide the logo completely
-        if (!isColorfulTheme()) {
-            logoImage.setVisible(false);
-            logoImage.setManaged(false);
-            return;
-        }
-
-        // Colorful: ensure it shows and animate it
-        logoImage.setVisible(true);
-        logoImage.setManaged(true);
+        Theme current = ThemeManager.getTheme();
+    	if(current == Theme.COLORFUL) {
         TranslateTransition slide = new TranslateTransition(Duration.millis(1200), logoImage);
         slide.setFromX(-600);
         slide.setToX(50);
@@ -124,6 +114,7 @@ public class UIAnimations {
 
         slide.play();
         fade.play();
+    	}
     }
 
     
@@ -172,6 +163,15 @@ public class UIAnimations {
 
    //Creates a glowing orb circle with a radial gradient and blur effect.
     public static Circle createOrb(double radius, String centerColor, String edgeColor) {
+        Theme current = ThemeManager.getTheme();
+        if (current != Theme.COLORFUL) {
+            Circle dummy = new Circle(0);   // no size
+            dummy.setManaged(false);        // excluded from parent layout
+            dummy.setVisible(false);        // not drawn
+            dummy.setMouseTransparent(true);
+            return dummy;
+        }
+
         RadialGradient grad = new RadialGradient(
                 0, 0,
                 0.5, 0.5,
@@ -189,9 +189,12 @@ public class UIAnimations {
         orb.setEffect(new GaussianBlur(60));
         return orb;
     }
+
     
     //Animates a glowing orb with a slow, looping movement.
     public static void animateOrb(Circle orb, double dx, double dy, double seconds, double delay) {
+    	 Theme current = ThemeManager.getTheme();
+      	if(current == Theme.COLORFUL) {
         TranslateTransition tt = new TranslateTransition(Duration.seconds(seconds), orb);
         tt.setFromX(0);
         tt.setFromY(0);
@@ -202,15 +205,13 @@ public class UIAnimations {
         tt.setDelay(Duration.seconds(delay));
         tt.setInterpolator(Interpolator.EASE_BOTH);
         tt.play();
+      	}
     }
 
     //Creates and animates several large glowing orbs in the background to give the main menu a dynamic, colorful look.
     public static void setupBackgroundOrbs(GridPane mainGrid) {
-    	if (mainGrid == null) return;
-    	
-    	// Wolf theme: no orbs
-        if (!isColorfulTheme()) return;
-        
+    	 Theme current = ThemeManager.getTheme();
+      	if(current == Theme.COLORFUL) {
         Circle orb1 = createOrb(220, "#ff6ec7", "#ff1493");
         orb1.setTranslateX(-300);
         orb1.setTranslateY(-220);
@@ -232,6 +233,7 @@ public class UIAnimations {
         animateOrb(orb1, 70, -70, 14, 0);
         animateOrb(orb2, -60, 60, 16, 3);
         animateOrb(orb3, 40, -30, 13, 6);
+      	}
     }
 
     //Creates multiple "energy ring" animations that expand outwards from the center of the screen, giving a pulse effect behind the UI.
