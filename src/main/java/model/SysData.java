@@ -895,7 +895,7 @@ public class SysData {
      * Saves the internal questions list back to the CSV file.
      * Question IDs are renumbered sequentially before saving.
      */
-    private void saveQuestionsToCsv() {
+    public void saveQuestionsToCsv() {
         String filePath = getQuestionsCsvPath();
         System.out.println("Saving questions to: " + filePath);
 

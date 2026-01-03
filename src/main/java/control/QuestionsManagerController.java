@@ -18,6 +18,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +42,16 @@ public class QuestionsManagerController implements QuestionCardActions {
 
     @FXML
     private Button newQuestionButton;
+    
+    @FXML
+    private Button selectButton;
+    
+    @FXML 
+    private Button editSelectedButton;
+    
+    @FXML 
+    private Button deleteSelectedButton;
+
 
     @FXML
     private Button backButton;
@@ -54,7 +65,7 @@ public class QuestionsManagerController implements QuestionCardActions {
     @FXML
     private TextField searchTextField;
     
-    
+    private final List<QuestionCardController> cardControllers = new ArrayList<>();
     
     private final SysData sysData = SysData.getInstance();
     private List<Question> allQuestions;
@@ -177,6 +188,7 @@ public class QuestionsManagerController implements QuestionCardActions {
 
         // Clear current cards
         questionsContainerVBox.getChildren().clear();
+        cardControllers.clear();
 
         // Re-add only matching questions
         for (Question q : allQuestions) {
@@ -224,6 +236,8 @@ public class QuestionsManagerController implements QuestionCardActions {
             QuestionCardController cardController = loader.getController();
             cardController.setData(q);
             cardController.setParentController(this);
+            
+            cardControllers.add(cardController);
 
             card.setMaxWidth(Double.MAX_VALUE);
             questionsContainerVBox.getChildren().add(card);
@@ -279,6 +293,32 @@ public class QuestionsManagerController implements QuestionCardActions {
             applyFilters();
         }
     }
+    
+    @FXML
+    private void onSelectButtonClicked(ActionEvent event) {
+        for (QuestionCardController card : cardControllers) {
+            card.setSelectionMode(true);
+        }
+        editSelectedButton.setVisible(true);
+        editSelectedButton.setManaged(true);
+
+        deleteSelectedButton.setVisible(true);
+        deleteSelectedButton.setManaged(true);
+    }
+    
+    private void exitSelectionMode() {
+        for (QuestionCardController card : cardControllers) {
+            card.setSelectionMode(false);
+        }
+
+        editSelectedButton.setVisible(false);
+        editSelectedButton.setManaged(false);
+
+        deleteSelectedButton.setVisible(false);
+        deleteSelectedButton.setManaged(false);
+    }
+
+
 
 	@Override
 	public void onEditQuestion(Question question) {
@@ -291,4 +331,85 @@ public class QuestionsManagerController implements QuestionCardActions {
 		deleteQuestion(question);
 		
 	}
+	
+	private List<Question> getSelectedQuestions() {
+	    List<Question> selected = new ArrayList<>();
+	    for (QuestionCardController card : cardControllers) {
+	        if (card.isSelected()) {
+	            selected.add(card.getQuestion());
+	        }
+	    }
+	    return selected;
+	}
+	
+	@FXML
+	private void onDeleteSelectedClicked(ActionEvent event) {
+	    List<Question> selected = getSelectedQuestions();
+
+	    if (selected.isEmpty()) {
+	        DialogUtil.show(
+	            Alert.AlertType.INFORMATION,
+	            "No selection",
+	            "Delete questions",
+	            "Please select at least one question."
+	        );
+	        return;
+	    }
+
+	    Optional<ButtonType> result = DialogUtil.showDialogWithResult(
+	            Alert.AlertType.CONFIRMATION,
+	            "Delete Questions",
+	            "Confirm deletion",
+	            selected.size() + " questions will be deleted."
+	    );
+
+	    if (result.isPresent() && result.get() == ButtonType.OK) {
+	        for (Question q : selected) {
+	            sysData.deleteQuestionById(q.getId());
+	        }
+	        allQuestions = sysData.getAllQuestions();
+	        applyFilters();
+	        exitSelectionMode();
+	    }
+	}
+	
+	@FXML
+	private void onEditSelectedClicked(ActionEvent event) {
+
+	    List<Question> selected = getSelectedQuestions();
+
+	    if (selected.isEmpty()) {
+	        DialogUtil.show(
+	            Alert.AlertType.INFORMATION,
+	            "No selection",
+	            "Edit questions",
+	            "Please select at least one question."
+	        );
+	        return;
+	    }
+
+	    try {
+	        FXMLLoader loader = new FXMLLoader(
+	                getClass().getResource("/view/Edit_Question_view.fxml")
+	        );
+	        Parent root = loader.load();
+
+	        EditQuestionController editController = loader.getController();
+
+	        //THIS is the bulk-edit entry point
+	        editController.enableBulkEdit(selected);
+
+	        Stage stage = (Stage) QuestionManagerRoot.getScene().getWindow();
+	        stage.setScene(new Scene(root));
+	        stage.setTitle("Edit Selected Questions");
+	        stage.centerOnScreen();
+	        stage.show();
+
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+
+
 }

@@ -1,6 +1,7 @@
 package control;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -19,6 +20,7 @@ public class QuestionCardController {
     @FXML private Label option3Label; // C
     @FXML private Label option4Label; // D
 
+    @FXML private CheckBox checkBoxID;
     @FXML private ImageView editImg;
     @FXML private ImageView deleteImg;
 
@@ -42,6 +44,14 @@ public class QuestionCardController {
             parentController.onDeleteQuestion(question);
             System.out.println("Delete clicked for question id=" + question.getId());
         }
+    }
+    
+    public boolean isSelected() {
+        return checkBoxID.isSelected();
+    }
+
+    public Question getQuestion() {
+        return question;
     }
 
     private void markAnswers(int correctIndex) {
@@ -109,4 +119,17 @@ public class QuestionCardController {
         tp.setWrapText(true);
         tp.setMaxWidth(380);
     }
+    
+    public void setSelectionMode(boolean enabled) {
+        checkBoxID.setVisible(enabled);
+        checkBoxID.setManaged(enabled); //removes empty space when hidden
+    }
+    
+    @FXML
+    private void initialize() {
+        checkBoxID.setVisible(false);
+        checkBoxID.setManaged(false);
+    }
+
+
 }

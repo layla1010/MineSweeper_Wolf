@@ -42,7 +42,7 @@
 		<Region HBox.hgrow="ALWAYS" />
 
 		         <HBox alignment="CENTER_RIGHT" prefHeight="24.0" prefWidth="77.0" spacing="10">
-            <CheckBox mnemonicParsing="false" prefHeight="17.0" prefWidth="47.0" />
+            <CheckBox fx:id="checkBoxID" mnemonicParsing="false" prefHeight="17.0" prefWidth="47.0" />
         <ImageView fx:id="editImg" fitHeight="24.0" fitWidth="20.0" onMouseClicked="#onEditClicked" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
             <image><Image url="@/Images/editing.png" /></image>
         </ImageView>

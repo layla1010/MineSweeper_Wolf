@@ -51,7 +51,12 @@
                   </ImageView>
                </children>
             </HBox>
-            <Button fx:id="newQuestionButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onNewQuestionButtonClicked" prefHeight="30.0" prefWidth="161.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-background-radius: 50; -fx-border-color: rgba(255,255,255,0.50); -fx-border-width: 1; -fx-border-radius: 50; -fx-cursor: hand;" styleClass="primary-button" text="+ New Question" textAlignment="CENTER" textFill="WHITE" VBox.vgrow="NEVER">
+            <Button fx:id="newQuestionButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onNewQuestionButtonClicked" prefHeight="30.0" prefWidth="161.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-background-radius: 50; -fx-border-color: rgba(255,255,255,0.50); -fx-border-width: 1; -fx-border-radius: 50; -fx-cursor: hand;" styleClass="primary-button" text="+ New Question" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="Copperplate Gothic Light" size="13.0" />
+               </font>
+            </Button>
+            <Button fx:id="selectButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onSelectButtonClicked" prefHeight="30.0" prefWidth="161.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-background-radius: 50; -fx-border-color: rgba(255,255,255,0.50); -fx-border-width: 1; -fx-border-radius: 50; -fx-cursor: hand;" styleClass="primary-button" text="Select Questions" textAlignment="CENTER" textFill="WHITE" VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
@@ -59,6 +64,56 @@
                   <Font name="Copperplate Gothic Light" size="13.0" />
                </font>
             </Button>
+            <Button fx:id="editSelectedButton"
+        			alignment="CENTER"
+        			maxHeight="-Infinity"
+        			maxWidth="-Infinity"
+       				mnemonicParsing="false"
+        			onAction="#onEditSelectedClicked"
+        			prefHeight="30.0"
+        			prefWidth="161.0"
+        			visible="false"
+        			managed="false"
+        			style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));
+               				-fx-background-radius: 50;
+               				-fx-border-color: rgba(255,255,255,0.50);
+               				-fx-border-width: 1;
+               				-fx-border-radius: 50;
+               				-fx-cursor: hand;"
+        			styleClass="primary-button"
+        			text="Edit Selected"
+        			textAlignment="CENTER"
+        			textFill="WHITE">
+
+    			<font>
+        			<Font name="Copperplate Gothic Light" size="13.0" />
+    			</font>
+			</Button>
+			<Button fx:id="deleteSelectedButton"
+        			alignment="CENTER"
+        			maxHeight="-Infinity"
+        			maxWidth="-Infinity"
+        			mnemonicParsing="false"
+        			onAction="#onDeleteSelectedClicked"
+        			prefHeight="30.0"
+        			prefWidth="161.0"
+        			visible="false"
+        			managed="false"
+        			style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));
+               				-fx-background-radius: 50;
+               				-fx-border-color: rgba(255,255,255,0.50);
+               				-fx-border-width: 1;
+               				-fx-border-radius: 50;
+               				-fx-cursor: hand;"
+        			styleClass="primary-button"
+        			text="Delete Selected"
+        			textAlignment="CENTER"
+        			textFill="WHITE">
+    			<font>
+        			<Font name="Copperplate Gothic Light" size="13.0" />
+    			</font>
+			</Button>
+            
             <HBox alignment="CENTER" prefHeight="34.0" prefWidth="560.0" spacing="10.0">
                <children>
                   <ComboBox fx:id="levelFilterCombo" prefWidth="120.0" promptText="All Levels" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" />

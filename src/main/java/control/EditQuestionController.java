@@ -32,6 +32,9 @@ public class EditQuestionController {
     @FXML private Button cancelButton;
 
     private Question originalQuestion;
+    
+    private List<Question> bulkQuestions = null;
+    private boolean bulkMode = false;
 
     @FXML
     public void initialize() {
@@ -73,6 +76,35 @@ public class EditQuestionController {
     //Handling save button in edit view: Validates the form, Reads updated values from the UI, Updates the matching row in the CSV file, Returns to the Questions Management screen if successful
     @FXML
     private void onSaveButtonClicked(ActionEvent event) {
+    	//HERE WE CHECK BULK EDIT MODE
+        if (bulkMode) {
+
+            if (difficultyComboBox.getValue() == null
+                    || correctAnswerComboBox.getValue() == null) {
+
+                DialogUtil.show(
+                    AlertType.ERROR,
+                    "Invalid Input",
+                    "Validation Error",
+                    "Please select both difficulty and correct answer."
+                );
+                return;
+            }
+
+            String newDifficulty = difficultyComboBox.getValue();
+            String newCorrectLetter = correctAnswerComboBox.getValue();
+            int newCorrectIndex = "ABCD".indexOf(newCorrectLetter) + 1;
+
+            for (Question q : bulkQuestions) {
+                q.setDifficulty(newDifficulty);
+                q.setCorrectOption(newCorrectIndex);
+            }
+
+            SysData.getInstance().saveQuestionsToCsv();
+            goBackToManager();
+            return;
+        }
+    	
         if (!validateForm()) {
             return;
         }
@@ -173,5 +205,25 @@ public class EditQuestionController {
 
         }
     }
+    
+    public void enableBulkEdit(List<Question> questions) {
+        this.bulkQuestions = questions;
+        this.bulkMode = true;
+
+        // Disable fields NOT allowed in bulk edit
+        questionTextArea.setDisable(true);
+        optionATextField.setDisable(true);
+        optionBTextField.setDisable(true);
+        optionCTextField.setDisable(true);
+        optionDTextField.setDisable(true);
+
+        // Enable ONLY allowed fields
+        difficultyComboBox.setDisable(false);
+        correctAnswerComboBox.setDisable(false);
+
+        // Optional UX clarity
+        idTextField.setText("Multiple questions selected (" + questions.size() + ")");
+    }
+
 }
 
