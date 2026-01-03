@@ -15,6 +15,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
     	SysData.getInstance().ensureHistoryLoaded();
     	SysData.getInstance().ensurePlayersLoaded();
+    	SysData.getInstance().ensureQuestionsLoaded();
 
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/players_login_view.fxml"));

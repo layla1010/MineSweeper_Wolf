@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 
 public class SysData {
 
-
     /** Singleton instance of SysData. */
     private static final SysData INSTANCE = new SysData();
 
@@ -35,8 +34,8 @@ public class SysData {
 
     private final AtomicBoolean historyLoaded = new AtomicBoolean(false);
     private final AtomicBoolean playersLoaded = new AtomicBoolean(false);
+    private final AtomicBoolean questionsLoaded = new AtomicBoolean(false);
 
-    
     /** Stores all game history records. */
     private final History history = new History();
 
@@ -47,8 +46,8 @@ public class SysData {
     private final Map<String, Player> playersByName = new HashMap<>();
 
     /** CSV file name (kept for reference – actual path is resolved dynamically). */
+    @SuppressWarnings("unused")
     private static final String HISTORY_FILE_NAME = "/data/history.csv";
-
 
     /** Controls whether background music is enabled. */
     private static boolean musicEnabled = true;
@@ -64,117 +63,29 @@ public class SysData {
 
     /** Controls whether flags are automatically removed in some situations. */
     private static boolean autoRemoveFlagEnabled = true;
-    
-    
+
+    /** Internal questions list (loaded from CSV). */
     private final List<Question> questions = new ArrayList<>();
 
     /** Private constructor (singleton). */
     private SysData() {
     }
 
-
     /** Returns the History object that holds all Game records. */
     public History getHistory() {
         return history;
     }
-    
+
+    /**
+     * Always returns the questions list for game usage.
+     * Guarantees questions are loaded once per app run (unless reloaded explicitly).
+     */
     public List<Question> getAllQuestions() {
+        ensureQuestionsLoaded();
         return new ArrayList<>(questions);
     }
 
-    public void deleteQuestionById(int id) {
-        questions.removeIf(q -> q.getId() == id);
-        renumberQuestionIds();
-        saveQuestionsToCsv();
-    }
-    
-    private void renumberQuestionIds() {
-        int id = 1;
-        for (Question q : questions) {
-            q.setId(id++);
-        }
-    }
-
-    /** Resolves the full path to the history CSV file. */
-    private static String getHistoryCsvPath() {
-        try {
-            String path = SysData.class
-                    .getProtectionDomain()
-                    .getCodeSource()
-                    .getLocation()
-                    .getPath();
-
-            String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
-
-            // Windows fix: remove leading '/' from "C:/..."
-            if (decoded.length() > 2
-                    && decoded.charAt(0) == '/'
-                    && Character.isLetter(decoded.charAt(1))
-                    && decoded.charAt(2) == ':') {
-                decoded = decoded.substring(1);
-            }
-
-            // Running from a JAR
-            if (decoded.contains(".jar")) {
-                decoded = decoded.substring(0, decoded.lastIndexOf('/'));
-                return decoded + "/Data/history.csv";
-            } else {
-                // Running from IDE
-                if (decoded.contains("target/classes/")) {
-                    decoded = decoded.substring(0, decoded.lastIndexOf("target/classes/"));
-                } else if (decoded.contains("bin/")) {
-                    decoded = decoded.substring(0, decoded.lastIndexOf("bin/"));
-                } else {
-                    return "Data/history.csv";
-                }
-
-                return decoded + "src/main/resources/Data/history.csv";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Data/history.csv";
-        }
-    }
-
-    /** Resolves the full path to the players CSV file. */
-    private static String getPlayersCsvPath() {
-        try {
-            String path = SysData.class
-                    .getProtectionDomain()
-                    .getCodeSource()
-                    .getLocation()
-                    .getPath();
-
-            String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
-
-            // Windows fix
-            if (decoded.length() > 2
-                    && decoded.charAt(0) == '/'
-                    && Character.isLetter(decoded.charAt(1))
-                    && decoded.charAt(2) == ':') {
-                decoded = decoded.substring(1);
-            }
-
-            if (decoded.contains(".jar")) {
-                decoded = decoded.substring(0, decoded.lastIndexOf('/'));
-                return decoded + "/Data/Users.csv";
-            } else {
-                if (decoded.contains("target/classes/")) {
-                    decoded = decoded.substring(0, decoded.lastIndexOf("target/classes/"));
-                } else if (decoded.contains("bin/")) {
-                    decoded = decoded.substring(0, decoded.lastIndexOf("bin/"));
-                } else {
-                    return "Data/Users.csv";
-                }
-
-                return decoded + "src/main/resources/Data/Users.csv";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Data/Users.csv";
-        }
-    }
-
+    // ============================ HISTORY ============================
 
     /** Adds a single Game record to the history. */
     public void addGameToHistory(Game game) {
@@ -190,7 +101,7 @@ public class SysData {
 
         Path path = Paths.get(csvPath);
         if (!Files.exists(path)) {
-        	LOG.warning("History file not found, skipping load.");
+            LOG.warning("History file not found, skipping load.");
             return;
         }
 
@@ -227,18 +138,18 @@ public class SysData {
         }
 
         try {
-            LocalDate date          = LocalDate.parse(parts[0]);       // "2025-11-26"
-            int durationSeconds     = parseDuration(parts[1]);         // "21:15" or "1275"
-            Difficulty difficulty   = Difficulty.valueOf(parts[2]);
-            int score               = Integer.parseInt(parts[3]);
-            GameResult result       = GameResult.valueOf(parts[4]);    // WIN / LOSE / GIVE_UP
-            String nick_player1     = parts[5];
-            String nick_player2     = parts[6];
-            String off_player1      = toNullIfBlank(parts[7]);
-            String off_player2      = toNullIfBlank(parts[8]);
+            LocalDate date = LocalDate.parse(parts[0]);       // "2025-11-26"
+            int durationSeconds = parseDuration(parts[1]);    // "21:15" or "1275"
+            Difficulty difficulty = Difficulty.valueOf(parts[2]);
+            int score = Integer.parseInt(parts[3]);
+            GameResult result = GameResult.valueOf(parts[4]); // WIN / LOSE / GIVE_UP
+            String nick_player1 = parts[5];
+            String nick_player2 = parts[6];
+            String off_player1 = toNullIfBlank(parts[7]);
+            String off_player2 = toNullIfBlank(parts[8]);
             boolean winWithoutMistakes = Boolean.parseBoolean(parts[9].trim());
 
-            // NEW: optional avatar columns (for older CSVs these may not exist)
+            // optional avatar columns
             String avatar1 = (parts.length > 10) ? toNullIfBlank(parts[10]) : null;
             String avatar2 = (parts.length > 11) ? toNullIfBlank(parts[11]) : null;
 
@@ -261,7 +172,6 @@ public class SysData {
             e.printStackTrace();
             return null;
         }
-
     }
 
     /** Converts empty strings to null. */
@@ -283,7 +193,6 @@ public class SysData {
             int seconds = Integer.parseInt(parts[1]);
             return minutes * 60 + seconds;
         } else {
-            // assume raw seconds
             return Integer.parseInt(text);
         }
     }
@@ -297,7 +206,6 @@ public class SysData {
         var games = history.getGames();
 
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-            // header
             writer.write("date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Official,player2Official,winWithoutMistakes,player1Avatar,player2Avatar");
             writer.newLine();
 
@@ -313,20 +221,19 @@ public class SysData {
 
     /** Converts a Game object into a CSV line string. */
     private String formatGameAsCsvLine(Game game) {
-        String dateStr       = game.getDate().toString();
-        String durationStr   = game.getDurationFormatted();
+        String dateStr = game.getDate().toString();
+        String durationStr = game.getDurationFormatted();
         String difficultyStr = game.getDifficulty().name();
-        String scoreStr      = Integer.toString(game.getFinalScore());
-        String resultStr     = game.getResult().name();
-        String p1Nick        = sanitizeForCsv(game.getPlayer1Nickname());
-        String p2Nick        = sanitizeForCsv(game.getPlayer2Nickname());
-        String p1Off         = sanitizeForCsvOrEmpty(game.getPlayer1OfficialName());
-        String p2Off         = sanitizeForCsvOrEmpty(game.getPlayer2OfficialName());
+        String scoreStr = Integer.toString(game.getFinalScore());
+        String resultStr = game.getResult().name();
+        String p1Nick = sanitizeForCsv(game.getPlayer1Nickname());
+        String p2Nick = sanitizeForCsv(game.getPlayer2Nickname());
+        String p1Off = sanitizeForCsvOrEmpty(game.getPlayer1OfficialName());
+        String p2Off = sanitizeForCsvOrEmpty(game.getPlayer2OfficialName());
         String noMistakesStr = Boolean.toString(game.isWinWithoutMistakes());
         String p1Avatar = sanitizeForCsvOrEmpty(game.getPlayer1AvatarPath());
         String p2Avatar = sanitizeForCsvOrEmpty(game.getPlayer2AvatarPath());
 
-        
         return String.join(",",
                 dateStr,
                 durationStr,
@@ -343,6 +250,7 @@ public class SysData {
         );
     }
 
+    // ============================ PLAYERS ============================
 
     /** Loads all Players data from the Player CSV file into memory. */
     private void loadPlayersFromCsvInternal() {
@@ -352,7 +260,6 @@ public class SysData {
         String csvPath = getPlayersCsvPath();
         LOG.info("Loading players from: " + csvPath);
 
-
         Path path = Paths.get(csvPath);
         if (!Files.exists(path)) {
             System.out.println("Players file not found, skipping load.");
@@ -360,15 +267,14 @@ public class SysData {
         }
 
         try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-            // header
-            String header = reader.readLine();
+            reader.readLine(); // header
 
             String line;
             while ((line = reader.readLine()) != null) {
                 Player p = parsePlayerFromCsvLine(line);
                 if (p != null) {
                     String keyEmail = p.getEmail().toLowerCase();
-                    String keyName  = p.getOfficialName().toLowerCase();
+                    String keyName = p.getOfficialName().toLowerCase();
                     playersByEmail.put(keyEmail, p);
                     playersByName.put(keyName, p);
                 }
@@ -391,10 +297,10 @@ public class SysData {
         }
 
         String officialName = parts[0].trim();
-        String email        = parts[1].trim();
-        String password     = parts[2].trim();
-        String roleStr      = parts[3].trim();
-        String avatarId     = (parts.length >= 5) ? parts[4].trim() : null;
+        String email = parts[1].trim();
+        String password = parts[2].trim();
+        String roleStr = parts[3].trim();
+        String avatarId = (parts.length >= 5) ? parts[4].trim() : null;
 
         Role role;
         try {
@@ -420,7 +326,6 @@ public class SysData {
         Path path = Paths.get(csvPath);
 
         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-            // header
             writer.write("officialName,email,password,Role,Avatar");
             writer.newLine();
 
@@ -437,21 +342,21 @@ public class SysData {
     /** Converts a Player object into a CSV line string. */
     private String formatPlayerAsCsvLine(Player p) {
         String officialName = sanitizeForCsv(p.getOfficialName());
-        String email        = sanitizeForCsv(p.getEmail());
-        String password     = sanitizeForCsv(p.getPassword());
-        String role         = p.getRole().name();
-        String avatarId     = p.getAvatarId();
+        String email = sanitizeForCsv(p.getEmail());
+        String password = sanitizeForCsv(p.getPassword());
+        String role = p.getRole().name();
+        String avatarId = p.getAvatarId();
 
         return String.join(",", officialName, email, password, role, avatarId);
     }
 
+    // ============================ CSV HELPERS ============================
 
     /** Sanitizes a text field for safe CSV storage. */
     private String sanitizeForCsv(String text) {
         if (text == null) {
             return "";
         }
-        // Remove commas so they don't break CSV columns
         return text.replace(",", " ");
     }
 
@@ -462,6 +367,7 @@ public class SysData {
         return sanitizeForCsv(text);
     }
 
+    // ============================ SETTINGS ============================
 
     public static boolean isMusicEnabled() {
         return musicEnabled;
@@ -512,6 +418,7 @@ public class SysData {
         autoRemoveFlagEnabled = true;
     }
 
+    // ============================ PLAYER OPS ============================
 
     public Player findPlayerByEmail(String email) {
         if (email == null) return null;
@@ -562,6 +469,7 @@ public class SysData {
         savePlayersToCsv();
     }
 
+    // ============================ STATS ============================
 
     public PlayerStats computeStatsForPlayer(Player player) {
         if (player == null) {
@@ -578,7 +486,6 @@ public class SysData {
 
     public PlayerStats computeStatsForOfficialName(String officialName, String avatarId) {
         if (officialName == null || officialName.isBlank()) {
-            // For guest users etc.
             return new PlayerStats(
                     "-", avatarId,
                     0, 0, 0, 0, 0,
@@ -594,17 +501,16 @@ public class SysData {
         int wins = 0;
         int losses = 0;
         int giveUps = 0;
-        int winsWithNoMistakes = 0; // will update later once we track mistakes per game
+        int winsWithNoMistakes = 0;
 
         int bestScore = Integer.MIN_VALUE;
         String bestScoreOpponent = "-";
 
-        // best time: SHORTEST WINNING TIME ONLY
         int bestTimeSeconds = Integer.MAX_VALUE;
         String bestTimeOpponent = "-";
 
         var easyScoresList = new ArrayList<Integer>();
-        var medScoresList  = new ArrayList<Integer>();
+        var medScoresList = new ArrayList<Integer>();
         var hardScoresList = new ArrayList<Integer>();
 
         for (Game game : history.getGames()) {
@@ -618,7 +524,6 @@ public class SysData {
             Difficulty diff = game.getDifficulty();
             int score = game.getFinalScore();
 
-            // progression by difficulty
             if (diff == Difficulty.EASY) {
                 easyScoresList.add(score);
             } else if (diff == Difficulty.MEDIUM) {
@@ -627,42 +532,33 @@ public class SysData {
                 hardScoresList.add(score);
             }
 
-            // result-based counters
             GameResult res = game.getResult();
             switch (res) {
                 case WIN:
                     wins++;
-
                     if (game.isWinWithoutMistakes()) {
                         winsWithNoMistakes++;
                     }
-
                     break;
-
                 case LOSE:
                     losses++;
                     break;
-
                 case GIVE_UP:
                     giveUps++;
                     break;
-
                 default:
                     break;
             }
 
-            // Opponent name
             String opponent = getOpponentName(game, targetName);
 
-            // best score (max over ALL results)
             if (score > bestScore) {
                 bestScore = score;
                 bestScoreOpponent = opponent;
             }
 
-            // best time (MIN duration, but ONLY among WINS)
             if (res == GameResult.WIN) {
-            	int durationSeconds = game.getDurationSeconds();
+                int durationSeconds = game.getDurationSeconds();
                 if (durationSeconds > 0 && durationSeconds < bestTimeSeconds) {
                     bestTimeSeconds = durationSeconds;
                     bestTimeOpponent = opponent;
@@ -670,19 +566,16 @@ public class SysData {
             }
         }
 
-        // Normalize for "no games"
         if (totalGames == 0) {
             bestScore = 0;
             bestTimeSeconds = 0;
             bestScoreOpponent = "-";
             bestTimeOpponent = "-";
         } else {
-            // Player has some games but ZERO wins → no “best winning time”
             if (wins == 0) {
                 bestTimeSeconds = 0;
                 bestTimeOpponent = "-";
             }
-            // If player has games but all scores <= 0 we keep bestScore=0, opponent "-"
             if (bestScore == Integer.MIN_VALUE) {
                 bestScore = 0;
                 bestScoreOpponent = "-";
@@ -694,7 +587,7 @@ public class SysData {
         }
 
         int[] easyScores = easyScoresList.stream().mapToInt(Integer::intValue).toArray();
-        int[] medScores  = medScoresList.stream().mapToInt(Integer::intValue).toArray();
+        int[] medScores = medScoresList.stream().mapToInt(Integer::intValue).toArray();
         int[] hardScores = hardScoresList.stream().mapToInt(Integer::intValue).toArray();
 
         return new PlayerStats(
@@ -715,7 +608,6 @@ public class SysData {
         );
     }
 
-
     private boolean isPlayerInGame(Game game, String officialName) {
         if (officialName == null || officialName.isBlank()) {
             return false;
@@ -732,7 +624,6 @@ public class SysData {
             return true;
         }
 
-        // Optional: match by nickname if official name is missing
         String p1Nick = game.getPlayer1Nickname();
         String p2Nick = game.getPlayer2Nickname();
 
@@ -757,21 +648,18 @@ public class SysData {
         String p1Nick = game.getPlayer1Nickname();
         String p2Nick = game.getPlayer2Nickname();
 
-        // If target is P1
         if (p1Off != null && p1Off.trim().equalsIgnoreCase(target)) {
             if (p2Off != null && !p2Off.isBlank()) return p2Off;
             if (p2Nick != null && !p2Nick.isBlank()) return p2Nick;
             return "-";
         }
 
-        // If target is P2
         if (p2Off != null && p2Off.trim().equalsIgnoreCase(target)) {
             if (p1Off != null && !p1Off.isBlank()) return p1Off;
             if (p1Nick != null && !p1Nick.isBlank()) return p1Nick;
             return "-";
         }
 
-        // Maybe we matched by nickname:
         if (p1Nick != null && p1Nick.trim().equalsIgnoreCase(target)) {
             if (p2Off != null && !p2Off.isBlank()) return p2Off;
             if (p2Nick != null && !p2Nick.isBlank()) return p2Nick;
@@ -784,7 +672,9 @@ public class SysData {
 
         return "-";
     }
-    
+
+    // ============================ ENSURE LOADED ============================
+
     /**
      * Loads history from CSV only once per application run.
      * Safe to call from any controller.
@@ -805,6 +695,16 @@ public class SysData {
         }
     }
 
+    /**
+     * Loads questions from CSV only once per application run.
+     * Safe to call from any controller.
+     */
+    public void ensureQuestionsLoaded() {
+        if (questionsLoaded.compareAndSet(false, true)) {
+            loadQuestionsFromCsv();
+        }
+    }
+
     public void reloadHistoryFromCsv() {
         loadHistoryFromCsvInternal();
         historyLoaded.set(true);
@@ -815,7 +715,12 @@ public class SysData {
         playersLoaded.set(true);
     }
 
-    //================= Questions Manager =================//
+    public void reloadQuestionsFromCsv() {
+        loadQuestionsFromCsv();
+        questionsLoaded.set(true);
+    }
+
+    // ============================ QUESTIONS MANAGER ============================
 
     /**
      * Loads all questions from the CSV file into the internal questions list.
@@ -826,6 +731,16 @@ public class SysData {
 
         String csvPath = getQuestionsCsvPath();
         System.out.println("Loading questions from: " + csvPath);
+
+        // Mark as "loaded" even if file is empty/missing, so we don't spam reload attempts.
+        // If you want to retry later, call reloadQuestionsFromCsv().
+        questionsLoaded.set(true);
+
+        Path p = Paths.get(csvPath);
+        if (!Files.exists(p)) {
+            System.err.println("Questions file not found: " + csvPath);
+            return;
+        }
 
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(csvPath), StandardCharsets.UTF_8))) {
@@ -841,9 +756,32 @@ public class SysData {
             Map<String, Integer> col = new HashMap<>();
 
             for (int i = 0; i < headers.length; i++) {
-                String h = headers[i].trim().replace("\uFEFF", ""); // remove BOM if present
+                String h = headers[i].trim().replace("\uFEFF", "");
                 col.put(h, i);
             }
+
+            // Validate required columns once
+            Integer iA = col.get("A");
+            Integer iB = col.get("B");
+            Integer iC = col.get("C");
+            Integer iD = col.get("D");
+            Integer iDifficulty = col.get("Difficulty");
+            Integer iId = col.get("ID");
+            Integer iQuestion = col.get("Question");
+            Integer iCorrect = col.get("Correct Answer");
+
+            if (iA == null || iB == null || iC == null || iD == null ||
+                    iDifficulty == null || iId == null || iQuestion == null || iCorrect == null) {
+                System.err.println("Questions CSV header is missing required columns.");
+                return;
+            }
+
+            int maxIndex = Math.max(
+                    Math.max(iA, iB),
+                    Math.max(iC, Math.max(iD,
+                            Math.max(iDifficulty, Math.max(iId,
+                                    Math.max(iQuestion, iCorrect)))))
+            );
 
             String line;
             int rowNumber = 1;
@@ -853,30 +791,6 @@ public class SysData {
                 if (line.trim().isEmpty()) continue;
 
                 String[] cells = line.split(delimiter, -1);
-
-                Integer iA = col.get("A");
-                Integer iB = col.get("B");
-                Integer iC = col.get("C");
-                Integer iD = col.get("D");
-                Integer iDifficulty = col.get("Difficulty");
-                Integer iId = col.get("ID");
-                Integer iQuestion = col.get("Question");
-                Integer iCorrect = col.get("Correct Answer");
-
-                // Basic header validation
-                if (iA == null || iB == null || iC == null || iD == null ||
-                        iDifficulty == null || iId == null || iQuestion == null || iCorrect == null) {
-                    System.err.println("Questions CSV header is missing required columns.");
-                    return;
-                }
-
-                int maxIndex = Math.max(
-                        Math.max(iA, iB),
-                        Math.max(iC, Math.max(iD,
-                        Math.max(iDifficulty, Math.max(iId,
-                        Math.max(iQuestion, iCorrect)))))
-                );
-
                 if (cells.length <= maxIndex) {
                     System.err.println("Skipping row " + rowNumber + " – not enough columns");
                     continue;
@@ -917,13 +831,13 @@ public class SysData {
 
                 Question q = new Question(
                         Integer.parseInt(idStr),
-                        mapDifficulty(difficultyNum),   // "1..4" -> "Easy..Expert"
+                        mapDifficulty(difficultyNum),
                         questionText,
                         optA,
                         optB,
                         optC,
                         optD,
-                        mapCorrectLetter(correctLetter) // "A..D" -> 1..4
+                        mapCorrectLetter(correctLetter)
                 );
 
                 questions.add(q);
@@ -970,9 +884,7 @@ public class SysData {
         }
     }
 
-    /**
-     * Escapes values that contain commas/quotes/newlines for CSV.
-     */
+    /** Escapes values that contain commas/quotes/newlines for CSV. */
     private String escapeCsv(String s) {
         if (s == null) return "";
         if (s.contains(",") || s.contains("\"") || s.contains("\n")) {
@@ -996,7 +908,6 @@ public class SysData {
 
             String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
 
-            // Windows fix (same logic as history/users)
             if (decoded.length() > 2
                     && decoded.charAt(0) == '/'
                     && Character.isLetter(decoded.charAt(1))
@@ -1024,9 +935,7 @@ public class SysData {
         }
     }
 
-    /**
-     * Converts difficulty number to text.
-     */
+    /** Converts difficulty number to text. */
     private String mapDifficulty(String num) {
         return switch (num) {
             case "1" -> "Easy";
@@ -1037,9 +946,7 @@ public class SysData {
         };
     }
 
-    /**
-     * Converts correct answer letter A/B/C/D to index 1..4.
-     */
+    /** Converts correct answer letter A/B/C/D to index 1..4. */
     private int mapCorrectLetter(String letter) {
         return switch (letter.toUpperCase()) {
             case "A" -> 1;
@@ -1050,9 +957,7 @@ public class SysData {
         };
     }
 
-    /**
-     * Difficulty text (Easy/Medium/Hard/Expert) to number (1..4).
-     */
+    /** Difficulty text (Easy/Medium/Hard/Expert) to number (1..4). */
     static String mapDifficultyToNumber(String difficultyText) {
         if (difficultyText == null) return null;
         return switch (difficultyText.trim().toLowerCase()) {
@@ -1060,13 +965,11 @@ public class SysData {
             case "medium" -> "2";
             case "hard" -> "3";
             case "expert" -> "4";
-            default -> null; // IMPORTANT: return null so caller can treat as invalid
+            default -> null;
         };
     }
 
-    /**
-     * correctOption 1..4 → "A..D".
-     */
+    /** correctOption 1..4 → "A..D". */
     private String mapCorrectNumberToLetter(int correctOption) {
         return switch (correctOption) {
             case 1 -> "A";
@@ -1086,7 +989,10 @@ public class SysData {
             String optD,
             String correctLetter
     ) {
-        loadQuestionsFromCsv(); // ensure up-to-date
+        ensureQuestionsLoaded();
+
+        // Make sure we are up-to-date with file contents before adding
+        reloadQuestionsFromCsv();
 
         int nextId = questions.size() + 1;
 
@@ -1115,6 +1021,8 @@ public class SysData {
             String optD,
             String correctLetter
     ) {
+        ensureQuestionsLoaded();
+
         for (Question q : questions) {
             if (q.getId() == id) {
                 q.setDifficulty(difficultyText);
@@ -1131,7 +1039,98 @@ public class SysData {
         saveQuestionsToCsv();
     }
 
+    public void deleteQuestionById(int id) {
+        ensureQuestionsLoaded();
+        questions.removeIf(q -> q.getId() == id);
+        renumberQuestionIds();
+        saveQuestionsToCsv();
+    }
+
+    private void renumberQuestionIds() {
+        int id = 1;
+        for (Question q : questions) {
+            q.setId(id++);
+        }
+    }
+
     public int getNextQuestionId() {
+        ensureQuestionsLoaded();
         return questions.size() + 1;
+    }
+
+    // ============================ PATH RESOLUTION (HISTORY/PLAYERS) ============================
+
+    /** Resolves the full path to the history CSV file. */
+    private static String getHistoryCsvPath() {
+        try {
+            String path = SysData.class
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .getPath();
+
+            String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
+
+            if (decoded.length() > 2
+                    && decoded.charAt(0) == '/'
+                    && Character.isLetter(decoded.charAt(1))
+                    && decoded.charAt(2) == ':') {
+                decoded = decoded.substring(1);
+            }
+
+            if (decoded.contains(".jar")) {
+                decoded = decoded.substring(0, decoded.lastIndexOf('/'));
+                return decoded + "/Data/history.csv";
+            } else {
+                if (decoded.contains("target/classes/")) {
+                    decoded = decoded.substring(0, decoded.lastIndexOf("target/classes/"));
+                } else if (decoded.contains("bin/")) {
+                    decoded = decoded.substring(0, decoded.lastIndexOf("bin/"));
+                } else {
+                    return "Data/history.csv";
+                }
+                return decoded + "src/main/resources/Data/history.csv";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Data/history.csv";
+        }
+    }
+
+    /** Resolves the full path to the players CSV file. */
+    private static String getPlayersCsvPath() {
+        try {
+            String path = SysData.class
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .getPath();
+
+            String decoded = URLDecoder.decode(path, StandardCharsets.UTF_8.name());
+
+            if (decoded.length() > 2
+                    && decoded.charAt(0) == '/'
+                    && Character.isLetter(decoded.charAt(1))
+                    && decoded.charAt(2) == ':') {
+                decoded = decoded.substring(1);
+            }
+
+            if (decoded.contains(".jar")) {
+                decoded = decoded.substring(0, decoded.lastIndexOf('/'));
+                return decoded + "/Data/Users.csv";
+            } else {
+                if (decoded.contains("target/classes/")) {
+                    decoded = decoded.substring(0, decoded.lastIndexOf("target/classes/"));
+                } else if (decoded.contains("bin/")) {
+                    decoded = decoded.substring(0, decoded.lastIndexOf("bin/"));
+                } else {
+                    return "Data/Users.csv";
+                }
+                return decoded + "src/main/resources/Data/Users.csv";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Data/Users.csv";
+        }
     }
 }
