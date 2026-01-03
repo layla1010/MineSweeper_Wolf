@@ -183,6 +183,14 @@ public class HistoryController {
         String diffText = prettifyEnumName(game.getDifficulty().name());
         Label difficultyLabel = new Label(diffText);
         difficultyLabel.getStyleClass().addAll("pill-label", "difficulty-pill");
+        
+        switch (game.getDifficulty()) {
+        case EASY -> difficultyLabel.getStyleClass().add("difficulty-easy");
+        case MEDIUM -> difficultyLabel.getStyleClass().add("difficulty-medium");
+        case HARD -> difficultyLabel.getStyleClass().add("difficulty-hard");
+        default -> {}
+    }
+
 
         ImageView avatar1 = createAvatarView(game.getPlayer1AvatarPath());
         ImageView avatar2 = createAvatarView(game.getPlayer2AvatarPath());

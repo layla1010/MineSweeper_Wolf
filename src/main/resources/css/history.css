@@ -39,9 +39,12 @@
     -fx-padding: 12 18 12 18;
 }
 
+/* Wolf theme: History card hover -> orange */
 .history-card:hover {
-    -fx-border-color: #35E0FF;
+    -fx-border-color: rgba(255, 145, 40, 0.90);
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.25), 18, 0.35, 0, 0);
 }
+
 
 /* top row: difficulty | players | result */
 .history-card-header {
@@ -124,14 +127,29 @@
 
 /* ===== Buttons (Apply / Sort) ===== */
 .history-small-button {
-    -fx-background-color: linear-gradient(#3C8DFF, #274B8E);
-    -fx-text-fill: white;
+    -fx-background-color: rgba(255,255,255,0.14);
+    -fx-border-color: rgba(255,255,255,0.35);
+    -fx-border-width: 1.2;
     -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-text-fill: rgba(255,255,255,0.95);
     -fx-padding: 4 14 4 14;
     -fx-cursor: hand;
     -fx-font-size: 11px;
     -fx-font-family: "Copperplate Gothic Light";
 }
+
+.history-glass-input {
+    -fx-background-color: rgba(255,255,255,0.14);
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255,255,255,0.70);
+    -fx-background-radius: 20;
+    -fx-border-color: rgba(255,255,255,0.35);
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+    -fx-padding: 2 10 2 10;
+}
+
 
 .history-small-button:hover {
     -fx-background-color: linear-gradient(#4F9BFF, #3053A0);

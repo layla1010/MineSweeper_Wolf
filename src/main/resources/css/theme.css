@@ -99,3 +99,18 @@
     -fx-text-fill: white;
     -fx-font-size: 12px;
 }
+/* History: keep default theme as blue neon */
+.history-small-button {
+    -fx-background-color: linear-gradient(#3C8DFF, #274B8E);
+    -fx-border-color: rgba(53,224,255,0.35);
+}
+
+.history-small-button:hover {
+    -fx-background-color: linear-gradient(#4F9BFF, #3053A0);
+    -fx-border-color: rgba(53,224,255,0.55);
+}
+
+.history-card:hover {
+    -fx-border-color: #35E0FF;
+}
+

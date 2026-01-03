@@ -16,106 +16,181 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="root" prefHeight="750.0" prefWidth="1200.0" styleClass="history-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.HistoryController">
+<BorderPane fx:id="root"
+            prefHeight="750.0"
+            prefWidth="1200.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="control.HistoryController">
+
+    <!-- Root style class -->
+    <styleClass>
+        <String fx:value="history-root"/>
+    </styleClass>
 
     <!-- ===== TOP: title + filter + sort ===== -->
     <top>
-    <VBox spacing="18.0" BorderPane.alignment="TOP_CENTER">
-        <padding>
-            <Insets left="40.0" right="40.0" top="25.0" />
-        </padding>
+        <VBox spacing="18.0" BorderPane.alignment="TOP_CENTER">
+            <padding>
+                <Insets left="40.0" right="40.0" top="25.0"/>
+            </padding>
 
-        <!-- Big HISTORY title -->
-<HBox alignment="CENTER_LEFT">
-    <children>
-               <Button alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onBackButtonClicked" prefHeight="40.0" prefWidth="50.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-width: 1; -fx-border-color: rgba(255,255,255,0.50); -fx-cursor: hand;" text="←" textAlignment="CENTER" textFill="WHITE">
-                  <font>
-                     <Font name="Copperplate Gothic Bold" size="20.0" />
-                  </font>
-               </Button>
+            <!-- Title row -->
+            <HBox alignment="CENTER_LEFT">
+                <children>
 
-        <Label alignment="CENTER" contentDisplay="CENTER" styleClass="history-title" text="History" textFill="WHITE">
-                  <HBox.margin>
-                     <Insets left="400.0" />
-                  </HBox.margin>
-                  <font>
-                     <Font name="Copperplate Gothic Bold" size="48.0" />
-                  </font></Label>
-    </children>
-</HBox>
+                    <!-- Back -->
+                    <Button text="←"
+                            prefHeight="40.0"
+                            prefWidth="50.0"
+                            mnemonicParsing="false"
+                            onAction="#onBackButtonClicked"
+                            textFill="WHITE">
+                        <styleClass>
+                            <String fx:value="history-back-button"/>
+                        </styleClass>
+                        <font>
+                            <Font name="Copperplate Gothic Bold" size="20.0"/>
+                        </font>
+                    </Button>
 
+                    <!-- Title -->
+                    <Label text="History" textFill="WHITE" alignment="CENTER" contentDisplay="CENTER">
+                        <styleClass>
+                            <String fx:value="history-title"/>
+                        </styleClass>
+                        <HBox.margin>
+                            <Insets left="400.0"/>
+                        </HBox.margin>
+                        <font>
+                            <Font name="Copperplate Gothic Bold" size="48.0"/>
+                        </font>
+                    </Label>
 
-        <!-- Filter + Sort row -->
-        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="history-filter-bar">
+                </children>
+            </HBox>
 
-            <children>
+            <!-- Filter + Sort row -->
+            <HBox alignment="CENTER_LEFT" spacing="12.0">
+                <styleClass>
+                    <String fx:value="history-filter-bar"/>
+                </styleClass>
 
-                <!-- FILTER SIDE -->
-                <Label minWidth="70.0" styleClass="history-filter-label" text="Filter by:" />
+                <children>
 
-                <ComboBox fx:id="filterTypeCombo" onAction="#onFilterTypeChanged" prefWidth="170.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="All" />
-                            <String fx:value="Player name" />
-                            <String fx:value="Difficulty" />
-                            <String fx:value="Result" />
-                            <String fx:value="Date" />
-                        </FXCollections>
-                    </items>
-                </ComboBox>
+                    <!-- FILTER SIDE -->
+                    <Label text="Filter by:" minWidth="70.0">
+                        <styleClass>
+                            <String fx:value="history-filter-label"/>
+                        </styleClass>
+                    </Label>
 
-                <!-- narrower input -->
-                <TextField fx:id="filterValueField" prefWidth="150.0" promptText="Enter value..." style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" />
+                    <ComboBox fx:id="filterTypeCombo"
+                              onAction="#onFilterTypeChanged"
+                              prefWidth="170.0">
+                        <styleClass>
+                            <String fx:value="history-glass-input"/>
+                        </styleClass>
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="All"/>
+                                <String fx:value="Player name"/>
+                                <String fx:value="Difficulty"/>
+                                <String fx:value="Result"/>
+                                <String fx:value="Date"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
 
-                <!-- used only when 'Date' is chosen -->
-                <DatePicker fx:id="dateFilterPicker" disable="true" prefWidth="180.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" />
+                    <TextField fx:id="filterValueField"
+                               prefWidth="150.0"
+                               promptText="Enter value...">
+                        <styleClass>
+                            <String fx:value="history-glass-input"/>
+                        </styleClass>
+                    </TextField>
 
-                <Button onAction="#onFilterApplyClicked" prefWidth="80.0" styleClass="history-small-button" text="Apply" />
+                    <DatePicker fx:id="dateFilterPicker"
+                                disable="true"
+                                prefWidth="180.0">
+                        <styleClass>
+                            <String fx:value="history-glass-input"/>
+                        </styleClass>
+                    </DatePicker>
 
-                <!-- remove CLEAR button here -->
+                    <Button text="Apply"
+                            prefWidth="80.0"
+                            onAction="#onFilterApplyClicked">
+                        <styleClass>
+                            <String fx:value="history-small-button"/>
+                        </styleClass>
+                    </Button>
 
-                <!-- space filler -->
-                <Region HBox.hgrow="ALWAYS" />
+                    <!-- space filler -->
+                    <Region HBox.hgrow="ALWAYS"/>
 
-                <!-- SORT SIDE -->
-                <Label minWidth="60.0" styleClass="history-filter-label" text="Sort by:" />
+                    <!-- SORT SIDE -->
+                    <Label text="Sort by:" minWidth="60.0">
+                        <styleClass>
+                            <String fx:value="history-filter-label"/>
+                        </styleClass>
+                    </Label>
 
-                <ComboBox fx:id="sortTypeCombo" prefWidth="230.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="None" />
-                            <String fx:value="Score (high → low)" />
-                            <String fx:value="Score (low → high)" />
-                            <String fx:value="Date (newest)" />
-                            <String fx:value="Date (oldest)" />
-                            <String fx:value="Duration (long → short)" />
-                            <String fx:value="Duration (short → long)" />
-                        </FXCollections>
-                    </items>
-                </ComboBox>
+                    <ComboBox fx:id="sortTypeCombo"
+                              prefWidth="230.0">
+                        <styleClass>
+                            <String fx:value="history-glass-input"/>
+                        </styleClass>
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="None"/>
+                                <String fx:value="Score (high → low)"/>
+                                <String fx:value="Score (low → high)"/>
+                                <String fx:value="Date (newest)"/>
+                                <String fx:value="Date (oldest)"/>
+                                <String fx:value="Duration (long → short)"/>
+                                <String fx:value="Duration (short → long)"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
 
-                <Button onAction="#onSortBtnClicked" prefWidth="80.0" styleClass="history-small-button" text="Sort" />
+                    <Button text="Sort"
+                            prefWidth="80.0"
+                            onAction="#onSortBtnClicked">
+                        <styleClass>
+                            <String fx:value="history-small-button"/>
+                        </styleClass>
+                    </Button>
 
-            </children>
-        </HBox>
-    </VBox>
-</top>
+                </children>
+            </HBox>
 
+        </VBox>
+    </top>
 
     <!-- ===== CENTER: scrollable list of cards ===== -->
     <center>
-        <ScrollPane fitToWidth="true" pannable="true" styleClass="history-scroll" BorderPane.alignment="CENTER">
+        <ScrollPane fitToWidth="true"
+                    pannable="true"
+                    BorderPane.alignment="CENTER">
+            <styleClass>
+                <String fx:value="history-scroll"/>
+            </styleClass>
+
             <content>
-                <VBox fx:id="historyList" spacing="15.0" styleClass="history-list">
+                <VBox fx:id="historyList" spacing="15.0">
+                    <styleClass>
+                        <String fx:value="history-list"/>
+                    </styleClass>
                     <!-- cards are added here in HistoryController -->
                 </VBox>
             </content>
         </ScrollPane>
     </center>
-   <stylesheets>
-      <URL value="@../css/history.css" />
-      <URL value="@../css/base.css" />
-   </stylesheets>
+
+    <!-- Screen-specific stylesheet ONLY -->
+    <stylesheets>
+        <URL value="@../css/history.css"/>
+    </stylesheets>
 
 </BorderPane>
