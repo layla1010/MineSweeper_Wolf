@@ -48,6 +48,7 @@
 
 /* top row: difficulty | players | result */
 .history-card-header {
+	-fx-spacing: 14;
     -fx-alignment: CENTER_LEFT;
 }
 
@@ -151,10 +152,6 @@
 }
 
 
-.history-small-button:hover {
-    -fx-background-color: linear-gradient(#4F9BFF, #3053A0);
-}
-
 /* ===== Inputs: ComboBox, TextField, DatePicker ===== */
 .combo-box,
 .text-field,
@@ -163,7 +160,8 @@
     -fx-text-fill: white;
     -fx-prompt-text-fill: white;
     -fx-background-radius: 20;
-    -fx-border-color: #274B8E;
+    /*-fx-border-color: #274B8E;*/
+    -fx-border-color: rgba(255,255,255,0.30);
     -fx-border-radius: 20;
     -fx-border-width: 1;
     -fx-padding: 2 8 2 8;
@@ -204,14 +202,14 @@
     -fx-background-color: linear-gradient(#111A33, #050814);
     -fx-background-radius: 20;
     -fx-border-radius: 20;
-    -fx-border-color: #274B8E;
+    /*-fx-border-color: #274B8E;*/
+    -fx-border-color: rgba(255,255,255,0.30);
     -fx-border-width: 1;
     -fx-padding: 2 10 2 10;
 }
 
 .combo-box-base:focused {
-    -fx-background-color: linear-gradient(#111A33, #050814);
-    -fx-border-color: #35E0FF;
+    -fx-border-color: rgba(255,255,255,0.55); /* neutral focus */
     -fx-faint-focus-color: transparent;
     -fx-focus-color: transparent;
 }
@@ -236,9 +234,10 @@
     -fx-background-color: #000000;
     -fx-background-radius: 12;
     -fx-border-radius: 12;
-    -fx-border-color: rgba(53,224,255,0.4);
+   /* -fx-border-color: rgba(53,224,255,0.4);*/
+   -fx-border-color: rgba(255,255,255,0.22);
     -fx-border-width: 1.2;
-    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.4), 20, 0.4, 0, 0);
+    -fx-effect: none;
 }
 
 
@@ -269,26 +268,6 @@
     -fx-font-size: 13px;
 }
 
-/* Hover = soft neon */
-.combo-box-popup .list-view .list-cell:hover {
-    -fx-background-color: #0B1226;
-    -fx-border-color: #35E0FF;
-    -fx-border-width: 1;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-}
-
-/* Selected = full neon glow */
-.combo-box-popup .list-view .list-cell:selected {
-    -fx-background-color: #111A33;
-    -fx-text-fill: #FFFFFF;
-    -fx-border-color: #35E0FF;
-    -fx-border-width: 1.5;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.75), 18, 0.6, 0, 0);
-}
-
 
 /* ===============================
    DATE PICKER POPUP (Calendar)
@@ -299,9 +278,9 @@
     -fx-background-color: #000000;        /* FULL BLACK background */
     -fx-background-radius: 12;
     -fx-border-radius: 12;
-    -fx-border-color: rgba(53,224,255,0.5);  /* Soft neon border */
+    -fx-border-color:rgba(255,255,255,0.22);;  /* Soft neon border */
     -fx-border-width: 1.5;
-    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.5), 25, 0.4, 0, 0);
+    -fx-effect: none;
 }
 
 /* Month-Year Header */
@@ -340,34 +319,6 @@
     -fx-padding: 5 0 5 0;
 }
 
-/* Hover effect — neon blue glow */
-.date-picker-popup .day-cell:hover {
-    -fx-background-color: #0B1226;
-    -fx-border-color: white;
-    -fx-border-width: 1;
-    -fx-background-radius: 6;
-    -fx-border-radius: 6;
-}
-
-/* Selected date */
-.date-picker-popup .selected {
-    -fx-background-color: #111A33;
-    -fx-border-color: white;
-    -fx-border-width: 1.5;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-text-fill: white;
-    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.8), 18, 0.6, 0, 0);
-}
-
-/* Today's date highlight */
-.date-picker-popup .today {
-    -fx-border-color: white;
-    -fx-border-width: 1.2;
-    -fx-background-radius: 6;
-    -fx-border-radius: 6;
-}
-
 
 
 /* ===== Back button (arrow) ===== */
@@ -380,12 +331,6 @@
     -fx-padding: 0;
 }
 
-.history-back-button:hover {
-    -fx-background-color: rgba(39, 75, 142, 0.35);  /* soft blue glass */
-    -fx-background-radius: 8;
-    -fx-text-fill: #FFFFFF;
-    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.35), 10, 0.4, 0, 0);
-}
 
 /* Small avatars in history rows */
 .history-avatar {

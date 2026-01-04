@@ -74,11 +74,15 @@
     -fx-background-color: rgba(10, 10, 12, 0.92);
     -fx-background-radius: 12;
     -fx-padding: 4;
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0);
+    
 }
 
 .combo-box-popup .list-cell {
     -fx-text-fill: rgba(255,255,255,0.92);
     -fx-background-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0);
+    
 }
 
 /* --- Questions screen: make ScrollPane transparent --- */
@@ -130,6 +134,118 @@
     -fx-border-width: 1;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0);
+    
 }
+
+/* ===== History dropdown (ComboBox) hover/selected — ORANGE (wolf theme) ===== */
+.history-root .combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: rgba(255, 140, 0, 0.12);
+    -fx-border-color: rgba(255, 160, 60, 0.65);
+    -fx-border-width: 1;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0);
+    
+}
+
+.history-root .combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: rgba(20, 12, 6, 0.92);
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: rgba(255, 170, 80, 0.85);
+    -fx-border-width: 1.5;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.35), 18, 0.45, 0, 0);
+}
+
+/* ===== DatePicker calendar hover/selected/today — ORANGE (wolf theme) ===== */
+.history-root .date-picker-popup .day-cell:hover {
+    -fx-background-color: rgba(255, 140, 0, 0.12);
+    -fx-border-color: rgba(255, 160, 60, 0.70);
+    -fx-border-width: 1;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0);
+    
+}
+
+.history-root .date-picker-popup .selected {
+    -fx-background-color: rgba(20, 12, 6, 0.92);
+    -fx-border-color: rgba(255, 170, 80, 0.95);
+    -fx-border-width: 1.5;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.45), 18, 0.5, 0, 0);
+}
+
+.history-root .date-picker-popup .today {
+    -fx-border-color: rgba(255, 170, 80, 0.9);
+    -fx-border-width: 1.2;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0);
+    
+}
+
+/* =========================
+   WOLF: Make Difficulty + Result pills POP
+   ========================= */
+
+/* Base pill: bigger + bolder + readable */
+.pill-label {
+    -fx-padding: 6 16 6 16;
+    -fx-font-size: 15px;
+    -fx-font-weight: 900;
+    -fx-letter-spacing: 0.6px;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+}
+
+/* Difficulty pill (purple but stronger contrast) */
+.difficulty-pill {
+    -fx-text-fill: rgba(255,255,255,0.95);
+    -fx-background-color: rgba(20, 10, 30, 0.80);  /* dark purple glass */
+    -fx-border-color: rgba(190, 120, 255, 0.95);   /* vivid purple border */
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(190,120,255,0.35), 18, 0.5, 0, 0);
+}
+
+/* Result pills - stronger + thematic */
+.result-pill-won {
+    -fx-text-fill: rgba(255,255,255,0.96);
+    -fx-background-color: rgba(0, 50, 25, 0.78);
+    -fx-border-color: rgba(0, 255, 140, 0.85);
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,140,0.25), 18, 0.45, 0, 0);
+}
+
+.result-pill-lost {
+    -fx-text-fill: rgba(255,255,255,0.96);
+    -fx-background-color: rgba(45, 10, 10, 0.82);
+    -fx-border-color: rgba(255, 80, 80, 0.90);
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(255,80,80,0.22), 18, 0.45, 0, 0);
+}
+
+.result-pill-giveup {
+    -fx-text-fill: rgba(255,255,255,0.96);
+    -fx-background-color: rgba(35, 28, 5, 0.82);
+    -fx-border-color: rgba(255, 190, 60, 0.95);
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(255,160,60,0.28), 18, 0.45, 0, 0);
+}
+
+/* Optional: on hover, make them even clearer */
+.difficulty-pill:hover,
+.result-pill-won:hover,
+.result-pill-lost:hover,
+.result-pill-giveup:hover {
+    -fx-translate-y: -1;
+    -fx-effect: dropshadow(gaussian, rgba(255,140,0,0.20), 22, 0.55, 0, 0);
+}
+
+
 
 

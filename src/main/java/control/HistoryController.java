@@ -240,9 +240,9 @@ public class HistoryController {
         String css;
 
         switch (res) {
-            case WIN -> { resultText = "Won"; css = "result-pill-won"; }
-            case LOSE -> { resultText = "Lost"; css = "result-pill-lost"; }
-            case GIVE_UP -> { resultText = "Give up"; css = "result-pill-giveup"; }
+            case WIN -> { resultText = "🏆 WON"; css = "result-pill-won"; }
+            case LOSE -> { resultText = "💀 LOST"; css = "result-pill-lost"; }
+            case GIVE_UP -> { resultText = "🏳 GIVE UP"; css = "result-pill-giveup"; }
             default -> { resultText = (res == null) ? "Unknown" : prettifyEnumName(res.name()); css = "result-pill-lost"; }
         }
 
