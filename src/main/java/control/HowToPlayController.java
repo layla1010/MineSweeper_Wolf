@@ -23,6 +23,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -92,13 +93,13 @@ public class HowToPlayController {
                     "It delays integration",
                     "It must be solved by senior managers",
                     "The defect impacts real users and may require large-scale fixes",
-                    3 // D is correct (0=A,1=B,2=C,3=D)
+                    3
             );
 
     // ----- FIXED DEMO SURPRISE FOR HOW TO PLAY -----
-    private static final boolean DEMO_SURPRISE_IS_GOOD = true; // always GOOD in HowToPlay
-    private static final int DEMO_SURPRISE_SCORE = 8;          // points effect
-    private static final int DEMO_SURPRISE_LIVES = 1;          // lives effect
+    private static final boolean DEMO_SURPRISE_IS_GOOD = true;
+    private static final int DEMO_SURPRISE_SCORE = 8;
+    private static final int DEMO_SURPRISE_LIVES = 1;
 
     private boolean isAutoPlaying = false;
 
@@ -134,7 +135,7 @@ public class HowToPlayController {
     private final boolean[][] p1Revealed = new boolean[SIZE][SIZE];
     private final boolean[][] p2Revealed = new boolean[SIZE][SIZE];
 
-    private final boolean[][] p1Used = new boolean[SIZE][SIZE];   // activated (question/surprise)
+    private final boolean[][] p1Used = new boolean[SIZE][SIZE];
     private final boolean[][] p2Used = new boolean[SIZE][SIZE];
 
     // Easy-mode constants
@@ -154,6 +155,9 @@ public class HowToPlayController {
 
     // surprise popup reading time (auto-close)
     private static final double SURPRISE_READ_DELAY = 6.0;
+
+    // ----------------- USED OVERLAY (dark like real game) -----------------
+    private static final String USED_OVERLAY_ID = "USED_OVERLAY";
 
     @FXML
     private void initialize() {
@@ -230,12 +234,8 @@ public class HowToPlayController {
     }
 
     private double getAutoDelayForStep(int idx) {
-        // idx 10 = "Activate Question"
         if (idx == 10) return QUESTION_READ_DELAY + QUESTION_RESULT_DELAY;
-
-        // idx 11 = "Activate Surprise"
         if (idx == 11) return SURPRISE_READ_DELAY;
-
         return DEFAULT_STEP_DELAY;
     }
 
@@ -463,20 +463,17 @@ public class HowToPlayController {
 
         model.Question q = DEMO_EXPERT_QUESTION;
 
-        // -------- AUTO PLAY MODE: show SAME question UI, auto-close, then SAME results UI, auto-close ----------
+        // -------- AUTO PLAY MODE ----------
         if (isAutoPlaying) {
             int scoreBefore = score;
             int livesBefore = sharedHearts;
 
-            // activation cost now
             score -= ACTIVATION_COST_EASY;
             buildHeartsBar();
             updateInfoBar();
 
-            // show question (same UI with A/B/C/D + colors), close automatically,
-            // then show results (same UI), close automatically.
             showQuestionPickDialogTutorialAutoClose(q, true, QUESTION_READ_DELAY, picked -> {
-                if (!isAutoPlaying) return; // אם לחצו STOP באמצע
+                if (!isAutoPlaying) return;
 
                 boolean correct = (picked == q.getCorrectOption());
                 String qDiff = (q.getDifficulty() == null) ? "easy" : q.getDifficulty().toLowerCase();
@@ -498,6 +495,8 @@ public class HowToPlayController {
                 sharedHearts = clamp(sharedHearts + livesChange, 0, TOTAL_HEART_SLOTS);
 
                 markUsed(isP1, row, col);
+                setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
+
                 buildHeartsBar();
                 updateInfoBar();
 
@@ -516,16 +515,16 @@ public class HowToPlayController {
             return;
         }
 
-        // -------- MANUAL MODE (as before) ----------
+        // -------- MANUAL MODE ----------
         int scoreBefore = score;
         int livesBefore = sharedHearts;
 
-        // activation cost
         score -= ACTIVATION_COST_EASY;
 
         int picked = showQuestionPickDialogTutorial(q, true);
         if (picked < 0) {
             markUsed(isP1, row, col);
+            setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
             buildHeartsBar();
             updateInfoBar();
             return;
@@ -551,6 +550,7 @@ public class HowToPlayController {
         sharedHearts = clamp(sharedHearts + livesChange, 0, TOTAL_HEART_SLOTS);
 
         markUsed(isP1, row, col);
+        setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
 
         buildHeartsBar();
         updateInfoBar();
@@ -574,10 +574,8 @@ public class HowToPlayController {
         int scoreBefore = score;
         int livesBefore = sharedHearts;
 
-        // activation cost
         score -= ACTIVATION_COST_EASY;
 
-        // fixed outcome for HowToPlay (no randomness)
         boolean good = DEMO_SURPRISE_IS_GOOD;
 
         int scoreDeltaFromEffect = good ? +DEMO_SURPRISE_SCORE : -DEMO_SURPRISE_SCORE;
@@ -587,16 +585,26 @@ public class HowToPlayController {
         sharedHearts = clamp(sharedHearts + livesDeltaFromEffect, 0, TOTAL_HEART_SLOTS);
 
         markUsed(isP1, row, col);
+        setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
+
         buildHeartsBar();
         updateInfoBar();
 
-        // MANUAL: showAndWait (OK button)
-        // AUTO: show() + auto-close so PLAY can continue
         if (isAutoPlaying) {
-            showSurpriseTutorialDialogAutoClose(scoreBefore, livesBefore, DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES, ACTIVATION_COST_EASY, SURPRISE_READ_DELAY);
-        } else {
-            showSurpriseTutorialDialog(scoreBefore, livesBefore, DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES, ACTIVATION_COST_EASY);
+            showSurpriseTutorialDialogAutoClose(
+                    scoreBefore, livesBefore,
+                    DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES,
+                    ACTIVATION_COST_EASY,
+                    SURPRISE_READ_DELAY
+            );
+            return;
         }
+
+        showSurpriseTutorialDialog(
+                scoreBefore, livesBefore,
+                DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES,
+                ACTIVATION_COST_EASY
+        );
     }
 
     private int clamp(int v, int lo, int hi) {
@@ -646,7 +654,6 @@ public class HowToPlayController {
             styleAnswerForTutorial(btnD, 3 == correctIdx);
         }
 
-        // AutoPlay: read-only (no clicking)
         btnA.setDisable(true);
         btnB.setDisable(true);
         btnC.setDisable(true);
@@ -666,7 +673,6 @@ public class HowToPlayController {
         PauseTransition pt = new PauseTransition(Duration.seconds(seconds));
         pt.setOnFinished(e -> {
             stage.close();
-            // demo pick: correct answer (so results show CORRECT). If you want WRONG demo, change this line.
             onAutoPick.accept(correctIdx);
         });
         pt.play();
@@ -776,7 +782,6 @@ public class HowToPlayController {
         stage.showAndWait();
     }
 
-    // AUTO: same results UI, but auto-close
     private void showQuestionResultDialogWithAllOptionsAutoClose(
             model.Question q,
             int chosenIdx,
@@ -940,7 +945,6 @@ public class HowToPlayController {
         stage.showAndWait();
     }
 
-    // AUTO: same popup but auto-close (so PLAY continues)
     private void showSurpriseTutorialDialogAutoClose(
             int scoreBefore,
             int livesBefore,
@@ -1410,7 +1414,7 @@ public class HowToPlayController {
 
         b.getStyleClass().removeAll(
                 "cell-hidden", "cell-revealed", "cell-flagged", "cell-mine",
-                "cell-number", "cell-question", "cell-surprise"
+                "cell-number", "cell-question", "cell-surprise", "cell-used"
         );
     }
 
@@ -1426,12 +1430,14 @@ public class HowToPlayController {
     }
 
     private void setHidden(StackPane tile) {
+        removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
         b.getStyleClass().add("cell-hidden");
     }
 
     private void setRevealedNumber(StackPane tile, int n) {
+        removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
         b.setText(String.valueOf(n));
@@ -1439,6 +1445,7 @@ public class HowToPlayController {
     }
 
     private void setEmptyRevealed(StackPane tile) {
+        removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
         b.setText("");
@@ -1446,6 +1453,7 @@ public class HowToPlayController {
     }
 
     private void setFlag(StackPane tile) {
+        removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
         setIcon(b, "/Images/red-flag.png", 22);
@@ -1453,6 +1461,7 @@ public class HowToPlayController {
     }
 
     private void setQuestion(StackPane tile) {
+        removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
         setIcon(b, "/Images/question-mark.png", 20);
@@ -1460,10 +1469,54 @@ public class HowToPlayController {
     }
 
     private void setSurprise(StackPane tile) {
+        removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
         setIcon(b, "/Images/giftbox.png", 20);
         b.getStyleClass().addAll("cell-revealed", "cell-surprise");
+    }
+
+    // ----------------- Used (dark overlay but keep icon) -----------------
+
+    private void applyUsedOverlay(StackPane tile) {
+        for (Node n : tile.getChildren()) {
+            if (USED_OVERLAY_ID.equals(n.getId())) return;
+        }
+
+        Rectangle overlay = new Rectangle();
+        overlay.setId(USED_OVERLAY_ID);
+        overlay.setFill(Color.rgb(0, 0, 0, 0.55));
+        overlay.widthProperty().bind(tile.widthProperty());
+        overlay.heightProperty().bind(tile.heightProperty());
+        overlay.setMouseTransparent(true);
+        overlay.setArcWidth(10);
+        overlay.setArcHeight(10);
+
+        tile.getChildren().add(overlay);
+    }
+
+    private void removeUsedOverlay(StackPane tile) {
+        tile.getChildren().removeIf(n -> USED_OVERLAY_ID.equals(n.getId()));
+    }
+
+    private void setUsed(StackPane tile) {
+        Button b = btn(tile);
+
+        // keep icon, but block interaction
+        b.setDisable(true);
+
+        // keep revealed look, add used tag if you want CSS hooks
+        if (!b.getStyleClass().contains("cell-used")) {
+            b.getStyleClass().add("cell-used");
+        }
+
+        // dark overlay on top of the button
+        applyUsedOverlay(tile);
+
+        // optional: dim the icon a bit
+        if (b.getGraphic() != null) {
+            b.getGraphic().setOpacity(0.75);
+        }
     }
 
     // ----------------- Demo state marking helpers -----------------
