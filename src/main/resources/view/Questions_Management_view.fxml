@@ -51,6 +51,7 @@
                   </ImageView>
                </children>
             </HBox>
+            <HBox alignment="CENTER" spacing="10.0">
             <Button fx:id="newQuestionButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onNewQuestionButtonClicked" prefHeight="30.0" prefWidth="161.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-background-radius: 50; -fx-border-color: rgba(255,255,255,0.50); -fx-border-width: 1; -fx-border-radius: 50; -fx-cursor: hand;" styleClass="primary-button" text="+ New Question" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Copperplate Gothic Light" size="13.0" />
@@ -113,7 +114,7 @@
         			<Font name="Copperplate Gothic Light" size="13.0" />
     			</font>
 			</Button>
-            
+            </HBox>
             <HBox alignment="CENTER" prefHeight="34.0" prefWidth="560.0" spacing="10.0">
                <children>
                   <ComboBox fx:id="levelFilterCombo" prefWidth="120.0" promptText="All Levels" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" />

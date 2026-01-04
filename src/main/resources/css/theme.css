@@ -103,5 +103,8 @@
     -fx-text-fill: white;
     -fx-font-size: 12px;
 }
+.clickable-icon {
+    -fx-cursor: hand;
+}
 
 

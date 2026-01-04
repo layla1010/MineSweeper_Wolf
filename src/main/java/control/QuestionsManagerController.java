@@ -70,6 +70,8 @@ public class QuestionsManagerController implements QuestionCardActions {
     private final SysData sysData = SysData.getInstance();
     private List<Question> allQuestions;
     
+    private boolean selectionMode = false;
+    
 
     // ================== Navigation ==================
     /**
@@ -296,17 +298,33 @@ public class QuestionsManagerController implements QuestionCardActions {
     
     @FXML
     private void onSelectButtonClicked(ActionEvent event) {
-        for (QuestionCardController card : cardControllers) {
-            card.setSelectionMode(true);
-        }
-        editSelectedButton.setVisible(true);
-        editSelectedButton.setManaged(true);
 
-        deleteSelectedButton.setVisible(true);
-        deleteSelectedButton.setManaged(true);
+        if (!selectionMode) {
+            //ENTER selection mode
+            selectionMode = true;
+
+            for (QuestionCardController card : cardControllers) {
+                card.setSelectionMode(true);
+            }
+
+            editSelectedButton.setVisible(true);
+            editSelectedButton.setManaged(true);
+
+            deleteSelectedButton.setVisible(true);
+            deleteSelectedButton.setManaged(true);
+
+            selectButton.setText("Exit Select Mode");
+            selectButton.getStyleClass().add("button-bold");
+
+        } else {
+            //EXIT selection mode
+            exitSelectionMode();
+        }
     }
     
     private void exitSelectionMode() {
+        selectionMode = false;
+
         for (QuestionCardController card : cardControllers) {
             card.setSelectionMode(false);
         }
@@ -316,6 +334,9 @@ public class QuestionsManagerController implements QuestionCardActions {
 
         deleteSelectedButton.setVisible(false);
         deleteSelectedButton.setManaged(false);
+
+        selectButton.setText("Select Questions");
+        selectButton.getStyleClass().remove("button-bold");
     }
 
 

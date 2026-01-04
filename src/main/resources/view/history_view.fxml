@@ -10,13 +10,15 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="root" prefHeight="750.0" prefWidth="1200.0" styleClass="history-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.HistoryController">
+<BorderPane fx:id="root" prefHeight="750.0" prefWidth="1200.0" styleClass="history-root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.HistoryController">
 
     <!-- ===== TOP: title + filter + sort ===== -->
     <top>
@@ -96,6 +98,11 @@
                 </ComboBox>
 
                 <Button onAction="#onSortBtnClicked" prefWidth="80.0" styleClass="history-small-button" text="Sort" />
+               <ImageView fx:id="refreshIcon" fitHeight="26.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true" styleClass="clickable-icon" onMouseClicked="#onClearFilterClicked">
+                  <image>
+                     <Image url="@/Images/refresh.png" />
+                  </image>
+               </ImageView>
 
             </children>
         </HBox>
