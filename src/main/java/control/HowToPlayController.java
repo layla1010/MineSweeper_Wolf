@@ -3,6 +3,7 @@ package control;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,6 +31,7 @@ import util.SoundManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntConsumer;
 
 public class HowToPlayController {
 
@@ -77,6 +79,7 @@ public class HowToPlayController {
 
     @FXML private HBox p1StatsBox;
     @FXML private HBox p2StatsBox;
+
     private boolean tutorialPopupsEnabled = true;
 
     // ----- FIXED DEMO QUESTION FOR HOW TO PLAY -----
@@ -97,7 +100,6 @@ public class HowToPlayController {
     private static final int DEMO_SURPRISE_SCORE = 8;          // points effect
     private static final int DEMO_SURPRISE_LIVES = 1;          // lives effect
 
-    private Timeline autoPlay;
     private boolean isAutoPlaying = false;
 
     private static final int START_MINES = 10;
@@ -137,9 +139,21 @@ public class HowToPlayController {
 
     // Easy-mode constants
     private static final int ACTIVATION_COST_EASY = 5;
+    @SuppressWarnings("unused")
     private static final int SURPRISE_POINTS_EASY = 8;
 
     private static final int TOTAL_HEART_SLOTS = 10;
+
+    // --------- AUTO PLAY SCHEDULING ----------
+    private PauseTransition autoStepPause;
+    private static final double DEFAULT_STEP_DELAY = 2.5;
+
+    // question: show QUESTION, then show RESULTS, then continue
+    private static final double QUESTION_READ_DELAY = 7.0;
+    private static final double QUESTION_RESULT_DELAY = 6.0;
+
+    // surprise popup reading time (auto-close)
+    private static final double SURPRISE_READ_DELAY = 6.0;
 
     @FXML
     private void initialize() {
@@ -182,7 +196,6 @@ public class HowToPlayController {
     @FXML
     private void onRestart() {
         stopAutoplayIfRunning();
-        // runStep(0) כבר עושה resetDemoState + resetScenario + hideAllHighlights
         runStep(0);
     }
 
@@ -194,31 +207,48 @@ public class HowToPlayController {
         playBtn.setDisable(true);
         stopBtn.setDisable(false);
 
-        if (autoPlay != null) autoPlay.stop(); // ליתר ביטחון
+        scheduleNextAutoStep(0.0);
+    }
 
-        autoPlay = new Timeline(new KeyFrame(Duration.seconds(2.5), e -> {
+    private void scheduleNextAutoStep(double delaySeconds) {
+        if (autoStepPause != null) autoStepPause.stop();
+
+        autoStepPause = new PauseTransition(Duration.seconds(delaySeconds));
+        autoStepPause.setOnFinished(e -> {
+            if (!isAutoPlaying) return;
+
             if (stepIndex < steps.size() - 1) {
                 stepIndex++;
-                runStepInternal(stepIndex, true);   // ✅ לא runStep
+                runStepInternal(stepIndex, true);
+
+                scheduleNextAutoStep(getAutoDelayForStep(stepIndex));
             } else {
                 onStop();
             }
-        }));
+        });
+        autoStepPause.play();
+    }
 
-        autoPlay.setCycleCount(Timeline.INDEFINITE);
-        autoPlay.play();
+    private double getAutoDelayForStep(int idx) {
+        // idx 10 = "Activate Question"
+        if (idx == 10) return QUESTION_READ_DELAY + QUESTION_RESULT_DELAY;
+
+        // idx 11 = "Activate Surprise"
+        if (idx == 11) return SURPRISE_READ_DELAY;
+
+        return DEFAULT_STEP_DELAY;
     }
 
     private void stopAutoplayIfRunning() {
         if (isAutoPlaying) onStop();
     }
 
-    
     @FXML
     private void onStop() {
         isAutoPlaying = false;
-        if (autoPlay != null) autoPlay.stop();
-        autoPlay = null;
+
+        if (autoStepPause != null) autoStepPause.stop();
+        autoStepPause = null;
 
         playBtn.setDisable(false);
         stopBtn.setDisable(true);
@@ -236,7 +266,6 @@ public class HowToPlayController {
     private void onNext() {
         stopAutoplayIfRunning();
         if (stepIndex < steps.size() - 1) {
-            // NEXT נשאר מצטבר: לא עושים reset
             stepIndex++;
             runStepInternal(stepIndex, true);
         }
@@ -432,13 +461,67 @@ public class HowToPlayController {
         if (!isRevealed(isP1, row, col)) return;
         if (isUsed(isP1, row, col)) return;
 
+        model.Question q = DEMO_EXPERT_QUESTION;
+
+        // -------- AUTO PLAY MODE: show SAME question UI, auto-close, then SAME results UI, auto-close ----------
+        if (isAutoPlaying) {
+            int scoreBefore = score;
+            int livesBefore = sharedHearts;
+
+            // activation cost now
+            score -= ACTIVATION_COST_EASY;
+            buildHeartsBar();
+            updateInfoBar();
+
+            // show question (same UI with A/B/C/D + colors), close automatically,
+            // then show results (same UI), close automatically.
+            showQuestionPickDialogTutorialAutoClose(q, true, QUESTION_READ_DELAY, picked -> {
+                if (!isAutoPlaying) return; // אם לחצו STOP באמצע
+
+                boolean correct = (picked == q.getCorrectOption());
+                String qDiff = (q.getDifficulty() == null) ? "easy" : q.getDifficulty().toLowerCase();
+
+                int scoreChange = 0;
+                int livesChange = 0;
+
+                switch (qDiff) {
+                    case "easy" -> scoreChange = correct ? +3 : -3;
+                    case "medium" -> scoreChange = correct ? +6 : -6;
+                    case "hard" -> scoreChange = correct ? +10 : -10;
+                    default -> {
+                        if (correct) { scoreChange = +15; livesChange = +2; }
+                        else { scoreChange = -15; livesChange = -1; }
+                    }
+                }
+
+                score += scoreChange;
+                sharedHearts = clamp(sharedHearts + livesChange, 0, TOTAL_HEART_SLOTS);
+
+                markUsed(isP1, row, col);
+                buildHeartsBar();
+                updateInfoBar();
+
+                showQuestionResultDialogWithAllOptionsAutoClose(
+                        q,
+                        picked,
+                        scoreBefore,
+                        livesBefore,
+                        score,
+                        sharedHearts,
+                        ACTIVATION_COST_EASY,
+                        QUESTION_RESULT_DELAY
+                );
+            });
+
+            return;
+        }
+
+        // -------- MANUAL MODE (as before) ----------
         int scoreBefore = score;
         int livesBefore = sharedHearts;
 
         // activation cost
         score -= ACTIVATION_COST_EASY;
-
-        model.Question q = DEMO_EXPERT_QUESTION;
 
         int picked = showQuestionPickDialogTutorial(q, true);
         if (picked < 0) {
@@ -507,8 +590,13 @@ public class HowToPlayController {
         buildHeartsBar();
         updateInfoBar();
 
-        // styled tutorial popup that shows BOTH GOOD and BAD scenarios
-        showSurpriseTutorialDialog(scoreBefore, livesBefore, DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES, ACTIVATION_COST_EASY);
+        // MANUAL: showAndWait (OK button)
+        // AUTO: show() + auto-close so PLAY can continue
+        if (isAutoPlaying) {
+            showSurpriseTutorialDialogAutoClose(scoreBefore, livesBefore, DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES, ACTIVATION_COST_EASY, SURPRISE_READ_DELAY);
+        } else {
+            showSurpriseTutorialDialog(scoreBefore, livesBefore, DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES, ACTIVATION_COST_EASY);
+        }
     }
 
     private int clamp(int v, int lo, int hi) {
@@ -517,7 +605,74 @@ public class HowToPlayController {
         return v;
     }
 
-    // ----------------- Tutorial Question Dialog (colors) -----------------
+    // ----------------- AUTO: SAME Question Dialog UI, but auto-close -----------------
+
+    private void showQuestionPickDialogTutorialAutoClose(model.Question q, boolean tutorialMode, double seconds, IntConsumer onAutoPick) {
+        Stage stage = new Stage();
+        stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+        stage.setTitle("Question");
+
+        VBox root = new VBox(12);
+        root.setPadding(new Insets(18));
+        root.setStyle("""
+            -fx-background-color: linear-gradient(to bottom right, #5b5bb6, #8a57b8, #c26ad6);
+        """);
+
+        Label title = new Label(
+                "You got a " + (q.getDifficulty() == null ? "Question" : q.getDifficulty() + " Question") + "!"
+        );
+        title.setStyle("-fx-text-fill: white; -fx-font-size: 24px; -fx-font-family: 'Copperplate Gothic Bold';");
+
+        Label questionText = new Label(q.getText());
+        questionText.setWrapText(true);
+        questionText.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-family: 'Copperplate Gothic Light';");
+
+        Label hint = new Label("Tutorial mode: correct answer is highlighted.");
+        hint.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
+        hint.setVisible(tutorialMode);
+        hint.setManaged(tutorialMode);
+
+        int correctIdx = q.getCorrectOption();
+
+        Button btnA = createAnswerBtn("A", q.getOptA());
+        Button btnB = createAnswerBtn("B", q.getOptB());
+        Button btnC = createAnswerBtn("C", q.getOptC());
+        Button btnD = createAnswerBtn("D", q.getOptD());
+
+        if (tutorialMode) {
+            styleAnswerForTutorial(btnA, 0 == correctIdx);
+            styleAnswerForTutorial(btnB, 1 == correctIdx);
+            styleAnswerForTutorial(btnC, 2 == correctIdx);
+            styleAnswerForTutorial(btnD, 3 == correctIdx);
+        }
+
+        // AutoPlay: read-only (no clicking)
+        btnA.setDisable(true);
+        btnB.setDisable(true);
+        btnC.setDisable(true);
+        btnD.setDisable(true);
+
+        VBox answersBox = new VBox(10, btnA, btnB, btnC, btnD);
+
+        Label closing = new Label("Closing automatically...");
+        closing.setStyle("-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 13px;");
+
+        root.getChildren().addAll(title, questionText, hint, answersBox, closing);
+
+        stage.setScene(new Scene(root, 620, 500));
+        stage.centerOnScreen();
+        stage.show();
+
+        PauseTransition pt = new PauseTransition(Duration.seconds(seconds));
+        pt.setOnFinished(e -> {
+            stage.close();
+            // demo pick: correct answer (so results show CORRECT). If you want WRONG demo, change this line.
+            onAutoPick.accept(correctIdx);
+        });
+        pt.play();
+    }
+
+    // ----------------- Tutorial Question Dialog (manual) -----------------
 
     private int showQuestionPickDialogTutorial(model.Question q, boolean tutorialMode) {
         Stage stage = new Stage();
@@ -617,6 +772,39 @@ public class HowToPlayController {
             int livesAfter,
             int activationCost
     ) {
+        Stage stage = buildQuestionResultStage(q, chosenIdx, scoreBefore, livesBefore, scoreAfter, livesAfter, activationCost, true);
+        stage.showAndWait();
+    }
+
+    // AUTO: same results UI, but auto-close
+    private void showQuestionResultDialogWithAllOptionsAutoClose(
+            model.Question q,
+            int chosenIdx,
+            int scoreBefore,
+            int livesBefore,
+            int scoreAfter,
+            int livesAfter,
+            int activationCost,
+            double seconds
+    ) {
+        Stage stage = buildQuestionResultStage(q, chosenIdx, scoreBefore, livesBefore, scoreAfter, livesAfter, activationCost, false);
+        stage.show();
+
+        PauseTransition pt = new PauseTransition(Duration.seconds(seconds));
+        pt.setOnFinished(e -> stage.close());
+        pt.play();
+    }
+
+    private Stage buildQuestionResultStage(
+            model.Question q,
+            int chosenIdx,
+            int scoreBefore,
+            int livesBefore,
+            int scoreAfter,
+            int livesAfter,
+            int activationCost,
+            boolean showOkButton
+    ) {
         int correctIdx = q.getCorrectOption();
         String diff = (q.getDifficulty() == null) ? "easy" : q.getDifficulty();
 
@@ -661,32 +849,42 @@ public class HowToPlayController {
         VBox box = new VBox(12, header, beforeAfter, outcomes);
         box.setPadding(new Insets(26));
 
-        Button ok = new Button("OK");
-        ok.setStyle("""
-            -fx-background-color: rgba(255,255,255,0.20);
-            -fx-background-radius: 18;
-            -fx-border-radius: 18;
-            -fx-border-color: rgba(255,255,255,0.55);
-            -fx-border-width: 1;
-            -fx-text-fill: white;
-            -fx-font-size: 16px;
-            -fx-padding: 8 26 8 26;
-            -fx-cursor: hand;
-        """);
-        ok.setOnAction(e -> stage.close());
-
         AnchorPane.setTopAnchor(box, 0.0);
         AnchorPane.setLeftAnchor(box, 0.0);
         AnchorPane.setRightAnchor(box, 0.0);
 
-        AnchorPane.setBottomAnchor(ok, 22.0);
-        AnchorPane.setRightAnchor(ok, 26.0);
+        root.getChildren().add(box);
 
-        root.getChildren().addAll(box, ok);
+        if (showOkButton) {
+            Button ok = new Button("OK");
+            ok.setStyle("""
+                -fx-background-color: rgba(255,255,255,0.20);
+                -fx-background-radius: 18;
+                -fx-border-radius: 18;
+                -fx-border-color: rgba(255,255,255,0.55);
+                -fx-border-width: 1;
+                -fx-text-fill: white;
+                -fx-font-size: 16px;
+                -fx-padding: 8 26 8 26;
+                -fx-cursor: hand;
+            """);
+            ok.setOnAction(e -> stage.close());
+
+            AnchorPane.setBottomAnchor(ok, 22.0);
+            AnchorPane.setRightAnchor(ok, 26.0);
+
+            root.getChildren().add(ok);
+        } else {
+            Label closing = new Label("Closing automatically...");
+            closing.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
+            AnchorPane.setBottomAnchor(closing, 24.0);
+            AnchorPane.setRightAnchor(closing, 26.0);
+            root.getChildren().add(closing);
+        }
 
         stage.setScene(new Scene(root, 880, 560));
         stage.centerOnScreen();
-        stage.showAndWait();
+        return stage;
     }
 
     private Node makeOutcomeLine(String letter, int idx, int correctIdx, int chosenIdx, String diff, int activationCost) {
@@ -737,6 +935,35 @@ public class HowToPlayController {
             int surprisePoints,
             int surpriseLives,
             int activationCost
+    ) {
+        Stage stage = buildSurpriseStage(scoreBefore, livesBefore, surprisePoints, surpriseLives, activationCost, true);
+        stage.showAndWait();
+    }
+
+    // AUTO: same popup but auto-close (so PLAY continues)
+    private void showSurpriseTutorialDialogAutoClose(
+            int scoreBefore,
+            int livesBefore,
+            int surprisePoints,
+            int surpriseLives,
+            int activationCost,
+            double seconds
+    ) {
+        Stage stage = buildSurpriseStage(scoreBefore, livesBefore, surprisePoints, surpriseLives, activationCost, false);
+        stage.show();
+
+        PauseTransition pt = new PauseTransition(Duration.seconds(seconds));
+        pt.setOnFinished(e -> stage.close());
+        pt.play();
+    }
+
+    private Stage buildSurpriseStage(
+            int scoreBefore,
+            int livesBefore,
+            int surprisePoints,
+            int surpriseLives,
+            int activationCost,
+            boolean showOkButton
     ) {
         int goodNetScore = -activationCost + surprisePoints;
         int goodNetLives = +surpriseLives;
@@ -807,23 +1034,6 @@ public class HowToPlayController {
         AnchorPane.setLeftAnchor(cards, 0.0);
         AnchorPane.setRightAnchor(cards, 0.0);
 
-        Button ok = new Button("OK");
-        ok.setStyle("""
-            -fx-background-color: rgba(255,255,255,0.20);
-            -fx-background-radius: 18;
-            -fx-border-radius: 18;
-            -fx-border-color: rgba(255,255,255,0.55);
-            -fx-border-width: 1;
-            -fx-text-fill: white;
-            -fx-font-size: 16px;
-            -fx-padding: 8 26 8 26;
-            -fx-cursor: hand;
-        """);
-        ok.setOnAction(e -> stage.close());
-
-        AnchorPane.setBottomAnchor(ok, 22.0);
-        AnchorPane.setRightAnchor(ok, 28.0);
-
         Label icon = new Label("i");
         icon.setAlignment(Pos.CENTER);
         icon.setStyle("""
@@ -842,11 +1052,37 @@ public class HowToPlayController {
         AnchorPane.setTopAnchor(icon, 18.0);
         AnchorPane.setRightAnchor(icon, 22.0);
 
-        root.getChildren().addAll(header, info, cards, ok, icon);
+        root.getChildren().addAll(header, info, cards, icon);
+
+        if (showOkButton) {
+            Button ok = new Button("OK");
+            ok.setStyle("""
+                -fx-background-color: rgba(255,255,255,0.20);
+                -fx-background-radius: 18;
+                -fx-border-radius: 18;
+                -fx-border-color: rgba(255,255,255,0.55);
+                -fx-border-width: 1;
+                -fx-text-fill: white;
+                -fx-font-size: 16px;
+                -fx-padding: 8 26 8 26;
+                -fx-cursor: hand;
+            """);
+            ok.setOnAction(e -> stage.close());
+
+            AnchorPane.setBottomAnchor(ok, 22.0);
+            AnchorPane.setRightAnchor(ok, 28.0);
+            root.getChildren().add(ok);
+        } else {
+            Label closing = new Label("Closing automatically...");
+            closing.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
+            AnchorPane.setBottomAnchor(closing, 24.0);
+            AnchorPane.setRightAnchor(closing, 28.0);
+            root.getChildren().add(closing);
+        }
 
         stage.setScene(new Scene(root, 820, 520));
         stage.centerOnScreen();
-        stage.showAndWait();
+        return stage;
     }
 
     private HBox buildSurpriseOutcomeCard(
@@ -1098,7 +1334,7 @@ public class HowToPlayController {
         int rr0 = Math.max(0, Math.min(r0, r1));
         int cc0 = Math.max(0, Math.min(c0, c1));
         int rr1 = Math.min(SIZE - 1, Math.max(r0, r1));
-        int cc1 = Math.max(0, Math.min(c0, c1));
+        int cc1 = Math.min(SIZE - 1, Math.max(c0, c1));
         cc1 = Math.min(SIZE - 1, Math.max(c0, c1));
 
         Bounds a = nodeBoundsInLayer(tiles[rr0][cc0], layer);
@@ -1394,18 +1630,16 @@ public class HowToPlayController {
         s.action.run();
     }
 
-    // ✅✅✅ FIXED: לא להריץ את ה-step האחרון פעמיים
+    // ✅ FIXED: לא להריץ את ה-step האחרון פעמיים
     private void replayToStep(int targetIdx) {
         resetDemoState();
         resetScenario();
         hideAllHighlights();
 
-        // מריצים עד לפני היעד (בלי popups)
         for (int i = 0; i < targetIdx; i++) {
             runStepInternal(i, false);
         }
 
-        // מריצים את היעד עצמו פעם אחת בלבד
         stepIndex = targetIdx;
         runStepInternal(targetIdx, true);
     }
