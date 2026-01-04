@@ -188,5 +188,43 @@
     -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.35), 10, 0.4, 0, 0);
 }
 
+/* ===== Pills & badges ===== */
+.pill-label {
+    -fx-padding: 4 14 4 14;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* difficulty pill */
+.difficulty-pill {
+    -fx-background-color: rgb(117, 77, 166, 0.12);
+    -fx-border-color: #3f2959;
+    -fx-text-fill: #3f2959;
+    -fx-font-family: "Copperplate Gothic Light";
+}
+
+/* result pills */
+.result-pill-won {
+    -fx-background-color: rgb(0, 149, 55, 0.12);
+    -fx-border-color: #009537;
+    -fx-text-fill: #009537;
+    -fx-font-family: "Copperplate Gothic Light";
+}
+
+.result-pill-lost {
+    -fx-background-color: rgb(193, 61, 62, 0.18);
+    -fx-border-color: #c13d3e;
+    -fx-text-fill: #c13d3e;
+    -fx-font-family: "Copperplate Gothic Light";
+}
+
+.result-pill-giveup {
+    -fx-background-color: rgb(240, 235, 42, 0.15);
+    -fx-border-color: #fff800;
+    -fx-text-fill: #fff800;
+    -fx-font-family: "Copperplate Gothic Light";
+}
 
 
