@@ -970,7 +970,8 @@ public class HowToPlayController {
             int activationCost
     ) {
         Stage stage = buildSurpriseStage(scoreBefore, livesBefore, surprisePoints, surpriseLives, activationCost, true);
-        stage.showAndWait();
+        stage.show();
+
     }
 
     private void showSurpriseTutorialDialogAutoClose(
