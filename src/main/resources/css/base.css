@@ -300,4 +300,27 @@
     -fx-background-radius: 12;
 }
 
+/*/* ===== Game Setup (DEFAULT / colorful) ===== */
+
+/*.setup-accent-line {
+    -fx-stroke: #c4b5fd;
+    -fx-stroke-width: 1.0;
+    -fx-opacity: 0.9;
+}
+
+.setup-stat-row {
+    -fx-fill: #684ca4;
+    -fx-stroke: #a855f7;
+    -fx-stroke-width: 1.0;
+}
+
+.start-game-btn {
+    -fx-background-color: linear-gradient(#f973c5, #a855f7);
+    -fx-background-radius: 30;
+    -fx-effect: dropshadow(gaussian, rgba(248, 113, 182, 0.5), 20, 0.5, 0, 0);
+    -fx-text-fill: #f6f7ff;
+}*/
+
+
+
  

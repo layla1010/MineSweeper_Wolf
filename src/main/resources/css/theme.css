@@ -379,5 +379,27 @@
     -fx-pie-color: rgba(255,255,255,0.95);
 }
 
+/* ===== New Game Setup base visuals (used by colorful theme) ===== */
+
+.player-card {
+    -fx-fill: rgba(255,255,255,0.12);
+    -fx-stroke: rgba(255,255,255,0.25);
+    -fx-stroke-width: 2;
+}
+
+.player-card:hover {
+    -fx-stroke: rgba(255,255,255,0.40);
+}
+
+/* stat rows inside difficulty cards (now that rectangles use setup-stat-row class) */
+.setup-stat-row {
+    -fx-fill: rgba(104, 76, 164, 0.55);
+    -fx-stroke: rgba(168, 85, 247, 0.70);
+    -fx-stroke-width: 1.1;
+    -fx-arc-height: 10;
+    -fx-arc-width: 10;
+}
+
+
 
 

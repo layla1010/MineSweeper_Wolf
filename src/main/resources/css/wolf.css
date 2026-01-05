@@ -479,4 +479,68 @@
     );
 }
 
+/* =========================================================
+   WOLF THEME — NEW GAME SCREEN ONLY
+   Scoped to .newgame-root so it never affects other screens
+   ========================================================= */
+
+.newgame-root .setup-accent-line {
+    -fx-stroke: rgba(255, 170, 90, 0.75);
+    -fx-stroke-width: 1.3;
+    -fx-opacity: 1.0;
+}
+
+/* Difficulty labels (EASY / MEDIUM / HARD) -> light orange */
+.newgame-root .difficulty-label {
+    -fx-fill: #ffbd7a;
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 40, 0.45), 12, 0.5, 0, 0);
+}
+
+/* Orange hover on difficulty “cards” */
+.newgame-root .difficulty-toggle:hover {
+    -fx-border-color: rgba(255, 170, 90, 0.70);
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 40, 0.35), 18, 0.5, 0, 0);
+}
+
+/* Stat rows become warm orange in wolf */
+.newgame-root .setup-stat-row {
+    -fx-fill: rgba(255, 170, 90, 0.18);
+    -fx-stroke: rgba(255, 170, 90, 0.55);
+    -fx-stroke-width: 1.1;
+}
+
+/* Player cards hover in orange */
+.newgame-root .player-card {
+    -fx-fill: rgba(255,255,255,0.10);
+    -fx-stroke: rgba(255, 170, 90, 0.35);
+    -fx-stroke-width: 2;
+}
+.newgame-root .player-card:hover {
+    -fx-stroke: rgba(255, 170, 90, 0.70);
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 40, 0.28), 18, 0.5, 0, 0);
+}
+
+/* Back button hover in orange (NEW GAME only) */
+.newgame-root .game-back-button:hover {
+    -fx-background-color: rgba(255, 140, 60, 0.22);
+    -fx-background-radius: 8;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 60, 0.55), 16, 0.55, 0, 0);
+}
+
+/* Start game button -> light orange in wolf */
+.newgame-root .start-game-btn {
+    -fx-background-color: linear-gradient(#ffd1a3, #ff9a3d);
+    -fx-background-radius: 30;
+    -fx-text-fill: rgba(20, 12, 8, 0.95);
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 40, 0.55), 22, 0.55, 0, 0);
+}
+
+/* Title orange glow in wolf */
+.newgame-root .setup-title {
+    -fx-fill: rgba(255, 245, 235, 0.98);
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 40, 0.75), 26, 0.6, 0, 0);
+}
+
+
 
