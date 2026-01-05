@@ -381,5 +381,102 @@
     );
 }
 
+/* =========================================================
+   WOLF THEME — STATS SCREEN (EMBER / ORANGE)
+   Scoped to stats-root so it affects only Statistics screen
+   ========================================================= */
+
+/* WOLF THEME — STATS (lighter glass so background shows more) */
+.stats-root .stat-card {
+    -fx-fill: rgba(255, 255, 255, 0.10);
+    -fx-stroke: rgba(255, 255, 255, 0.25);
+    -fx-stroke-width: 2px;
+}
+
+.stats-root .donut-hole {
+    -fx-fill: rgba(0, 0, 0, 0.28);
+    -fx-stroke: rgba(255, 255, 255, 0.25);
+    -fx-stroke-width: 2px;
+}
+
+.stats-root .settings-back-button:hover {
+    -fx-background-color: rgba(255, 140, 40, 0.25);
+    -fx-background-radius: 999;
+
+    -fx-text-fill: white;
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(255, 120, 0, 0.75),
+        18,
+        0.6,
+        0,
+        0
+    );
+}
+
+.stats-root .progress-chart .chart-plot-background {
+    -fx-background-color: rgba(255, 255, 255, 0.10);
+    -fx-background-radius: 18;
+}
+
+/* Optional: soften chart area border */
+.stats-root .progress-chart {
+    -fx-background-color: transparent;
+}
+
+/* =========================================================
+   WOLF THEME — SETTINGS: ORANGE HOVER for menu cards
+   Scoped ONLY to Settings screen
+   ========================================================= */
+
+.settings-root .menu-card:hover {
+    -fx-background-color: linear-gradient(
+        to bottom right,
+        rgba(170, 90, 25, 0.85),
+        rgba(95, 40, 10, 0.90)
+    );
+
+    -fx-border-color: rgba(255, 150, 60, 0.65);
+    -fx-translate-y: -2;
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(255, 120, 40, 0.35),
+        18,
+        0.45,
+        0,
+        0
+    );
+}
+
+/* Pressed state (keeps it grounded, not flashy) */
+.settings-root .menu-card:pressed {
+    -fx-background-color: rgba(15, 12, 10, 0.95);
+    -fx-border-color: rgba(255, 140, 60, 0.45);
+    -fx-effect: none;
+    -fx-translate-y: 0;
+}
+
+/* =========================================================
+   WOLF THEME — SETTINGS BACK BUTTON (ORANGE HOVER)
+   Applies ONLY to Settings screen
+   ========================================================= */
+
+.settings-root .settings-back-button:hover {
+    -fx-background-color: rgba(255, 140, 40, 0.25);
+    -fx-background-radius: 999;
+
+    -fx-text-fill: white;
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(255, 120, 0, 0.75),
+        18,
+        0.6,
+        0,
+        0
+    );
+}
 
 

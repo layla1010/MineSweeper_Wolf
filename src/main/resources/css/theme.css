@@ -347,3 +347,37 @@
     -fx-text-fill: #fff800;
     -fx-font-family: "Copperplate Gothic Light";
 }
+
+/* =========================================================
+   STATS SCREEN — DEFAULT THEME (PURPLE)
+   Scoped to stats-root so it affects only this screen
+   ========================================================= */
+
+
+.stats-root .stat-card {
+    -fx-fill: #5c3a8e !important;
+    -fx-stroke: #47257a !important;
+    -fx-stroke-width: 2px;
+}
+
+.stats-root .donut-hole {
+    -fx-fill: #5c3a8e !important;
+    -fx-stroke: #5c3a8e !important;
+    -fx-stroke-width: 2px;
+}
+
+/* ===== STATS — Donut ring should be WHITE in colorful theme ===== */
+/* This targets only the donut charts on the stats screen */
+.stats-root .wins-chart .default-color0.chart-pie,
+.stats-root .wins-chart .default-color1.chart-pie,
+.stats-root .losses-chart .default-color0.chart-pie,
+.stats-root .losses-chart .default-color1.chart-pie,
+.stats-root .giveups-chart .default-color0.chart-pie,
+.stats-root .giveups-chart .default-color1.chart-pie,
+.stats-root .winswithnomistakes-chart .default-color0.chart-pie,
+.stats-root .winswithnomistakes-chart .default-color1.chart-pie {
+    -fx-pie-color: rgba(255,255,255,0.95);
+}
+
+
+

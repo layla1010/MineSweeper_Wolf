@@ -20,10 +20,16 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import java.lang.String?>
 
-<ScrollPane fx:id="mainPane" maxHeight="1500.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="745.0" prefWidth="1200.0" stylesheets="@../css/stats.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.StatsViewController">
+
+<ScrollPane fx:id="mainPane" maxHeight="1500.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="745.0" prefWidth="1200.0" styleClass="themed-bg" stylesheets="@../css/stats.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.StatsViewController">
    <content>
-	    <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1450.0" spacing="20" styleClass="themed-bg" stylesheets="@../css/base.css">
+	    <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1450.0" spacing="20" >
+	    <styleClass>
+        <String fx:value="themed-bg"/>
+        <String fx:value="stats-root"/>
+    </styleClass>
                 <GridPane alignment="CENTER" prefHeight="730.0" prefWidth="1100.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -33,7 +39,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <GridPane maxHeight="-Infinity" minWidth="-Infinity" prefHeight="398.0" prefWidth="1500.0" stylesheets="@../css/base.css">
+            <GridPane maxHeight="-Infinity" minWidth="-Infinity" prefHeight="398.0" prefWidth="1500.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -59,7 +65,7 @@
                         <GridPane.margin>
                            <Insets top="15.0" />
                         </GridPane.margin></StackPane>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" stylesheets="@../css/base.css" GridPane.rowIndex="1">
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                      <children>
                         <Text fx:id="p1OfficialNameText" fill="#ffffff" layoutX="162.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Official Name" wrappingWidth="193.33668518066406">
 						    <font>
@@ -102,7 +108,7 @@
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
                      <children>
-                        <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#5c3a8e" height="100.0" layoutX="16.0" layoutY="11.0" stroke="#47257a" strokeType="INSIDE" width="162.0" />
+                        <Rectangle arcHeight="50.0" arcWidth="50.0" height="100.0" layoutX="16.0" layoutY="11.0" styleClass="stat-card" strokeType="INSIDE" width="162.0" />
                         <Label alignment="TOP_CENTER" layoutX="22.0" layoutY="22.0" prefHeight="27.0" prefWidth="150.0" text="total games" textFill="#e1d9d9" wrapText="true">
                            <font>
                               <Font name="Copperplate Gothic Bold" size="18.0" />
@@ -110,7 +116,7 @@
                         </Label>
                         <AnchorPane layoutX="193.0" layoutY="11.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="216.0">
                            <children>
-                              <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#5c3a8e" height="100.0" stroke="#47257a" strokeType="INSIDE" width="216.0" />
+                              <Rectangle arcHeight="50.0" arcWidth="50.0"  height="100.0" styleClass="stat-card" strokeType="INSIDE" width="216.0" />
                               <Label fx:id="p1BestScoreLabel" alignment="TOP_LEFT" layoutX="8.0" layoutY="14.0" prefHeight="27.0" prefWidth="200.0" text="best score:             0" textAlignment="CENTER" textFill="#e1d9d9" wrapText="true">
                                  <font>
                                     <Font name="Copperplate Gothic Bold" size="18.0" />
@@ -125,7 +131,7 @@
                         </AnchorPane>
                         <AnchorPane layoutX="423.0" layoutY="11.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="216.0">
                            <children>
-                              <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#5c3a8e" height="100.0" stroke="#47257a" strokeType="INSIDE" width="216.0" />
+                              <Rectangle arcHeight="50.0" arcWidth="50.0"  height="100.0" styleClass="stat-card" strokeType="INSIDE" width="216.0" />
                               <Label fx:id="p1BestTimeLabel" alignment="TOP_LEFT" layoutX="8.0" layoutY="14.0" prefHeight="27.0" prefWidth="200.0" text="best time:                 0" textAlignment="CENTER" textFill="#e1d9d9" wrapText="true">
                                  <font>
                                     <Font name="Copperplate Gothic Bold" size="18.0" />
@@ -159,9 +165,9 @@
           <!-- Wins donut -->
     <StackPane prefHeight="180.0" prefWidth="180.0">
         <children>
-            <PieChart fx:id="p1winsChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="wins-chart">
+            <PieChart fx:id="p1winsChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="donut-chart wins-chart">
             </PieChart>
-            <Circle fill="#5c3a8e" radius="55.0" stroke="#5c3a8e" strokeType="INSIDE" styleClass="donut-hole" />
+            <Circle  radius="55.0"  strokeType="INSIDE" styleClass="donut-hole" />
                            <Label text="Win Rate" textFill="#e1d9d9">
                               <font>
                                  <Font name="Copperplate Gothic Bold" size="12.0" />
@@ -181,9 +187,9 @@
              <!-- Losses donut -->
     <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="120.0" prefWidth="179.0" GridPane.columnIndex="1">
         <children>
-            <PieChart fx:id="p1lossesChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="losses-chart">
+            <PieChart fx:id="p1lossesChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="donut-chart losses-chart">
             </PieChart>
-            <Circle fill="#5c3a8e" radius="55.0" stroke="#5c3a8e" strokeType="INSIDE" styleClass="donut-hole" />
+            <Circle  radius="55.0"  strokeType="INSIDE" styleClass="donut-hole" />
             <Label fx:id="p1lossesLabel" text="0%" textFill="#e1d9d9">
                 <font>
                     <Font name="Copperplate Gothic Bold" size="18.0" />
@@ -203,9 +209,9 @@
           <!-- Give-ups donut -->
     <StackPane prefHeight="180.0" prefWidth="180.0" GridPane.columnIndex="2">
         <children>
-            <PieChart fx:id="p1giveUpsChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="giveups-chart">
+            <PieChart fx:id="p1giveUpsChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="donut-chart giveups-chart">
             </PieChart>
-            <Circle fill="#5c3a8e" radius="55.0" stroke="#5c3a8e" strokeType="INSIDE" styleClass="donut-hole" />
+            <Circle  radius="55.0" strokeType="INSIDE" styleClass="donut-hole" />
                            <Label fx:id="p1giveUpsLabel" text="0%" textFill="#e1d9d9">
                               <font>
                                  <Font name="Copperplate Gothic Bold" size="18.0" />
@@ -231,8 +237,8 @@
     </StackPane>
                      <StackPane prefHeight="180.0" prefWidth="180.0" GridPane.columnIndex="3">
                         <children>
-                           <PieChart fx:id="p1winsWithNoMistakesChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="winswithnomistakes-chart" />
-                           <Circle fill="#5c3a8e" radius="55.0" stroke="#5c3a8e" strokeType="INSIDE" styleClass="donut-hole" />
+                           <PieChart fx:id="p1winsWithNoMistakesChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="donut-chart winswithnomistakes-chart" />
+                           <Circle  radius="55.0"  strokeType="INSIDE" styleClass="donut-hole" />
                            <Label fx:id="p1winsWithNoMistakesLabel" text="0%" textFill="#e1d9d9">
                               <font>
                                  <Font name="Copperplate Gothic Bold" size="18.0" />
@@ -340,7 +346,7 @@
                   </AnchorPane>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                      <children>
-                        <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#5c3a8e" height="100.0" layoutX="16.0" layoutY="11.0" stroke="#47257a" strokeType="INSIDE" width="162.0" />
+                        <Rectangle arcHeight="50.0" arcWidth="50.0" height="100.0" layoutX="16.0" layoutY="11.0" styleClass="stat-card" strokeType="INSIDE" width="162.0" />
                         <Label alignment="TOP_CENTER" layoutX="22.0" layoutY="22.0" prefHeight="27.0" prefWidth="150.0" text="total games" textFill="#e1d9d9" wrapText="true">
                            <font>
                               <Font name="Copperplate Gothic Bold" size="18.0" />
@@ -348,7 +354,7 @@
                         </Label>
                         <AnchorPane layoutX="193.0" layoutY="11.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="216.0">
                            <children>
-                              <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#5c3a8e" height="100.0" stroke="#47257a" strokeType="INSIDE" width="216.0" />
+                              <Rectangle arcHeight="50.0" arcWidth="50.0"  height="100.0" styleClass="stat-card" strokeType="INSIDE" width="216.0" />
                               <Label fx:id="p2BestScoreLabel" alignment="TOP_LEFT" layoutX="8.0" layoutY="14.0" prefHeight="27.0" prefWidth="200.0" text="best score:             0" textAlignment="CENTER" textFill="#e1d9d9" wrapText="true">
                               <font>
                                     <Font name="Copperplate Gothic Bold" size="18.0" />
@@ -363,7 +369,7 @@
                         </AnchorPane>
                         <AnchorPane layoutX="423.0" layoutY="11.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="216.0">
                            <children>
-                              <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#5c3a8e" height="100.0" stroke="#47257a" strokeType="INSIDE" width="216.0" />
+                              <Rectangle arcHeight="50.0" arcWidth="50.0"  height="100.0" styleClass="stat-card" strokeType="INSIDE" width="216.0" />
                               <Label fx:id="p2BestTimeLabel" alignment="TOP_LEFT" layoutX="8.0" layoutY="14.0" prefHeight="27.0" prefWidth="200.0" text="best time:             0" textAlignment="CENTER" textFill="#e1d9d9" wrapText="true">
                                  <font>
                                     <Font name="Copperplate Gothic Bold" size="18.0" />
@@ -396,7 +402,7 @@
                      <children>
                         <StackPane prefHeight="180.0" prefWidth="180.0">
                            <children>
-                              <PieChart fx:id="p2winsChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="wins-chart" />
+                              <PieChart fx:id="p2winsChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="donut-chart wins-chart" />
 								<Circle radius="55.0" styleClass="donut-hole" />
                               <Label text="Win Rate" textFill="#e1d9d9">
                                  <font>
@@ -415,7 +421,7 @@
                         </StackPane>
                         <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="120.0" prefWidth="179.0" GridPane.columnIndex="1">
                            <children>
-                              <PieChart fx:id="p2lossesChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="losses-chart" />
+                              <PieChart fx:id="p2lossesChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="donut-chart losses-chart" />
 								<Circle radius="55.0" styleClass="donut-hole" />
                               <Label fx:id="p2lossesLabel" text="0%" textFill="#e1d9d9">
                                  <font>
@@ -434,7 +440,7 @@
                         </StackPane>
                         <StackPane prefHeight="180.0" prefWidth="180.0" GridPane.columnIndex="2">
                            <children>
-                              <PieChart fx:id="p2giveUpsChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="giveups-chart" />
+                              <PieChart fx:id="p2giveUpsChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="donut-chart giveups-chart" />
 								<Circle radius="55.0" styleClass="donut-hole" />
                               <Label fx:id="p2giveUpsLabel" text="0%" textFill="#e1d9d9">
                                  <font>
@@ -461,7 +467,7 @@
                         </StackPane>
                         <StackPane prefHeight="180.0" prefWidth="180.0" GridPane.columnIndex="3">
                            <children>
-                              <PieChart fx:id="p2winsWithNoMistakesChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="winswithnomistakes-chart" />
+                              <PieChart fx:id="p2winsWithNoMistakesChart" labelsVisible="false" legendVisible="false" prefHeight="180.0" prefWidth="180.0" styleClass="donut-chart winswithnomistakes-chart" />
 								<Circle radius="55.0" styleClass="donut-hole" />
                            <Label fx:id="p2winsWithNoMistakesLabel" text="0%" textFill="#e1d9d9">
                               <font>
@@ -497,10 +503,6 @@
                </children>
             </GridPane>
          </children>
-            <stylesheets>
-               <URL value="@../css/stats.css" />
-               <URL value="@../css/base.css" />
-            </stylesheets>
       </GridPane>
       </VBox>
    </content>
