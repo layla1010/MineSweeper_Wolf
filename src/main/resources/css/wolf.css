@@ -17,7 +17,6 @@
     -fx-background-color: rgba(0,0,0,0.35);
 }
 
-
 /* If you use themed-bg in screens */
 .themed-bg {
     -fx-background-image: url("../Images/wolf_bg.png");
@@ -61,7 +60,11 @@
     -fx-text-fill: rgba(255,255,255,0.92);
 }
 
-/* ComboBox popup for wolf */
+/* =========================================================
+   WOLF — GLOBAL COMBOBOX BASE (SAFE / NEUTRAL)
+   Applies to all screens in wolf theme, but NOT "orange/red".
+   ========================================================= */
+
 .combo-box {
     -fx-text-fill: rgba(255,255,255,0.92);
     -fx-cursor: hand;
@@ -70,19 +73,22 @@
     -fx-text-fill: rgba(255,255,255,0.92);
 }
 
+/* Popup base for wolf (neutral dark, minimal glow) */
 .combo-box-popup .list-view {
     -fx-background-color: rgba(10, 10, 12, 0.92);
     -fx-background-radius: 12;
     -fx-padding: 4;
-    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0);
-    
+
+    /* keep this subtle and neutral so it doesn't look like History */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 18, 0.45, 0, 0);
 }
 
 .combo-box-popup .list-cell {
     -fx-text-fill: rgba(255,255,255,0.92);
     -fx-background-color: transparent;
-    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0);
-    
+
+    /* IMPORTANT: no global glow on cells (prevents "history fire" everywhere) */
+    -fx-effect: none;
 }
 
 /* --- Questions screen: make ScrollPane transparent --- */
@@ -101,6 +107,11 @@
     -fx-background-color: rgba(255,255,255,0.22);
     -fx-background-radius: 10;
 }
+
+/* =========================================================
+   WOLF THEME — HISTORY STYLES ONLY
+   Everything below is SCOPED to .history-root (History screen only)
+   ========================================================= */
 
 /* History: orange ember buttons */
 .history-small-button {
@@ -128,46 +139,115 @@
     -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.35), 16, 0.5, 0, 0);
 }
 
-.combo-box-popup .list-view .list-cell:hover {
-    -fx-background-color: rgba(255, 140, 0, 0.12);
-    -fx-border-color: rgba(255, 160, 60, 0.65);
-    -fx-border-width: 1;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0);
-    
+/* ===== History dropdown (ComboBox) hover/selected — ORANGE/RED (wolf theme) ===== */
+
+/* Popup panel (dropdown list container) */
+.history-root .combo-box-popup .list-view {
+    -fx-background-color: linear-gradient(
+        to bottom,
+        rgba(30, 12, 6, 0.98),
+        rgba(0, 0, 0, 0.98)
+    );
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+
+    -fx-border-color: rgba(255, 145, 40, 0.85);
+    -fx-border-width: 1.8;
+
+    /* RED glow */
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.70), 28, 0.75, 0, 0);
 }
 
-/* ===== History dropdown (ComboBox) hover/selected — ORANGE (wolf theme) ===== */
+/* Popup items base */
+.history-root .combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.92);
+    -fx-effect: none; /* ensure no inherited glow */
+}
+
+/* Hover item */
 .history-root .combo-box-popup .list-view .list-cell:hover {
-    -fx-background-color: rgba(255, 140, 0, 0.12);
-    -fx-border-color: rgba(255, 160, 60, 0.65);
-    -fx-border-width: 1;
+    -fx-background-color: rgba(255, 120, 0, 0.20);
+    -fx-border-color: rgba(255, 170, 80, 0.95);
+    -fx-border-width: 1.2;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0);
-    
+
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.55), 20, 0.65, 0, 0);
 }
 
+/* Selected item */
 .history-root .combo-box-popup .list-view .list-cell:selected {
-    -fx-background-color: rgba(20, 12, 6, 0.92);
+    -fx-background-color: rgba(35, 14, 8, 0.96);
     -fx-text-fill: #FFFFFF;
-    -fx-border-color: rgba(255, 170, 80, 0.85);
-    -fx-border-width: 1.5;
+    -fx-border-color: rgba(255, 170, 80, 1.0);
+    -fx-border-width: 1.6;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
-    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.35), 18, 0.45, 0, 0);
+
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.72), 24, 0.75, 0, 0);
 }
 
-/* ===== DatePicker calendar hover/selected/today — ORANGE (wolf theme) ===== */
+/* =========================================================
+   WOLF THEME — HISTORY ComboBox (CLOSED STATE)
+   Orange background + RED glow (History only)
+   ========================================================= */
+
+.history-root .combo-box-base {
+    -fx-background-color: linear-gradient(#FF9A2F, #FF4D00);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+
+    -fx-border-color: rgba(255, 80, 80, 0.55);
+    -fx-border-width: 1.4;
+
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.55), 22, 0.65, 0, 0);
+
+    -fx-padding: 2 10 2 10;
+}
+
+/* Focused closed ComboBox = stronger red glow */
+.history-root .combo-box-base:focused,
+.history-root .combo-box:focused {
+    -fx-border-color: rgba(255, 60, 60, 0.85);
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.75), 28, 0.75, 0, 0);
+}
+
+/* Visible selected text inside closed ComboBox */
+.history-root .combo-box .list-cell {
+    -fx-text-fill: rgba(255,255,255,0.95);
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 12px;
+}
+
+/* Arrow icon area */
+.history-root .combo-box-base .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 8 0 4;
+}
+.history-root .combo-box-base .arrow-button .arrow {
+    -fx-background-color: white;
+}
+
+/* Hover closed combobox */
+.history-root .combo-box-base:hover {
+    -fx-border-color: rgba(255, 100, 100, 0.75);
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.65), 24, 0.70, 0, 0);
+}
+
+/* ===== DatePicker calendar hover/selected/today — ORANGE/RED (wolf theme) ===== */
+
 .history-root .date-picker-popup .day-cell:hover {
     -fx-background-color: rgba(255, 140, 0, 0.12);
     -fx-border-color: rgba(255, 160, 60, 0.70);
     -fx-border-width: 1;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
-    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0);
-    
+
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.40), 22, 0.55, 0, 0);
 }
 
 .history-root .date-picker-popup .selected {
@@ -177,7 +257,8 @@
     -fx-background-radius: 8;
     -fx-border-radius: 8;
     -fx-text-fill: white;
-    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.45), 18, 0.5, 0, 0);
+
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.45), 18, 0.5, 0, 0);
 }
 
 .history-root .date-picker-popup .today {
@@ -185,14 +266,9 @@
     -fx-border-width: 1.2;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
-    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0);
-    
-}
 
-/* =========================================================
-   WOLF THEME ONLY — History pills pop on wolf background
-   (Difficulty + Result)
-   ========================================================= */
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.40), 22, 0.55, 0, 0);
+}
 
 /* =========================================================
    WOLF THEME — FILLED BADGES + BLACK TEXT (History)
@@ -208,14 +284,11 @@
     -fx-text-fill: rgba(15, 12, 8, 0.95); /* near-black */
 }
 
-/* -----------------------------
-   GAME LEVEL (Difficulty)
-   ----------------------------- */
+/* GAME LEVEL (Difficulty) */
 .difficulty-pill {
     -fx-background-color: linear-gradient(#FFB24A, #FF6A00);
     -fx-border-color: rgba(255, 200, 140, 0.95);
     -fx-border-width: 2;
-
     -fx-text-fill: rgba(20, 14, 8, 0.95);
 
     -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.35), 18, 0.45, 0, 0);
@@ -226,40 +299,31 @@
     -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.45), 22, 0.55, 0, 0);
 }
 
-/* -----------------------------
-   GAME RESULT — WON
-   ----------------------------- */
+/* GAME RESULT — WON */
 .result-pill-won {
     -fx-background-color: linear-gradient(#4CFFA3, #00C46A);
     -fx-border-color: rgba(200, 255, 220, 0.95);
     -fx-border-width: 2;
-
     -fx-text-fill: rgba(10, 12, 10, 0.95);
 
     -fx-effect: dropshadow(gaussian, rgba(0,255,140,0.30), 18, 0.45, 0, 0);
 }
 
-/* -----------------------------
-   GAME RESULT — LOST
-   ----------------------------- */
+/* GAME RESULT — LOST */
 .result-pill-lost {
     -fx-background-color: linear-gradient(#FF7A7A, #D62828);
     -fx-border-color: rgba(255, 200, 200, 0.95);
     -fx-border-width: 2;
-
     -fx-text-fill: rgba(12, 10, 10, 0.95);
 
     -fx-effect: dropshadow(gaussian, rgba(255,80,80,0.28), 18, 0.45, 0, 0);
 }
 
-/* -----------------------------
-   GAME RESULT — GIVE UP
-   ----------------------------- */
+/* GAME RESULT — GIVE UP */
 .result-pill-giveup {
     -fx-background-color: linear-gradient(#FFE27A, #FFB800);
     -fx-border-color: rgba(255, 240, 190, 0.95);
     -fx-border-width: 2;
-
     -fx-text-fill: rgba(18, 14, 6, 0.95);
 
     -fx-effect: dropshadow(gaussian, rgba(255,170,60,0.30), 18, 0.45, 0, 0);
@@ -272,7 +336,31 @@
     -fx-translate-y: -1;
 }
 
+/* =========================================================
+   WOLF — Signup title text (Player Name)
+   Scoped by fx:id so default theme is untouched
+   ========================================================= */
 
+#PlayerNameSignup {
+    -fx-fill: white;
+}
 
+/* =========================================================
+   WOLF — Sign-Up button hover (orange glow)
+   Does NOT affect default theme
+   ========================================================= */
 
+#signUpBtn:hover {
+    -fx-background-color: linear-gradient(#FF9A2F, #FF4D00);
+    -fx-border-color: rgba(255, 180, 100, 0.95);
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(255, 120, 0, 0.55),
+        18,
+        0.5,
+        0,
+        0
+    );
+}
 
