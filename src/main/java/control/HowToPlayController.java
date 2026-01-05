@@ -159,6 +159,11 @@ public class HowToPlayController {
     // ----------------- USED OVERLAY (dark like real game) -----------------
     private static final String USED_OVERLAY_ID = "USED_OVERLAY";
 
+ // tiny delay so the board visually updates BEFORE a dialog blocks/pops
+    private static final double FX_PULSE_DELAY = 0.12; // seconds
+    private static final double CLICK_FEEDBACK_DELAY = 0.55; // seconds
+
+    
     @FXML
     private void initialize() {
         p1Tiles = builder.build(p1Grid, SIZE, SIZE, true);
@@ -448,8 +453,16 @@ public class HowToPlayController {
                     highlightCell(false, 2, 2);
 
                     if (tutorialPopupsEnabled) {
-                        Platform.runLater(() -> activateSurpriseHowTo(false, 2, 2));
+                        Platform.runLater(() -> {
+                            playClickFeedback(false, 2, 2, () -> {
+                                PauseTransition extra = new PauseTransition(Duration.seconds(0.6)); // 👈 הדגשה לשלב 12
+                                extra.setOnFinished(ev -> activateSurpriseHowTo(false, 2, 2));
+                                extra.play();
+                            });
+                        });
                     }
+
+
                 }
         ));
     }
@@ -590,21 +603,27 @@ public class HowToPlayController {
         buildHeartsBar();
         updateInfoBar();
 
-        if (isAutoPlaying) {
-            showSurpriseTutorialDialogAutoClose(
-                    scoreBefore, livesBefore,
-                    DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES,
-                    ACTIVATION_COST_EASY,
-                    SURPRISE_READ_DELAY
-            );
-            return;
-        }
+        Runnable showDialog = () -> {
+            if (isAutoPlaying) {
+                showSurpriseTutorialDialogAutoClose(
+                        scoreBefore, livesBefore,
+                        DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES,
+                        ACTIVATION_COST_EASY,
+                        SURPRISE_READ_DELAY
+                );
+            } else {
+                showSurpriseTutorialDialog(
+                        scoreBefore, livesBefore,
+                        DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES,
+                        ACTIVATION_COST_EASY
+                );
+            }
+        };
 
-        showSurpriseTutorialDialog(
-                scoreBefore, livesBefore,
-                DEMO_SURPRISE_SCORE, DEMO_SURPRISE_LIVES,
-                ACTIVATION_COST_EASY
-        );
+        PauseTransition paintDelay = new PauseTransition(Duration.seconds(FX_PULSE_DELAY));
+        paintDelay.setOnFinished(e -> showDialog.run());
+        paintDelay.play();
+
     }
 
     private int clamp(int v, int lo, int hi) {
@@ -1716,5 +1735,25 @@ public class HowToPlayController {
             }
         }
     }
+    private void playClickFeedback(boolean isP1, int row, int col, Runnable after) {
+        StackPane tile = (isP1 ? p1Tiles : p2Tiles)[row][col];
+        Button b = btn(tile);
+
+        double oldSX = b.getScaleX();
+        double oldSY = b.getScaleY();
+
+        // visual "press"
+        b.setScaleX(0.90);
+        b.setScaleY(0.90);
+
+        PauseTransition pt = new PauseTransition(Duration.seconds(CLICK_FEEDBACK_DELAY));
+        pt.setOnFinished(e -> {
+            b.setScaleX(oldSX);
+            b.setScaleY(oldSY);
+            if (after != null) after.run();
+        });
+        pt.play();
+    }
+
 
 }
