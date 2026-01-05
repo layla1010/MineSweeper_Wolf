@@ -1,308 +1,108 @@
-/* ===== Root background ===== */
-.history-root {
-    -fx-background-color: #050814;
-}
+/* =========================
+   HISTORY SCREEN (LAYOUT ONLY)
+   No theme colors here.
+   Theme colors must be in theme.css / wolf.css ONLY.
+   ========================= */
 
-/* ===== ScrollPane tweaks ===== */
+/* ScrollPane tweaks */
 .history-scroll {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
-
 .history-scroll .viewport {
     -fx-background-color: transparent;
 }
 
-/* ===== Title ===== */
+/* Title typography only */
 .history-title {
     -fx-font-family: "Copperplate Gothic Bold", "Georgia", "Serif";
 }
 
-/* ===== List container (cards area) ===== */
+/* List container (cards area) */
 .history-list {
-    -fx-padding: 15 40 35 40; /* top right bottom left */
+    -fx-padding: 15 40 35 40;
 }
 
-/* ===== Empty label (optional) ===== */
+/* Empty label typography only */
 .history-empty-label {
-    -fx-text-fill: #d5e8ff;
+    -fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
     -fx-font-size: 16px;
 }
 
-/* ===== Cards ===== */
+/* Cards: shape/spacing only */
 .history-card {
-    -fx-background-color:  linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));
     -fx-background-radius: 22;
     -fx-border-radius: 22;
-    -fx-border-color: #2a3040;
     -fx-border-width: 1;
     -fx-padding: 12 18 12 18;
 }
 
-/* Wolf theme: History card hover -> orange */
-.history-card:hover {
-    -fx-border-color: rgba(255, 145, 40, 0.90);
-    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.25), 18, 0.35, 0, 0);
-}
-
-
-/* top row: difficulty | players | result */
+/* top row layout */
 .history-card-header {
-	-fx-spacing: 14;
+    -fx-spacing: 14;
     -fx-alignment: CENTER_LEFT;
 }
 
-/* bottom row: date | score | time */
+/* bottom row layout */
 .history-card-footer {
     -fx-alignment: CENTER_LEFT;
 }
 
-
-/* players text */
+/* players text typography */
 .players-label {
-    -fx-text-fill: #f2f7ff;
     -fx-font-family: "Copperplate Gothic Bold";
     -fx-font-size: 22px;
 }
 
-/* small badges: date, score, time */
+/* small badges layout */
 .info-badge {
     -fx-background-radius: 16;
     -fx-padding: 4 12 4 12;
-    -fx-text-fill: white;
     -fx-font-family: "Copperplate Gothic Light";
     -fx-font-size: 16px;
 }
 
-/* ===== Filter & sort bar ===== */
+/* Filter bar layout */
 .history-filter-bar {
     -fx-background-color: transparent;
-    -fx-padding: 4 10 4 10;  /* smaller vertical padding */
+    -fx-padding: 4 10 4 10;
     -fx-spacing: 10;
 }
 
 .history-filter-label {
-    -fx-text-fill: #E5E7EB;
     -fx-font-family: "Copperplate Gothic Light";
     -fx-font-size: 12px;
 }
 
-/* ===== Buttons (Apply / Sort) ===== */
+/* Buttons: size/shape only */
 .history-small-button {
-    -fx-background-color: rgba(255,255,255,0.14);
-    -fx-border-color: rgba(255,255,255,0.35);
-    -fx-border-width: 1.2;
     -fx-background-radius: 20;
     -fx-border-radius: 20;
-    -fx-text-fill: rgba(255,255,255,0.95);
     -fx-padding: 4 14 4 14;
     -fx-cursor: hand;
     -fx-font-size: 11px;
     -fx-font-family: "Copperplate Gothic Light";
 }
 
+/* Inputs: shape only (no colors) */
 .history-glass-input {
-    -fx-background-color: rgba(255,255,255,0.14);
-    -fx-text-fill: white;
-    -fx-prompt-text-fill: rgba(255,255,255,0.70);
     -fx-background-radius: 20;
-    -fx-border-color: rgba(255,255,255,0.35);
     -fx-border-radius: 20;
     -fx-border-width: 1;
     -fx-padding: 2 10 2 10;
 }
 
-
-/* ===== Inputs: ComboBox, TextField, DatePicker ===== */
-.combo-box,
-.text-field,
-.date-picker {
-    -fx-background-color: #111A33;
-    -fx-text-fill: white;
-    -fx-prompt-text-fill: white;
-    -fx-background-radius: 20;
-    /*-fx-border-color: #274B8E;*/
-    -fx-border-color: rgba(255,255,255,0.30);
-    -fx-border-radius: 20;
-    -fx-border-width: 1;
-    -fx-padding: 2 8 2 8;
-}
-
-/* visible text inside combo boxes */
-.combo-box .list-cell {
-    -fx-text-fill: white;
-    -fx-font-family: "Copperplate Gothic Light";
-    -fx-font-size: 12px;
-}
- 
-/* DatePicker inner text field */
-.date-picker .text-field {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-    -fx-prompt-text-fill: #4A537A;
-    -fx-background-radius: 20;
-    -fx-border-width: 0;
-}
-
-/* DatePicker arrow */
-.date-picker .arrow-button {
-    -fx-background-color: white;
-    -fx-padding: 0 6 0 6;
-}
-
-.date-picker .arrow-button .arrow {
-    -fx-background-color: white;
-}
-
-
-/* =========================
-   COMBOBOX BASE (closed state)
-   ========================= */
-
-.combo-box-base {
-    -fx-background-color: linear-gradient(#111A33, #050814);
-    -fx-background-radius: 20;
-    -fx-border-radius: 20;
-    /*-fx-border-color: #274B8E;*/
-    -fx-border-color: rgba(255,255,255,0.30);
-    -fx-border-width: 1;
-    -fx-padding: 2 10 2 10;
-}
-
-.combo-box-base:focused {
-    -fx-border-color: rgba(255,255,255,0.55); /* neutral focus */
-    -fx-faint-focus-color: transparent;
-    -fx-focus-color: transparent;
-}
-
-/* arrow button in the combo */
-.combo-box-base .arrow-button {
-    -fx-background-color: transparent;
-    fx-padding: 0 8 0 4;
-}
-
-.combo-box-base .arrow-button .arrow {
-    -fx-background-color: white;   
-}
-
-
-/* ===============================
-   COMBOBOX POPUP (Filter / Sort)
-   =============================== */
-
-/* Dropdown panel */
-.combo-box-popup .list-view {
-    -fx-background-color: #000000;
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-   /* -fx-border-color: rgba(53,224,255,0.4);*/
-   -fx-border-color: rgba(255,255,255,0.22);
-    -fx-border-width: 1.2;
-    -fx-effect: none;
-}
-
-
-.combo-box-popup .scroll-bar:vertical {
-    -fx-background-color: #050814;
-}
-
-.combo-box-popup .scroll-bar:vertical .track {
-    -fx-background-color: #050814;
-    -fx-background-radius: 8;
-}
-
-.combo-box-popup .scroll-bar:vertical .thumb {
-    -fx-background-color: #111A33;
-    -fx-background-radius: 8;
-}
-
-.combo-box-popup .scroll-bar:vertical .increment-button,
-.combo-box-popup .scroll-bar:vertical .decrement-button {
-    -fx-background-color: transparent;
-}
-
-/* Individual items */
-.combo-box-popup .list-view .list-cell {
-    -fx-background-color: transparent;
-    -fx-text-fill: #E5E7EB;
-    -fx-padding: 6 12 6 12;
-    -fx-font-size: 13px;
-}
-
-
-/* ===============================
-   DATE PICKER POPUP (Calendar)
-   =============================== */
-
-/* Whole popup panel */
-.date-picker-popup {
-    -fx-background-color: #000000;        /* FULL BLACK background */
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-border-color:rgba(255,255,255,0.22);;  /* Soft neon border */
-    -fx-border-width: 1.5;
-    -fx-effect: none;
-}
-
-/* Month-Year Header */
-.date-picker-popup > .month-year-pane {
-    -fx-background-color: #000000;
-    -fx-padding: 6 10 6 10;
-}
-
-.date-picker-popup > .month-year-pane .label {
-    -fx-text-fill: white;
-    -fx-font-size: 13px;
-}
-
-/* Header arrows */
-.date-picker-popup > .month-year-pane .spinner .button {
-    -fx-background-color: transparent;
-}
-
-.date-picker-popup > .month-year-pane .spinner .button .arrow {
-    -fx-background-color: white; /* cyan arrow */
-    -fx-text-fill: white;
-}
-
-/* Weekday row (Sun, Mon...) */
-.date-picker-popup .day-name-cell {
-    -fx-background-color: #000000;
-    -fx-text-fill: #6B7280;
-    -fx-font-size: 11px;
-}
-
-/* Day cells */
-.date-picker-popup .day-cell {
-    -fx-background-color: #000000;
-    -fx-text-fill: #E5E7EB;
-    -fx-font-size: 12px;
-    -fx-padding: 5 0 5 0;
-}
-
-
-
-/* ===== Back button (arrow) ===== */
+/* Back button (base only) */
 .history-back-button {
-    -fx-background-color: transparent;      /* let the dark background show */
-    -fx-text-fill: #E5E7F5;                 /* same light text as the screen */
+    -fx-background-color: transparent;
     -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-cursor: hand;
     -fx-padding: 0;
 }
 
-
-/* Small avatars in history rows */
+/* avatar effect can stay (not theme) */
 .history-avatar {
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 8, 0.3, 0, 2);
     -fx-smooth: true;
-    -fx-translate-y: 0;
-    -fx-opacity: 1.0;
 }
-
-
-
-
-
-

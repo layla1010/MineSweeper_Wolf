@@ -336,6 +336,23 @@
     -fx-translate-y: -1;
 }
 
+/* =========================
+   WOLF THEME — HISTORY BASE (to preserve current look)
+   ========================= */
+
+.history-root .history-card {
+    -fx-background-color: rgba(255,255,255,0.14);
+    -fx-border-color: rgba(255,255,255,0.22);
+}
+
+.history-root .history-glass-input {
+    -fx-background-color: rgba(255,255,255,0.14);
+    -fx-border-color: rgba(255,255,255,0.35);
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255,255,255,0.70);
+}
+
+
 /* =========================================================
    WOLF — Signup title text (Player Name)
    Scoped by fx:id so default theme is untouched
@@ -363,4 +380,6 @@
         0
     );
 }
+
+
 

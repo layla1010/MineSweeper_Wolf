@@ -295,7 +295,7 @@
             </GridPane.margin>
         </StackPane>
 
-        <Text fx:id="PlayerNameSignup" strokeType="OUTSIDE" strokeWidth="0.0" text="Player Name" GridPane.columnSpan="2" GridPane.halignment="CENTER">
+        <Text fx:id="PlayerNameSignup" id="PlayerNameSignup" strokeType="OUTSIDE" strokeWidth="0.0" text="Player Name" GridPane.columnSpan="2" GridPane.halignment="CENTER">
             <font>
                 <Font name="Copperplate Gothic Bold" size="24.0" />
             </font>
@@ -377,7 +377,7 @@
         </Button>
 
         <!-- SIGN-UP BUTTON (glass style, matches main) -->
-        <Button fx:id="signUpBtn" mnemonicParsing="false" onAction="#onSignUpBtnClicked" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: rgba(255,255,255,0.20);                        -fx-background-radius: 25;                        -fx-border-color: rgba(255,255,255,0.30);                        -fx-border-width: 2;                        -fx-border-radius: 25;                        -fx-cursor: hand;" text="Sign-Up" textFill="white" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+        <Button fx:id="signUpBtn" id="signUpBtn" mnemonicParsing="false" onAction="#onSignUpBtnClicked" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: rgba(255,255,255,0.20);                        -fx-background-radius: 25;                        -fx-border-color: rgba(255,255,255,0.30);                        -fx-border-width: 2;                        -fx-border-radius: 25;                        -fx-cursor: hand;" text="Sign-Up" textFill="white" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
             <GridPane.margin>
                 <Insets bottom="10.0" />
             </GridPane.margin>

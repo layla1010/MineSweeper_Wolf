@@ -26,6 +26,7 @@
     <!-- Root style class -->
     <styleClass>
         <String fx:value="history-root"/>
+        <String fx:value="themed-bg"/>
     </styleClass>
 
     <!-- ===== TOP: title + filter + sort ===== -->
