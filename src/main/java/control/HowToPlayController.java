@@ -1179,7 +1179,10 @@ public class HowToPlayController {
         nextBtn.setDisable(idx == steps.size() - 1);
 
         s.action.run();
+
+        applyUsedCellsVisuals();
     }
+
 
     // ----------------- Scenario Reset -----------------
 
@@ -1681,7 +1684,10 @@ public class HowToPlayController {
         this.tutorialPopupsEnabled = allowPopups;
 
         s.action.run();
+
+        applyUsedCellsVisuals();
     }
+
 
     // ✅ FIXED: לא להריץ את ה-step האחרון פעמיים
     private void replayToStep(int targetIdx) {
@@ -1696,4 +1702,19 @@ public class HowToPlayController {
         stepIndex = targetIdx;
         runStepInternal(targetIdx, true);
     }
+    
+    private void applyUsedCellsVisuals() {
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+
+                if (p1Used[r][c]) {
+                    setUsed(p1Tiles[r][c]); // ישים overlay + disable + cell-used
+                }
+                if (p2Used[r][c]) {
+                    setUsed(p2Tiles[r][c]);
+                }
+            }
+        }
+    }
+
 }
