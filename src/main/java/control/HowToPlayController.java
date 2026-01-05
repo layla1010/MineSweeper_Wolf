@@ -510,6 +510,8 @@ public class HowToPlayController {
                 markUsed(isP1, row, col);
                 setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
 
+                consumeQuestion(isP1);   
+
                 buildHeartsBar();
                 updateInfoBar();
 
@@ -538,6 +540,9 @@ public class HowToPlayController {
         if (picked < 0) {
             markUsed(isP1, row, col);
             setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
+
+            consumeQuestion(isP1);   
+
             buildHeartsBar();
             updateInfoBar();
             return;
@@ -564,6 +569,8 @@ public class HowToPlayController {
 
         markUsed(isP1, row, col);
         setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
+
+        consumeQuestion(isP1);
 
         buildHeartsBar();
         updateInfoBar();
@@ -599,6 +606,8 @@ public class HowToPlayController {
 
         markUsed(isP1, row, col);
         setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
+
+        consumeSurprise(isP1);   
 
         buildHeartsBar();
         updateInfoBar();
@@ -1754,6 +1763,17 @@ public class HowToPlayController {
         });
         pt.play();
     }
+    
+    private void consumeQuestion(boolean isP1) {
+        if (isP1) p1Questions = Math.max(0, p1Questions - 1);
+        else      p2Questions = Math.max(0, p2Questions - 1);
+    }
+
+    private void consumeSurprise(boolean isP1) {
+        if (isP1) p1Surprises = Math.max(0, p1Surprises - 1);
+        else      p2Surprises = Math.max(0, p2Surprises - 1);
+    }
+
 
 
 }
