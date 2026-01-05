@@ -484,32 +484,89 @@
    Scoped to .newgame-root so it never affects other screens
    ========================================================= */
 
+/* =========================================================
+   WOLF THEME — NEW GAME SCREEN ONLY
+   Scoped to .newgame-root so it never affects other screens
+   ========================================================= */
+
+/* 1) ALL TEXT -> WHITE (JavaFX Text nodes use -fx-fill) */
+.newgame-root Text {
+    -fx-fill: rgba(255,255,255,0.95);
+}
+
+/* Title + subtitle explicit (keeps your look consistent) */
+.newgame-root .setup-title {
+    -fx-fill: rgba(255, 255, 255, 0.98);
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 40, 0.75), 26, 0.6, 0, 0);
+}
+.newgame-root .setup-subtitle {
+    -fx-fill: rgba(255,255,255,0.92);
+}
+
+/* 2) ORANGE SECTION LINES */
 .newgame-root .setup-accent-line {
-    -fx-stroke: rgba(255, 170, 90, 0.75);
-    -fx-stroke-width: 1.3;
+    -fx-stroke: rgba(255, 150, 60, 0.90);
+    -fx-stroke-width: 1.6;
     -fx-opacity: 1.0;
 }
 
-/* Difficulty labels (EASY / MEDIUM / HARD) -> light orange */
-.newgame-root .difficulty-label {
-    -fx-fill: #ffbd7a;
-    -fx-effect: dropshadow(gaussian, rgba(255, 140, 40, 0.45), 12, 0.5, 0, 0);
+/* 3) DIFFICULTY “LINES” (borders) -> ORANGE (not purple) */
+.newgame-root .difficulty-toggle {
+    /* override base.css purple glow + selected border */
+    -fx-border-color: rgba(255, 150, 60, 0.35);
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(255, 120, 0, 0.18), 14, 0.35, 0, 4);
 }
-
-/* Orange hover on difficulty “cards” */
 .newgame-root .difficulty-toggle:hover {
-    -fx-border-color: rgba(255, 170, 90, 0.70);
-    -fx-effect: dropshadow(gaussian, rgba(255, 140, 40, 0.35), 18, 0.5, 0, 0);
+    -fx-border-color: rgba(255, 160, 70, 0.75);
+    -fx-effect: dropshadow(gaussian, rgba(255, 120, 0, 0.35), 20, 0.5, 0, 0);
+}
+.newgame-root .difficulty-toggle:selected {
+    -fx-border-color: rgba(255, 170, 80, 0.95);
+    -fx-effect: dropshadow(gaussian, rgba(255, 120, 0, 0.40), 24, 0.6, 0, 0);
 }
 
-/* Stat rows become warm orange in wolf */
+/* Difficulty labels (EASY/MEDIUM/HARD) -> WHITE (not orange) */
+.newgame-root .difficulty-label {
+    -fx-fill: rgba(255,255,255,0.95);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 14, 0.5, 0, 2);
+}
+
+/* Stat rows inside cards -> warm orange lines */
 .newgame-root .setup-stat-row {
-    -fx-fill: rgba(255, 170, 90, 0.18);
-    -fx-stroke: rgba(255, 170, 90, 0.55);
+    -fx-fill: rgba(255, 170, 90, 0.12);
+    -fx-stroke: rgba(255, 160, 70, 0.55);
     -fx-stroke-width: 1.1;
 }
 
-/* Player cards hover in orange */
+/* 4) BACK BUTTON HOVER -> ORANGE (wolf only + this screen only) */
+.newgame-root .game-back-button:hover {
+    -fx-background-color: rgba(255, 140, 60, 0.22);
+    -fx-background-radius: 8;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(255, 140, 60, 0.55), 16, 0.55, 0, 0);
+}
+
+/* 5) START GAME BUTTON -> ORANGE + WHITE TEXT */
+.newgame-root .start-game-btn {
+    -fx-background-color: linear-gradient(#FFB24A, #FF6A00);
+    -fx-border-color: rgba(255, 200, 140, 0.80);
+    -fx-border-width: 2;
+
+    -fx-background-radius: 30;
+    -fx-border-radius: 30;
+
+    -fx-text-fill: rgba(255,255,255,0.98);
+
+    -fx-effect: dropshadow(gaussian, rgba(255, 120, 0, 0.55), 22, 0.55, 0, 0);
+}
+.newgame-root .start-game-btn:hover {
+    -fx-background-color: linear-gradient(#FFC76A, #FF7E12);
+    -fx-border-color: rgba(255, 220, 170, 0.90);
+    -fx-effect: dropshadow(gaussian, rgba(255, 120, 0, 0.70), 26, 0.65, 0, 0);
+}
+
+/* Player cards keep orange hover lines */
 .newgame-root .player-card {
     -fx-fill: rgba(255,255,255,0.10);
     -fx-stroke: rgba(255, 170, 90, 0.35);
@@ -520,27 +577,11 @@
     -fx-effect: dropshadow(gaussian, rgba(255, 140, 40, 0.28), 18, 0.5, 0, 0);
 }
 
-/* Back button hover in orange (NEW GAME only) */
-.newgame-root .game-back-button:hover {
-    -fx-background-color: rgba(255, 140, 60, 0.22);
-    -fx-background-radius: 8;
-    -fx-text-fill: #ffffff;
-    -fx-effect: dropshadow(gaussian, rgba(255, 140, 60, 0.55), 16, 0.55, 0, 0);
+/* NEW GAME — make all Text nodes white (wolf theme only) */
+.newgame-root .text {
+    -fx-fill: rgba(255,255,255,0.95);
 }
 
-/* Start game button -> light orange in wolf */
-.newgame-root .start-game-btn {
-    -fx-background-color: linear-gradient(#ffd1a3, #ff9a3d);
-    -fx-background-radius: 30;
-    -fx-text-fill: rgba(20, 12, 8, 0.95);
-    -fx-effect: dropshadow(gaussian, rgba(255, 140, 40, 0.55), 22, 0.55, 0, 0);
-}
-
-/* Title orange glow in wolf */
-.newgame-root .setup-title {
-    -fx-fill: rgba(255, 245, 235, 0.98);
-    -fx-effect: dropshadow(gaussian, rgba(255, 140, 40, 0.75), 26, 0.6, 0, 0);
-}
 
 
 

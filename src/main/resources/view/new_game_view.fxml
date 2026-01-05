@@ -28,6 +28,7 @@
           xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="control.NewGameController"
           styleClass="themed-bg newgame-root">
+          
 
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="400.0" prefWidth="400.0" />
@@ -1033,6 +1034,7 @@
     </children>
 
     <stylesheets>
+    <URL value="@../css/base.css" />
         <URL value="@../css/theme.css" />
     </stylesheets>
 
