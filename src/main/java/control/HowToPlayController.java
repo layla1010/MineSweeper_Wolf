@@ -82,6 +82,8 @@ public class HowToPlayController {
     @FXML private HBox p2StatsBox;
 
     private boolean tutorialPopupsEnabled = true;
+    
+    
 
     // ----- FIXED DEMO QUESTION FOR HOW TO PLAY -----
     private static final model.Question DEMO_EXPERT_QUESTION =
@@ -163,6 +165,12 @@ public class HowToPlayController {
     private static final double FX_PULSE_DELAY = 0.12; // seconds
     private static final double CLICK_FEEDBACK_DELAY = 0.55; // seconds
 
+    final int BASE_MINES = 10;
+    final int BASE_FLAGS = 40;
+    final int BASE_Q = 6;
+    final int BASE_S = 2;
+    final int BASE_HEARTS = 10;
+
     
     @FXML
     private void initialize() {
@@ -239,10 +247,14 @@ public class HowToPlayController {
     }
 
     private double getAutoDelayForStep(int idx) {
-        if (idx == 10) return QUESTION_READ_DELAY + QUESTION_RESULT_DELAY;
-        if (idx == 11) return SURPRISE_READ_DELAY;
+        String title = steps.get(idx).title;
+
+        if (title.contains("Activate Question")) return QUESTION_READ_DELAY + QUESTION_RESULT_DELAY;
+        if (title.contains("Activate Surprise")) return SURPRISE_READ_DELAY;
+
         return DEFAULT_STEP_DELAY;
     }
+
 
     private void stopAutoplayIfRunning() {
         if (isAutoPlaying) onStop();
@@ -369,36 +381,50 @@ public class HowToPlayController {
         ));
 
         steps.add(new TourStep(
-                "Turn Switch",
+        		"Turn Switch",
                 "After Player 2 revealed a cell, the turn switches to Player 1.",
                 () -> {
                     hideAllHighlights();
                     setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, true, 0);
-                    highlightCell(true, 2, 6);
                 }
         ));
 
-        steps.add(new TourStep(
-                "Player 1: Reveal Question Cell (Reveal ≠ Activate)",
-                "Player 1 reveals a Question cell. This reveal is ONE action and ENDS the turn. " +
-                        "Important: revealing the Question cell does NOT activate it automatically.",
-                () -> {
-                    hideAllHighlights();
-                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, true, 0);
-
-                    setQuestion(p1Tiles[2][6]);
-                    markRevealed(true, 2, 6, DemoCellType.QUESTION);
-                    highlightCell(true, 2, 6);
-                }
-        ));
 
         steps.add(new TourStep(
-                "Turn Switch",
-                "Because Player 1 performed a turn-ending action (Reveal), the turn switches to Player 2.",
+                "Player 1: Reveal Mine (Ends Turn + Lose a Life)",
+                "Player 1 reveals a Mine. This ends the turn immediately and costs 1 shared life. " +
+                        "The mine counter is also updated.",
                 () -> {
                     hideAllHighlights();
-                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, 0);
-                    highlightCell(false, 2, 2);
+
+                    // לפני המוקש: 10 מוקשים, 10 לבבות, תור שחקן 1
+                 // מצב לפני הפגיעה (לפי הערכים שהתחלנו איתם בדמו)
+                    p1Mines = 10; p1Flags = 40; p1Questions = 6; p1Surprises = 2;
+                    p2Mines = 10; p2Flags = 38; p2Questions = 6; p2Surprises = 2;
+                    sharedHearts = 10;
+
+                    setSnapshot(p1Mines, p1Flags, p1Questions, p1Surprises,
+                                p2Mines, p2Flags, p2Questions, p2Surprises,
+                                sharedHearts, true, score);
+
+
+                    // נבחר תא לדוגמה למוקש
+                    int r = 1, c = 1;
+
+                    setMine(p1Tiles[r][c]);
+                    markRevealed(true, r, c, DemoCellType.MINE);
+
+                    // עדכון סטטים כמו במשחק
+                    consumeMine(true);
+                    setSnapshot(p1Mines, p1Flags, p1Questions, p1Surprises,
+                            p2Mines, p2Flags, p2Questions, p2Surprises,
+                            sharedHearts, true, score);
+
+
+                    buildHeartsBar();
+                    updateInfoBar();
+
+                    highlightCell(true, r, c);
                 }
         ));
 
@@ -408,13 +434,91 @@ public class HowToPlayController {
                         "Important: revealing the Surprise cell does NOT activate it automatically.",
                 () -> {
                     hideAllHighlights();
-                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, 0);
+
+                    // מצב אחרי המוקש: תור שחקן 2
+                    setSnapshot(p1Mines, p1Flags, p1Questions, p1Surprises,
+                                p2Mines, p2Flags, p2Questions, p2Surprises,
+                                sharedHearts, false, score);
 
                     setSurprise(p2Tiles[2][2]);
                     markRevealed(false, 2, 2, DemoCellType.SURPRISE);
+
+                    p2Surprises = Math.max(0, p2Surprises - 1);
+
+
+
+                    setSnapshot(p1Mines, p1Flags, p1Questions, p1Surprises,
+                            p2Mines, p2Flags, p2Questions, p2Surprises,
+                            sharedHearts, false, score);
+
+
                     highlightCell(false, 2, 2);
                 }
         ));
+
+
+        steps.add(new TourStep(
+                "Player 1: Reveal Question Cell (Reveal ≠ Activate)",
+                "Player 1 reveals a Question cell. This reveal is ONE action and ENDS the turn. " +
+                        "Important: revealing the Question cell does NOT activate it automatically.",
+                () -> {
+                    hideAllHighlights();
+
+                    // הצגת המצב הנוכחי לפני החשיפה
+                    setSnapshot(p1Mines, p1Flags, p1Questions, p1Surprises,
+                                p2Mines, p2Flags, p2Questions, p2Surprises,
+                                sharedHearts, true, score);
+
+                    // חשיפה
+                    setQuestion(p1Tiles[2][6]);
+                    markRevealed(true, 2, 6, DemoCellType.QUESTION);
+
+                    // ✅ מחסירים פעם אחת בלבד בעת החשיפה
+                    p1Questions = Math.max(0, p1Questions - 1);
+
+                    // עדכון ה־UI counters אחרי החשיפה
+                    setSnapshot(p1Mines, p1Flags, p1Questions, p1Surprises,
+                                p2Mines, p2Flags, p2Questions, p2Surprises,
+                                sharedHearts, true, score);
+
+                    highlightCell(true, 2, 6);
+                }
+        ));
+
+
+        steps.add(new TourStep(
+                "Player 2: Activate Surprise (Separate Action)",
+                "Now Player 2 activates the previously revealed Surprise cell. " +
+                        "Tutorial: we show BOTH GOOD and BAD outcomes in a styled popup, but the demo applies a fixed outcome.",
+                () -> {
+                    hideAllHighlights();
+
+                    // ensure both special cells exist and are shown as revealed in the demo
+                    setQuestion(p1Tiles[2][6]);
+                    setSurprise(p2Tiles[2][2]);
+                    markRevealed(true, 2, 6, DemoCellType.QUESTION);
+                    markRevealed(false, 2, 2, DemoCellType.SURPRISE);
+
+                    // Player 2 turn
+                    setSnapshot(p1Mines, p1Flags, p1Questions, p1Surprises,
+                            p2Mines, p2Flags, p2Questions, p2Surprises,
+                            sharedHearts, false, score);
+
+                    highlightCell(false, 2, 2);
+
+                    if (tutorialPopupsEnabled) {
+                        Platform.runLater(() -> {
+                            playClickFeedback(false, 2, 2, () -> {
+                                PauseTransition extra = new PauseTransition(Duration.seconds(0.6));
+                                extra.setOnFinished(ev -> activateSurpriseHowTo(false, 2, 2));
+                                extra.play();
+                            });
+                        });
+                    }
+                }
+        ));
+
+
 
         steps.add(new TourStep(
                 "Player 1: Activate Question (Separate Action)",
@@ -428,7 +532,10 @@ public class HowToPlayController {
                     markRevealed(true, 2, 6, DemoCellType.QUESTION);
                     markRevealed(false, 2, 2, DemoCellType.SURPRISE);
 
-                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, true, score);
+                    setSnapshot(p1Mines, p1Flags, p1Questions, p1Surprises,
+                            p2Mines, p2Flags, p2Questions, p2Surprises,
+                            sharedHearts, true, score);
+
                     highlightCell(true, 2, 6);
 
                     if (tutorialPopupsEnabled) {
@@ -437,34 +544,6 @@ public class HowToPlayController {
                 }
         ));
 
-        steps.add(new TourStep(
-                "Player 2: Activate Surprise (Separate Action)",
-                "Now Player 2 activates the previously revealed Surprise cell. " +
-                        "Tutorial: we show BOTH GOOD and BAD outcomes in a styled popup, but the demo applies a fixed outcome.",
-                () -> {
-                    hideAllHighlights();
-
-                    setQuestion(p1Tiles[2][6]);
-                    setSurprise(p2Tiles[2][2]);
-                    markRevealed(true, 2, 6, DemoCellType.QUESTION);
-                    markRevealed(false, 2, 2, DemoCellType.SURPRISE);
-
-                    setSnapshot(10, 40, 6, 2, 10, 38, 6, 2, 10, false, score);
-                    highlightCell(false, 2, 2);
-
-                    if (tutorialPopupsEnabled) {
-                        Platform.runLater(() -> {
-                            playClickFeedback(false, 2, 2, () -> {
-                                PauseTransition extra = new PauseTransition(Duration.seconds(0.6)); // 👈 הדגשה לשלב 12
-                                extra.setOnFinished(ev -> activateSurpriseHowTo(false, 2, 2));
-                                extra.play();
-                            });
-                        });
-                    }
-
-
-                }
-        ));
     }
 
     // ----------------- REAL-GAME-LIKE ACTIVATIONS (HowToPlay) -----------------
@@ -494,15 +573,22 @@ public class HowToPlayController {
                 int scoreChange = 0;
                 int livesChange = 0;
 
-                switch (qDiff) {
-                    case "easy" -> scoreChange = correct ? +3 : -3;
-                    case "medium" -> scoreChange = correct ? +6 : -6;
-                    case "hard" -> scoreChange = correct ? +10 : -10;
-                    default -> {
-                        if (correct) { scoreChange = +15; livesChange = +2; }
-                        else { scoreChange = -15; livesChange = -1; }
+                if (correct) {
+                    switch (qDiff) {
+                        case "easy" -> { scoreChange = +3; livesChange = +1; }   // לפי הטבלה (קל)
+                        case "medium" -> scoreChange = +6;                        // לפי הטבלה (קל)
+                        case "hard" -> scoreChange = +10;                         // לפי הטבלה (קל)
+                        default -> { scoreChange = +15; livesChange = +2; }       // expert
+                    }
+                } else {
+                    switch (qDiff) {
+                        case "easy" -> scoreChange = (Math.random() < 0.5) ? -3 : 0;     // OR 50%
+                        case "medium" -> scoreChange = (Math.random() < 0.5) ? -6 : 0;   // OR 50%
+                        case "hard" -> scoreChange = -10;
+                        default -> { scoreChange = -15; livesChange = -1; }
                     }
                 }
+
 
                 score += scoreChange;
                 sharedHearts = clamp(sharedHearts + livesChange, 0, TOTAL_HEART_SLOTS);
@@ -510,7 +596,6 @@ public class HowToPlayController {
                 markUsed(isP1, row, col);
                 setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
 
-                consumeQuestion(isP1);   
 
                 buildHeartsBar();
                 updateInfoBar();
@@ -539,9 +624,7 @@ public class HowToPlayController {
         int picked = showQuestionPickDialogTutorial(q, true);
         if (picked < 0) {
             markUsed(isP1, row, col);
-            setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
-
-            consumeQuestion(isP1);   
+            setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);   
 
             buildHeartsBar();
             updateInfoBar();
@@ -554,23 +637,28 @@ public class HowToPlayController {
         int scoreChange = 0;
         int livesChange = 0;
 
-        switch (qDiff) {
-            case "easy" -> scoreChange = correct ? +3 : -3;
-            case "medium" -> scoreChange = correct ? +6 : -6;
-            case "hard" -> scoreChange = correct ? +10 : -10;
-            default -> {
-                if (correct) { scoreChange = +15; livesChange = +2; }
-                else { scoreChange = -15; livesChange = -1; }
+        if (correct) {
+            switch (qDiff) {
+                case "easy" -> { scoreChange = +3; livesChange = +1; }   // לפי הטבלה (קל)
+                case "medium" -> scoreChange = +6;                        // לפי הטבלה (קל)
+                case "hard" -> scoreChange = +10;                         // לפי הטבלה (קל)
+                default -> { scoreChange = +15; livesChange = +2; }       // expert
+            }
+        } else {
+            switch (qDiff) {
+                case "easy" -> scoreChange = (Math.random() < 0.5) ? -3 : 0;     // OR 50%
+                case "medium" -> scoreChange = (Math.random() < 0.5) ? -6 : 0;   // OR 50%
+                case "hard" -> scoreChange = -10;
+                default -> { scoreChange = -15; livesChange = -1; }
             }
         }
+
 
         score += scoreChange;
         sharedHearts = clamp(sharedHearts + livesChange, 0, TOTAL_HEART_SLOTS);
 
         markUsed(isP1, row, col);
         setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
-
-        consumeQuestion(isP1);
 
         buildHeartsBar();
         updateInfoBar();
@@ -607,7 +695,6 @@ public class HowToPlayController {
         markUsed(isP1, row, col);
         setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
 
-        consumeSurprise(isP1);   
 
         buildHeartsBar();
         updateInfoBar();
@@ -790,7 +877,7 @@ public class HowToPlayController {
     private Outcome outcomeForDifficulty(String diff, boolean isCorrect) {
         diff = (diff == null) ? "easy" : diff.toLowerCase();
         return switch (diff) {
-            case "easy" -> isCorrect ? new Outcome(+3, 0) : new Outcome(-3, 0);
+            case "easy" -> isCorrect ? new Outcome(+3, +1) : new Outcome(-3, 0);
             case "medium" -> isCorrect ? new Outcome(+6, 0) : new Outcome(-6, 0);
             case "hard" -> isCorrect ? new Outcome(+10, 0) : new Outcome(-10, 0);
             default -> isCorrect ? new Outcome(+15, +2) : new Outcome(-15, -1);
@@ -921,17 +1008,55 @@ public class HowToPlayController {
     }
 
     private Node makeOutcomeLine(String letter, int idx, int correctIdx, int chosenIdx, String diff, int activationCost) {
+
         boolean wouldBeCorrect = (idx == correctIdx);
-        Outcome o = outcomeForDifficulty(diff, wouldBeCorrect);
+        String d = (diff == null) ? "easy" : diff.toLowerCase();
+
+        // ✅ Special case: EASY/MEDIUM wrong has OR (50%)
+        if (!wouldBeCorrect && (d.equals("easy") || d.equals("medium"))) {
+            int p = d.equals("easy") ? 3 : 6;
+
+         // net includes activation
+            int opt1 = -activationCost - p; // -8 או -11
+            int opt2 = -activationCost;     // -5
+
+            String text = letter + ") WRONG  →  Score (" + opt1 + " OR " + opt2 + "), Lives +0"
+                    + "   (50% chance: -" + p + " OR 0, -" + activationCost + " activation)";
+
+            Label lbl = new Label(text);
+            lbl.setWrapText(true);
+
+            String base = """
+                -fx-padding: 10 12 10 12;
+                -fx-background-color: rgba(255,255,255,0.12);
+                -fx-background-radius: 14;
+                -fx-border-radius: 14;
+                -fx-border-width: 1;
+                -fx-text-fill: white;
+                -fx-font-size: 14px;
+            """;
+
+            String border = "rgba(255, 90, 90, 0.70)";
+            String chosenExtra = (idx == chosenIdx)
+                    ? " -fx-border-width: 2.6; -fx-font-weight: bold; -fx-background-color: rgba(255,255,255,0.18);"
+                    : "";
+
+            lbl.setStyle(base + " -fx-border-color: " + border + ";" + chosenExtra);
+            return lbl;
+        }
+
+        // ✅ Otherwise: keep your ORIGINAL logic (hard/expert + correct cases)
+        boolean wouldBeCorrect2 = (idx == correctIdx);
+        Outcome o = outcomeForDifficulty(diff, wouldBeCorrect2);
 
         int netScore = o.scoreDelta - activationCost;
         int netLives = o.livesDelta;
 
         String text = letter + ") " +
-                (wouldBeCorrect ? "CORRECT" : "WRONG") +
+                (wouldBeCorrect2 ? "CORRECT" : "WRONG") +
                 "  →  Score " + (netScore >= 0 ? "+" : "") + netScore +
                 " , Lives " + (netLives >= 0 ? "+" : "") + netLives +
-                "   (" + (wouldBeCorrect ? "+" : "") + o.scoreDelta +
+                "   (" + (wouldBeCorrect2 ? "+" : "") + o.scoreDelta +
                 " score, " + (o.livesDelta >= 0 ? "+" : "") + o.livesDelta +
                 " lives, -" + activationCost + " activation)";
 
@@ -1774,6 +1899,24 @@ public class HowToPlayController {
         if (isP1) p1Surprises = Math.max(0, p1Surprises - 1);
         else      p2Surprises = Math.max(0, p2Surprises - 1);
     }
+    
+    private void consumeMine(boolean isP1) {
+        if (isP1) p1Mines = Math.max(0, p1Mines - 1);
+        else      p2Mines = Math.max(0, p2Mines - 1);
+
+        // פגיעה ממוקש מורידה לב אחד (אם אצלכם זה אחרת – תגידי ואני אתאים)
+        sharedHearts = clamp(sharedHearts - 1, 0, TOTAL_HEART_SLOTS);
+    }
+
+    
+    private void setMine(StackPane tile) {
+        removeUsedOverlay(tile);
+        Button b = btn(tile);
+        clearCellState(b);
+        setIcon(b, "/Images/bomb.png", 22);   // ודאי שהנתיב קיים אצלך
+        b.getStyleClass().addAll("cell-revealed", "cell-mine");
+    }
+
 
 
 
