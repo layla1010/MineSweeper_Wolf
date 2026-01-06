@@ -687,6 +687,80 @@ zoom-on-hover .start-game-btn:hover {
 }
 
 
+/* =========================================================
+   WOLF THEME — END GAME (WIN / LOSE)
+   Keep background, replace PINK with ORANGE
+   ========================================================= */
+
+/* ---------- Title (YOU WON / YOU LOST) ---------- */
+.endgame-root .neon-title {
+    -fx-text-fill: #ff9f43;
+    -fx-effect: dropshadow(gaussian, rgba(255,159,67,0.9), 20, 0.55, 0, 0);
+}
+
+/* ---------- Stats panel border ---------- */
+.endgame-root .stats-panel {
+    -fx-stroke: rgba(255,159,67,0.55);
+    -fx-effect: dropshadow(gaussian, rgba(255,159,67,0.45), 30, 0.45, 0, 0);
+}
+
+/* ---------- Header stroke ---------- */
+.endgame-root .stats-header {
+    -fx-stroke: rgba(255,159,67,0.65);
+}
+
+/* ---------- Stat cards ---------- */
+.endgame-root .stat-card {
+    -fx-stroke: rgba(255,159,67,0.45);
+    -fx-effect: dropshadow(gaussian, rgba(255,159,67,0.35), 14, 0.4, 0, 0);
+}
+
+/* Hover glow: ORANGE instead of pink */
+.endgame-root .stat-card:hover {
+    -fx-stroke: #ff9f43;
+    -fx-effect: dropshadow(gaussian, rgba(255,159,67,0.85), 22, 0.6, 0, 0);
+}
+
+/* ---------- Buttons base (unchanged look, just border hint) ---------- */
+.endgame-root .game-button {
+    -fx-border-color: rgba(255,159,67,0.45);
+}
+
+/* ---------- Buttons hover: ORANGE ---------- */
+.endgame-root .game-button:hover {
+    -fx-background-color: linear-gradient(
+        to bottom right,
+        #ffb866,
+        #ff9f43
+    );
+    -fx-text-fill: #111;
+    -fx-effect: dropshadow(gaussian, rgba(255,159,67,0.9), 28, 0.65, 0, 0);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* ---------- Pressed ---------- */
+.endgame-root .game-button:pressed {
+    -fx-scale-x: 0.96;
+    -fx-scale-y: 0.96;
+}
+
+/* Black ring around the end-game buttons (wolf only) */
+.endgame-root .game-button {
+    -fx-border-color: rgba(0, 0, 0, 0.90) !important;
+    -fx-border-width: 2.2 !important;
+}
+
+/* Keep your orange hover, but keep the ring black */
+.endgame-root .game-button:hover {
+    -fx-border-color: rgba(0, 0, 0, 0.95) !important;
+}
+
+.endgame-root {
+    -fx-pref-height: 520px;  /* was effectively ~450; increase so row 6 isn't clipped */
+    -fx-padding: 20 20 35 20; /* extra bottom padding */
+}
+
 
 
 
