@@ -1,5 +1,5 @@
 /* =========================
-   DIFFICULTY TOGGLES
+   DIFFICULTY TOGGLES (BASE = neutral only)
    ========================= */
 
 .difficulty-toggle:focused {
@@ -10,25 +10,37 @@
 .difficulty-toggle {
     -fx-cursor: hand;
 
-    /* new purple card color instead of navy */
+    /* neutral defaults (themes override colors) */
     -fx-background-color: rgba(255, 255, 255, 0.12);
-    -fx-text-fill: #F6F7FF;
+    -fx-text-fill: rgba(255,255,255,0.92);
 
     -fx-border-color: rgba(255, 255, 255, 0.18);
     -fx-border-width: 2;
-    
+
     -fx-background-radius: 40;
     -fx-border-radius: 40;
-
-    -fx-effect: dropshadow(gaussian, rgba(168, 85, 247, 0.25), 12, 0.25, 0, 4);
 }
 
 .difficulty-toggle:selected {
-    /* brighter, more vibrant when selected */
-    -fx-border-color: #f9a8ff;
+    /* neutral selection (themes override) */
+    -fx-border-color: rgba(255,255,255,0.60);
 }
 
+
 /* =========================
+   NEW GAME – STAT ROWS (BASE neutral)
+   ========================= */
+
+.setup-stat-row {
+    -fx-fill: rgba(255,255,255,0.10);
+    -fx-stroke: rgba(255,255,255,0.18);
+    -fx-stroke-width: 1.0;
+    -fx-arc-height: 10;
+    -fx-arc-width: 10;
+}
+
+
+ /* =========================
    TEXTFIELDS: GLASS INPUT
    (now white when idle)
    ========================= */
@@ -300,24 +312,27 @@
     -fx-background-radius: 12;
 }
 
-/* =========================
-   NEW GAME SCREEN — TEXT COLOR (BOTH THEMES)
-   Scoped to .newgame-root ONLY
-   ========================= */
 
-/* Make all Text nodes white (this is the one that actually works) */
-.newgame-root .text {
-    -fx-fill: rgba(255,255,255,0.95);
+/* New Game textfields text should be white in BOTH themes */
+ .glass-input {
+    -fx-text-fill: rgba(255,255,255,0.95);
+    -fx-prompt-text-fill: rgba(255,255,255,0.70);
 }
 
-/* Optional fallback (keep it, harmless) */
+/* =========================================================
+   FINAL OVERRIDE — NEW GAME TEXT MUST BE WHITE (BOTH THEMES)
+   ========================================================= */
+
 .newgame-root Text {
-    -fx-fill: rgba(255,255,255,0.95);
+    -fx-fill: white !important;
 }
 
-.newgame-root .setup-title,
-.newgame-root .setup-subtitle {
-    -fx-fill: rgba(255,255,255,0.95);
+.newgame-root .text {
+    -fx-fill: white !important;
+}
+
+.newgame-root .label {
+    -fx-text-fill: white !important;
 }
 
 

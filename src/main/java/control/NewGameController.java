@@ -12,6 +12,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -64,6 +65,7 @@ public class NewGameController {
      */
     @FXML
     private void initialize() {
+    
         selectPlayer(1);
 
         avatarManager = new AvatarManager(player1avatar, player2avatar);

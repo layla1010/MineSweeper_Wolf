@@ -2,9 +2,11 @@ package util;
 
 import java.util.Optional;
 
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import model.Theme;
 
 
 
@@ -18,8 +20,10 @@ public final class DialogUtil {
         alert.setContentText(message);
 
         alert.getDialogPane().getStylesheets().add(
-                DialogUtil.class.getResource("/css/theme.css").toExternalForm()
-            );
+                ThemeManager.class.getResource(
+                        ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
+                ).toExternalForm()
+        );
 
         	alert.showAndWait();
 
@@ -37,8 +41,11 @@ public final class DialogUtil {
         alert.setContentText(message);
 
         alert.getDialogPane().getStylesheets().add(
-                DialogUtil.class.getResource("/css/theme.css").toExternalForm()
+                ThemeManager.class.getResource(
+                        ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
+                ).toExternalForm()
         );
+
 
         return alert.showAndWait();   // <-- THIS is the key difference
     }
@@ -50,7 +57,9 @@ public final class DialogUtil {
         alert.setContentText(message);
 
         alert.getDialogPane().getStylesheets().add(
-                DialogUtil.class.getResource("/css/theme.css").toExternalForm()
+                ThemeManager.class.getResource(
+                        ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
+                ).toExternalForm()
         );
 
         Optional<ButtonType> result = alert.showAndWait();

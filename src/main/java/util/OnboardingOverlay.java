@@ -90,7 +90,10 @@ final class OnboardingOverlay extends Pane {
         actions.setStyle("-fx-alignment: center-right;");
 
         backBtn.setStyle(buttonStyle());
-        nextBtn.setStyle(buttonStylePrimary());
+       // nextBtn.setStyle(buttonStylePrimary());
+     // keep default colorful theme look via CSS (theme.css), allow wolf override
+        nextBtn.getStyleClass().add("onboarding-next");
+
         skipBtn.setStyle(buttonStyle());
 
         backBtn.setOnAction(e -> onBack.run());

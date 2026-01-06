@@ -703,6 +703,7 @@
                 <!-- Player 1 card -->
                 <Rectangle fx:id="recP1"
                            arcHeight="60.0" arcWidth="60.0"
+                           height="100.0"
                            layoutX="24.0" layoutY="-2.0"
                            onMouseClicked="#onPlayer1AreaClicked"
                            strokeType="INSIDE"
@@ -719,7 +720,7 @@
                            onMouseClicked="#onPlayer1AreaClicked"
                            prefHeight="26.0" prefWidth="249.0"
                            promptText="Player 1"
-                           style="-fx-border-color: white; -fx-text-fill: #684ca4; -fx-font-family: Copperplate Gothic Bold;">
+                           style="-fx-border-color: white; -fx-font-family: Copperplate Gothic Bold;">
                     <font>
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
@@ -748,7 +749,7 @@
                            onMouseClicked="#onPlayer2AreaClicked"
                            prefHeight="26.0" prefWidth="249.0"
                            promptText="Player 2"
-                           style="-fx-border-color: white; -fx-text-fill: #684ca4; -fx-font-family: Copperplate Gothic Bold;">
+                           style="-fx-border-color: white; -fx-font-family: Copperplate Gothic Bold;">
                     <font>
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
@@ -1035,7 +1036,6 @@
 
     <stylesheets>
     <URL value="@../css/base.css" />
-        <URL value="@../css/theme.css" />
     </stylesheets>
 
 </GridPane>

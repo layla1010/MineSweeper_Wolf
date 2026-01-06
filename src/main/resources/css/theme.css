@@ -379,6 +379,12 @@
     -fx-pie-color: rgba(255,255,255,0.95);
 }
 
+
+
+
+
+////////////////////////////////////////////////////////////////////////
+
 /* ===== New Game Setup base visuals (used by colorful theme) ===== */
 
 .player-card {
@@ -391,19 +397,155 @@
     -fx-stroke: rgba(255,255,255,0.40);
 }
 
-/* stat rows inside difficulty cards (now that rectangles use setup-stat-row class) */
-.setup-stat-row {
-    -fx-fill: rgba(104, 76, 164, 0.55);
-    -fx-stroke: rgba(168, 85, 247, 0.70);
-    -fx-stroke-width: 1.1;
-    -fx-arc-height: 10;
-    -fx-arc-width: 10;
-}
+
 /* NEW GAME — make all Text nodes white (default theme only) */
 .newgame-root .text {
     -fx-fill: rgba(255,255,255,0.95);
 }
 
+.newgame-root .difficulty-toggle {
+    -fx-cursor: hand;
 
+    /* new purple card color instead of navy */
+    -fx-background-color: rgba(255, 255, 255, 0.12);
+    -fx-text-fill: #F6F7FF;
 
+    -fx-border-color: rgba(255, 255, 255, 0.18);
+    -fx-border-width: 2;
+    
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+
+    -fx-effect: dropshadow(gaussian, rgba(168, 85, 247, 0.25), 12, 0.25, 0, 4);
+}
+
+.newgame-root .glass-input {
+    /* base: white, easy to read */
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 20;
+    -fx-border-width: 0.5;
+
+    -fx-text-fill: #111827;
+    -fx-prompt-text-fill: #9ca3af;
+
+    -fx-padding: 0.3em 0.8em 0.3em 0.8em;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 8, 0.3, 0, 2);
+}
+
+.newgame-root .glass-input:focused {
+    /* glowing white + purple border when selected */
+    -fx-background-color: #ffffff;
+    -fx-border-color: #a855f7;
+
+    -fx-effect:
+        dropshadow(gaussian, rgba(255,255,255,0.55), 25, 0.6, 0, 0),
+        dropshadow(gaussian, rgba(88,28,135,0.75), 30, 0.7, 0, 0);
+    -fx-translate-y: -1;
+}
+
+.newgame-root .player-card {
+    -fx-fill: rgba(255, 255, 255, 0.12);
+    -fx-stroke: rgba(255, 255, 255, 0.18);
+    -fx-stroke-width: 2;
+    -fx-arc-width: 32;
+    -fx-arc-height: 32;
+    -fx-effect: dropshadow(gaussian, rgba(168, 85, 247, 0.25), 12, 0.25, 0, 4);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.newgame-root .player-card:hover {
+    -fx-stroke: rgba(255, 255, 255, 0.40);
+    -fx-effect: dropshadow(gaussian, rgba(248, 113, 182, 0.35), 16, 0.35, 0, 4);
+}
+
+/* selected state: vibrant blue / purple + permanent zoom */
+.newgame-root .player-card-active {
+    -fx-stroke: #f9a8ff;
+    -fx-stroke-width: 0.5;
+
+    -fx-scale-x: 1.06;
+    -fx-scale-y: 1.06;
+
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.60), 18, 0.55, 0, 0);
+}
+
+/* =========================================================
+   NEW GAME — DEFAULT COLORFUL THEME (ONLY)
+   ========================================================= */
+
+.newgame-root .setup-title {
+    -fx-fill: rgba(255,255,255,0.98);
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.30), 18, 0.5, 0, 0);
+}
+
+.newgame-root .setup-subtitle {
+    -fx-fill: rgba(255,255,255,0.90);
+}
+
+.newgame-root .setup-accent-line {
+    -fx-stroke: rgba(255,255,255,0.85);
+    -fx-stroke-width: 1.6;
+}
+
+/* Stat rows inside difficulty cards (purple glass like pic #1) */
+.newgame-root .setup-stat-row {
+    -fx-fill: rgba(104, 76, 164, 0.55);
+    -fx-stroke: rgba(168, 85, 247, 0.70);
+    -fx-stroke-width: 1.1;
+}
+
+/* Difficulty border highlight (pink/purple like pic #1) */
+.newgame-root .difficulty-toggle:selected {
+    -fx-border-color: #f9a8ff;
+}
+
+/* Start game button (pink like pic #1) */
+zoom-on-hover  .start-game-btn {
+    -fx-background-color: linear-gradient(#f093fb, #764ba2);
+    -fx-border-color: rgba(255,255,255,0.55);
+    -fx-border-width: 2;
+    -fx-text-fill: rgba(255,255,255,0.98);
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+
+    -fx-effect: dropshadow(gaussian, rgba(240,147,251,0.55), 22, 0.6, 0, 0);
+}
+
+zoom-on-hover  .start-game-btn:hover {
+    -fx-background-color: linear-gradient(#f6a8ff, #8b5cf6);
+    -fx-border-color: rgba(255,255,255,0.75);
+    -fx-effect: dropshadow(gaussian, rgba(240,147,251,0.70), 26, 0.7, 0, 0);
+}
+
+/* Applies in BOTH themes — scoped ONLY to New Game screen */
+.newgame-root Text,
+.newgame-root .text {
+    -fx-fill: rgba(255,255,255,0.95) !important;
+}
+
+/* If you have Labels anywhere in this screen */
+.newgame-root .label {
+    -fx-text-fill: rgba(255,255,255,0.95) !important;
+}
+
+newgame-root .game-back-button:hover {
+    -fx-background-color: transparent;          /* let the gradient show through */
+    -fx-text-fill: #E5E7F5;                     /* light text like the title */
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+}
+
+/* Onboarding overlay - Primary (Next) button in DEFAULT colorful theme */
+.onboarding-next {
+    -fx-background-radius: 12;
+    -fx-background-color: linear-gradient(#f973c5, #a855f7);
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
 
