@@ -170,20 +170,24 @@ public class GameUIServiceController {
     public void updateScoreAndMineLabels() {
         scoreLabel.setText("Score: " + s.score);
 
+        int p1Wrong = s.wrongFlagsThisTurnP1;
+        int p2Wrong = s.wrongFlagsThisTurnP2;
+
         player1BombsLeftLabel.setText(
                 s.config.getPlayer1Nickname() + ", Mines left: " + s.minesLeft1
-                        + " | Flags left: " + s.flagsLeft1
+                        + " | Wrong flags: " + p1Wrong + "/" + GameStateController.WRONG_FLAGS_LIMIT_PER_TURN
                         + " | Surprises left: " + s.surprisesLeft1
                         + " | Questions left: " + s.questionsLeft1
         );
 
         player2BombsLeftLabel.setText(
                 s.config.getPlayer2Nickname() + ", Mines left: " + s.minesLeft2
-                        + " | Flags left: " + s.flagsLeft2
+                        + " | Wrong flags: " + p2Wrong + "/" + GameStateController.WRONG_FLAGS_LIMIT_PER_TURN
                         + " | Surprises left: " + s.surprisesLeft2
                         + " | Questions left: " + s.questionsLeft2
         );
     }
+
 
     public void initForbiddenCursor() {
         try {

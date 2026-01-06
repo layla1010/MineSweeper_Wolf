@@ -30,12 +30,6 @@ public class GameStateController {
     int questionsLeft1;
     int questionsLeft2;
 
-    int flagsLeft1;
-    int flagsLeft2;
-
-    int flagsPlaced1;
-    int flagsPlaced2;
-
     int revealedCountP1;
     int revealedCountP2;
 
@@ -54,6 +48,15 @@ public class GameStateController {
     boolean isPaused = false;
     boolean gameOver = false;
     boolean gameWon = false;
+    
+    int wrongFlagsThisTurnP1 = 0;
+    int wrongFlagsThisTurnP2 = 0;
+
+    boolean flaggingLockedThisTurnP1 = false;
+    boolean flaggingLockedThisTurnP2 = false;
+    
+    static final int WRONG_FLAGS_LIMIT_PER_TURN = 3;
+
 
     boolean mistakeMade = false;
 

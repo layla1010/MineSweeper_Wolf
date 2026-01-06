@@ -66,11 +66,6 @@ public class GamePlayServiceController {
         s.revealedCountP1 = 0;
         s.revealedCountP2 = 0;
 
-        s.flagsPlaced1 = 0;
-        s.flagsPlaced2 = 0;
-        recalcFlagsLeft(true);
-        recalcFlagsLeft(false);
-
         s.safeCellsRemaining1 = s.totalCellsP1 - s.board1.getMineCount();
         s.safeCellsRemaining2 = s.totalCellsP2 - s.board2.getMineCount();
 
@@ -100,8 +95,19 @@ public class GamePlayServiceController {
 
     public void switchTurn() {
         s.isPlayer1Turn = !s.isPlayer1Turn;
+
+        if (s.isPlayer1Turn) {
+            s.wrongFlagsThisTurnP1 = 0;
+            s.flaggingLockedThisTurnP1 = false;
+        } else {
+            s.wrongFlagsThisTurnP2 = 0;
+            s.flaggingLockedThisTurnP2 = false;
+        }
+
         ui.applyTurnStateToBoards();
+        ui.updateScoreAndMineLabels();
     }
+
 
     /**
      * Toggles a flag icon on a covered cell.
@@ -118,29 +124,28 @@ public class GamePlayServiceController {
 
         if (button.isDisable()) return;
 
+        // Unflag: always allowed, does NOT reduce wrong-flag counter (Option 1).
         if (button.getStyleClass().contains("cell-flagged")) {
             button.setGraphic(null);
             button.setText("");
             button.getStyleClass().remove("cell-flagged");
 
-            recalcFlagsLeft(isPlayer1);
             ui.updateScoreAndMineLabels();
             return;
         }
 
-        recalcFlagsLeft(isPlayer1);
-
-        if (isPlayer1 && s.flagsLeft1 <= 0) {
-            DialogUtil.show(Alert.AlertType.INFORMATION, null, "No Flags Left",
-                    "You have no flags left.\nFlagging non-mines reduces your flag quota.");
-            return;
-        }
-        if (!isPlayer1 && s.flagsLeft2 <= 0) {
-            DialogUtil.show(Alert.AlertType.INFORMATION, null, "No Flags Left",
-                    "You have no flags left.\nFlagging non-mines reduces your flag quota.");
+        // If flagging is locked for this player during this turn, block NEW flags (but unflagging above still works).
+        boolean locked = isPlayer1 ? s.flaggingLockedThisTurnP1 : s.flaggingLockedThisTurnP2;
+        if (locked) {
+            DialogUtil.show(Alert.AlertType.INFORMATION, null, "Flagging Disabled",
+                    "You reached " + GameStateController.WRONG_FLAGS_LIMIT_PER_TURN +
+                            " wrong flags this turn.\nFlagging is disabled until your turn ends.");
             return;
         }
 
+     
+
+        // Correct flag on a mine: ALWAYS allowed (even if flagsLeft is 0).
         if (cell.isMine()) {
             button.setGraphic(null);
             button.setText("💣");
@@ -163,7 +168,6 @@ public class GamePlayServiceController {
                 else s.revealedCountP2++;
             }
 
-            recalcFlagsLeft(isPlayer1);
             ui.updateScoreAndMineLabels();
 
             if (!s.gameOver && s.sharedHearts > 0 && (s.minesLeft1 == 0 || s.minesLeft2 == 0)) {
@@ -173,6 +177,7 @@ public class GamePlayServiceController {
             return;
         }
 
+        // Wrong flag (non-mine): place visual flag, apply penalty, increment wrong flags this turn.
         try {
             Image img = new Image(getClass().getResourceAsStream("/Images/red-flag.png"));
             ImageView iv = new ImageView(img);
@@ -188,39 +193,31 @@ public class GamePlayServiceController {
             button.getStyleClass().add("cell-flagged");
         }
 
-        if (isPlayer1) {
-            s.flagsPlaced1++;
-            recalcFlagsLeft(true);
-        } else {
-            s.flagsPlaced2++;
-            recalcFlagsLeft(false);
-        }
 
         s.mistakeMade = true;
         s.score -= 3;
 
+        if (isPlayer1) {
+            s.wrongFlagsThisTurnP1++;
+            if (s.wrongFlagsThisTurnP1 >= GameStateController.WRONG_FLAGS_LIMIT_PER_TURN) {
+                s.flaggingLockedThisTurnP1 = true;
+                DialogUtil.show(Alert.AlertType.WARNING, null, "Flagging Disabled",
+                        "Too many wrong flags this turn.\nFlagging is disabled until your turn ends.");
+            }
+        } else {
+            s.wrongFlagsThisTurnP2++;
+            if (s.wrongFlagsThisTurnP2 >= GameStateController.WRONG_FLAGS_LIMIT_PER_TURN) {
+                s.flaggingLockedThisTurnP2 = true;
+                DialogUtil.show(Alert.AlertType.WARNING, null, "Flagging Disabled",
+                        "Too many wrong flags this turn.\nFlagging is disabled until your turn ends.");
+            }
+        }
+
         ui.updateScoreAndMineLabels();
     }
 
-    private int getUnrevealedCellsRemaining(boolean isPlayer1) {
-        int total = isPlayer1 ? s.totalCellsP1 : s.totalCellsP2;
-        int revealed = isPlayer1 ? s.revealedCountP1 : s.revealedCountP2;
-        return Math.max(0, total - revealed);
-    }
 
-    private int allowedFlagsNow(boolean isPlayer1) {
-        return getUnrevealedCellsRemaining(isPlayer1) / 2;
-    }
 
-    private void recalcFlagsLeft(boolean isPlayer1) {
-        int allowed = allowedFlagsNow(isPlayer1);
-
-        if (isPlayer1) {
-            s.flagsLeft1 = Math.max(0, allowed - s.flagsPlaced1);
-        } else {
-            s.flagsLeft2 = Math.max(0, allowed - s.flagsPlaced2);
-        }
-    }
 
     private void autoRemoveFlagIfPresent(Board board, int row, int col, Button button, boolean isPlayer1) {
         if (!button.getStyleClass().contains("cell-flagged")) return;
@@ -229,7 +226,6 @@ public class GamePlayServiceController {
         button.setText("");
         button.getStyleClass().remove("cell-flagged");
 
-        recalcFlagsLeft(isPlayer1);
         ui.updateScoreAndMineLabels();
     }
 
@@ -237,7 +233,6 @@ public class GamePlayServiceController {
    
     public boolean revealAndMaybeActivate(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
         Cell cell = board.getCell(row, col);
-        boolean[][] revealedArray = isPlayer1 ? s.revealedCellsP1 : s.revealedCellsP2;
 
         if (button.getStyleClass().contains("cell-flagged")) {
             autoRemoveFlagIfPresent(board, row, col, button, isPlayer1);
@@ -275,7 +270,6 @@ public class GamePlayServiceController {
             if (isPlayer1) s.revealedCountP1++;
             else s.revealedCountP2++;
 
-            recalcFlagsLeft(isPlayer1);
         }
 
         button.getStyleClass().removeAll(
