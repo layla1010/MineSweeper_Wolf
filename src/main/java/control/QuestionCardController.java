@@ -1,11 +1,16 @@
 package control;
 
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import model.Question;
+import model.Theme;
+import util.ThemeManager;
 import javafx.scene.control.Tooltip;
+
 
 
 public class QuestionCardController {
@@ -76,6 +81,17 @@ public class QuestionCardController {
         return 0;
     }
     
+    private void applyWolfIconsIfNeeded() {
+        // wolf theme only
+        if (ThemeManager.getTheme() != Theme.WOLF) return;
+
+        // swap to white icons (wolf)
+        editImg.setImage(new Image(getClass().getResourceAsStream("/Images/editing-wolf.png")));
+        deleteImg.setImage(new Image(getClass().getResourceAsStream("/Images/trash-wolf.png")));
+    }
+
+
+    
     public void setData(Question q) {
         this.question = q;
 
@@ -94,6 +110,9 @@ public class QuestionCardController {
         setTooltip(option4Label, q.getOptD());
 
         markAnswers(normalizeCorrectIndex(q.getCorrectOption()));
+        
+     //  wolf-only icons
+        applyWolfIconsIfNeeded();
     }
     
     

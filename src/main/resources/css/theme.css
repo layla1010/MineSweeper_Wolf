@@ -613,4 +613,39 @@ newgame-root .game-back-button:hover {
     -fx-scale-y: 0.96;
 }
 
+/* =========================================================
+   QUESTIONS MANAGEMENT — COLORFUL THEME ONLY (FORCED)
+   We style the ScrollPane CONTENT VBox by fx:id so it always matches.
+   ========================================================= */
+
+.root-background #questionsContainerVBox {
+    -fx-background-color: transparent !important;
+}
+
+/* Keep scrollpane itself transparent so the VBox background is visible */
+.root-background .questions-scroll,
+.root-background .questions-scroll > .viewport,
+.root-background .questions-scroll .content {
+    -fx-background-color: transparent !important;
+}
+
+/* =========================================================
+   QUESTIONS MANAGEMENT — COLORFUL THEME ONLY
+   Make cards lighter so purple list background is visible
+   ========================================================= */
+
+.root-background .question-card {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-effect: none !important;
+}
+
+/* Optional: make the small chips look flat too (like your target pic) */
+.root-background .id-label,
+.root-background .difficulty-badge {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-padding: 0 !important;
+}
+
 

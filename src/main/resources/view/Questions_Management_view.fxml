@@ -67,15 +67,19 @@
                </children>
             </HBox>
 			<ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="questions-scroll">
-               <content>
-                    <VBox fx:id="questionsContainerVBox" alignment="TOP_CENTER" spacing="10.0">
-    					<padding>
-        					<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-    					</padding>
-    						<!-- No Questions here, Questions cards will be added from the controller -->
-					</VBox>    
-               </content>
-            </ScrollPane>
+    <content>
+        <VBox fx:id="questionsContainerVBox"
+              alignment="TOP_CENTER"
+              spacing="10.0"
+              fillWidth="true"
+              prefWidth="1.0">
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+        </VBox>
+    </content>
+</ScrollPane>
+
          </children>
       </VBox>
    </children>
