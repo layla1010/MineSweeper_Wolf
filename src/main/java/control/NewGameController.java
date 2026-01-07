@@ -58,6 +58,7 @@ public class NewGameController {
     @FXML private Button setUpMusicButton;
 
     private AvatarManager avatarManager;
+    private static final int MAX_NAME_LEN = 7;
 
     /**
      * Sets player 1 as active by default, wires avatar thumbnails,
@@ -108,7 +109,19 @@ public class NewGameController {
         String userKey = SessionManager.getOnboardingUserKey();
 
         OnboardingManager.runWithPolicy("onboarding.newgame", root, newGameSteps, policy, userKey);
+        
+        limitTextLength(player1Nickname,MAX_NAME_LEN);
+        limitTextLength(player2Nickname,MAX_NAME_LEN);
 
+    }
+    
+    void limitTextLength(TextField tf, int max) {
+        if (tf == null) return;
+        tf.textProperty().addListener((obs, oldV, newV) -> {
+            if (newV != null && newV.length() > max) {
+                tf.setText(newV.substring(0, max));
+            }
+        });
     }
 
     // Utility method to play a standard click sound.

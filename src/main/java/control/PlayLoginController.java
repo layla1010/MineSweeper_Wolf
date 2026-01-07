@@ -42,6 +42,9 @@ public class PlayLoginController {
     private static final String ICON_VIEW = "/Images/view.png";
     private static final String ICON_HIDE = "/Images/hide.png";
 
+    
+    private static final int MAX_NAME_LEN = 7;
+    
     @FXML private AnchorPane mainPane;
 
     @FXML private GridPane   playerLoginCard;
@@ -95,7 +98,20 @@ public class PlayLoginController {
 
         playIntroAnimation();
         runOnboarding();
+        limitTextLength(p1NameField, MAX_NAME_LEN);
+        limitTextLength(p2NameField, MAX_NAME_LEN);
+        
     }
+    
+    void limitTextLength(TextField tf, int max) {
+        if (tf == null) return;
+        tf.textProperty().addListener((obs, oldV, newV) -> {
+            if (newV != null && newV.length() > max) {
+                tf.setText(newV.substring(0, max));
+            }
+        });
+    }
+
 
     private void bindVisiblePasswords() {
         if (p1PasswordField != null && p1PasswordVisibleField != null) {
@@ -193,7 +209,7 @@ public class PlayLoginController {
         String p2Name = safeTrim(p2NameField);
         String p1Pass = safeTrim(p1PasswordField);
         String p2Pass = safeTrim(p2PasswordField);
-
+ 
         if (p1Name.isEmpty() || p2Name.isEmpty() || p1Pass.isEmpty() || p2Pass.isEmpty()) {
             DialogUtil.show(AlertType.ERROR, null, "Login failed", "Both players must enter name and password.");
             return;

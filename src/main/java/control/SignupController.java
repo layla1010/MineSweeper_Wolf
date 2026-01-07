@@ -30,6 +30,8 @@ public class SignupController {
 
 	 private static final Pattern EMAIL = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$");
 	 private static final Logger LOG = Logger.getLogger(SignupController.class.getName());
+	 private static final int MAX_NAME_LEN = 7;
+
 
 	
     @FXML private GridPane signupRoot;
@@ -53,6 +55,8 @@ public class SignupController {
 
     @FXML private TextField NameSignup;
     @FXML private TextField EmailSignup;
+    
+    
 
     @FXML private PasswordField PasswordSignup;
     @FXML private TextField    passwordTextFieldSignUp;
@@ -117,7 +121,19 @@ public class SignupController {
 
         // Play intro animation
         playIntroAnimation();
+        limitTextLength(NameSignup, MAX_NAME_LEN);
+
     }
+    
+    void limitTextLength(TextField tf, int max) {
+        if (tf == null) return;
+        tf.textProperty().addListener((obs, oldV, newV) -> {
+            if (newV != null && newV.length() > max) {
+                tf.setText(newV.substring(0, max));
+            }
+        });
+    }
+
 
     private void playIntroAnimation() {
         if (signupRoot == null) return;
