@@ -33,6 +33,7 @@ public class MainController {
 
     @FXML
     private void initialize() {
+    	UIAnimations.fadeIn(mainGrid);
     	UIAnimations.playLogoAnimation(logoImage);
         UIAnimations.setupBackgroundOrbs(mainGrid);
         UIAnimations.setupEnergyRings(mainGrid);

@@ -57,6 +57,8 @@ public class GameController {
         // init state
         state.config = config;
         state.difficulty = config.getDifficulty();
+        
+        UIAnimations.fadeIn(root);
 
         // create services in correct order (due to dependencies)
         historyService = new GameHistoryServiceController();
@@ -66,6 +68,7 @@ public class GameController {
                 difficultyLabel, timeLabel, scoreLabel,
                 heartsBox, pauseBtn, soundButton, musicButton,
                 root, player1AvatarImage, player2AvatarImage);
+        uiService.registerAsObserver();
 
         playService = new GamePlayServiceController(state, uiService, historyService, this::showEndGameScreen);
         bonusService = new GameBonusServiceController(state, uiService, playService);
@@ -212,32 +215,35 @@ public class GameController {
         bonusService.resetIdleHintTimer();
     }
 
-    @FXML
-    private void showEndGameScreen() {
-        try {
-            String fxmlPath = state.gameWon ? "/view/win_view.fxml" : "/view/lose_view.fxml";
-            Stage stage = (Stage) player1Grid.getScene().getWindow();
-
-            EndGameController controller =
-                    util.ViewNavigator.switchToWithController(stage, fxmlPath, 700, 450);
-
-            controller.init(
-                    state.config,
-                    state.score,
-                    state.elapsedSeconds,
-                    state.sharedHearts,
-                    state.gameWon
-            );
-
-            Platform.runLater(playService::showHeartsBonusPopupIfNeeded);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            DialogUtil.show(javafx.scene.control.Alert.AlertType.ERROR,
-                    "Navigation Error",
-                    "Failed to load end-game screen.",
-                    e.getMessage());
+  @FXML
+private void showEndGameScreen() {
+    try {
+        // Stop observing / listening before we replace the scene
+        if (uiService != null) {
+            uiService.unregisterAsObserver();
         }
-    }
 
+        String fxmlPath = state.gameWon ? "/view/win_view.fxml" : "/view/lose_view.fxml";
+        Stage stage = (Stage) player1Grid.getScene().getWindow();
+
+        EndGameController controller =
+                util.ViewNavigator.switchToWithController(stage, fxmlPath, 700, 450);
+
+        controller.init(
+                state.config,
+                state.score,
+                state.elapsedSeconds,
+                state.sharedHearts,
+                state.gameWon
+        );
+
+        Platform.runLater(playService::showHeartsBonusPopupIfNeeded);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        DialogUtil.show(javafx.scene.control.Alert.AlertType.ERROR,
+                "Navigation Error",
+                "Failed to load end-game screen.",
+                e.getMessage());
+    }
 }

@@ -26,6 +26,7 @@ import model.SysData;
 import util.DialogUtil;
 import util.SessionManager;
 import util.SoundManager;
+import util.UIAnimations;
 
 
 public class StatsViewController {
@@ -178,34 +179,37 @@ public class StatsViewController {
         }
     }
 
-    @FXML
-    private void initialize() {
-        try {
-            SysData.getInstance().ensureHistoryLoaded();
+   @FXML
+private void initialize() {
+    try {
+        UIAnimations.fadeIn(mainPane);
 
-            configureProgressChart(p1ProgressChart, "Player 1 Progress");
-            configureProgressChart(p2ProgressChart, "Player 2 Progress");
-            configureDonutChartsDefaults();
+        SysData.getInstance().ensureHistoryLoaded();
 
-            // Render both players with minimal duplication
-            renderPlayerStats(
-                    SessionManager.getPlayer1(),  p1OfficialNameText, p1avatar, numOfWins, /*losses*/ numOfLosses, /*giveups*/ numOfGiveUps, p1winsChart, p1winsLabel,
-                    p1lossesChart, p1lossesLabel, p1giveUpsChart, p1giveUpsLabel,  p1winsWithNoMistakesChart, p1winsWithNoMistakesLabel, p1TotalGamesLabel,
-                    p1BestScoreLabel, p1BestScoreWithLabel, p1BestTimeLabel, p1BestTimeWithLabel, p1ProgressChart
-            );
+        configureProgressChart(p1ProgressChart, "Player 1 Progress");
+        configureProgressChart(p2ProgressChart, "Player 2 Progress");
+        configureDonutChartsDefaults();
 
-            renderPlayerStats(
-                    SessionManager.getPlayer2(), p2OfficialNameText, p2avatar, numOfWins2, /*losses*/ numOfLosses2, /*giveups*/ numOfGiveUps2, p2winsChart, p2winsLabel,
-                    p2lossesChart, p2lossesLabel, p2giveUpsChart, p2giveUpsLabel, p2winsWithNoMistakesChart, p2winsWithNoMistakesLabel, p2TotalGamesLabel,
-                    p2BestScoreLabel, p2BestScoreWithLabel, p2BestTimeLabel, p2BestTimeWithLabel, p2ProgressChart
-            );
+        // Render both players with minimal duplication
+        renderPlayerStats(
+                SessionManager.getPlayer1(),  p1OfficialNameText, p1avatar, numOfWins, /*losses*/ numOfLosses, /*giveups*/ numOfGiveUps, p1winsChart, p1winsLabel,
+                p1lossesChart, p1lossesLabel, p1giveUpsChart, p1giveUpsLabel,  p1winsWithNoMistakesChart, p1winsWithNoMistakesLabel, p1TotalGamesLabel,
+                p1BestScoreLabel, p1BestScoreWithLabel, p1BestTimeLabel, p1BestTimeWithLabel, p1ProgressChart
+        );
 
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "StatsView initialize failed", e);
-            DialogUtil.show(AlertType.ERROR, "", "Statistics screen failed to load",
-                    "An unexpected error occurred while loading the statistics screen.");
-        }
+        renderPlayerStats(
+                SessionManager.getPlayer2(), p2OfficialNameText, p2avatar, numOfWins2, /*losses*/ numOfLosses2, /*giveups*/ numOfGiveUps2, p2winsChart, p2winsLabel,
+                p2lossesChart, p2lossesLabel, p2giveUpsChart, p2giveUpsLabel, p2winsWithNoMistakesChart, p2winsWithNoMistakesLabel, p2TotalGamesLabel,
+                p2BestScoreLabel, p2BestScoreWithLabel, p2BestTimeLabel, p2BestTimeWithLabel, p2ProgressChart
+        );
+
+    } catch (Exception e) {
+        LOG.log(Level.SEVERE, "StatsView initialize failed", e);
+        DialogUtil.show(AlertType.ERROR, "", "Statistics screen failed to load",
+                "An unexpected error occurred while loading the statistics screen.");
     }
+}
+
 
     // Renders one player's stats into a set of UI controls
     private void renderPlayerStats(Player model,

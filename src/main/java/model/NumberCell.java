@@ -11,4 +11,9 @@ public class NumberCell extends Cell {
     public CellType getType() {
         return CellType.NUMBER;
     }
+
+    @Override
+    protected void onAlwaysReveal(CellRevealResult r) {
+        r.addScore = true;
+    }
 }

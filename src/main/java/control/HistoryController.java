@@ -24,6 +24,7 @@ import model.GameResult;
 import model.SysData;
 import util.DialogUtil;
 import util.SoundManager;
+import util.UIAnimations;
 
 /**
  * UI Controller: responsible only for UI wiring, rendering, navigation.
@@ -51,6 +52,8 @@ public class HistoryController {
     @FXML
     private void initialize() {
     	SysData.getInstance().ensureHistoryLoaded();
+    	UIAnimations.fadeIn(root);
+    	
         allGames.clear();
         allGames.addAll(SysData.getInstance().getHistory().getGames());
 

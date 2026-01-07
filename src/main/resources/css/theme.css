@@ -108,6 +108,9 @@
     -fx-pref-width: 14;
     -fx-pref-height: 14;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 6, 0.3, 0, 2);
+	
+.clickable-icon {
+    -fx-cursor: hand;
 }
 
 .tutorial-click {

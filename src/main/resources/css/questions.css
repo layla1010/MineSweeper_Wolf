@@ -78,3 +78,6 @@
 
     -fx-effect: dropshadow(gaussian, rgba(248,113,113,0.26), 22, 0.20, 0, 6);
 }
+.button-bold {
+    -fx-font-weight: bold;
+}

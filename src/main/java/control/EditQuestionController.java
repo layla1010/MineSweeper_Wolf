@@ -3,16 +3,18 @@ package control;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import model.Question;
 import model.SysData;
 import util.DialogUtil;
+import util.UIAnimations;
 import util.ValidationUtil;
 import java.util.*;
 
 public class EditQuestionController {
-
+	@FXML private AnchorPane EditQuestionRoot;
     @FXML private Label idTextField;
     @FXML private ComboBox<String> difficultyComboBox;
     @FXML private TextArea questionTextArea;
@@ -25,9 +27,14 @@ public class EditQuestionController {
     @FXML private Button cancelButton;
 
     private Question originalQuestion;
+    
+    private List<Question> bulkQuestions = null;
+    private boolean bulkMode = false;
 
     @FXML
     public void initialize() {
+    	UIAnimations.fadeIn(EditQuestionRoot);
+    	
     	difficultyComboBox.setValue("EASY");
     	correctAnswerComboBox.setValue("A");        
     }
@@ -64,6 +71,35 @@ public class EditQuestionController {
     //Handling save button in edit view: Validates the form, Reads updated values from the UI, Updates the matching row in the CSV file, Returns to the Questions Management screen if successful
     @FXML
     private void onSaveButtonClicked(ActionEvent event) {
+    	//HERE WE CHECK BULK EDIT MODE
+        if (bulkMode) {
+
+            if (difficultyComboBox.getValue() == null
+                    || correctAnswerComboBox.getValue() == null) {
+
+                DialogUtil.show(
+                    AlertType.ERROR,
+                    "Invalid Input",
+                    "Validation Error",
+                    "Please select both difficulty and correct answer."
+                );
+                return;
+            }
+
+            String newDifficulty = difficultyComboBox.getValue();
+            String newCorrectLetter = correctAnswerComboBox.getValue();
+            int newCorrectIndex = "ABCD".indexOf(newCorrectLetter) + 1;
+
+            for (Question q : bulkQuestions) {
+                q.setDifficulty(newDifficulty);
+                q.setCorrectOption(newCorrectIndex);
+            }
+
+            SysData.getInstance().saveQuestionsToCsv();
+            goBackToManager();
+            return;
+        }
+    	
         if (!validateForm()) {
             return;
         }
@@ -83,21 +119,26 @@ public class EditQuestionController {
     }
 
 
-    //Handling click button: Shows a confirmation dialog, and if the user agrees, discards changes and navigates back to the manager screen.
+    //Handling click button: Shows a confirmation dialog, and if the user agrees, discards changes and navigates back to the manager screen.  
     @FXML
     private void onCancelButtonClicked(ActionEvent event) {
 
-        Optional<ButtonType> result = DialogUtil.showDialogWithResult(
-                AlertType.CONFIRMATION,
-                "Are you sure you want to cancel?",
+        ButtonType yesCancel = new ButtonType("Yes, Cancel", ButtonBar.ButtonData.YES);
+        ButtonType noContiue = new ButtonType("No, continue adding", ButtonBar.ButtonData.NO);
+
+        Optional<ButtonType> result = DialogUtil.confirmWithCustomButtons(
                 "Cancel",
-                "Changes will not be saved."
+                "Are you sure you want to cancel?",
+                "Changes will not be saved.",
+                yesCancel,
+                noContiue
         );
 
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == yesCancel) {
             goBackToManager();
         }
     }
+
 
 
     //Validation, Checks: Difficulty is selected, Correct answer is selected, Question text is not empty, All four options are filled and All four options are different
@@ -153,6 +194,24 @@ public class EditQuestionController {
                     "Failed to go back to Questions Management view.");
         }
     }
+    
+    public void enableBulkEdit(List<Question> questions) {
+        this.bulkQuestions = questions;
+        this.bulkMode = true;
 
+        // Disable fields NOT allowed in bulk edit
+        questionTextArea.setDisable(true);
+        optionATextField.setDisable(true);
+        optionBTextField.setDisable(true);
+        optionCTextField.setDisable(true);
+        optionDTextField.setDisable(true);
+
+        // Enable ONLY allowed fields
+        difficultyComboBox.setDisable(false);
+        correctAnswerComboBox.setDisable(false);
+
+        // Optional UX clarity
+        idTextField.setText("Multiple questions selected (" + questions.size() + ")");
+    }
 }
 

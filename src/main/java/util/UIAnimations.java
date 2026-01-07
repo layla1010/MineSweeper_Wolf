@@ -26,6 +26,11 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import model.Theme;
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
+import javafx.animation.ParallelTransition;
+import javafx.scene.Node;
+import javafx.util.Duration;
 
 public class UIAnimations {
 	
@@ -310,4 +315,43 @@ public class UIAnimations {
             sparkle.toBack();
         }
     }
+    
+    /**
+     * Simple fade-in animation for any root node.
+     */
+    public static void fadeIn(Node root) {
+        if (root == null) return;
+
+        root.setOpacity(0.0);
+        FadeTransition fade = new FadeTransition(Duration.millis(600), root);
+        fade.setFromValue(0.0);
+        fade.setToValue(1.0);
+        fade.play();
+    }
+
+    /**
+     * Fade-in + slight slide-up animation (used in Signup / Login).
+     */
+    public static void fadeInWithSlide(Node root, Node slideNode) {
+        if (root == null) return;
+
+        root.setOpacity(0.0);
+
+        FadeTransition fade = new FadeTransition(Duration.millis(600), root);
+        fade.setFromValue(0.0);
+        fade.setToValue(1.0);
+
+        if (slideNode != null) {
+            slideNode.setTranslateY(30);
+            TranslateTransition slide =
+                    new TranslateTransition(Duration.millis(600), slideNode);
+            slide.setFromY(30);
+            slide.setToY(0);
+
+            new ParallelTransition(fade, slide).play();
+        } else {
+            fade.play();
+        }
+    }
+
 }

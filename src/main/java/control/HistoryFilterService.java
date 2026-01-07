@@ -77,6 +77,16 @@ public final class HistoryFilterService {
     //Validates user intent given effective filter type and inputs, Result filter is STRICT (only known keywords allowed).
     public ValidationResult validate(String effectiveType, String typedText, LocalDate selectedDate) {
         String type = safeTrim(effectiveType);
+        String text = safeTrim(typedText);
+        
+        //ALL selected but no value entered
+        if (OPT_ALL.equals(type) && text.isEmpty()) {
+            return ValidationResult.error(
+                    "Missing filter value",
+                    "Please enter text to filter according to it."
+            );
+        }
+        
         if (type.isEmpty() || OPT_ALL.equals(type)) {
             return ValidationResult.ok();
         }
@@ -97,7 +107,7 @@ public final class HistoryFilterService {
             return ValidationResult.ok();
         }
 
-        String text = safeTrim(typedText);
+        
         if (text.isEmpty()) {
             return ValidationResult.error("Missing value", "Please enter a value in the text field for this filter.");
         }

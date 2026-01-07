@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import util.DialogUtil;
 import util.SoundManager;
 import util.ViewNavigator;
+import util.UIAnimations;
 
 public class SettingsController {
 
@@ -25,6 +26,12 @@ public class SettingsController {
 
     private Stage getStage() {
         return (Stage) rootGrid.getScene().getWindow();
+    @FXML
+    private void initialize() {
+        // FXML calls this automatically (no args).
+        // Keep empty or add init logic.
+    	
+    	UIAnimations.fadeIn(rootGrid);
     }
 
     @FXML

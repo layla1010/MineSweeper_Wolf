@@ -3,8 +3,10 @@ package control;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
 import javafx.event.ActionEvent;
 import util.DialogUtil;
+import util.UIAnimations;
 import util.ValidationUtil;
 import javafx.stage.Stage;
 import model.SysData;
@@ -12,7 +14,7 @@ import java.util.Optional;
 
 public class AddQuestionController {
 
-
+	@FXML private AnchorPane AddQuestionRoot;
     @FXML private Label idTextField;
     @FXML private ComboBox<String> difficultyComboBox;
     @FXML private TextArea questionTextArea;
@@ -27,6 +29,8 @@ public class AddQuestionController {
     //Called automatically by JavaFX after the FXML is loaded, Sets the next available question ID and makes the ID field read-only
     @FXML
     public void initialize() {
+    	UIAnimations.fadeIn(AddQuestionRoot);
+    	
         int nextId = SysData.getInstance().getNextQuestionId();
         idTextField.setText(String.valueOf(nextId));
         
@@ -63,17 +67,23 @@ public class AddQuestionController {
     //discards changes and returns to the Questions Management screen
     @FXML
     private void onCancelButtonClicked(ActionEvent event) {
-    	  Optional<ButtonType> result = DialogUtil.showDialogWithResult(
-                  AlertType.CONFIRMATION,
-                  "Are you sure you want to cancel?",
-                  "Cancel",
-                  "Your Changes will not be saved."
-          );
 
-          if (result.isPresent() && result.get() == ButtonType.OK) {
-              goBackToManager();
-          }
+        ButtonType yesCancel = new ButtonType("Yes, Cancel", ButtonBar.ButtonData.YES);
+        ButtonType noContinue = new ButtonType("No, continue adding", ButtonBar.ButtonData.NO);
+
+        Optional<ButtonType> result = DialogUtil.confirmWithCustomButtons(
+                "Cancel",
+                "Are you sure you want to cancel?",
+                "Changes will not be saved.",
+                yesCancel,
+                noContinue
+        );
+
+        if (result.isPresent() && result.get() == yesCancel) {
+            goBackToManager();
+        }
     }
+
 
     //Validation: Validates all form fields before saving
     //Checks: Difficulty selected, Correct answer selected, Question text not empty,

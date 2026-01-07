@@ -29,6 +29,7 @@ import util.OnboardingPolicy;
 import util.OnboardingStep;
 import util.SessionManager;
 import util.SoundManager;
+import util.UIAnimations;
 
 public class PlayLoginController {
 
@@ -92,7 +93,6 @@ public class PlayLoginController {
         if (p1EyeIcon != null) p1EyeIcon.setImage(loadIcon(ICON_VIEW));
         if (p2EyeIcon != null) p2EyeIcon.setImage(loadIcon(ICON_VIEW));
         if (adminEyeIcon != null) adminEyeIcon.setImage(loadIcon(ICON_VIEW));
-
         playIntroAnimation();
         runOnboarding();
     }
@@ -130,28 +130,58 @@ public class PlayLoginController {
         fade.play();
     }
 
-    private void runOnboarding() {
-        List<OnboardingStep> loginSteps = List.of(
-                new OnboardingStep("#playersTab", "Players login",
-                        "Use this tab for a 2-player match. Each player logs in with their own account."),
-                new OnboardingStep("#adminTab", "Admin login",
-                        "Use Admin only for admin features. Regular matches do not require admin login."),
-                new OnboardingStep("#playersLoginButton", "Login",
-                        "After entering both players’ names and passwords, press Login to continue."),
-                new OnboardingStep("#skipLoginButton", "Play as guest",
-                        "Skip enters Guest Mode. Your match won’t be linked to registered player accounts."),
-                new OnboardingStep("#forgotPasswordText", "Forgot password",
-                        "Enter your email to receive a one-time password (OTP). Use it as your password on this login screen.")
-        );
+   private void runOnboarding() {
 
-        OnboardingManager.runWithPolicy(
-                "onboarding.login",
-                mainPane,
-                loginSteps,
-                OnboardingPolicy.ALWAYS,
-                null
-        );
+    // UI init for login screen (icons/background/animation)
+    if (p1EyeIcon != null) {
+        p1EyeIcon.setImage(new Image(
+                Objects.requireNonNull(getClass().getResourceAsStream("/Images/view.png"),
+                        "Missing resource: /Images/view.png")
+        ));
     }
+    if (p2EyeIcon != null) {
+        p2EyeIcon.setImage(new Image(
+                Objects.requireNonNull(getClass().getResourceAsStream("/Images/view.png"),
+                        "Missing resource: /Images/view.png")
+        ));
+    }
+    if (adminEyeIcon != null) {
+        adminEyeIcon.setImage(new Image(
+                Objects.requireNonNull(getClass().getResourceAsStream("/Images/view.png"),
+                        "Missing resource: /Images/view.png")
+        ));
+    }
+
+    if (mainPane != null) {
+        mainPane.setStyle(
+                "-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);"
+        );
+        UIAnimations.fadeIn(mainPane);
+    }
+
+    // Guided onboarding (login must ALWAYS show because user not known yet)
+    List<OnboardingStep> loginSteps = List.of(
+            new OnboardingStep("#playersTab", "Players login",
+                    "Use this tab for a 2-player match. Each player logs in with their own account."),
+            new OnboardingStep("#adminTab", "Admin login",
+                    "Use Admin only for admin features. Regular matches do not require admin login."),
+            new OnboardingStep("#playersLoginButton", "Login",
+                    "After entering both players’ names and passwords, press Login to continue."),
+            new OnboardingStep("#skipLoginButton", "Play as guest",
+                    "Skip enters Guest Mode. Your match won’t be linked to registered player accounts."),
+            new OnboardingStep("#forgotPasswordText", "Forgot password",
+                    "Enter your email to receive a one-time password (OTP). Use it as your password on this login screen.")
+    );
+
+    OnboardingManager.runWithPolicy(
+            "onboarding.login",
+            mainPane,
+            loginSteps,
+            OnboardingPolicy.ALWAYS,
+            null
+    );
+}
+
 
     private void setLoginMode(boolean showPlayers, boolean animate) {
         if (playerLoginCard == null || adminLoginCard == null) return;

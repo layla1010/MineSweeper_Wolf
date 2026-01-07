@@ -22,11 +22,11 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-
+import model.Board;
 import model.SysData;
 import util.SoundManager;
 
-public class GameUIServiceController {
+public class GameUIServiceController implements util.SettingObserver {
 
     private final GameStateController s;
 
@@ -520,4 +520,32 @@ public class GameUIServiceController {
         if (player1Grid != null) player1Grid.setOpacity(opacity);
         if (player2Grid != null) player2Grid.setOpacity(opacity);
     }
+    /**----Observer----*/
+    public void registerAsObserver() {
+        model.SysData.addObserver(this);
+    }
+
+    public void unregisterAsObserver() {
+        model.SysData.removeObserver(this);
+    }
+    
+    @Override
+    public void onSettingChanged(String key, Object newValue) {
+        switch (key) {
+
+            case "musicEnabled" -> {
+                refreshMusicIconFromSettings();
+            }
+
+            case "soundEnabled" -> {
+                refreshSoundIconFromSettings();
+            }
+
+            case "timerEnabled" -> {
+                initLabels(); 
+            }
+        }
+    }
+
+
 }
