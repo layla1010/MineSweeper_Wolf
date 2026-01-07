@@ -27,6 +27,7 @@ public class QuestionCardController {
     @FXML private ImageView editImg;
     @FXML private ImageView deleteImg;
 
+
     private Question question;
     private QuestionCardActions parentController;
 
@@ -88,6 +89,7 @@ public class QuestionCardController {
         // swap to white icons (wolf)
         editImg.setImage(new Image(getClass().getResourceAsStream("/Images/editing-wolf.png")));
         deleteImg.setImage(new Image(getClass().getResourceAsStream("/Images/trash-wolf.png")));
+     
     }
 
 
