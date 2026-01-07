@@ -35,6 +35,10 @@ public class FiltersController {
     private static final Image SWITCH_OFF =
             new Image(FiltersController.class.getResourceAsStream("/Images/switch-off.png"));
 
+    // Wolf theme assets (ORANGE)
+    private static final Image SWITCH_ON_WOLF  =  new Image(FiltersController.class.getResourceAsStream("/Images/switch-on-wolf.png"));
+    private static final Image SWITCH_OFF_WOLF =  new Image(FiltersController.class.getResourceAsStream("/Images/switch-off-wolf.png"));
+    
     // ====== Lifecycle ======
     @FXML
     private void initialize() {
@@ -121,7 +125,13 @@ public class FiltersController {
      * Updates the toggle image according to the boolean state.
      */
     private void syncToggle(ImageView toggle, boolean enabled) {
-        toggle.setImage(enabled ? SWITCH_ON : SWITCH_OFF);
+    	boolean isWolf = util.ThemeManager.getTheme() == model.Theme.WOLF;
+    	
+    	if (isWolf) {
+            toggle.setImage(enabled ? SWITCH_ON_WOLF : SWITCH_OFF_WOLF);
+        } else {
+            toggle.setImage(enabled ? SWITCH_ON : SWITCH_OFF);
+        }    
     }
     
     private boolean toggleAndSync(ImageView toggle, boolean currentState, java.util.function.Consumer<Boolean> setter) {

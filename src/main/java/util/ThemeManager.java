@@ -61,6 +61,7 @@ public final class ThemeManager {
             scene.getRoot().applyCss();
             scene.getRoot().layout();
         }
+
     }
 
     private static void addIfMissing(Scene scene, String resourcePath) {

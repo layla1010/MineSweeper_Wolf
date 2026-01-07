@@ -79,6 +79,11 @@ public class UIAnimations {
         Set<Node> nodes = root.lookupAll(".zoom-on-hover");
         nodes.forEach(UIAnimations::applyHoverZoom);
     }
+    
+    private static boolean isColorfulTheme() {
+        return ThemeManager.getTheme() == Theme.COLORFUL;
+    }
+
 
     public static void applyFloating(Node node) {
         TranslateTransition tt = new TranslateTransition(Duration.seconds(3), node);
@@ -234,6 +239,11 @@ public class UIAnimations {
 
     //Creates multiple "energy ring" animations that expand outwards from the center of the screen, giving a pulse effect behind the UI.
     public static void setupEnergyRings(GridPane mainGrid) {
+    	if (mainGrid == null) return;
+    	
+    	// Wolf theme: no rings
+        if (!isColorfulTheme()) return;
+        
         createEnergyRing(mainGrid, 0);
         createEnergyRing(mainGrid, 1);
         createEnergyRing(mainGrid, 2);

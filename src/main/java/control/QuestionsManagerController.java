@@ -9,13 +9,16 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Question;
 import model.SysData;
+import model.Theme;
 import util.DialogUtil;
-import util.UIAnimations;
+import util.ThemeManager;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,7 +69,9 @@ public class QuestionsManagerController implements QuestionCardActions {
     private TextField searchTextField;
     
     private final List<QuestionCardController> cardControllers = new ArrayList<>();
-    
+    @FXML private ImageView titleBeforeImg;
+    @FXML private ImageView titleAfterImg;
+        
     private final SysData sysData = SysData.getInstance();
     private List<Question> allQuestions;
     
@@ -116,7 +121,6 @@ public class QuestionsManagerController implements QuestionCardActions {
     public void initialize() {
     	UIAnimations.fadeIn(QuestionManagerRoot);
     	
-        sysData.loadQuestionsFromCsv();
         allQuestions = sysData.getAllQuestions();
 
         setupFilters();
@@ -124,7 +128,20 @@ public class QuestionsManagerController implements QuestionCardActions {
 
         searchTextField.textProperty()
             .addListener((obs, o, n) -> applyFilters());
+        
+        applyWolfIconsIfNeeded();
     }
+    
+	
+   private void applyWolfIconsIfNeeded() {
+    if (ThemeManager.getTheme() != Theme.WOLF) return;
+
+    Image wolf = new Image(getClass().getResourceAsStream("/Images/hurdle-wolf.png"));
+
+    if (titleBeforeImg != null) titleBeforeImg.setImage(wolf);
+    if (titleAfterImg  != null) titleAfterImg.setImage(wolf);
+}
+
 
     // ================== Filters & Search ==================
 

@@ -26,6 +26,23 @@
 }
 
 
+.stats-root .settings-back-button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-font-family: "Copperplate Gothic Bold";
+    -fx-font-size: 28px;
+    -fx-padding: 6 14 6 14;
+    -fx-min-height: 44px;
+    -fx-pref-height: 44px;
+    -fx-max-height: 44px;
+    -fx-min-width: 60px;
+    -fx-pref-width: 60px;
+}
+
+.stats-root .settings-back-button:hover {
+    -fx-opacity: 0.85;
+}
+
 
 
 /* =========================
@@ -49,13 +66,6 @@
 
 .donut-chart .chart-pie-label {
     -fx-opacity: 0;
-}
-
-/* This controls the "ring" look (your Circle in the StackPane) */
-.donut-hole {
-    -fx-fill: rgb(45, 30, 78);     /* hole fill */
-    -fx-stroke: rgb(45, 30, 78);/* visible ring */
-    -fx-stroke-width: 2px;
 }
 
 
@@ -177,3 +187,6 @@
 .settings-back-button:hover {
     -fx-opacity: 0.85;
 }
+
+
+

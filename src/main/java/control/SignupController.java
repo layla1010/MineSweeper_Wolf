@@ -21,12 +21,13 @@ import util.AvatarManager;
 import util.DialogUtil;
 import util.SessionManager;
 import util.SoundManager;
-import util.UIAnimations;
 
 public class SignupController {
 
 	 private static final Pattern EMAIL = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$");
 	 private static final Logger LOG = Logger.getLogger(SignupController.class.getName());
+	 private static final int MAX_NAME_LEN = 7;
+
 
 	
     @FXML private GridPane signupRoot;
@@ -50,6 +51,8 @@ public class SignupController {
 
     @FXML private TextField NameSignup;
     @FXML private TextField EmailSignup;
+    
+    
 
     @FXML private PasswordField PasswordSignup;
     @FXML private TextField    passwordTextFieldSignUp;
@@ -112,10 +115,18 @@ public class SignupController {
         eyeIconSignup.setImage(loadIcon("/Images/view.png"));
         eyeIconReSignup.setImage(loadIcon("/Images/view.png"));
 
-        // Play intro animation
-        UIAnimations.fadeInWithSlide(signupRoot, anchor);
-    }
+        limitTextLength(NameSignup, MAX_NAME_LEN);
 
+    }
+    
+    void limitTextLength(TextField tf, int max) {
+        if (tf == null) return;
+        tf.textProperty().addListener((obs, oldV, newV) -> {
+            if (newV != null && newV.length() > max) {
+                tf.setText(newV.substring(0, max));
+            }
+        });
+    }
 
     @FXML
     private void playClickSound() {

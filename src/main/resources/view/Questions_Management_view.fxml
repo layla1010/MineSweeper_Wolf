@@ -23,7 +23,7 @@
          <children>
             <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="702.0" spacing="10.0">
                <children>
-                  <Button fx:id="backButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onBackButtonClicked" prefHeight="40.0" prefWidth="50.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-width: 1; -fx-border-color: rgba(255,255,255,0.50); -fx-cursor: hand;" text="←" textAlignment="CENTER" textFill="WHITE">
+                  <Button fx:id="backButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onBackButtonClicked" prefHeight="40.0" prefWidth="50.0" styleClass="qm-back" text="←">
                      <font>
                         <Font name="Copperplate Gothic Bold" size="20.0" />
                      </font>
@@ -51,92 +51,89 @@
                   </ImageView>
                </children>
             </HBox>
-            <HBox alignment="CENTER" spacing="10.0">
-            <Button fx:id="newQuestionButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onNewQuestionButtonClicked" prefHeight="30.0" prefWidth="161.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-background-radius: 50; -fx-border-color: rgba(255,255,255,0.50); -fx-border-width: 1; -fx-border-radius: 50; -fx-cursor: hand;" styleClass="primary-button" text="+ New Question" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font name="Copperplate Gothic Light" size="13.0" />
-               </font>
-            </Button>
-            <Button fx:id="selectButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onSelectButtonClicked" prefHeight="30.0" prefWidth="161.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-background-radius: 50; -fx-border-color: rgba(255,255,255,0.50); -fx-border-width: 1; -fx-border-radius: 50; -fx-cursor: hand;" styleClass="primary-button" text="Select Questions" textAlignment="CENTER" textFill="WHITE" VBox.vgrow="NEVER">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-               <font>
-                  <Font name="Copperplate Gothic Light" size="13.0" />
-               </font>
-            </Button>
-            <Button fx:id="editSelectedButton"
-        			alignment="CENTER"
-        			maxHeight="-Infinity"
-        			maxWidth="-Infinity"
-       				mnemonicParsing="false"
-        			onAction="#onEditSelectedClicked"
-        			prefHeight="30.0"
-        			prefWidth="161.0"
-        			visible="false"
-        			managed="false"
-        			style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));
-               				-fx-background-radius: 50;
-               				-fx-border-color: rgba(255,255,255,0.50);
-               				-fx-border-width: 1;
-               				-fx-border-radius: 50;
-               				-fx-cursor: hand;"
-        			styleClass="primary-button"
-        			text="Edit Selected"
-        			textAlignment="CENTER"
-        			textFill="WHITE">
+<HBox alignment="CENTER" spacing="10.0">
+    <Button fx:id="newQuestionButton"
+            alignment="CENTER"
+            mnemonicParsing="false"
+            onAction="#onNewQuestionButtonClicked"
+            prefHeight="30.0"
+            prefWidth="161.0"
+            styleClass="qm-primary"
+            text="+ New Question">
+        <font>
+            <Font name="Copperplate Gothic Light" size="13.0"/>
+        </font>
+    </Button>
 
-    			<font>
-        			<Font name="Copperplate Gothic Light" size="13.0" />
-    			</font>
-			</Button>
-			<Button fx:id="deleteSelectedButton"
-        			alignment="CENTER"
-        			maxHeight="-Infinity"
-        			maxWidth="-Infinity"
-        			mnemonicParsing="false"
-        			onAction="#onDeleteSelectedClicked"
-        			prefHeight="30.0"
-        			prefWidth="161.0"
-        			visible="false"
-        			managed="false"
-        			style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));
-               				-fx-background-radius: 50;
-               				-fx-border-color: rgba(255,255,255,0.50);
-               				-fx-border-width: 1;
-               				-fx-border-radius: 50;
-               				-fx-cursor: hand;"
-        			styleClass="primary-button"
-        			text="Delete Selected"
-        			textAlignment="CENTER"
-        			textFill="WHITE">
-    			<font>
-        			<Font name="Copperplate Gothic Light" size="13.0" />
-    			</font>
-			</Button>
-            </HBox>
+    <Button fx:id="selectButton"
+            alignment="CENTER"
+            mnemonicParsing="false"
+            onAction="#onSelectButtonClicked"
+            prefHeight="30.0"
+            prefWidth="161.0"
+            styleClass="qm-primary"
+            text="Select Questions">
+        <font>
+            <Font name="Copperplate Gothic Light" size="13.0"/>
+        </font>
+    </Button>
+
+    <Button fx:id="editSelectedButton"
+            alignment="CENTER"
+            mnemonicParsing="false"
+            onAction="#onEditSelectedClicked"
+            prefHeight="30.0"
+            prefWidth="161.0"
+            visible="false"
+            managed="false"
+            styleClass="qm-primary"
+            text="Edit Selected">
+        <font>
+            <Font name="Copperplate Gothic Light" size="13.0"/>
+        </font>
+    </Button>
+
+    <Button fx:id="deleteSelectedButton"
+            alignment="CENTER"
+            mnemonicParsing="false"
+            onAction="#onDeleteSelectedClicked"
+            prefHeight="30.0"
+            prefWidth="161.0"
+            visible="false"
+            managed="false"
+            styleClass="qm-primary"
+            text="Delete Selected">
+        <font>
+            <Font name="Copperplate Gothic Light" size="13.0"/>
+        </font>
+    </Button>
+</HBox>
+
             <HBox alignment="CENTER" prefHeight="34.0" prefWidth="560.0" spacing="10.0">
                <children>
-                  <ComboBox fx:id="levelFilterCombo" prefWidth="120.0" promptText="All Levels" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" />
-                  <ComboBox fx:id="idFilterCombo" prefWidth="120.0" promptText="All IDs" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" />
-                  <TextField fx:id="searchTextField" prefHeight="25.0" prefWidth="241.0" promptText="Search Questions" HBox.hgrow="ALWAYS" />
+                  <ComboBox fx:id="levelFilterCombo" prefWidth="120.0" promptText="All Levels" styleClass="qm-combo" />
+                  <ComboBox fx:id="idFilterCombo" prefWidth="120.0" promptText="All IDs" styleClass="qm-combo" />
+                  <TextField fx:id="searchTextField" prefHeight="25.0" prefWidth="241.0" promptText="Search Questions" HBox.hgrow="ALWAYS" styleClass="qm-search" />
                </children>
             </HBox>
-			<ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
-               <content>
-                    <VBox fx:id="questionsContainerVBox" alignment="TOP_CENTER" spacing="10.0">
-    					<padding>
-        					<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-    					</padding>
-    						<!-- No Questions here, Questions cards will be added from the controller -->
-					</VBox>    
-               </content>
-            </ScrollPane>
+			<ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="questions-scroll">
+    <content>
+        <VBox fx:id="questionsContainerVBox"
+              alignment="TOP_CENTER"
+              spacing="10.0"
+              fillWidth="true"
+              prefWidth="1.0">
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+        </VBox>
+    </content>
+</ScrollPane>
+
          </children>
       </VBox>
    </children>
    <stylesheets>
-      <URL value="@../css/base.css" />
       <URL value="@../css/questions.css" />
-   </stylesheets>
+      </stylesheets>
 </AnchorPane>

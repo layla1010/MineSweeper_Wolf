@@ -20,6 +20,8 @@ import model.CellType;
 import model.Difficulty;
 import model.Question;
 import model.SysData;
+import model.Theme;
+import util.ThemeManager;
 
 public class GameBonusServiceController {
 
@@ -217,8 +219,12 @@ public class GameBonusServiceController {
         alert.getDialogPane().setMinWidth(560);
 
 
-        alert.getDialogPane().getStylesheets()
-             .add(GameBonusServiceController.class.getResource("/css/theme.css").toExternalForm());
+        alert.getDialogPane().getStylesheets().add(
+        	    GameBonusServiceController.class.getResource(
+        	        ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
+        	    ).toExternalForm()
+        	);
+
 
         alert.showAndWait();
     }
@@ -273,8 +279,11 @@ public class GameBonusServiceController {
         dialog.getDialogPane().setContent(root);
 
         dialog.getDialogPane().getStylesheets().add(
-                getClass().getResource("/css/theme.css").toExternalForm()
-        );
+        	    GameBonusServiceController.class.getResource(
+        	            ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
+        	        ).toExternalForm()
+        	    );
+
 
         Optional<Integer> result = dialog.showAndWait();
         return result.orElse(-1);
@@ -473,8 +482,11 @@ public class GameBonusServiceController {
 		alert.getDialogPane().setMinWidth(560);
 		
 		alert.getDialogPane().getStylesheets().add(
-		GameBonusServiceController.class.getResource("/css/theme.css").toExternalForm()
-		);
+			    GameBonusServiceController.class.getResource(
+			        ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
+			    ).toExternalForm()
+			);
+
 		
 		alert.showAndWait();
 		}

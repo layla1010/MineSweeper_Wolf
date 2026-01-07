@@ -110,10 +110,6 @@
          <RowConstraints />
       </rowConstraints>
 </GridPane>
-   <stylesheets>
-      <URL value="@../css/base.css" />
-      <URL value="@../css/questions.css" />
-   </stylesheets>
 
 
 </VBox>

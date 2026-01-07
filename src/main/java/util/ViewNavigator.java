@@ -101,5 +101,7 @@ public final class ViewNavigator {
         stage.centerOnScreen();
         stage.show();
     }
+    
+    
 
 }

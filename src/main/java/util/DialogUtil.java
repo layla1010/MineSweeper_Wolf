@@ -2,12 +2,14 @@ package util;
 
 import java.util.Optional;
 
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.stage.Screen;
+import model.Theme;
 
 
 
@@ -22,8 +24,10 @@ public final class DialogUtil {
         makeDialogAutoSize(alert, message);
 
         alert.getDialogPane().getStylesheets().add(
-                DialogUtil.class.getResource("/css/theme.css").toExternalForm()
-            );
+                ThemeManager.class.getResource(
+                        ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
+                ).toExternalForm()
+        );
 
         	alert.showAndWait();
 
@@ -43,8 +47,11 @@ public final class DialogUtil {
         makeDialogAutoSize(alert, message);
 
         alert.getDialogPane().getStylesheets().add(
-                DialogUtil.class.getResource("/css/theme.css").toExternalForm()
+                ThemeManager.class.getResource(
+                        ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
+                ).toExternalForm()
         );
+
 
         return alert.showAndWait();   // <-- THIS is the key difference
     }
@@ -58,7 +65,9 @@ public final class DialogUtil {
         makeDialogAutoSize(alert, message);
 
         alert.getDialogPane().getStylesheets().add(
-                DialogUtil.class.getResource("/css/theme.css").toExternalForm()
+                ThemeManager.class.getResource(
+                        ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
+                ).toExternalForm()
         );
 
         Optional<ButtonType> result = alert.showAndWait();

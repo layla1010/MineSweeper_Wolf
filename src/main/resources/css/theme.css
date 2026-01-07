@@ -3,24 +3,32 @@
    This file is swapped by ThemeManager.
    ========================= */
 
-/* App background */
+/* =========================================================
+   GLOBAL THEME BACKGROUND
+   ========================================================= */
+
 .root {
     -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
 }
 
-/* ScrollPane transparency to show background */
+/* Some screens might use this instead of root */
+.themed-bg {
+    -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
+}
+
+/* ScrollPane transparency to show the background */
 .scroll-pane,
 .scroll-pane > .viewport,
 .scroll-pane .content {
     -fx-background-color: transparent;
 }
 
-/* Screens that use a themed container class */
-.themed-bg {
-    -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
-}
 
-/* ComboBox popup look for this theme */
+/* =========================================================
+   GLOBAL CONTROLS (DEFAULT THEME)
+   ========================================================= */
+
+/* Base ComboBox behavior (text + cursor) */
 .combo-box {
     -fx-text-fill: white;
     -fx-cursor: hand;
@@ -29,31 +37,28 @@
     -fx-text-fill: white;
 }
 
+/* Global ComboBox popup background (gradient) */
 .combo-box-popup .list-view {
     -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
     -fx-background-radius: 12;
     -fx-padding: 4;
 }
-
 .combo-box-popup .list-cell {
     -fx-text-fill: white;
     -fx-background-color: transparent;
 }
 
-/* Global buttons for this theme */
+/* Global buttons */
 .button {
     -fx-background-color: linear-gradient(
         to bottom right,
         rgba(255,255,255,0.30),
         rgba(255,255,255,0.15)
     );
-
     -fx-border-color: rgba(255,255,255,0.50);
     -fx-border-width: 2;
-
     -fx-background-radius: 40;
     -fx-border-radius: 40;
-
     -fx-cursor: hand;
     -fx-text-fill: white;
 }
@@ -62,30 +67,28 @@
 .dialog-pane {
     -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
 }
-
 .dialog-pane .header-panel {
     -fx-background-color: transparent;
 }
-
 .dialog-pane .header-panel .label {
     -fx-text-fill: white;
     -fx-font-size: 18px;
     -fx-font-family: "Copperplate Gothic Bold", "Georgia", serif;
 }
-
 .dialog-pane .content.label {
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
 }
 
+/* Question text */
 .question-text {
     -fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
     -fx-font-size: 16px;
     -fx-text-fill: white;
 }
 
-/* Your help popup styling (theme-specific colors) */
+/* Help popup */
 .help-popup {
     -fx-background-color: rgba(20, 20, 20, 0.92);
     -fx-padding: 10;
@@ -94,7 +97,6 @@
     -fx-border-color: #813d54;
     -fx-border-width: 1;
 }
-
 .help-popup Label {
     -fx-text-fill: white;
     -fx-font-size: 12px;
@@ -109,7 +111,7 @@
     -fx-pref-height: 14;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 6, 0.3, 0, 2);
 }
-	
+
 .clickable-icon {
     -fx-cursor: hand;
 }
@@ -120,3 +122,493 @@
     -fx-stroke-width: 2;
 }
 
+/* =========================================================
+   HISTORY SCREEN — DEFAULT THEME (SCOPED ONLY)
+   ========================================================= */
+
+/* History uses the same gradient background (in case root is not applied) */
+.history-root {
+    -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
+}
+
+/* History labels */
+.history-root .history-filter-label {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+.history-root .history-empty-label {
+    -fx-text-fill: rgba(213,232,255,0.95);
+}
+
+/* History cards (purple glass look) */
+.history-root .history-card {
+    -fx-background-color: linear-gradient(
+        to bottom right,
+        rgba(255,255,255,0.26),
+        rgba(255,255,255,0.14)
+    );
+    -fx-border-color: rgba(15, 18, 35, 0.55);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 16, 0.35, 0, 6);
+}
+
+.history-root .history-card:hover {
+    -fx-border-color: rgba(255,255,255,0.65);
+    -fx-effect:
+        dropshadow(gaussian, rgba(255,255,255,0.18), 18, 0.45, 0, 0),
+        dropshadow(gaussian, rgba(53,224,255,0.28), 18, 0.45, 0, 0);
+}
+
+/* Players + badges text */
+.history-root .players-label {
+    -fx-text-fill: rgba(255,255,255,0.95);
+}
+.history-root .info-badge {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* Apply / Sort buttons — BLUE */
+.history-root .history-small-button {
+    -fx-background-color: linear-gradient(to bottom right, #3C8DFF, #274B8E);
+    -fx-border-color: rgba(53, 224, 255, 0.55);
+    -fx-border-width: 1.4;
+    -fx-text-fill: rgba(255,255,255,0.96);
+    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.35), 14, 0.45, 0, 0);
+}
+
+.history-root .history-small-button:hover {
+    -fx-background-color: linear-gradient(to bottom right, #4F9BFF, #3053A0);
+    -fx-border-color: rgba(53,224,255,0.85);
+    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.55), 18, 0.55, 0, 0);
+}
+
+/* Inputs in History — glassy purple */
+.history-root .history-glass-input {
+    -fx-background-color: rgba(255,255,255,0.16);
+    -fx-border-color: rgba(255,255,255,0.40);
+    -fx-text-fill: rgba(255,255,255,0.95);
+    -fx-prompt-text-fill: rgba(255,255,255,0.70);
+}
+
+/* Focus glow on History inputs */
+.history-root .history-glass-input:focused,
+.history-root .combo-box-base:focused,
+.history-root .text-field:focused,
+.history-root .date-picker:focused {
+    -fx-border-color: rgba(255,255,255,0.75);
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.28), 18, 0.55, 0, 0);
+}
+
+/* Closed ComboBox in History — PURPLE background + BLUE glow */
+.history-root .combo-box-base {
+    -fx-background-color: linear-gradient(#7C6FD1, #9F7AEA);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #35E0FF;
+    -fx-border-width: 1.6;
+    -fx-effect: dropshadow(gaussian, rgba(53, 224, 255, 0.65), 18, 0.6, 0, 0);
+    -fx-padding: 2 10 2 10;
+}
+
+/* Stronger focus on closed ComboBox */
+.history-root .combo-box-base:focused {
+    -fx-border-color: #5EE7FF;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(53, 224, 255, 0.85), 26, 0.7, 0, 0);
+}
+
+/* ComboBox arrow */
+.history-root .combo-box-base .arrow-button {
+    -fx-background-color: transparent;
+}
+.history-root .combo-box-base .arrow-button .arrow {
+    -fx-background-color: white;
+}
+
+/* ComboBox popup in History — GRADIENT background + BLUE neon */
+.history-root .combo-box-popup .list-view {
+    -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(53,224,255,0.45);
+    -fx-border-width: 1.2;
+    -fx-effect: dropshadow(gaussian, rgba(53,224,255,0.45), 20, 0.4, 0, 0);
+}
+
+.history-root .combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+/* Popup hover */
+.history-root .combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: #0B1226;
+    -fx-border-color: #35E0FF;
+    -fx-border-width: 1;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+/* Popup selected */
+.history-root .combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: #111A33;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #35E0FF;
+    -fx-border-width: 1.5;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(53, 224, 255, 0.75), 18, 0.6, 0, 0);
+}
+
+/* DatePicker closed state — match ComboBox closed look */
+.history-root .date-picker {
+    -fx-background-color: linear-gradient(#7C6FD1, #9F7AEA);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #35E0FF;
+    -fx-border-width: 1.6;
+    -fx-effect: dropshadow(gaussian, rgba(53, 224, 255, 0.65), 18, 0.6, 0, 0);
+}
+
+/* Inner editor field of DatePicker */
+.history-root .date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #E5E7EB;
+}
+
+/* DatePicker popup — BLACK background + BLUE neon border */
+.history-root .date-picker-popup {
+    -fx-background-color: #000000;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #35E0FF;
+    -fx-border-width: 1.6;
+    -fx-effect: dropshadow(gaussian, rgba(53, 224, 255, 0.65), 26, 0.6, 0, 0);
+}
+
+/* Month/year header */
+.history-root .date-picker-popup > .month-year-pane {
+    -fx-background-color: #000000;
+}
+.history-root .date-picker-popup > .month-year-pane .label {
+    -fx-text-fill: white;
+}
+
+/* Day cells */
+.history-root .date-picker-popup .day-cell {
+    -fx-background-color: #000000;
+    -fx-text-fill: #E5E7EB;
+}
+.history-root .date-picker-popup .day-cell:hover {
+    -fx-background-color: #0B1226;
+    -fx-border-color: #35E0FF;
+    -fx-border-width: 1;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+.history-root .date-picker-popup .selected {
+    -fx-background-color: #111A33;
+    -fx-text-fill: white;
+    -fx-border-color: #35E0FF;
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(53, 224, 255, 0.8), 18, 0.6, 0, 0);
+}
+.history-root .date-picker-popup .today {
+    -fx-border-color: rgba(255,255,255,0.55);
+    -fx-border-width: 1.2;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+
+/* Back button hover (soft glass) */
+.history-root .history-back-button:hover {
+    -fx-background-color: rgba(255,255,255,0.14);
+    -fx-background-radius: 10;
+    -fx-text-fill: rgba(255,255,255,0.98);
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.22), 14, 0.45, 0, 0);
+}
+
+/* Pills & badges (your old default look) */
+.history-root .pill-label {
+    -fx-padding: 4 14 4 14;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.history-root .difficulty-pill {
+    -fx-background-color: rgba(117, 77, 166, 0.12);
+    -fx-border-color: #3f2959;
+    -fx-text-fill: #3f2959;
+    -fx-font-family: "Copperplate Gothic Light";
+}
+
+.history-root .result-pill-won {
+    -fx-background-color: rgba(0, 149, 55, 0.12);
+    -fx-border-color: #009537;
+    -fx-text-fill: #009537;
+    -fx-font-family: "Copperplate Gothic Light";
+}
+
+.history-root .result-pill-lost {
+    -fx-background-color: rgba(193, 61, 62, 0.18);
+    -fx-border-color: #c13d3e;
+    -fx-text-fill: #c13d3e;
+    -fx-font-family: "Copperplate Gothic Light";
+}
+
+.history-root .result-pill-giveup {
+    -fx-background-color: rgba(240, 235, 42, 0.15);
+    -fx-border-color: #fff800;
+    -fx-text-fill: #fff800;
+    -fx-font-family: "Copperplate Gothic Light";
+}
+
+/* (then continue with your STATS / ENDGAME / QUESTIONS / NEWGAME styles exactly as you already have below) */
+
+
+/* =========================================================
+   STATS SCREEN — DEFAULT THEME (PURPLE)
+   Scoped to stats-root so it affects only this screen
+   ========================================================= */
+
+
+.stats-root .stat-card {
+    -fx-fill: #5c3a8e !important;
+    -fx-stroke: #47257a !important;
+    -fx-stroke-width: 2px;
+}
+
+.stats-root .donut-hole {
+    -fx-fill: #5c3a8e !important;
+    -fx-stroke: #5c3a8e !important;
+    -fx-stroke-width: 2px;
+}
+
+/* ===== STATS — Donut ring should be WHITE in colorful theme ===== */
+/* This targets only the donut charts on the stats screen */
+.stats-root .wins-chart .default-color0.chart-pie,
+.stats-root .wins-chart .default-color1.chart-pie,
+.stats-root .losses-chart .default-color0.chart-pie,
+.stats-root .losses-chart .default-color1.chart-pie,
+.stats-root .giveups-chart .default-color0.chart-pie,
+.stats-root .giveups-chart .default-color1.chart-pie,
+.stats-root .winswithnomistakes-chart .default-color0.chart-pie,
+.stats-root .winswithnomistakes-chart .default-color1.chart-pie {
+    -fx-pie-color: rgba(255,255,255,0.95);
+}
+
+/* ===== New Game Setup base visuals (used by colorful theme) ===== */
+
+.player-card {
+    -fx-fill: rgba(255,255,255,0.12);
+    -fx-stroke: rgba(255,255,255,0.25);
+    -fx-stroke-width: 2;
+}
+
+.player-card:hover {
+    -fx-stroke: rgba(255,255,255,0.40);
+}
+
+
+/* Onboarding overlay - Primary (Next) button in DEFAULT colorful theme */
+.onboarding-next {
+    -fx-background-radius: 12;
+    -fx-background-color: linear-gradient(#f973c5, #a855f7);
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+/* =========================================================
+   DEFAULT THEME (COLORFUL) — END GAME (WIN / LOSE)
+   Scoped by style classes used in win/lose FXML
+   ========================================================= */
+.endgame-root {
+    -fx-pref-height: 520px;  /* was effectively ~450; increase so row 6 isn't clipped */
+    -fx-padding: 20 20 35 20; /* extra bottom padding */
+}
+
+.neon-title {
+    -fx-text-fill: #ff6ec7;
+    -fx-effect: dropshadow(gaussian, rgba(255,110,199,0.85), 20, 0.55, 0, 0);
+}
+
+.stats-panel {
+    -fx-fill: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));
+    -fx-stroke: rgba(255, 110, 199, 0.40);
+    -fx-stroke-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(255,110,199,0.50), 30, 0.6, 0, 0);
+}
+
+.stats-header {
+    -fx-stroke: rgba(255, 110, 199, 0.60);
+}
+
+.stat-card {
+    -fx-stroke: rgba(255, 110, 199, 0.50);
+    -fx-stroke-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(167,139,250,0.50), 15, 0.5, 0, 0);
+}
+
+.stat-card:hover {
+    -fx-stroke: #ff6ec7;
+}
+
+/* buttons (same look you already have) */
+.game-button {
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 20, 0.7, 0, 4);
+    -fx-padding: 10 20 10 20;
+}
+
+.retry-button {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #ff6ec7, #ec4899);
+}
+
+.menu-button {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #a78bfa, #7c3aed);
+}
+
+.game-button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(255,110,199,0.95), 35, 0.9, 0, 4);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.game-button:pressed {
+    -fx-scale-x: 0.96;
+    -fx-scale-y: 0.96;
+}
+
+/* =========================================================
+   QUESTIONS MANAGEMENT — COLORFUL THEME ONLY (FORCED)
+   We style the ScrollPane CONTENT VBox by fx:id so it always matches.
+   ========================================================= */
+
+.root-background #questionsContainerVBox {
+    -fx-background-color: transparent !important;
+}
+
+/* Keep scrollpane itself transparent so the VBox background is visible */
+.root-background .questions-scroll,
+.root-background .questions-scroll > .viewport,
+.root-background .questions-scroll .content {
+    -fx-background-color: transparent !important;
+}
+
+/* =========================================================
+   QUESTIONS MANAGEMENT — COLORFUL THEME ONLY
+   Make cards lighter so purple list background is visible
+   ========================================================= */
+
+.root-background .question-card {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-effect: none !important;
+}
+
+/* Optional: make the small chips look flat too (like your target pic) */
+.root-background .id-label,
+.root-background .difficulty-badge {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-padding: 0 !important;
+}
+
+
+/* ===== NEW GAME (COLORFUL) — force all screen text white ===== */
+#newGameRoot .label {
+    -fx-text-fill: rgba(255,255,255,0.95) !important;
+}
+
+#newGameRoot Text {
+    -fx-fill: rgba(255,255,255,0.95) !important;
+}
+
+/* BUT: allow difficulty title Text (EASY/MEDIUM/HARD) to keep its own color */
+#newGameRoot .toggle-button.difficulty-toggle Text {
+    -fx-fill: null; /* clears CSS fill so programmatic / FXML fill shows */
+}
+
+
+/* ===== Difficulty cards (match screenshot #2) ===== */
+#newGameRoot .toggle-button.difficulty-toggle {
+    -fx-background-color: rgba(255,255,255,0.07);
+
+    /* neutral gray-ish border */
+    -fx-border-color: rgba(255,255,255,0.22);
+    -fx-border-width: 2.2;
+
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+
+    /* very soft shadow (not purple) */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 14, 0.35, 0, 4);
+}
+
+#newGameRoot .toggle-button.difficulty-toggle:hover {
+    -fx-border-color: rgba(255,255,255,0.35);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 18, 0.45, 0, 2);
+}
+
+/* selected card = pink border */
+#newGameRoot .toggle-button.difficulty-toggle:selected {
+    -fx-border-color: rgba(249, 168, 255, 0.95);
+}
+
+/* selected + hover = strong pink glow (only here) */
+#newGameRoot .toggle-button.difficulty-toggle:selected:hover {
+    -fx-border-color: rgba(249, 168, 255, 1.0);
+    -fx-effect: dropshadow(gaussian, rgba(255,130,220,0.85), 26, 0.65, 0, 0);
+}
+
+
+/* ===== Start Game button (pink like screenshot #2) ===== */
+#newGameRoot .start-game-btn {
+    -fx-background-color: linear-gradient(#ff76d6, #b56bff);
+    -fx-border-color: rgba(255,255,255,0.70);
+    -fx-border-width: 2;
+
+    -fx-text-fill: rgba(255,255,255,0.98);
+
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+
+    -fx-effect: dropshadow(gaussian, rgba(255,120,220,0.85), 28, 0.75, 0, 0);
+}
+
+#newGameRoot .start-game-btn:hover {
+    -fx-background-color: linear-gradient(#ff8ae0, #c084ff);
+    -fx-effect: dropshadow(gaussian, rgba(255,120,220,0.95), 32, 0.82, 0, 0);
+}
+
+
+/* ===== Difficulty stat rows (darker, less glow) ===== */
+#newGameRoot .setup-stat-row {
+    -fx-fill: rgba(60, 35, 110, 0.45);        /* darker purple */
+    -fx-stroke: rgba(255,255,255,0.18);      /* subtle neutral border */
+    -fx-stroke-width: 1.4;
+
+    -fx-arc-width: 10;
+    -fx-arc-height: 10;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 10, 0.35, 0, 2);
+}
+
+/* ===== GAME SETUP title pink glow ===== */
+#newGameRoot .setup-title {
+    -fx-fill: white; /* for Text */
+
+    -fx-effect: dropshadow(gaussian,
+        rgba(255,120,220,0.95),
+        30,   /* radius */
+        0.75, /* spread */
+        0, 0
+    );
+}
