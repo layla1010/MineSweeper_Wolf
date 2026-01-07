@@ -495,126 +495,6 @@
     );
 }
 
-/* =========================================================
-   WOLF THEME — NEW GAME SCREEN ONLY
-   Scoped to .newgame-root so it never affects other screens
-   ========================================================= */
-
-/* All Text nodes must be white in wolf new game */
-.newgame-root .text,
-.newgame-root Text {
-    -fx-fill: rgba(255,255,255,0.95) !important;
-}
-
-/* Title orange glow (wolf only) */
-.newgame-root .setup-title {
-    -fx-fill: rgba(255,255,255,0.98) !important;
-    -fx-effect: dropshadow(gaussian, rgba(255,140,40,0.85), 28, 0.65, 0, 0) !important;
-}
-
-/* Stat rows in wolf theme (keep purple glass like pic #2) */
-.newgame-root .setup-stat-row {
-    -fx-fill: rgba(104, 76, 164, 0.55);      /* same purple glass */
-    -fx-stroke: rgba(255,170,80,0.55);      /* subtle orange stroke */
-    -fx-stroke-width: 1.1;
-}
-
-/* Accent lines orange (wolf only) */
-.newgame-root .setup-accent-line {
-    -fx-stroke: rgba(255,150,60,0.90) !important;
-    -fx-stroke-width: 1.6 !important;
-}
-
-/* Difficulty card borders + hover -> ORANGE (override purple from base.css) */
-.newgame-root .difficulty-toggle {
-    -fx-border-color: rgba(255,150,60,0.35) !important;
-    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.18), 14, 0.35, 0, 4) !important;
-}
-
-.newgame-root .difficulty-toggle:hover {
-    -fx-border-color: rgba(255,160,70,0.75) !important;
-    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.40), 22, 0.55, 0, 0) !important;
-}
-
-.newgame-root .difficulty-toggle:selected {
-    -fx-border-color: rgba(255,190,110,0.95) !important;
-}
-
-/* Selected difficulty — orange hover (WOLF ONLY) */
-.newgame-root .difficulty-toggle:selected:hover {
-    -fx-border-color: rgba(255,170,90,0.95);
-    -fx-effect: dropshadow(
-        gaussian,
-        rgba(255,120,40,0.65),
-        28,
-        0.65,
-        0,
-        0
-    );
-}
-
-
-/* Back button hover — ORANGE (WOLF ONLY) */
-.newgame-root .game-back-button:hover {
-    -fx-background-color: rgba(255,140,40,0.25);
-    -fx-background-radius: 8;
-    -fx-text-fill: white;
-    -fx-effect: dropshadow(
-        gaussian,
-        rgba(255,120,40,0.75),
-        18,
-        0.6,
-        0,
-        0
-    );
-}
-
-
-/* Start Game — LIGHT ORANGE (WOLF ONLY) */
-zoom-on-hover .start-game-btn {
-    -fx-background-color: linear-gradient(#FFB86B, #FF8C2F);
-    -fx-border-color: rgba(255,200,140,0.85);
-    -fx-border-width: 2;
-    -fx-text-fill: white;
-
-    -fx-background-radius: 40;
-    -fx-border-radius: 40;
-
-    -fx-effect: dropshadow(
-        gaussian,
-        rgba(255,140,40,0.55),
-        22,
-        0.6,
-        0,
-        0
-    );
-}
-
-zoom-on-hover .start-game-btn:hover {
-    -fx-background-color: linear-gradient(#FFD08A, #FFA347);
-    -fx-border-color: rgba(255,220,170,0.95);
-    -fx-effect: dropshadow(
-        gaussian,
-        rgba(255,140,40,0.75),
-        26,
-        0.7,
-        0,
-        0
-    );
-}
-
-
-/* Applies in BOTH themes — scoped ONLY to New Game screen */
-.newgame-root Text,
-.newgame-root .text {
-    -fx-fill: rgba(255,255,255,0.95) !important;
-}
-
-/* If you have Labels anywhere in this screen */
-.newgame-root .label {
-    -fx-text-fill: rgba(255,255,255,0.95) !important;
-}
-
 /* =========================
    Wolf Theme – Alerts (Ember / Fire)
    ========================= */
@@ -789,6 +669,64 @@ zoom-on-hover .start-game-btn:hover {
 .endgame-root {
     -fx-pref-height: 520px;  /* was effectively ~450; increase so row 6 isn't clipped */
     -fx-padding: 20 20 35 20; /* extra bottom padding */
+}
+
+/* ===== NEW GAME (WOLF ONLY) ===== */
+
+/* ===== NEW GAME (WOLF) — force all screen text white ===== */
+#newGameRoot .label {
+    -fx-text-fill: rgba(255,255,255,0.95) !important;
+}
+
+#newGameRoot Text {
+    -fx-fill: rgba(255,255,255,0.95) !important;
+}
+
+#newGameRoot .toggle-button.difficulty-toggle {
+    -fx-border-color: rgba(255, 150, 60, 0.35);
+    -fx-border-width: 2.2;
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.18), 14, 0.35, 0, 4);
+}
+
+#newGameRoot .toggle-button.difficulty-toggle:selected {
+    -fx-border-color: rgba(255, 190, 110, 0.90);
+}
+
+/* Light orange glow only on selected hover */
+#newGameRoot .toggle-button.difficulty-toggle:selected:hover {
+    -fx-border-color: rgba(255, 200, 140, 1.0);
+    -fx-effect: dropshadow(gaussian, rgba(255,160,90,0.70), 26, 0.65, 0, 0);
+}
+
+/* Start Game orange */
+#newGameRoot .start-game-btn {
+    -fx-background-color: linear-gradient(#FFB86B, #FF8C2F);
+    -fx-border-color: rgba(255,200,140,0.85);
+    -fx-border-width: 2;
+    -fx-text-fill: white;
+
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+
+    -fx-effect: dropshadow(gaussian, rgba(255,140,40,0.55), 22, 0.60, 0, 0);
+}
+
+#newGameRoot .start-game-btn:hover {
+    -fx-background-color: linear-gradient(#FFD08A, #FFA347);
+    -fx-effect: dropshadow(gaussian, rgba(255,140,40,0.75), 26, 0.70, 0, 0);
+}
+
+
+/* ===== GAME SETUP title light orange glow ===== */
+#newGameRoot .setup-title {
+    -fx-fill: white; /* for Text */
+
+    -fx-effect: dropshadow(gaussian,
+        rgba(255, 180, 90, 0.95), /* light orange glow */
+        30,   /* radius */
+        0.75, /* spread */
+        0, 0
+    );
 }
 
 

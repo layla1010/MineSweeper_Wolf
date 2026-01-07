@@ -313,29 +313,6 @@
 }
 
 
-/* New Game textfields text should be white in BOTH themes */
- .glass-input {
-    -fx-text-fill: rgba(255,255,255,0.95);
-    -fx-prompt-text-fill: rgba(255,255,255,0.70);
-}
-
-/* =========================================================
-   FINAL OVERRIDE — NEW GAME TEXT MUST BE WHITE (BOTH THEMES)
-   ========================================================= */
-
-.newgame-root Text {
-    -fx-fill: white !important;
-}
-
-.newgame-root .text {
-    -fx-fill: white !important;
-}
-
-.newgame-root .label {
-    -fx-text-fill: white !important;
-}
-
-
 
 
 

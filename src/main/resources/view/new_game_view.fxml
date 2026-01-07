@@ -21,13 +21,17 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane fx:id="root"
+<GridPane fx:id="root" 
+          id="newGameRoot"
           maxHeight="750.0" maxWidth="1400.0"
           prefHeight="750.0" prefWidth="1201.0"
           xmlns="http://javafx.com/javafx/21"
           xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="control.NewGameController"
-          styleClass="themed-bg newgame-root">
+          fx:controller="control.NewGameController">
+          <styleClass>
+        <String fx:value="themed-bg"/>
+        <String fx:value="newgame-root"/>
+    </styleClass>
           
 
     <columnConstraints>
@@ -133,8 +137,7 @@
                                       mnemonicParsing="false"
                                       onMouseClicked="#playClickSound"
                                       prefHeight="253.0" prefWidth="390.0"
-                                      selected="true"
-                                      style="-fx-border-radius: 40; -fx-background-radius: 40; -fx-background-color: rgba(255, 255, 255, 0.12);">
+                                      selected="true">
                             <toggleGroup>
                                 <ToggleGroup fx:id="difficultyGroup" />
                             </toggleGroup>
@@ -212,8 +215,8 @@
                             </styleClass>
                         </Rectangle>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0
-                                  " layoutX="24.0" layoutY="141.0"
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
+                                  layoutX="24.0" layoutY="141.0"
                                    onMouseClicked="#onEasyCardClicked"
                                    strokeType="INSIDE" width="342.0">
                             <styleClass>
@@ -326,7 +329,6 @@
                                       mnemonicParsing="false"
                                       onMouseClicked="#playClickSound"
                                       prefHeight="253.0" prefWidth="390.0"
-                                      style="-fx-border-radius: 40; -fx-background-radius: 40; -fx-background-color: rgba(255, 255, 255, 0.12);"
                                       toggleGroup="$difficultyGroup">
                             <styleClass>
                                 <String fx:value="floating-card" />
@@ -515,7 +517,6 @@
                                       mnemonicParsing="false"
                                       onMouseClicked="#playClickSound"
                                       prefHeight="253.0" prefWidth="390.0"
-                                      style="-fx-border-radius: 40; -fx-background-radius: 40; -fx-background-color: rgba(255, 255, 255, 0.12);"
                                       toggleGroup="$difficultyGroup">
                             <styleClass>
                                 <String fx:value="floating-card" />
@@ -720,7 +721,7 @@
                            onMouseClicked="#onPlayer1AreaClicked"
                            prefHeight="26.0" prefWidth="249.0"
                            promptText="Player 1"
-                           style="-fx-border-color: white; -fx-font-family: Copperplate Gothic Bold;">
+                           style="-fx-border-color: black; -fx-font-family: Copperplate Gothic Bold;">
                     <font>
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
@@ -749,7 +750,7 @@
                            onMouseClicked="#onPlayer2AreaClicked"
                            prefHeight="26.0" prefWidth="249.0"
                            promptText="Player 2"
-                           style="-fx-border-color: white; -fx-font-family: Copperplate Gothic Bold;">
+                           style="-fx-border-color: black; -fx-font-family: Copperplate Gothic Bold;">
                     <font>
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
@@ -957,9 +958,12 @@
                         onMouseClicked="#playClickSound"
                         prefHeight="47.0" prefWidth="182.0"
                         style="-fx-cursor: hand;"
-                        styleClass="zoom-on-hover start-game-btn"
                         text="start game"
                         textFill="#f6f7ff">
+                        <styleClass>
+        <String fx:value="zoom-on-hover"/>
+        <String fx:value="start-game-btn"/>
+    </styleClass>
                     <font>
                         <Font name="Copperplate Gothic Light" size="24.0" />
                     </font>
@@ -972,11 +976,13 @@
         <AnchorPane prefHeight="73.0" prefWidth="826.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
             <children>
 
-                <Line endX="72.8" layoutX="97.0" layoutY="7.0"
+                <Line id="difficultyAccentLine" endX="72.8" layoutX="97.0" layoutY="7.0"
                       onMouseClicked="#playClickSound"
-                      startX="-100.0"
-                      styleClass="setup-accent-line" />
-
+                      startX="-100.0">
+                      <styleClass>
+        <String fx:value="setup-accent-line"/>
+    </styleClass>
+    </Line>
                 <Text layoutX="5.0" layoutY="5.0"
                       onMouseClicked="#playClickSound"
                       strokeType="OUTSIDE" strokeWidth="0.0"
@@ -1024,18 +1030,14 @@
                     </font>
                 </Text>
 
-                <Line endX="100.0" layoutX="100.0" layoutY="17.0"
+                <Line id="playerAccentLine" endX="100.0" layoutX="100.0" layoutY="17.0"
                       onMouseClicked="#playClickSound"
-                      startX="-100.0"
-                      styleClass="setup-accent-line" />
-
+                      startX="-100.0">
+                      <styleClass>
+        <String fx:value="setup-accent-line"/>
+    </styleClass>
+    </Line>
             </children>
         </AnchorPane>
-
     </children>
-
-    <stylesheets>
-    <URL value="@../css/base.css" />
-    </stylesheets>
-
 </GridPane>
