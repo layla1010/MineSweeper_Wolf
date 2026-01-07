@@ -246,4 +246,5 @@ private void showEndGameScreen() {
                 "Failed to load end-game screen.",
                 e.getMessage());
     }
-}
+  }
+  }

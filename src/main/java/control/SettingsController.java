@@ -26,6 +26,8 @@ public class SettingsController {
 
     private Stage getStage() {
         return (Stage) rootGrid.getScene().getWindow();
+    }
+    
     @FXML
     private void initialize() {
         // FXML calls this automatically (no args).

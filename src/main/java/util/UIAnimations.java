@@ -26,11 +26,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import model.Theme;
-import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
 import javafx.animation.ParallelTransition;
-import javafx.scene.Node;
-import javafx.util.Duration;
 
 public class UIAnimations {
 	

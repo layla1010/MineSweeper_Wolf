@@ -220,15 +220,16 @@ public class GamePlayServiceController {
 
 
 
-    private void autoRemoveFlagIfPresent(Board board, int row, int col, Button button, boolean isPlayer1) {
+    private void autoRemoveFlagIfPresent(Board board, int row, int col, Button button, boolean isPlayer1, boolean batchMode) {
         if (!button.getStyleClass().contains("cell-flagged")) return;
 
         button.setGraphic(null);
         button.setText("");
         button.getStyleClass().remove("cell-flagged");
 
-        ui.updateScoreAndMineLabels();
-    }
+        if (!batchMode) {
+            ui.updateScoreAndMineLabels();
+        }    }
 
   
    
@@ -236,24 +237,21 @@ public class GamePlayServiceController {
         Cell cell = board.getCell(row, col);
 
         if (button.getStyleClass().contains("cell-flagged")) {
-            autoRemoveFlagIfPresent(board, row, col, button, isPlayer1);
+            autoRemoveFlagIfPresent(board, row, col, button, isPlayer1,true);
         }
 
         // SECOND CLICK cases are handled in GameBonusService (called by UI click handler before this method).
         // Here we do normal reveal.
-        revealSingleCell(board, row, col, button, tile, isPlayer1);
+        revealSingleCell(board, row, col, button, tile, isPlayer1, false);
 
-        if (cell.getType() == CellType.EMPTY ||
-                cell.getType() == CellType.QUESTION ||
-                cell.getType() == CellType.SURPRISE) {
-
+        if (cell.getType() == CellType.EMPTY || cell.getAdjacentMines() == 0) {
             cascadeReveal(board, row, col, isPlayer1);
         }
 
         return true;
     }
 
-    public void revealSingleCell(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
+    public void revealSingleCell(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1, boolean batchMode) {
         Cell cell = board.getCell(row, col);
 
         if (button.isDisable()) return;
@@ -404,9 +402,11 @@ public class GamePlayServiceController {
             else
                 s.minesLeft2 = Math.max(0, s.minesLeft2 - 1);
 
-            ui.buildHeartsBar();
-            ui.updateScoreAndMineLabels();
-
+            
+            if (!batchMode) {
+                ui.buildHeartsBar();
+                ui.updateScoreAndMineLabels();
+            }
             if (!s.gameOver && s.sharedHearts > 0 &&
                     (s.minesLeft1 == 0 || s.minesLeft2 == 0)) {
                 s.gameWon = true;
@@ -493,7 +493,9 @@ public class GamePlayServiceController {
             }
         }
 
-        ui.updateScoreAndMineLabels();
+        if (!batchMode) {
+            ui.updateScoreAndMineLabels();
+        }
     }
 
     private void cascadeReveal(Board board, int startRow, int startCol, boolean isPlayer1) {
@@ -525,12 +527,12 @@ public class GamePlayServiceController {
 
             if (btn.getStyleClass().contains("cell-flagged")) {
                 if (SysData.isAutoRemoveFlagEnabled()) {
-                    autoRemoveFlagIfPresent(board, r, c, btn, isPlayer1);
+                    autoRemoveFlagIfPresent(board, r, c, btn, isPlayer1,true);
                 }
                 continue;
             }
 
-            revealSingleCell(board, r, c, btn, tile, isPlayer1);
+            revealSingleCell(board, r, c, btn, tile, isPlayer1, true);
 
             if (cell.getType() == CellType.EMPTY ||
                     cell.getType() == CellType.QUESTION ||
@@ -550,6 +552,7 @@ public class GamePlayServiceController {
                 }
             }
         }
+        ui.updateScoreAndMineLabels();
     }
 
     public boolean checkLoseAndHandle() {

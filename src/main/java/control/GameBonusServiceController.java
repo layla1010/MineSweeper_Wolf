@@ -414,7 +414,7 @@ public class GameBonusServiceController {
                     continue;
                 }
 
-                play.revealSingleCell(board, r, c, btn, tile, isPlayer1);
+                play.revealSingleCell(board, r, c, btn, tile, isPlayer1, true);
             }
         }
     }

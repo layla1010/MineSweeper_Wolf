@@ -185,38 +185,6 @@ public class GameStateController {
 		this.questionsLeft2 = questionsLeft2;
 	}
 
-	public int getFlagsLeft1() {
-		return flagsLeft1;
-	}
-
-	public void setFlagsLeft1(int flagsLeft1) {
-		this.flagsLeft1 = flagsLeft1;
-	}
-
-	public int getFlagsLeft2() {
-		return flagsLeft2;
-	}
-
-	public void setFlagsLeft2(int flagsLeft2) {
-		this.flagsLeft2 = flagsLeft2;
-	}
-
-	public int getFlagsPlaced1() {
-		return flagsPlaced1;
-	}
-
-	public void setFlagsPlaced1(int flagsPlaced1) {
-		this.flagsPlaced1 = flagsPlaced1;
-	}
-
-	public int getFlagsPlaced2() {
-		return flagsPlaced2;
-	}
-
-	public void setFlagsPlaced2(int flagsPlaced2) {
-		this.flagsPlaced2 = flagsPlaced2;
-	}
-
 	public int getRevealedCountP1() {
 		return revealedCountP1;
 	}

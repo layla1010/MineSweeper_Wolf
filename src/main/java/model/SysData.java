@@ -32,11 +32,17 @@ public class SysData {
     /** Observer Pattern**/
     private static final java.util.List<util.SettingObserver> observers = new java.util.ArrayList<>();
 
-    private static final DateTimeFormatter CSV_DATE_FMT =
+    private static final List<DateTimeFormatter> CSV_DATE_FMT = List.of(
+            // Primary: handles 12/7/2025 or 12-7-2025 (M/d/yyyy or M-d-yyyy)
             new DateTimeFormatterBuilder()
                     .parseCaseInsensitive()
-                    .appendPattern("M/d/uuuu")
-                    .toFormatter(Locale.US);
+                    .appendPattern("[M/d/uuuu][M-d-uuuu]")
+                    .toFormatter(Locale.US),
+
+            // Fallback: ISO (yyyy-MM-dd) if anyone saved via LocalDate.toString()
+            DateTimeFormatter.ISO_LOCAL_DATE
+    );
+
 
 
     public static SysData getInstance() {
@@ -159,6 +165,23 @@ public class SysData {
         }
     }
 
+    private LocalDate parseCsvDate(String raw) {
+        if (raw == null) return null;
+
+        String s = raw.trim();
+        if (s.isEmpty()) return null;
+
+        for (DateTimeFormatter fmt : CSV_DATE_FMT) {
+            try {
+                return LocalDate.parse(s, fmt);
+            } catch (Exception ignored) {
+                // Do nothing: we intentionally try multiple formats with no noise.
+            }
+        }
+        return null; // caller decides how to handle
+    }
+
+    
     /** Parses a single CSV line into a Game object. */
     private Game parseGameFromCsvLine(String line) {
         if (line == null || line.trim().isEmpty()) {
@@ -171,7 +194,11 @@ public class SysData {
         }
 
         try {
-        	LocalDate date = LocalDate.parse(parts[0].trim(), CSV_DATE_FMT);  // "12/12/2025"
+        	LocalDate date = parseCsvDate(parts[0]);
+        	if (date == null) {
+        	    LOG.fine("Skipping row due to invalid date: '" + parts[0] + "'");
+        	    return null; // invalid date row; quietly skip (no warning)
+        	}
             int durationSeconds = parseDuration(parts[1]);    // "21:15" or "1275"
             Difficulty difficulty = Difficulty.valueOf(parts[2]);
             int score = Integer.parseInt(parts[3]);
