@@ -23,6 +23,7 @@ import javafx.util.Duration;
 
 import model.Board;
 import model.Cell;
+import model.CellRevealResult;
 import model.CellType;
 import model.Difficulty;
 import model.SysData;
@@ -284,92 +285,208 @@ public class GamePlayServiceController {
                 "cell-mine", "cell-question",
                 "cell-surprise", "cell-number", "cell-empty"
         );
+        //Update this switch command to a better one using Template Pattern:
+//        switch (cell.getType()) {
+//            case MINE -> {
+//                button.setText("💣");
+//                button.setDisable(true);
+//                button.getStyleClass().addAll("cell-revealed", "cell-mine");
+//
+//                int heartsBefore = s.sharedHearts;
+//                s.sharedHearts = Math.max(0, s.sharedHearts - 1);
+//                if (s.sharedHearts < heartsBefore) {
+//                    s.mistakeMade = true;
+//                }
+//
+//                triggerExplosion(tile);
+//
+//                if (isPlayer1) s.minesLeft1 = Math.max(0, s.minesLeft1 - 1);
+//                else s.minesLeft2 = Math.max(0, s.minesLeft2 - 1);
+//
+//                ui.buildHeartsBar();
+//                ui.updateScoreAndMineLabels();
+//
+//                if (!s.gameOver && s.sharedHearts > 0 && (s.minesLeft1 == 0 || s.minesLeft2 == 0)) {
+//                    s.gameWon = true;
+//                    onGameOver();
+//                    return;
+//                }
+//
+//                if (checkLoseAndHandle()) return;
+//            }
+//
+//            case QUESTION -> {
+//                try {
+//                    Image img = new Image(getClass().getResourceAsStream("/Images/question-mark.png"));
+//                    ImageView iv = new ImageView(img);
+//                    iv.setFitWidth(20);
+//                    iv.setFitHeight(20);
+//                    iv.setPreserveRatio(true);
+//                    button.setGraphic(iv);
+//                    button.getStyleClass().addAll("cell-revealed", "cell-question");
+//                    if (isPlayer1) s.questionsLeft1 = Math.max(0, s.questionsLeft1 - 1);
+//                    else s.questionsLeft2 = Math.max(0, s.questionsLeft2 - 1);
+//                } catch (Exception ex) {
+//                    button.setText("?");
+//                    button.getStyleClass().addAll("cell-revealed", "cell-question");
+//                }
+//
+//                if (isFirstReveal) {
+//                    s.score += 1;
+//                }
+//            }
+//
+//            case SURPRISE -> {
+//                try {
+//                    Image img = new Image(getClass().getResourceAsStream("/Images/giftbox.png"));
+//                    ImageView iv = new ImageView(img);
+//                    iv.setFitWidth(20);
+//                    iv.setFitHeight(20);
+//                    iv.setPreserveRatio(true);
+//                    button.setGraphic(iv);
+//                    button.getStyleClass().addAll("cell-revealed", "cell-surprise");
+//                    if (isPlayer1) s.surprisesLeft1 = Math.max(0, s.surprisesLeft1 - 1);
+//                    else s.surprisesLeft2 = Math.max(0, s.surprisesLeft2 - 1);
+//                } catch (Exception ex) {
+//                    button.setText("★");
+//                    button.getStyleClass().addAll("cell-revealed", "cell-surprise");
+//                }
+//
+//                if (isFirstReveal) {
+//                    s.score += 1;
+//                }
+//            }
+//
+//            case NUMBER -> {
+//                int n = cell.getAdjacentMines();
+//                button.setText(String.valueOf(n));
+//                button.setDisable(true);
+//                button.getStyleClass().addAll("cell-revealed", "cell-number");
+//                s.score += 1;
+//            }
+//
+//            case EMPTY -> {
+//                button.setText("");
+//                button.setDisable(true);
+//                button.getStyleClass().addAll("cell-revealed", "cell-empty");
+//                s.score += 1;
+//            }
+//        }
+        
+        CellRevealResult result = cell.reveal(isFirstReveal);
 
-        switch (cell.getType()) {
-            case MINE -> {
-                button.setText("💣");
-                button.setDisable(true);
-                button.getStyleClass().addAll("cell-revealed", "cell-mine");
+        // clear visuals (same as before)
+        button.setGraphic(null);
+        button.setText("");
+        button.getStyleClass().removeAll(
+             "cell-hidden", "cell-revealed",
+             "cell-mine", "cell-question",
+             "cell-surprise", "cell-number", "cell-empty"
+        );
+        
+        //COMMON revealed state
+        button.getStyleClass().add("cell-revealed");
+        
+        if (result.type == CellType.MINE) {
 
-                int heartsBefore = s.sharedHearts;
+            button.setText("💣");
+            button.setDisable(true);
+            button.getStyleClass().add("cell-mine");
+
+            int heartsBefore = s.sharedHearts;
+
+            if (result.loseHeart) {
                 s.sharedHearts = Math.max(0, s.sharedHearts - 1);
                 if (s.sharedHearts < heartsBefore) {
                     s.mistakeMade = true;
                 }
+            }
 
+            if (result.triggerExplosion) {
                 triggerExplosion(tile);
-
-                if (isPlayer1) s.minesLeft1 = Math.max(0, s.minesLeft1 - 1);
-                else s.minesLeft2 = Math.max(0, s.minesLeft2 - 1);
-
-                ui.buildHeartsBar();
-                ui.updateScoreAndMineLabels();
-
-                if (!s.gameOver && s.sharedHearts > 0 && (s.minesLeft1 == 0 || s.minesLeft2 == 0)) {
-                    s.gameWon = true;
-                    onGameOver();
-                    return;
-                }
-
-                if (checkLoseAndHandle()) return;
             }
 
-            case QUESTION -> {
-                try {
-                    Image img = new Image(getClass().getResourceAsStream("/Images/question-mark.png"));
-                    ImageView iv = new ImageView(img);
-                    iv.setFitWidth(20);
-                    iv.setFitHeight(20);
-                    iv.setPreserveRatio(true);
-                    button.setGraphic(iv);
-                    button.getStyleClass().addAll("cell-revealed", "cell-question");
-                    if (isPlayer1) s.questionsLeft1 = Math.max(0, s.questionsLeft1 - 1);
-                    else s.questionsLeft2 = Math.max(0, s.questionsLeft2 - 1);
-                } catch (Exception ex) {
-                    button.setText("?");
-                    button.getStyleClass().addAll("cell-revealed", "cell-question");
-                }
+            if (isPlayer1)
+                s.minesLeft1 = Math.max(0, s.minesLeft1 - 1);
+            else
+                s.minesLeft2 = Math.max(0, s.minesLeft2 - 1);
 
-                if (isFirstReveal) {
-                    s.score += 1;
-                }
+            ui.buildHeartsBar();
+            ui.updateScoreAndMineLabels();
+
+            if (!s.gameOver && s.sharedHearts > 0 &&
+                    (s.minesLeft1 == 0 || s.minesLeft2 == 0)) {
+                s.gameWon = true;
+                onGameOver();
+                return;
             }
 
-            case SURPRISE -> {
-                try {
-                    Image img = new Image(getClass().getResourceAsStream("/Images/giftbox.png"));
-                    ImageView iv = new ImageView(img);
-                    iv.setFitWidth(20);
-                    iv.setFitHeight(20);
-                    iv.setPreserveRatio(true);
-                    button.setGraphic(iv);
-                    button.getStyleClass().addAll("cell-revealed", "cell-surprise");
-                    if (isPlayer1) s.surprisesLeft1 = Math.max(0, s.surprisesLeft1 - 1);
-                    else s.surprisesLeft2 = Math.max(0, s.surprisesLeft2 - 1);
-                } catch (Exception ex) {
-                    button.setText("★");
-                    button.getStyleClass().addAll("cell-revealed", "cell-surprise");
-                }
+            if (checkLoseAndHandle()) return;
+        }
 
-                if (isFirstReveal) {
-                    s.score += 1;
-                }
+        /* ===================== QUESTION ===================== */
+        else if (result.type == CellType.QUESTION) {
+
+            try {
+                Image img = new Image(getClass().getResourceAsStream("/Images/question-mark.png"));
+                ImageView iv = new ImageView(img);
+                iv.setFitWidth(20);
+                iv.setFitHeight(20);
+                iv.setPreserveRatio(true);
+                button.setGraphic(iv);
+            } catch (Exception ex) {
+                button.setText("?");
             }
 
-            case NUMBER -> {
-                int n = cell.getAdjacentMines();
-                button.setText(String.valueOf(n));
-                button.setDisable(true);
-                button.getStyleClass().addAll("cell-revealed", "cell-number");
-                s.score += 1;
+            button.getStyleClass().add("cell-question");
+
+            if (isPlayer1)
+                s.questionsLeft1 = Math.max(0, s.questionsLeft1 - 1);
+            else
+                s.questionsLeft2 = Math.max(0, s.questionsLeft2 - 1);
+        }
+
+        /* ===================== SURPRISE ===================== */
+        else if (result.type == CellType.SURPRISE) {
+
+            try {
+                Image img = new Image(getClass().getResourceAsStream("/Images/giftbox.png"));
+                ImageView iv = new ImageView(img);
+                iv.setFitWidth(20);
+                iv.setFitHeight(20);
+                iv.setPreserveRatio(true);
+                button.setGraphic(iv);
+            } catch (Exception ex) {
+                button.setText("★");
             }
 
-            case EMPTY -> {
-                button.setText("");
-                button.setDisable(true);
-                button.getStyleClass().addAll("cell-revealed", "cell-empty");
-                s.score += 1;
-            }
+            button.getStyleClass().add("cell-surprise");
+
+            if (isPlayer1)
+                s.surprisesLeft1 = Math.max(0, s.surprisesLeft1 - 1);
+            else
+                s.surprisesLeft2 = Math.max(0, s.surprisesLeft2 - 1);
+        }
+
+        /* ===================== NUMBER ===================== */
+        else if (result.type == CellType.NUMBER) {
+
+            button.setText(String.valueOf(cell.getAdjacentMines()));
+            button.setDisable(true);
+            button.getStyleClass().add("cell-number");
+        }
+
+        /* ===================== EMPTY ===================== */
+        else if (result.type == CellType.EMPTY) {
+
+            button.setText("");
+            button.setDisable(true);
+            button.getStyleClass().add("cell-empty");
+        }
+
+        /* ===================== SCORE ===================== */
+        if (result.addScore) {
+            s.score += 1;
         }
 
         if (cell.getType() != CellType.MINE) {

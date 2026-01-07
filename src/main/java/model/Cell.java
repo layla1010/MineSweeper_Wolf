@@ -1,5 +1,6 @@
 package model;
 
+
 //Abstract base class that represents a single logical cell on the board.
 public abstract class Cell {
 
@@ -14,7 +15,25 @@ public abstract class Cell {
         this.col = col;
         this.adjacentMines = 0; // default, will be updated later
     }
+  
+    //TEMPLATE METHOD
+    public final CellRevealResult reveal(boolean isFirstReveal) {
+        CellRevealResult result = new CellRevealResult(getType());
 
+        if (isFirstReveal) {
+            onFirstReveal(result);
+        }
+
+        onAlwaysReveal(result);
+
+        return result;
+    }
+
+    // hooks
+    protected void onFirstReveal(CellRevealResult result) {}
+    protected abstract void onAlwaysReveal(CellRevealResult result);
+    
+    
     //return the logical type of this cell (MINE, QUESTION, EMPTY, NUMBER, SURPRISE)
     public abstract CellType getType();
 

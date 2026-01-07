@@ -8,7 +8,7 @@ import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
+
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -21,7 +21,7 @@ import model.CellType;
 import model.Difficulty;
 import model.Question;
 import model.SysData;
-import util.DialogUtil;
+
 
 public class GameBonusServiceController {
 

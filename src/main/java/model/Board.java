@@ -32,11 +32,53 @@ public class Board {
     private void initEmpty() {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                cells[r][c] = new EmptyCell(r, c);
+                //cells[r][c] = new EmptyCell(r, c);
+            	cells[r][c] = CellFactory.createEmpty(r, c);
             }
         }
     }
     //Randomly places all special cells - Ensures special cells never overlap
+//    private void placeRandomSpecialCells() {
+//        List<int[]> positions = new ArrayList<>();
+//        for (int r = 0; r < rows; r++) {
+//            for (int c = 0; c < cols; c++) {
+//                positions.add(new int[]{r, c});
+//            }
+//        }
+//
+//        Collections.shuffle(positions);
+//        int index = 0;
+//
+//        for (int i = 0; i < mineCount; i++, index++) {
+//            int[] pos = positions.get(index);
+//            int r = pos[0];
+//            int c = pos[1];
+//            cells[r][c] = new MineCell(r, c);
+//        }
+//
+//        int placedQuestions = 0;
+//        while (placedQuestions < questionCount && index < positions.size()) {
+//            int[] pos = positions.get(index++);
+//            int r = pos[0];
+//            int c = pos[1];
+//            if (!cells[r][c].isMine()) {
+//                cells[r][c] = new QuestionCell(r, c);
+//                placedQuestions++;
+//            }
+//        }
+//
+//        int placedSurprises = 0;
+//        while (placedSurprises < surpriseCount && index < positions.size()) {
+//            int[] pos = positions.get(index++);
+//            int r = pos[0];
+//            int c = pos[1];
+//            if (!cells[r][c].isMine() && cells[r][c].getType() != CellType.QUESTION) {
+//                cells[r][c] = new SurpriseCell(r, c);
+//                placedSurprises++;
+//            }
+//        }
+//    }
+    
     private void placeRandomSpecialCells() {
         List<int[]> positions = new ArrayList<>();
         for (int r = 0; r < rows; r++) {
@@ -48,35 +90,40 @@ public class Board {
         Collections.shuffle(positions);
         int index = 0;
 
+        // Mines
         for (int i = 0; i < mineCount; i++, index++) {
             int[] pos = positions.get(index);
-            int r = pos[0];
-            int c = pos[1];
-            cells[r][c] = new MineCell(r, c);
+            cells[pos[0]][pos[1]] = CellFactory.createMine(pos[0], pos[1]);
         }
 
+        // Questions
         int placedQuestions = 0;
         while (placedQuestions < questionCount && index < positions.size()) {
             int[] pos = positions.get(index++);
             int r = pos[0];
             int c = pos[1];
             if (!cells[r][c].isMine()) {
-                cells[r][c] = new QuestionCell(r, c);
+                cells[r][c] = CellFactory.createQuestion(r, c);
                 placedQuestions++;
             }
         }
 
+        // Surprises
         int placedSurprises = 0;
         while (placedSurprises < surpriseCount && index < positions.size()) {
             int[] pos = positions.get(index++);
             int r = pos[0];
             int c = pos[1];
-            if (!cells[r][c].isMine() && cells[r][c].getType() != CellType.QUESTION) {
-                cells[r][c] = new SurpriseCell(r, c);
+            if (!cells[r][c].isMine() &&
+                cells[r][c].getType() != CellType.QUESTION) {
+
+                cells[r][c] = CellFactory.createSurprise(r, c);
                 placedSurprises++;
             }
         }
     }
+    
+    
     //Converts empty cells into NumberCell if they have mine neighbors.
     private void computeNeighborNumbers() {
         int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
@@ -101,15 +148,20 @@ public class Board {
                     }
                 }
 
+//                if (count == 0) {
+//                    cell.setType(CellType.EMPTY);
+//                    cell.setAdjacentMines(0);
+//
+//                } else {
+//                	NumberCell numberCell = new NumberCell(r, c);
+//                    numberCell.setAdjacentMines(count);
+//                    cells[r][c] = numberCell;
+//                    cell.setType(CellType.NUMBER);
+//                }
                 if (count == 0) {
-                    cell.setType(CellType.EMPTY);
-                    cell.setAdjacentMines(0);
-
+                    cells[r][c] = CellFactory.createEmpty(r, c);
                 } else {
-                	NumberCell numberCell = new NumberCell(r, c);
-                    numberCell.setAdjacentMines(count);
-                    cells[r][c] = numberCell;
-                    cell.setType(CellType.NUMBER);
+                    cells[r][c] = CellFactory.createNumber(r, c, count);
                 }
                 
             }

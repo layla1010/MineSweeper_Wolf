@@ -24,11 +24,13 @@ public class SysData {
 
     /** Singleton instance of SysData. */
     private static final SysData INSTANCE = new SysData();
+    
+    /** Observer Pattern**/
+    private static final java.util.List<util.SettingObserver> observers = new java.util.ArrayList<>();
 
     public static SysData getInstance() {
         return INSTANCE;
     }
-
 
     /** Stores all game history records. */
     private final History history = new History();
@@ -63,6 +65,26 @@ public class SysData {
 
     /** Private constructor (singleton). */
     private SysData() {
+    }
+    
+    
+    /**---------Observer Pattern Implementation------------**/
+    public static void addObserver(util.SettingObserver observer) {
+        if (observer != null && !observers.contains(observer)) {
+        	observers.add(observer);
+        }
+    }
+
+    public static void removeObserver(util.SettingObserver observer) {
+    	observers.remove(observer);
+    }
+
+    private static void notifyObservers(String key, Object newValue) {
+        // copy to avoid ConcurrentModificationException
+        for (util.SettingObserver observer :
+                new java.util.ArrayList<>(observers)) {
+            observer.onSettingChanged(key, newValue);
+        }
     }
 
 
@@ -459,40 +481,77 @@ public class SysData {
         return musicEnabled;
     }
 
+    /**----Change Setters for Observer----**/
+    
+//    public static void setMusicEnabled(boolean enabled) {
+//        musicEnabled = enabled;
+//    }
+    
     public static void setMusicEnabled(boolean enabled) {
+        if (musicEnabled == enabled) return;
+
         musicEnabled = enabled;
+        notifyObservers("musicEnabled", enabled);
     }
 
     public static boolean isSoundEnabled() {
         return soundEnabled;
     }
 
+//    public static void setSoundEnabled(boolean enabled) {
+//        soundEnabled = enabled;
+//    }
+    
     public static void setSoundEnabled(boolean enabled) {
+        if (soundEnabled == enabled) return;
+
         soundEnabled = enabled;
+        notifyObservers("soundEnabled", enabled);
     }
 
     public static boolean isTimerEnabled() {
         return timerEnabled;
     }
 
+//    public static void setTimerEnabled(boolean enabled) {
+//        timerEnabled = enabled;
+//    }
+    
     public static void setTimerEnabled(boolean enabled) {
+        if (timerEnabled == enabled) return;
+
         timerEnabled = enabled;
+        notifyObservers("timerEnabled", enabled);
     }
 
     public static boolean isSmartHintsEnabled() {
         return smartHintsEnabled;
     }
 
+//    public static void setSmartHintsEnabled(boolean enabled) {
+//        smartHintsEnabled = enabled;
+//    }
+    
     public static void setSmartHintsEnabled(boolean enabled) {
+        if (smartHintsEnabled == enabled) return;
+
         smartHintsEnabled = enabled;
+        notifyObservers("smartHintsEnabled", enabled);
     }
 
     public static boolean isAutoRemoveFlagEnabled() {
         return autoRemoveFlagEnabled;
     }
 
+//    public static void setAutoRemoveFlagEnabled(boolean enabled) {
+//        autoRemoveFlagEnabled = enabled;
+//    }
+    
     public static void setAutoRemoveFlagEnabled(boolean enabled) {
+        if (autoRemoveFlagEnabled == enabled) return;
+
         autoRemoveFlagEnabled = enabled;
+        notifyObservers("autoRemoveFlagEnabled", enabled);
     }
 
     /** Restore default values for all settings. */

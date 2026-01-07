@@ -69,6 +69,7 @@ public class GameController {
                 difficultyLabel, timeLabel, scoreLabel,
                 heartsBox, pauseBtn, soundButton, musicButton,
                 root, player1AvatarImage, player2AvatarImage);
+        uiService.registerAsObserver();
 
         playService = new GamePlayServiceController(state, uiService, historyService, this::showEndGameScreen);
         bonusService = new GameBonusServiceController(state, uiService, playService);
@@ -229,6 +230,9 @@ public class GameController {
             );
 
             Scene endScene = new Scene(endRoot, 700, 450);
+            if (uiService != null) {
+            	uiService.unregisterAsObserver();
+            }
             stage.setScene(endScene);
             stage.centerOnScreen();
             stage.show();
