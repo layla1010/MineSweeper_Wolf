@@ -1,6 +1,9 @@
 package model;
 
 import java.io.BufferedReader;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Locale;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,6 +28,13 @@ public class SysData {
 
     /** Singleton instance of SysData. */
     private static final SysData INSTANCE = new SysData();
+
+    private static final DateTimeFormatter CSV_DATE_FMT =
+            new DateTimeFormatterBuilder()
+                    .parseCaseInsensitive()
+                    .appendPattern("M/d/uuuu")
+                    .toFormatter(Locale.US);
+
 
     public static SysData getInstance() {
         return INSTANCE;
@@ -97,7 +107,7 @@ public class SysData {
         history.clear();
 
         String csvPath = getHistoryCsvPath();
-        LOG.info("Loading history from: " + csvPath);
+        LOG.info("Loading history from: " + csvPath + "\n");
 
         Path path = Paths.get(csvPath);
         if (!Files.exists(path)) {
@@ -138,7 +148,7 @@ public class SysData {
         }
 
         try {
-            LocalDate date = LocalDate.parse(parts[0]);       // "2025-11-26"
+        	LocalDate date = LocalDate.parse(parts[0].trim(), CSV_DATE_FMT);  // "12/12/2025"
             int durationSeconds = parseDuration(parts[1]);    // "21:15" or "1275"
             Difficulty difficulty = Difficulty.valueOf(parts[2]);
             int score = Integer.parseInt(parts[3]);
@@ -169,9 +179,10 @@ public class SysData {
             );
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warning("Skipping bad history row: " + line + " | reason: " + e.getMessage());
             return null;
         }
+
     }
 
     /** Converts empty strings to null. */
@@ -258,7 +269,7 @@ public class SysData {
         playersByName.clear();
 
         String csvPath = getPlayersCsvPath();
-        LOG.info("Loading players from: " + csvPath);
+        LOG.info("Loading players from: " + csvPath + "\n");
 
         Path path = Paths.get(csvPath);
         if (!Files.exists(path)) {
@@ -730,7 +741,8 @@ public class SysData {
         questions.clear();
 
         String csvPath = getQuestionsCsvPath();
-        System.out.println("Loading questions from: " + csvPath);
+        LOG.info("Loading questions from: " + csvPath + "\n");
+
 
         // Mark as "loaded" even if file is empty/missing, so we don't spam reload attempts.
         // If you want to retry later, call reloadQuestionsFromCsv().

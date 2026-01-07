@@ -53,13 +53,25 @@ public final class OnboardingManager {
         String uk = shortKey(userKey);
         PREFS.remove(KEY_PREFIX + flowKey + "." + uk);
     }
-
+    
     public static void runWithPolicy(
             String flowKey,
             Parent root,
             List<OnboardingStep> steps,
             OnboardingPolicy policy,
             String userKey
+    ) {
+        runWithPolicy(flowKey, root, steps, policy, userKey, null);
+    }
+
+
+    public static void runWithPolicy(
+            String flowKey,
+            Parent root,
+            List<OnboardingStep> steps,
+            OnboardingPolicy policy,
+            String userKey,
+            Runnable afterClose
     ) {
         Objects.requireNonNull(flowKey);
         Objects.requireNonNull(root);
@@ -70,13 +82,13 @@ public final class OnboardingManager {
         if (policy == OnboardingPolicy.NEVER) return;
 
         if (policy == OnboardingPolicy.ALWAYS) {
-            Platform.runLater(() -> start(flowKey, root, steps, null));
+        	Platform.runLater(() -> start(flowKey, root, steps, null, afterClose));
             return;
         }
 
         boolean done = isDone(flowKey, userKey);
         if (!done) {
-            Platform.runLater(() -> start(flowKey, root, steps, userKey));
+        	Platform.runLater(() -> start(flowKey, root, steps, userKey, afterClose));
         } else {
             Platform.runLater(() -> installHoverHints(root, steps));
         }
@@ -100,18 +112,24 @@ public final class OnboardingManager {
         }
     }
 
-    public static void start(String flowKey, Parent root, List<OnboardingStep> steps, String userKey) {
+    public static void start(String flowKey, Parent root, List<OnboardingStep> steps, String userKey, Runnable afterClose) {
         Scene scene = root.getScene();
         if (scene == null) return;
 
         final int[] idx = {0};
         AtomicReference<OnboardingOverlay> overlayRef = new AtomicReference<>();
 
+        Runnable close = () -> {
+            OnboardingOverlay o = overlayRef.get();
+            if (o != null) OnboardingOverlay.detachFromScene(scene, o);
+            if (afterClose != null) afterClose.run();
+        };
+
+        
         OnboardingOverlay overlay = new OnboardingOverlay(
                 v -> { // finish
                     markDone(flowKey, userKey);
-                    OnboardingOverlay o = overlayRef.get();
-                    if (o != null) OnboardingOverlay.detachFromScene(scene, o);
+                    close.run();
                 },
                 () -> { // back
                     if (idx[0] > 0) idx[0]--;
@@ -125,8 +143,7 @@ public final class OnboardingManager {
                 },
                 () -> { // skip
                     markDone(flowKey, userKey);
-                    OnboardingOverlay o = overlayRef.get();
-                    if (o != null) OnboardingOverlay.detachFromScene(scene, o);
+                    close.run();
                 }
         );
 

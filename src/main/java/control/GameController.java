@@ -5,7 +5,9 @@ import java.util.List;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -92,11 +94,20 @@ public class GameController {
         state.elapsedSeconds = 0;
         if (SysData.isTimerEnabled()) {
             uiService.updateTimeLabel();
-            uiService.startTimer();
+            uiService.stopTimer();
         } else {
             if (timeLabel != null) timeLabel.setText("Timer: OFF");
             state.timer = null;
         }
+        
+        Runnable afterOnboardingClose = () -> {
+            // Start timer only if enabled
+            if (SysData.isTimerEnabled()) {
+                uiService.startTimer();
+            }
+            // start/reset idle smart-hint timer
+            bonusService.resetIdleHintTimer();
+        };
 
         // SYNC ICONS WITH SETTINGS
         uiService.refreshSoundIconFromSettings();
@@ -128,11 +139,8 @@ public class GameController {
                 OnboardingPolicy.ONCE_THEN_HOVER;
 
         String userKey = SessionManager.getOnboardingUserKey();
-
-        OnboardingManager.runWithPolicy("onboarding.game", root, gameSteps, policy, userKey);
-
-        // start/reset idle smart-hint timer
-        bonusService.resetIdleHintTimer();
+        
+        OnboardingManager.runWithPolicy("onboarding.game", root, gameSteps, policy, userKey, afterOnboardingClose);
     }
 
     public void setOfficialPlayerNames(String player1OfficialName, String player2OfficialName) {

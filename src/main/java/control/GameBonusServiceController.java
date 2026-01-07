@@ -482,6 +482,8 @@ public class GameBonusServiceController {
 
     private void activateQuestion(Board board, int row, int col, Button button, StackPane tile, boolean isPlayer1) {
         resetIdleHintTimer();
+        
+        
 
         int activationPoints = getActivationPoints(); // game difficulty based
         int livesBefore = s.sharedHearts;
@@ -489,6 +491,10 @@ public class GameBonusServiceController {
 
         // activation cost happens for every question activation
         s.score -= activationPoints;
+        
+        int beforeReward = s.score;
+
+        
 
         Question q = getRandomQuestionFromPool();
         if (q == null) {
@@ -555,8 +561,16 @@ public class GameBonusServiceController {
             } else if (qDiff.equals("hard")) {
                 if (correct) {
                     revealArea3x3Reward(board, isPlayer1);
+                    int afterReveal = s.score;
                     s.score += 10;
-                    extraInfo = "Correct! A 3×3 area was revealed and you gained +10 points" + activationSuffix;
+                    int afterReward = s.score;
+
+                    int revealDelta = afterReveal - beforeReward;      
+                    int totalDelta = afterReward - scoreBefore;
+                    extraInfo =
+                            "Correct! Reward: +10" +
+                            ", 3×3 reveal side-score: " + (revealDelta >= 0 ? "+" : "") + revealDelta +
+                            ".\n Net: " + (totalDelta >= 0 ? "+" : "") + totalDelta + activationSuffix;
                 } else {
                     s.mistakeMade = true;
                     s.score -= 10;

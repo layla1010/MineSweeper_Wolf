@@ -2,7 +2,6 @@ package model;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 //Represents a single finished game that will appear in the History screen.
 

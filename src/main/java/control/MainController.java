@@ -28,8 +28,6 @@ public class MainController {
     @FXML private Hyperlink loginLink;
     @FXML private Button logoutBtn;
 
-
-
     private boolean adminMode = false;
 
 

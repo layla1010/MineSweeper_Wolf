@@ -23,7 +23,6 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
-import model.Board;
 import model.SysData;
 import util.SoundManager;
 
