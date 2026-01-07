@@ -118,83 +118,73 @@
         </StackPane>
 
         <!-- Mines-left bar -->
-<StackPane GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER"
-           GridPane.rowIndex="2" GridPane.valignment="CENTER">
+<StackPane GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
     <children>
 
         <!-- background card -->
-        <Label prefHeight="86.0" prefWidth="1242.0"
-               style="-fx-background-color: rgba(15,23,42,0.65);
-                      -fx-background-radius: 30;
-                      -fx-border-color: rgba(255,255,255,0.25);
-                      -fx-border-radius: 30;
-                      -fx-border-width: 1.2;">
+        <Label prefHeight="86.0" prefWidth="1242.0" style="-fx-background-color: rgba(15,23,42,0.65);                       -fx-background-radius: 30;                       -fx-border-color: rgba(255,255,255,0.25);                       -fx-border-radius: 30;                       -fx-border-width: 1.2;">
             <GridPane.margin>
-    		<Insets left="100.0"/>
+    		<Insets left="100.0" />
 			</GridPane.margin>
 
         </Label>
 
         <!-- content -->
-        <GridPane alignment="CENTER" hgap="30" vgap="0"
-                  prefHeight="90.0" prefWidth="1234.0">
+        <GridPane alignment="CENTER" hgap="30" prefHeight="90.0" prefWidth="1234.0" vgap="0">
             <columnConstraints>
-                <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
-                <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
             </columnConstraints>
 
             <children>
                 <!-- ===== Player 1 (col 0) ===== -->
-                <HBox alignment="CENTER_LEFT" spacing="12"
-                      GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="70.0" prefWidth="494.0" spacing="12" GridPane.columnIndex="0" GridPane.rowIndex="0">
                     <children>
-                        <StackPane prefHeight="70.0" prefWidth="70.0"
-                                   style="-fx-background-radius: 35; -fx-border-radius: 35;"
-                                   styleClass="avatar-ring avatar-ring-p1">
+                        <StackPane prefHeight="70.0" prefWidth="70.0" style="-fx-background-radius: 35; -fx-border-radius: 35;" styleClass="avatar-ring avatar-ring-p1">
                             <children>
-                                <ImageView fx:id="player1AvatarImage" fitHeight="70.0" fitWidth="70.0" preserveRatio="true"/>
+                                <ImageView fx:id="player1AvatarImage" fitHeight="70.0" fitWidth="70.0" preserveRatio="true" />
                             </children>
                             <clip>
-                                <Circle centerX="35" centerY="35" radius="35"/>
+                                <Circle centerX="35" centerY="35" radius="35" />
                             </clip>
                         </StackPane>
 
-                        <HBox fx:id="player1StatsBox" spacing="10" alignment="CENTER_LEFT"/>
+                        <HBox fx:id="player1StatsBox" alignment="CENTER_LEFT" spacing="10" />
                     </children>
 
                     <GridPane.margin>
-                        <Insets left="20.0" top="10.0"/>
+                        <Insets left="20.0" top="10.0" />
                     </GridPane.margin>
                 </HBox>
 
                 <!-- ===== Player 2 (col 1) ===== -->
-                <HBox alignment="CENTER_LEFT" spacing="12"
-                      GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="70.0" prefWidth="494.0" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="0">
                     <children>
-                        <StackPane prefHeight="70.0" prefWidth="70.0"
-                                   style="-fx-background-radius: 35; -fx-border-radius: 35;"
-                                   styleClass="avatar-ring avatar-ring-p2">
+                        <StackPane prefHeight="70.0" prefWidth="70.0" style="-fx-background-radius: 35; -fx-border-radius: 35;" styleClass="avatar-ring avatar-ring-p2">
                             <children>
-                                <ImageView fx:id="player2AvatarImage" fitHeight="70.0" fitWidth="70.0" preserveRatio="true"/>
+                                <ImageView fx:id="player2AvatarImage" fitHeight="70.0" fitWidth="70.0" preserveRatio="true" />
                             </children>
                             <clip>
-                                <Circle centerX="35" centerY="35" radius="35"/>
+                                <Circle centerX="35" centerY="35" radius="35" />
                             </clip>
                         </StackPane>
 
-                        <HBox fx:id="player2StatsBox" spacing="10" alignment="CENTER_LEFT"/>
+                        <HBox fx:id="player2StatsBox" alignment="CENTER_LEFT" spacing="10" />
                     </children>
 
                     <GridPane.margin>
-                        <Insets left="20.0" top="10.0"/>
+                        <Insets left="20.0" top="10.0" />
                     </GridPane.margin>
                 </HBox>
 
             </children>
 
             <StackPane.margin>
-                <Insets left="100.0"/>
+                <Insets left="100.0" />
             </StackPane.margin>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
         </GridPane>
 
     </children>

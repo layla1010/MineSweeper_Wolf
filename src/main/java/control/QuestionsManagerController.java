@@ -12,6 +12,7 @@ import model.SysData;
 import model.Theme;
 import util.DialogUtil;
 import util.ThemeManager;
+import util.UIAnimations;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;

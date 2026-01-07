@@ -112,13 +112,6 @@ final class OnboardingOverlay extends Pane {
                "-fx-cursor: hand;";
     }
 
-    private String buttonStylePrimary() {
-        return "-fx-background-radius: 12;" +
-               "-fx-background-color: linear-gradient(#f973c5, #a855f7);" +
-               "-fx-text-fill: white;" +
-               "-fx-cursor: hand;";
-    }
-
     void renderStep(List<OnboardingStep> steps, int index, Node target) {
         boolean first = index <= 0;
         boolean last = index >= steps.size() - 1;
