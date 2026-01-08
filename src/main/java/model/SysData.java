@@ -557,6 +557,17 @@ public class SysData {
         savePlayersToCsv();
         return p;
     }
+    
+    private static final class ResetToken {
+        final String code;
+        final long expiresAtMillis;
+        ResetToken(String code, long expiresAtMillis) {
+            this.code = code;
+            this.expiresAtMillis = expiresAtMillis;
+        }
+    }
+
+    private final Map<String, ResetToken> passwordResetTokens = new HashMap<>();
 
     public void updatePlayerPassword(String email, String newPassword) {
         Player p = findPlayerByEmail(email);
@@ -566,6 +577,26 @@ public class SysData {
         p.setPassword(newPassword);
         savePlayersToCsv();
     }
+    
+    public void createPasswordResetOtp(String email, String code, int ttlMinutes) {
+        long expiresAt = System.currentTimeMillis() + ttlMinutes * 60_000L;
+        passwordResetTokens.put(email.toLowerCase(), new ResetToken(code, expiresAt));
+    }
+
+    public boolean verifyPasswordResetOtp(String email, String code) {
+        ResetToken t = passwordResetTokens.get(email.toLowerCase());
+        if (t == null) return false;
+        if (System.currentTimeMillis() > t.expiresAtMillis) {
+            passwordResetTokens.remove(email.toLowerCase());
+            return false;
+        }
+        return t.code.equals(code);
+    }
+
+    public void clearPasswordResetOtp(String email) {
+        passwordResetTokens.remove(email.toLowerCase());
+    }
+
 
     // ============================ STATS ============================
 

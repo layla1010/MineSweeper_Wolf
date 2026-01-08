@@ -335,25 +335,16 @@ public class PlayLoginController {
     private void onForgotPasswordClicked() {
         playClickSound();
 
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Forgot Password");
-        dialog.setHeaderText("Reset your password");
-        dialog.setContentText("Please enter your email:");
-        
-        
-        try {
-            var base = PlayLoginController.class.getResource("/css/base.css");
-            if (base != null) dialog.getDialogPane().getStylesheets().add(base.toExternalForm());
+        // 1) Ask for email (should be styled like the rest)
+        TextInputDialog emailDialog = new TextInputDialog();
+        DialogUtil.applyDialogCss(emailDialog);
+        emailDialog.getEditor().getStyleClass().add("glass-input");
 
-            // add CURRENT theme css
-            var theme = PlayLoginController.class.getResource(util.ThemeManager.getTheme().getCssPath());
-            if (theme != null) dialog.getDialogPane().getStylesheets().add(theme.toExternalForm());
-        } catch (Exception e) {
-            LOG.log(Level.WARNING, "Failed to apply dialog css", e);
-        }
+        emailDialog.setTitle("Forgot Password");
+        emailDialog.setHeaderText("Reset your password");
+        emailDialog.setContentText("Please enter your email:");
 
-
-        Optional<String> result = dialog.showAndWait();
+        Optional<String> result = emailDialog.showAndWait();
         if (result.isEmpty()) return;
 
         String email = result.get().trim();
@@ -376,39 +367,51 @@ public class PlayLoginController {
 
         if (adminLoginCard != null && adminLoginCard.isVisible()) {
             if (player.getRole() != Role.ADMIN) {
-                DialogUtil.show(AlertType.ERROR, null, "Access Denied", "This email does not belong to an admin account.");
+                DialogUtil.show(AlertType.ERROR, null, "Access Denied",
+                        "This email does not belong to an admin account.");
                 return;
             }
         }
 
+        // 2) Create + send OTP
         String otp = generateOneTimePassword();
-
         try {
-            sysData.updatePlayerPassword(email, otp);
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Failed to update password for email: " + email, e);
-            DialogUtil.show(AlertType.ERROR, null, "Error", "Could not update password. Please try again.");
-            return;
-        }
-
-        try {
+            sysData.createPasswordResetOtp(email, otp, 10);
             EmailService.sendOtpEmail(email, otp);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "Failed to send OTP email to: " + email, e);
+            LOG.log(Level.SEVERE, "Failed to create/send reset OTP for: " + email, e);
             DialogUtil.show(AlertType.ERROR, null, "Email Error",
-                    "Failed to send the OTP email. Please try again later.");
+                    "Failed to send the reset code. Please try again later.");
             return;
         }
 
-        DialogUtil.show(
-                AlertType.INFORMATION,
-                "One-time password has been set",
-                "Password Reset",
-                "A one-time password has been sent to " + email + ".\n" +
-                "Use it as your password on the login screen.\n" +
-                "You can change it later if you want."
-        );
+        // 3) Verify OTP
+        Optional<String> enteredOtpOpt = DialogUtil.promptForOtp();
+        if (enteredOtpOpt.isEmpty()) return;
+
+        String enteredOtp = enteredOtpOpt.get().trim();
+        if (!sysData.verifyPasswordResetOtp(email, enteredOtp)) {
+            DialogUtil.show(AlertType.ERROR, null, "Invalid Code", "The code is incorrect or expired.");
+            return;
+        }
+
+        // 4) Set new password
+        Optional<String> newPassOpt = DialogUtil.promptForNewPasswordTwice();
+        if (newPassOpt.isEmpty()) return;
+
+        try {
+            sysData.updatePlayerPassword(email, newPassOpt.get());
+            sysData.clearPasswordResetOtp(email);
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Failed to update password / clear OTP for: " + email, e);
+            DialogUtil.show(AlertType.ERROR, null, "Error", "Password update failed. Please try again.");
+            return;
+        }
+
+        DialogUtil.show(AlertType.INFORMATION, null, "Password Updated",
+                "You can now log in with your new password.");
     }
+
 
     private String generateOneTimePassword() {
         int code = RNG.nextInt(900_000) + 100_000; // 6 digits

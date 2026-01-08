@@ -23,6 +23,10 @@ import model.Game;
 import model.GameResult;
 import model.SysData;
 import util.DialogUtil;
+import util.OnboardingManager;
+import util.OnboardingPolicy;
+import util.OnboardingStep;
+import util.SessionManager;
 import util.SoundManager;
 import util.UIAnimations;
 
@@ -60,6 +64,36 @@ public class HistoryController {
         // defaults
         selectDefault(filterTypeCombo, HistoryFilterService.OPT_ALL);
         selectDefault(sortTypeCombo, HistoryFilterService.SORT_NONE);
+        
+        
+        List<OnboardingStep> historySteps = List.of(
+        		 new OnboardingStep("#backBtn", "Back",
+                         "Return to main menu."),
+        		 new OnboardingStep("#filterTypeCombo", "Filter By",
+                         "Choose which game detail to filter the history by (player, difficulty, result, or date)."),
+                 new OnboardingStep("#filterValueField", "Filter value",
+                         "Enter the value to filter by, based on the selected filter type."),
+                 new OnboardingStep("#dateFilterPicker", "Date Selector",
+                         "Choose a date to filter history entries by date (used when “Date” is selected)."),
+                 new OnboardingStep("#applyBtn", "Apply Filter",
+                         "Apply the selected filter and value to update the history list."),
+                 new OnboardingStep("#sortTypeCombo", "Sort by",
+                         "Choose how the history entries are ordered (e.g., by date, score, or duration)."),
+                 new OnboardingStep("#sortBtn", "Apply Sort",
+                         "Apply the selected sorting option to reorder the history list."),
+                 new OnboardingStep("#refreshIcon", "Clear filters",
+                         "Reset all filters and sorting to show the full, unfiltered history list.")
+         );
+         
+        OnboardingPolicy policy =
+                SessionManager.isAdminMode() ? OnboardingPolicy.NEVER :
+                SessionManager.isGuestMode() ? OnboardingPolicy.ALWAYS :
+                OnboardingPolicy.ONCE_THEN_HOVER;
+
+        String userKey = SessionManager.getOnboardingUserKey();
+
+        OnboardingManager.runWithPolicy("onboarding.history", root, historySteps, policy, userKey);
+        
 
         if (filterTypeCombo != null) {
             filterTypeCombo.setOnAction(event -> onFilterTypeChanged());
