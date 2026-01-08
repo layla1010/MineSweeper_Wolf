@@ -90,3 +90,4 @@ date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Off
 2026-01-08,0:01,EASY,72,GIVE_UP,d,f,,,false,S1.png,S12.png
 2026-01-08,0:02,EASY,80,GIVE_UP,l,h,,,false,S12.png,S1.png
 2026-01-08,0:02,MEDIUM,136,GIVE_UP,damn,you,,,false,S12.png,S1.png
+2026-01-08,0:04,MEDIUM,3,GIVE_UP,salam,yusuf,,,false,file:/C:/Users/layla/OneDrive/Documents/GitHub/MineSweeper_Wolf/src/main/resources/Images/creative-tools.png,file:/C:/Users/layla/OneDrive/Documents/GitHub/MineSweeper_Wolf/src/main/resources/Images/filter.png
