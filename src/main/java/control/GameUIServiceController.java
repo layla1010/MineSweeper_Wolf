@@ -176,8 +176,18 @@ public class GameUIServiceController implements util.SettingObserver {
 
         try {
             Image img;
-            if (avatarId.startsWith("file:")) {
+
+            //BASE64 avatar
+            if (avatarId.startsWith("BASE64:")) {
+                String base64 = avatarId.substring("BASE64:".length());
+                byte[] bytes = java.util.Base64.getDecoder().decode(base64);
+                img = new Image(new java.io.ByteArrayInputStream(bytes));
+
+            //Legacy file-based avatar 
+            } else if (avatarId.startsWith("file:")) {
                 img = new Image(avatarId);
+
+            //Built-in avatar from resources
             } else {
                 var stream = getClass().getResourceAsStream("/Images/" + avatarId);
                 if (stream == null) {
@@ -186,11 +196,14 @@ public class GameUIServiceController implements util.SettingObserver {
                 }
                 img = new Image(stream);
             }
+
             target.setImage(img);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     public void buildHeartsBar() {
         if (heartsBox == null) return;

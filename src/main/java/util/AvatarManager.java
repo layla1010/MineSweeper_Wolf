@@ -42,6 +42,27 @@ public class AvatarManager {
         this.player2AvatarView = player2AvatarView;
     }
 
+    public static Image resolveAvatar(String avatarId) {
+        if (avatarId == null || avatarId.isBlank()) return null;
+
+        try {
+            if (avatarId.startsWith("BASE64:")) {
+                String data = avatarId.substring("BASE64:".length()).replace("_", ",");
+                byte[] bytes = java.util.Base64.getDecoder().decode(data);
+                return new Image(new java.io.ByteArrayInputStream(bytes));
+            }
+            if (avatarId.startsWith("file:")) {
+                return new Image(avatarId, false);
+            }
+            var stream = AvatarManager.class.getResourceAsStream("/Images/" + avatarId);
+            return (stream == null) ? null : new Image(stream);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     /**
      * Register the small thumbnails .
      * We set their userData to the file name so we can read it on click.
@@ -149,19 +170,25 @@ public class AvatarManager {
         File file = chooser.showOpenDialog(stage);
         if (file == null) return;
 
-        String fileUrl = file.toURI().toString();  // e.g. file:/C:/...
+        String base64 = fileToBase64(file);
+        if (base64 == null) return;
 
-        Image img = new Image(fileUrl);
+        // IMPORTANT: escape commas for CSV safety
+        String safeBase64 = base64.replace(",", "_");
+
+        // Prefix so you can recognize it later
+        String avatarId = "BASE64:" + safeBase64;
+
+        Image img = new Image(new java.io.ByteArrayInputStream(
+                java.util.Base64.getDecoder().decode(base64)
+        ));
+
         if (currentPlayerIndex == 1) {
-            selectedAvatarIdP1 = fileUrl;
-            if (player1AvatarView != null) {
-                player1AvatarView.setImage(img);
-            }
+            selectedAvatarIdP1 = avatarId;
+            player1AvatarView.setImage(img);
         } else {
-            selectedAvatarIdP2 = fileUrl;
-            if (player2AvatarView != null) {
-                player2AvatarView.setImage(img);
-            }
+            selectedAvatarIdP2 = avatarId;
+            player2AvatarView.setImage(img);
         }
 
         // Custom image is not one of the small thumbnails, so no thumbnail highlight here.
@@ -207,7 +234,7 @@ public class AvatarManager {
         if (playerIndex == 1) selectedAvatarIdP1 = avatarId;
         else selectedAvatarIdP2 = avatarId;
 
-        Image img = resolveAvatarImage(avatarId);
+        Image img = resolveAvatar(avatarId);
 
         if (playerIndex == 1 && player1AvatarView != null) player1AvatarView.setImage(img);
         if (playerIndex == 2 && player2AvatarView != null) player2AvatarView.setImage(img);
@@ -237,7 +264,16 @@ public class AvatarManager {
     	return new Image(stream);
     }
     
-    
+    private String fileToBase64(File file) {
+        try {
+            byte[] bytes = java.nio.file.Files.readAllBytes(file.toPath());
+            return java.util.Base64.getEncoder().encodeToString(bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     private void updateThumbnailSelection(ImageView selectedThumb) {
         for (ImageView iv : thumbnails) {
@@ -257,15 +293,7 @@ public class AvatarManager {
             && p2 != null && !p2.isBlank();
     }
     
-    private Image resolveAvatarImage(String avatarId) {
-        // Custom avatar: file:/...
-        if (avatarId.startsWith("file:")) {
-            return new Image(avatarId);
-        }
-        // Built-in avatar: S1.png ...
-        return loadAvatarImage(avatarId);
-    }
-
+    
     private void highlightThumbnailIfBuiltIn(String avatarId) {
         if (avatarId == null) return;
         if (avatarId.startsWith("file:")) return;

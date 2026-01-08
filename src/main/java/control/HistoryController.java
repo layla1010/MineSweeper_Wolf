@@ -290,7 +290,8 @@ public class HistoryController {
     }
 
     private ImageView createAvatarView(String avatarId) {
-        Image img = loadAvatarImage(avatarId);
+    	Image img = util.AvatarManager.resolveAvatar(avatarId);
+
         ImageView iv = new ImageView();
         if (img != null) iv.setImage(img);
 
@@ -301,24 +302,6 @@ public class HistoryController {
         return iv;
     }
 
-    private Image loadAvatarImage(String avatarId) {
-        if (avatarId == null || avatarId.isBlank()) return null;
-
-        if (avatarId.startsWith("file:")) {
-            try {
-                return new Image(avatarId, false);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        try (InputStream stream = getClass().getResourceAsStream("/Images/" + avatarId)) {
-            if (stream == null) return null;
-            return new Image(stream);
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
     @FXML
     private void onClearFilterClicked() {
