@@ -118,6 +118,9 @@ public class HowToPlayController {
 
     @FXML private Button prevBtn;
     @FXML private Button nextBtn;
+    
+    @FXML private StackPane overlayRoot;
+    @FXML private Rectangle dimRect;
 
     @FXML private Button backBtn;
     @FXML private Button restartBtn;
@@ -176,6 +179,8 @@ public class HowToPlayController {
 
     @FXML
     private void initialize() {
+    	dimRect.widthProperty().bind(overlayRoot.widthProperty());
+        dimRect.heightProperty().bind(overlayRoot.heightProperty());
         p1Tiles = builder.build(p1Grid, SIZE, SIZE, true);
         p2Tiles = builder.build(p2Grid, SIZE, SIZE, false);
 
@@ -189,20 +194,33 @@ public class HowToPlayController {
             runStep(0);
         });
     }
+    
+    private Runnable closeAction;
+
+    public void setCloseAction(Runnable closeAction) {
+        this.closeAction = closeAction;
+    }
 
 
     @FXML
     private void onBack() {
         SoundManager.playClick();
         stopAutoplayIfRunning();
+        root.setEffect(null);
 
-        try {
-            Stage stage = (Stage) backBtn.getScene().getWindow();
-            ViewNavigator.switchTo(stage, "/view/settings_view.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        // If opened from game overlay -> close overlay
+        if (closeAction != null) {
+            closeAction.run();
+            return;
         }
+
+        // Otherwise opened as normal navigation (Settings flow) -> go back
+        Stage stage = (Stage) backBtn.getScene().getWindow();
+        ViewNavigator.goBack(stage, "/view/settings_view.fxml");
     }
+
+
 
     @FXML
     private void onRestart() {

@@ -122,6 +122,32 @@ public class NewGameController {
             }
         });
     }
+    
+    public void prefillFromConfig(GameConfig config) {
+        if (config == null) return;
+
+        // Names
+        player1Nickname.setText(config.getPlayer1Nickname());
+        player2Nickname.setText(config.getPlayer2Nickname());
+
+        // Difficulty (ensure ToggleGroup is updated)
+        switch (config.getDifficulty()) {
+            case EASY -> difficultyGroup.selectToggle(easyToggle);
+            case MEDIUM -> difficultyGroup.selectToggle(medToggle);
+            case HARD -> difficultyGroup.selectToggle(hardToggle);
+        }
+
+        // Avatars
+        avatarManager.setSelectedAvatarForPlayer1(config.getPlayer1AvatarPath());
+        avatarManager.setSelectedAvatarForPlayer2(config.getPlayer2AvatarPath());
+
+        // Optional: restore the “active player” look
+        selectPlayer(1);
+        avatarManager.selectPlayer(1);
+        setActivePlayerCard(recP1, recP2, player1Nickname, player2Nickname);
+    }
+
+
 
     // Utility method to play a standard click sound.
     @FXML

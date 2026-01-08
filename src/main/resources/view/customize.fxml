@@ -10,93 +10,71 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="520.0" prefWidth="720.0"
-            xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="control.CustomizeController"
-            stylesheets="@../css/base.css"
->
+<AnchorPane prefHeight="520.0" prefWidth="720.0" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.CustomizeController">
 
     <children>
-        <VBox fx:id="root"
-              alignment="TOP_CENTER"
-              spacing="22"
-              styleClass="themed-bg"
-              AnchorPane.topAnchor="0.0"
-              AnchorPane.rightAnchor="0.0"
-              AnchorPane.bottomAnchor="0.0"
-              AnchorPane.leftAnchor="0.0">
+        <VBox fx:id="root" alignment="TOP_CENTER" spacing="22" styleClass="themed-bg" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
             <padding>
-                <Insets top="22" right="26" bottom="26" left="26"/>
+                <Insets bottom="26" left="26" right="26" top="22" />
             </padding>
 
             <!-- Top bar: back button -->
             <HBox alignment="CENTER_LEFT" prefHeight="60">
                 <children>
-                    <Button fx:id="backBtn"
-                            text="←"
-                            onAction="#onBackClicked"
-                            styleClass="settings-back-button">
+                    <Button fx:id="backBtn" onAction="#onBackClicked" styleClass="settings-back-button" text="←">
                         <font>
-                            <Font name="Copperplate Gothic Bold" size="18"/>
+                            <Font name="Copperplate Gothic Bold" size="18" />
                         </font>
                     </Button>
-                    <Region HBox.hgrow="ALWAYS"/>
+                    <Region HBox.hgrow="ALWAYS" />
                 </children>
             </HBox>
 
             <!-- Title -->
-            <Label text="CUSTOMIZE THEMES" styleClass="settings-title">
+            <Label styleClass="settings-title" text="CUSTOMIZE THEMES" textFill="WHITE">
                 <font>
-                    <Font name="Copperplate Gothic Bold" size="44"/>
+                    <Font name="Copperplate Gothic Bold" size="44" />
                 </font>
             </Label>
 
-            <Label text="Choose how your game looks. Changes apply immediately."
-                   styleClass="settings-subtitle">
+            <Label styleClass="settings-subtitle" text="Choose how your game looks. Changes apply immediately." textFill="WHITE">
                 <font>
-                    <Font name="Copperplate Gothic Light" size="16"/>
+                    <Font name="Copperplate Gothic Light" size="16" />
                 </font>
             </Label>
 
             <!-- Options -->
-            <VBox spacing="16" maxWidth="560">
+            <VBox maxWidth="560" spacing="16">
                 <children>
 
                     <!-- Default -->
                     <HBox alignment="CENTER_LEFT" spacing="12" styleClass="filter-row">
                         <children>
-                            <Label text="Colorful (Default)" styleClass="filter-label">
+                            <Label styleClass="filter-label" text="Colorful">
                                 <font>
-                                    <Font name="Copperplate Gothic Light" size="20"/>
+                                    <Font name="Copperplate Gothic Light" size="20" />
                                 </font>
                             </Label>
 
-                            <Region HBox.hgrow="ALWAYS"/>
+                            <Region HBox.hgrow="ALWAYS" />
 
-                            <ToggleButton fx:id="defaultBtn"
-                                          text="SELECT"
-                                          onAction="#onDefaultSelected"
-                                          styleClass="theme-select-btn"/>
+                            <ToggleButton fx:id="defaultBtn" onAction="#onDefaultSelected" styleClass="theme-select-btn" text="SELECT" />
                         </children>
                     </HBox>
 
                     <!-- Wolf -->
                     <HBox alignment="CENTER_LEFT" spacing="12" styleClass="filter-row">
                         <children>
-                            <Label text="Wolf Theme" styleClass="filter-label">
+                            <Label styleClass="filter-label" text="Wolf (Default)">
                                 <font>
-                                    <Font name="Copperplate Gothic Light" size="20"/>
+                                    <Font name="Copperplate Gothic Light" size="20" />
                                 </font>
                             </Label>
 
-                            <Region HBox.hgrow="ALWAYS"/>
+                            <Region HBox.hgrow="ALWAYS" />
 
-                            <ToggleButton fx:id="wolfBtn"
-                                          text="SELECT"
-                                          onAction="#onWolfSelected"
-                                          styleClass="theme-select-btn"/>
+                            <ToggleButton fx:id="wolfBtn" onAction="#onWolfSelected" styleClass="theme-select-btn" text="SELECT" />
                         </children>
                     </HBox>
 

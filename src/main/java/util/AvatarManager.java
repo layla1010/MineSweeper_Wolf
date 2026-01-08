@@ -198,6 +198,32 @@ public class AvatarManager {
         return isPlayer1AvatarChosen() && isPlayer2AvatarChosen();
     }
 
+    public void setSelectedAvatarForPlayer(int playerIndex, String avatarId) {
+        if (playerIndex != 1 && playerIndex != 2) {
+            throw new IllegalArgumentException("playerIndex must be 1 or 2");
+        }
+        if (avatarId == null || avatarId.isBlank()) return;
+
+        if (playerIndex == 1) selectedAvatarIdP1 = avatarId;
+        else selectedAvatarIdP2 = avatarId;
+
+        Image img = resolveAvatarImage(avatarId);
+
+        if (playerIndex == 1 && player1AvatarView != null) player1AvatarView.setImage(img);
+        if (playerIndex == 2 && player2AvatarView != null) player2AvatarView.setImage(img);
+
+        // Optional: if this is a built-in avatar, highlight its thumbnail
+        highlightThumbnailIfBuiltIn(avatarId);
+    }
+
+    public void setSelectedAvatarForPlayer1(String avatarId) {
+        setSelectedAvatarForPlayer(1, avatarId);
+    }
+
+    public void setSelectedAvatarForPlayer2(String avatarId) {
+        setSelectedAvatarForPlayer(2, avatarId);
+    }
+
     /* =====================================================
        INTERNAL HELPERS
        ===================================================== */
@@ -230,5 +256,30 @@ public class AvatarManager {
         return p1 != null && !p1.isBlank()
             && p2 != null && !p2.isBlank();
     }
+    
+    private Image resolveAvatarImage(String avatarId) {
+        // Custom avatar: file:/...
+        if (avatarId.startsWith("file:")) {
+            return new Image(avatarId);
+        }
+        // Built-in avatar: S1.png ...
+        return loadAvatarImage(avatarId);
+    }
+
+    private void highlightThumbnailIfBuiltIn(String avatarId) {
+        if (avatarId == null) return;
+        if (avatarId.startsWith("file:")) return;
+
+        // Find the thumbnail whose userData matches the avatarId
+        for (ImageView iv : thumbnails) {
+            if (iv == null) continue;
+            Object ud = iv.getUserData();
+            if (ud instanceof String s && s.equalsIgnoreCase(avatarId)) {
+                updateThumbnailSelection(iv);
+                break;
+            }
+        }
+    }
+
 
 }

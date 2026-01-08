@@ -34,7 +34,7 @@ public final class ThemeManager {
         currentTheme = theme;
         PREFS.put(PREF_KEY, theme.name());
     }
-
+   
     /**
      * Apply current theme CSS to the provided scene.
      * Rules:
@@ -86,11 +86,11 @@ public final class ThemeManager {
     }
 
     private static Theme loadTheme() {
-        String saved = PREFS.get(PREF_KEY, Theme.COLORFUL.name());
+        String saved = PREFS.get(PREF_KEY, Theme.WOLF.name());
         try {
             return Theme.valueOf(Objects.requireNonNull(saved));
         } catch (Exception e) {
-            return Theme.COLORFUL;
+            return Theme.WOLF;
         }
     }
 }

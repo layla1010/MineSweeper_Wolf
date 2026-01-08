@@ -102,6 +102,26 @@ public final class ViewNavigator {
         stage.show();
     }
     
+    private static final java.util.Deque<String> backStack = new java.util.ArrayDeque<>();
+
+    public static void pushReturnTarget(String fxmlPath) {
+        if (fxmlPath == null || fxmlPath.isBlank()) return;
+        backStack.push(fxmlPath);
+    }
+
+    public static String popReturnTargetOrDefault(String fallback) {
+        String v = backStack.pollFirst();
+        return (v == null || v.isBlank()) ? fallback : v;
+    }
+
+    public static boolean hasReturnTarget() {
+        return !backStack.isEmpty();
+    }
     
+    public static void goBack(Stage stage, String fallbackFxml) {
+        String target = popReturnTargetOrDefault(fallbackFxml);
+        switchTo(stage, target);
+    }
+
 
 }

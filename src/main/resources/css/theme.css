@@ -437,7 +437,6 @@
 }
 
 .stats-panel {
-    -fx-fill: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));
     -fx-stroke: rgba(255, 110, 199, 0.40);
     -fx-stroke-width: 2;
     -fx-effect: dropshadow(gaussian, rgba(255,110,199,0.50), 30, 0.6, 0, 0);

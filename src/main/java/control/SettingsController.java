@@ -76,6 +76,7 @@ public class SettingsController {
     private void onHowToPlayClicked() {
         SoundManager.playClick();
         try {
+        	ViewNavigator.pushReturnTarget("/view/settings_view.fxml");
             ViewNavigator.switchTo(getStage(), "/view/how_to_play_view.fxml");
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed to navigate to how_to_play_view", e);

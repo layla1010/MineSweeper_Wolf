@@ -13,13 +13,18 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity"
-          minHeight="-Infinity" minWidth="-Infinity"
-          prefHeight="800.0" prefWidth="1300.0"
-          xmlns="http://javafx.com/javafx/21"
-          xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="control.HowToPlayController">
+<StackPane fx:id="overlayRoot"
+           xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="control.HowToPlayController"
+           styleClass="howto-overlay">
+           
+          <Rectangle fx:id="dimRect" width="9999"  opacity="0.92" height="9999" styleClass="howto-dim"/>
 
+           
+<GridPane fx:id="root" prefHeight="800.0" prefWidth="1300.0" styleClass="howto-panel">
+
+         
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="600.0"/>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="600.0"/>
@@ -385,3 +390,4 @@
     </stylesheets>
 
 </GridPane>
+</StackPane>

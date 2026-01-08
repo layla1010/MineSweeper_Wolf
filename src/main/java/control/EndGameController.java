@@ -20,7 +20,6 @@ public class EndGameController {
     @FXML private Button playAgainBtn;
     @FXML private Button mainMenuBtn;
 
-    private Stage stage;
     private GameConfig config;
     private int score;
     private int elapsedSeconds;
@@ -75,7 +74,7 @@ public class EndGameController {
     @FXML
     private void onMainMenu() {
         try {
-            Stage stage = (Stage) this.stage; 
+            Stage stage = (Stage) root.getScene().getWindow();
             util.ViewNavigator.switchTo(stage, "/view/main_view.fxml");
         } catch (Exception e) {
             e.printStackTrace();

@@ -312,6 +312,15 @@
     -fx-background-radius: 12;
 }
 
+.howto-overlay {
+    -fx-alignment: center;
+}
+
+.howto-dim {
+    -fx-fill: rgba(0,0,0,0.75);
+}
+
+
 
 
 

@@ -7,12 +7,12 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import model.GameConfig;
@@ -24,6 +24,7 @@ import util.OnboardingStep;
 import util.SoundManager;
 import util.SessionManager;
 import util.UIAnimations;
+import util.ViewNavigator;
 
 public class GameController {
 
@@ -41,6 +42,8 @@ public class GameController {
     @FXML private Parent root;
     @FXML private ImageView player1AvatarImage;
     @FXML private ImageView player2AvatarImage;
+    @FXML private StackPane rootStack;
+    private Parent howToPlayOverlay;  
 
     private final GameStateController state = new GameStateController();
 
@@ -49,6 +52,11 @@ public class GameController {
     private GameBonusServiceController bonusService;
     private GameUIServiceController uiService;
 
+    
+    private Stage getStage() {
+        return (Stage) root.getScene().getWindow();
+    }
+    
     /**
      * Initializes the game session using the given configuration.
      * Called from the previous screen.
@@ -163,28 +171,80 @@ public class GameController {
     private void onHelpBtnClicked() {
         bonusService.resetIdleHintTimer();
 
+        // Pause game if you want (recommended)
+        if (!state.isPaused) {
+            onPauseGame();
+        }
+
         try {
-            Stage stage = (Stage) player1Grid.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("/view/how_to_play_view.fxml"));
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-            stage.show();
+            // Load once (cache)
+            if (howToPlayOverlay == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/how_to_play_view.fxml"));
+                howToPlayOverlay = loader.load();
+
+                // IMPORTANT: let HowToPlay close itself using a callback (instead of navigation)
+                HowToPlayController ctrl = loader.getController();
+                ctrl.setCloseAction(this::closeHowToPlayOverlayFromGame);
+
+                // Make overlay consume clicks so game UI is blocked
+                howToPlayOverlay.setPickOnBounds(true);
+                StackPane.setAlignment(howToPlayOverlay, javafx.geometry.Pos.CENTER);
+                root.setEffect(new javafx.scene.effect.GaussianBlur(10));
+
+
+            }
+
+            if (!rootStack.getChildren().contains(howToPlayOverlay)) {
+                rootStack.getChildren().add(howToPlayOverlay);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
+            // fail-safe resume
+            if (state.isPaused) onPauseGame();
         }
     }
+    
+    private void closeHowToPlayOverlayFromGame() {
+        if (howToPlayOverlay != null) {
+            rootStack.getChildren().remove(howToPlayOverlay);
+        }
+
+        root.setEffect(null);
+
+        if (state.isPaused) {
+            onPauseGame();
+        }
+
+        bonusService.resetIdleHintTimer();
+    }
+
+
 
 
     @FXML
     private void onBackBtnClicked() throws IOException {
         bonusService.resetIdleHintTimer();
-        historyService.saveGiveUpGame(state);
-        uiService.stopTimer();
 
+        // Close overlays + clear blur/dim
+        if (howToPlayOverlay != null) {
+            rootStack.getChildren().remove(howToPlayOverlay);
+        }
+        root.setEffect(null);
+
+        // Stop match runtime
+        if (uiService != null) {
+            uiService.stopTimer();
+            uiService.unregisterAsObserver();
+        }
         Stage stage = (Stage) player1Grid.getScene().getWindow();
-        util.ViewNavigator.switchTo(stage, "/view/main_view.fxml");
+        NewGameController ng = ViewNavigator.switchToWithController(stage, "/view/new_game_view.fxml");
+        ng.prefillFromConfig(state.config);
     }
 
+
+    
+    
     @FXML
     private void onPauseGame() {
         bonusService.resetIdleHintTimer();
