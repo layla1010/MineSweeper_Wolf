@@ -420,49 +420,16 @@ private void initialize() {
      *  else -> treat as filename under /Images/
      */
     	private Image loadAvatarImage(String avatarId) {
-    	    try {
-    	        if (avatarId == null || avatarId.isBlank()) {
-    	            return loadDefaultAvatar();
-    	        }
+    		
+    	    Image img = util.AvatarManager.resolveAvatar(avatarId);
 
-    	        if (avatarId.startsWith("file:")) {
-    	            return new Image(avatarId, true);
-    	        }
+    	    // Fallback if resolveAvatar returns null
+    	    if (img != null) return img;
 
-    	        if (avatarId.startsWith("/")) {
-    	            URL url = getClass().getResource(avatarId);
-    	            if (url != null) return new Image(url.toExternalForm(), true);
-    	        }
-
-    	        URL url = getClass().getResource("/Images/" + avatarId);
-    	        if (url != null) return new Image(url.toExternalForm(), true);
-
-    	        return loadDefaultAvatar();
-
-    	    } catch (Exception e) {
-    	        LOG.log(Level.WARNING, "Failed to load avatar: " + avatarId, e);
-    	        return loadDefaultAvatar();
-    	    }
+    	    // Default avatar from resources
+    	    var stream = getClass().getResourceAsStream(DEFAULT_AVATAR_RES);
+    	    return (stream == null) ? null : new Image(stream);
     	}
-
-    	private Image loadDefaultAvatar() {
-    	    try {
-    	        if (defaultAvatarUrl == null) {
-    	            defaultAvatarUrl = getClass().getResource(DEFAULT_AVATAR_RES);
-    	            if (defaultAvatarUrl == null) {
-    	                LOG.severe("Missing default avatar resource: " + DEFAULT_AVATAR_RES);
-    	                return null;
-    	            }
-    	        }
-    	        return new Image(defaultAvatarUrl.toExternalForm(), true);
-
-    	    } catch (Exception e) {
-    	        LOG.log(Level.SEVERE, "Failed to load default avatar: " + DEFAULT_AVATAR_RES, e);
-    	        return null;
-    	    }
-    	}
-    
-
 
   
      // Progress chart configuration.
