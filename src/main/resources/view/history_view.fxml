@@ -59,6 +59,30 @@
                             <Font name="Copperplate Gothic Bold" size="48.0" />
                         </font>
                     </Label>
+               <Button fx:id="soundButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSoundOff" prefHeight="44.0" prefWidth="55.0" style="-fx-background-color: TRANSPARENT;">
+                  <graphic>
+                     <ImageView fitHeight="49.0" fitWidth="59.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@/Images/volume.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+                  <HBox.margin>
+                     <Insets left="350.0" />
+                  </HBox.margin>
+               </Button>
+               <Button fx:id="musicButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onMusicToggle" prefHeight="44.0" prefWidth="55.0" style="-fx-background-color: TRANSPARENT;">
+                  <graphic>
+                     <ImageView fitHeight="49.0" fitWidth="59.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@/Images/music.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+               </Button>
 
                 </children>
             </HBox>

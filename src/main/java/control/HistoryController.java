@@ -1,6 +1,5 @@
 package control;
 
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,6 +11,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -39,6 +39,10 @@ public class HistoryController {
     @FXML private BorderPane root;
     @FXML private VBox historyList;
 
+    @FXML private Button soundButton;
+    @FXML private Button musicButton;
+
+    
     @FXML private ComboBox<String> filterTypeCombo;
     @FXML private TextField filterValueField;
     @FXML private ComboBox<String> sortTypeCombo;
@@ -46,6 +50,9 @@ public class HistoryController {
 
 
     private final List<Game> allGames = new ArrayList<>();
+    
+    NewGameController controller = new NewGameController();
+
 
     private static final DateTimeFormatter CSV_DATE_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -301,6 +308,60 @@ public class HistoryController {
         iv.getStyleClass().add("history-avatar");
         return iv;
     }
+    
+
+    @FXML
+    private void onSoundOff() {
+        SoundManager.playClick();
+
+        boolean newState = !SysData.isSoundEnabled();
+        SysData.setSoundEnabled(newState);
+
+        refreshSoundIconFromSettings();
+    }
+
+    @FXML
+    private void onMusicToggle() {
+        SoundManager.playClick();
+
+        SoundManager.toggleMusic();
+
+        boolean musicOn = SoundManager.isMusicOn();
+        SysData.setMusicEnabled(musicOn);
+
+        refreshMusicIconFromSettings();
+    }
+
+    private void refreshSoundIconFromSettings() {
+        if (soundButton == null) return;
+        if (!(soundButton.getGraphic() instanceof ImageView iv)) return;
+
+        boolean enabled = SysData.isSoundEnabled();
+        String iconPath = enabled ? "/Images/volume.png" : "/Images/mute.png";
+
+        var stream = getClass().getResourceAsStream(iconPath);
+        if (stream == null) return;
+
+        iv.setImage(new Image(stream));
+    }
+
+    private void refreshMusicIconFromSettings() {
+        if (musicButton == null) return;
+        if (!(musicButton.getGraphic() instanceof ImageView iv)) return;
+
+        boolean enabled = SysData.isMusicEnabled();
+
+        if (enabled && !SoundManager.isMusicOn()) SoundManager.startMusic();
+        if (!enabled && SoundManager.isMusicOn()) SoundManager.stopMusic();
+
+        String iconPath = enabled ? "/Images/music.png" : "/Images/music_mute.png";
+
+        var stream = getClass().getResourceAsStream(iconPath);
+        if (stream == null) return;
+
+        iv.setImage(new Image(stream));
+    }
+
 
 
     @FXML

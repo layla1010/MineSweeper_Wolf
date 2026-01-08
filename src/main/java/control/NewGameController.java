@@ -335,7 +335,7 @@ public class NewGameController {
     }
 
     /** Update speaker icon according to SysData.isSoundEnabled(). */
-    private void refreshSoundIconFromSettings() {
+    void refreshSoundIconFromSettings() {
         if (setUpSoundButton == null) return;
         if (!(setUpSoundButton.getGraphic() instanceof ImageView iv)) return;
 
@@ -347,7 +347,7 @@ public class NewGameController {
     }
 
     /** Update music icon according to SysData.isMusicEnabled(). */
-    private void refreshMusicIconFromSettings() {
+    void refreshMusicIconFromSettings() {
         if (setUpMusicButton == null) return;
         if (!(setUpMusicButton.getGraphic() instanceof ImageView iv)) return;
 
