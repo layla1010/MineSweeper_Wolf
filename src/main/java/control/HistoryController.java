@@ -51,7 +51,7 @@ public class HistoryController {
 
     private final List<Game> allGames = new ArrayList<>();
     
-    NewGameController controller = new NewGameController();
+    private List<Game> currentView = new ArrayList<>();
 
 
     private static final DateTimeFormatter CSV_DATE_FORMATTER =
@@ -145,23 +145,14 @@ public class HistoryController {
     @FXML
     private void onFilterApplyClicked() {
         SoundManager.playClick();
-        //runFilterAndRender(/*smartSortAlso*/ false);
-        runFilterAndRender();
+        applyFilterAndRender();
     }
 
-    @FXML
-    private void onSortBtnClicked() {
-        SoundManager.playClick();
-        // Sort should sort the same filtered view -> smart inference consistent with Apply
-        //runFilterAndRender(/*smartSortAlso*/ true);
-        
-        //Apply sort on the current filtered results
-        runFilterAndRender();
-    }
+    private void applyFilterAndRender() {
+        String selectedType = (filterTypeCombo != null)
+                ? filterTypeCombo.getValue()
+                : HistoryFilterService.OPT_ALL;
 
-    //private void runFilterAndRender(boolean smartSortAlso) {
-    private void runFilterAndRender() {
-        String selectedType = (filterTypeCombo != null) ? filterTypeCombo.getValue() : HistoryFilterService.OPT_ALL;
         String typed = getFilterText();
         LocalDate selectedDate = (dateFilterPicker != null) ? dateFilterPicker.getValue() : null;
 
@@ -169,29 +160,54 @@ public class HistoryController {
 
         HistoryFilterService.ValidationResult vr = service.validate(effectiveType, typed, selectedDate);
         if (!vr.ok) {
-         	DialogUtil.show(AlertType.WARNING, "", vr.title,vr.message);                  
+            DialogUtil.show(AlertType.WARNING, "", vr.title, vr.message);
             return;
         }
 
         refreshHistoryView(effectiveType);
     }
+	
+	
+	@FXML
+	private void onSortBtnClicked() {
+	    SoundManager.playClick();
+	    applySortOnlyAndRender();
+	}
 
-    private void refreshHistoryView(String effectiveType) {
-        String typed = getFilterText();
-        LocalDate selectedDate = (dateFilterPicker != null) ? dateFilterPicker.getValue() : null;
-        String sortLabel = (sortTypeCombo != null) ? sortTypeCombo.getValue() : HistoryFilterService.SORT_NONE;
+	private void applySortOnlyAndRender() {
+	    String selectedType = (filterTypeCombo != null)
+	            ? filterTypeCombo.getValue()
+	            : HistoryFilterService.OPT_ALL;
 
-        List<Game> filtered = service.filter(allGames, effectiveType, typed, selectedDate);
-        List<Game> sorted = service.sort(filtered, sortLabel);
+	    String typed = getFilterText();
 
-        populateHistory(sorted);
+	    // For sort-only, we still want the same effective type inference logic,
+	    // but we do NOT validate filter inputs.
+	    String effectiveType = service.resolveEffectiveFilterType(selectedType, typed);
 
-        if (HistoryFilterService.OPT_DATE.equals(effectiveType)
-                && sorted.isEmpty()
-                && selectedDate != null) {
-         	DialogUtil.show(AlertType.WARNING, "", "No games on this date." ,"No games were found on " + selectedDate + ".");                  
-        }
-    }
+	    refreshHistoryView(effectiveType);
+	}
+	
+  
+
+	private void refreshHistoryView(String effectiveType) {
+	    String typed = getFilterText();
+	    LocalDate selectedDate = (dateFilterPicker != null) ? dateFilterPicker.getValue() : null;
+	    String sortLabel = (sortTypeCombo != null) ? sortTypeCombo.getValue() : HistoryFilterService.SORT_NONE;
+
+	    List<Game> filtered = service.filter(allGames, effectiveType, typed, selectedDate);
+	    List<Game> sorted = service.sort(filtered, sortLabel);
+
+	    currentView = sorted;           // <-- add this line
+	    populateHistory(sorted);
+
+	    if (HistoryFilterService.OPT_DATE.equals(effectiveType)
+	            && sorted.isEmpty()
+	            && selectedDate != null) {
+	        DialogUtil.show(AlertType.WARNING, "", "No games on this date.",
+	                "No games were found on " + selectedDate + ".");
+	    }
+	}
 
     private String getFilterText() {
         if (filterValueField == null) return "";

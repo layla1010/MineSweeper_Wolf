@@ -124,7 +124,7 @@ public class EditQuestionController {
     private void onCancelButtonClicked(ActionEvent event) {
 
         ButtonType yesCancel = new ButtonType("Yes, Cancel", ButtonBar.ButtonData.YES);
-        ButtonType noContiue = new ButtonType("No, continue adding", ButtonBar.ButtonData.NO);
+        ButtonType noContiue = new ButtonType("No, continue editing", ButtonBar.ButtonData.NO);
 
         Optional<ButtonType> result = DialogUtil.confirmWithCustomButtons(
                 "Cancel",

@@ -29,7 +29,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
+import model.Theme;
+import util.DialogUtil;
 import util.SoundManager;
+import util.ThemeManager;
 import util.ViewNavigator;
 
 import java.util.ArrayList;
@@ -1255,11 +1258,14 @@ public class HowToPlayController {
          stage.setResizable(false);
 
          VBox root = new VBox(12);
+        
          root.setPadding(new Insets(18));
 
-         String bgUrl = resolveBgUrl();
-         root.setStyle(bgStyle(bgUrl));
-
+/*
+         if (ThemeManager.getTheme() == Theme.WOLF) {
+             root.setStyle(bgStyle(resolveBgUrl()));
+         }
+*/
          Label title = new Label(
                  "You got a " + (q.getDifficulty() == null ? "Question" : q.getDifficulty() + " Question") + "!"
          );
@@ -1310,6 +1316,13 @@ public class HowToPlayController {
              btnD.setOnAction(e -> { if (!delivered[0]) { delivered[0] = true; stage.close(); onPick.accept(3); } });
 
              Scene scene = new Scene(root, 380, 350);
+             Theme current = ThemeManager.getTheme();
+             if (current == Theme.WOLF) {
+                 root.setStyle(bgStyle(resolveBgUrl()));
+             } else {
+                 ThemeManager.applyTheme(scene);
+     			}
+             
              stage.setScene(scene);
              stage.centerOnScreen();
              stage.show(); // NOT showAndWait
@@ -1327,6 +1340,13 @@ public class HowToPlayController {
          root.getChildren().add(closing);
 
          Scene scene = new Scene(root, 380, 365);
+         
+         Theme current = ThemeManager.getTheme();
+         if (current == Theme.WOLF) {
+             root.setStyle(bgStyle(resolveBgUrl()));
+         } else {
+             ThemeManager.applyTheme(scene);
+ 			}
          stage.setScene(scene);
          stage.centerOnScreen();
          stage.show();
@@ -1401,7 +1421,12 @@ public class HowToPlayController {
         stage.setResizable(false);
 
         AnchorPane root = new AnchorPane();
-        root.setStyle(bgStyle(resolveBgUrl()));
+        Theme current = ThemeManager.getTheme();
+        if (current == Theme.WOLF) {
+            root.setStyle(bgStyle(resolveBgUrl()));
+        } else {
+			root.setStyle(current.getCssPath());
+			}
 
         boolean isCorrectChosen = (chosenIdx == correctIdx);
 
@@ -1567,7 +1592,13 @@ public class HowToPlayController {
         stage.setResizable(false);
 
         AnchorPane pane = new AnchorPane();
-        pane.setStyle(bgStyle(resolveBgUrl()));
+        Theme current = ThemeManager.getTheme();
+        if (current == Theme.WOLF) {
+            pane.setStyle(bgStyle(resolveBgUrl()));
+        } else {
+            pane.setStyle(current.getCssPath());
+			}
+
 
         Label header = new Label("SURPRISE TUTORIAL RESULT");
         header.setStyle("""

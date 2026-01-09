@@ -80,11 +80,8 @@ public final class HistoryFilterService {
         String text = safeTrim(typedText);
         
         //ALL selected but no value entered
-        if (OPT_ALL.equals(type) && text.isEmpty()) {
-            return ValidationResult.error(
-                    "Missing filter value",
-                    "Please enter text to filter according to it."
-            );
+        if (type.isEmpty() || OPT_ALL.equals(type)) {
+            return ValidationResult.ok();
         }
         
         if (type.isEmpty() || OPT_ALL.equals(type)) {
