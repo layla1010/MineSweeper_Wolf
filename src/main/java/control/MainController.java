@@ -74,11 +74,6 @@ public class MainController {
         }
     }
 
-    private boolean isGuestSession() {
-        return SessionManager.getLoggedInUser() == null
-                && SessionManager.getPlayer1() == null
-                && SessionManager.getPlayer2() == null;
-    }
     
     @FXML
     private void onLogoutClicked() {

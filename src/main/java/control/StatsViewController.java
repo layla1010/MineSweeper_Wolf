@@ -1,6 +1,5 @@
 package control;
 
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -86,7 +85,6 @@ public class StatsViewController {
     @FXML private LineChart<Number, Number> p2ProgressChart;
     
     private static final String DEFAULT_AVATAR_RES = "/Images/S5.png";
-    private URL defaultAvatarUrl;
 
     private Stage resolveStage() {
         if (mainPane != null && mainPane.getScene() != null) {

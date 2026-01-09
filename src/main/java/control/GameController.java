@@ -53,10 +53,7 @@ public class GameController {
     private GameUIServiceController uiService;
 
     
-    private Stage getStage() {
-        return (Stage) root.getScene().getWindow();
-    }
-    
+  
     /**
      * Initializes the game session using the given configuration.
      * Called from the previous screen.
