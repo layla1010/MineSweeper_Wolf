@@ -157,6 +157,10 @@ final class OnboardingOverlay extends Pane {
 
         card.applyCss();
         card.layout();
+        if (getWidth() <= 1 || getHeight() <= 1) {
+            javafx.application.Platform.runLater(() -> layoutHighlightAndCard(target));
+            return;
+        }
 
         double cardW = Math.min(card.prefWidth(-1), 360);
         double cardH = card.prefHeight(cardW);
@@ -165,25 +169,27 @@ final class OnboardingOverlay extends Pane {
         double belowY = highlight.getY() + highlight.getHeight() + gap;
         double aboveY = highlight.getY() - cardH - gap;
 
-        double chosenY = (belowY + cardH <= getHeight() - 12) ? belowY
-                : (aboveY >= 12 ? aboveY : clamp(getHeight() - cardH - 12, 12, getHeight()));
+        double margin = 12;
 
-        boolean narrowTarget = highlight.getWidth() < 120;
+        double rawY = (belowY + cardH <= getHeight() - margin) ? belowY
+                : (aboveY >= margin ? aboveY : (getHeight() - cardH - margin));
 
-        double chosenX = narrowTarget
-                ? (getWidth() - cardW) / 2
-                : clamp(
-                      highlight.getX() + (highlight.getWidth() - cardW) / 2,
-                      12,
-                      getWidth() - cardW - 12
-                  );
+        // Prefer: centered relative to highlight
+        double rawX = highlight.getX() + (highlight.getWidth() - cardW) / 2;
+
+        // Clamp to overlay bounds so it never goes off-screen
+        double chosenX = clamp(rawX, margin, getWidth() - cardW - margin);
+        double chosenY = clamp(rawY, margin, getHeight() - cardH - margin);
 
         card.resizeRelocate(chosenX, chosenY, cardW, cardH);
+
+
     }
 
     private void centerCard() {
         card.applyCss();
         card.layout();
+        
 
         double cardW = Math.min(card.prefWidth(-1), 360);
         double cardH = card.prefHeight(cardW);

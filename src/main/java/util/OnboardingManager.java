@@ -27,7 +27,8 @@ public final class OnboardingManager {
         String uk = shortKey(userKey);
         return PREFS.getBoolean(KEY_PREFIX + flowKey + "." + uk, false);
     }
-
+    
+ 
     private static String shortKey(String s) {
         if (s == null) return "";
         try {

@@ -1,5 +1,8 @@
 package control;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,6 +13,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import util.DialogUtil;
+import util.OnboardingManager;
+import util.OnboardingPolicy;
+import util.OnboardingStep;
 import util.SessionManager;
 import util.SoundManager;
 import util.UIAnimations;
@@ -45,8 +51,44 @@ public class MainController {
         UIAnimations.applyFloatingToCards(mainGrid);
 
         loginBox.toFront();
+        
+        List<OnboardingStep> mainSteps = new ArrayList<>();
 
+        mainSteps.add(new OnboardingStep("#settingsBtn", "Settings",
+                "Open the Settings page to manage sound, music, themes, and learn how the game works."));
 
+        boolean isGuest = SessionManager.isGuestMode();
+        boolean hasLoggedInSession =
+                SessionManager.getLoggedInUser() != null
+                || SessionManager.getPlayer1() != null
+                || SessionManager.getPlayer2() != null;
+
+        // Show exactly one of them (never both)
+        if (hasLoggedInSession && !isGuest) {
+            mainSteps.add(new OnboardingStep("#logoutBtn", "Log out",
+                    "End the current session and return to guest mode."));
+        } else if (isGuest) {
+            mainSteps.add(new OnboardingStep("#loginLink", "Log in",
+                    "Go to the login screen to sign in or create a new account."));
+        }
+        mainSteps.add(new OnboardingStep("#newGameBtn", "New Game",
+        		"Start a new game and choose your match settings."));
+        mainSteps.add(new OnboardingStep("#historyBtn", "History",
+        		"View previous games, results, and match details."));
+        mainSteps.add(new OnboardingStep("#questionManagementBtn", "Question Management",
+        		"Manage game questions, answers, and difficulty content (Only for Admin)."));
+        mainSteps.add(new OnboardingStep("#statisticsBtn", "Statistics",
+        		"Analyze player performance, scores, and game statistics (Only for registered players)."));
+
+        
+        OnboardingPolicy policy =
+                SessionManager.isAdminMode() ? OnboardingPolicy.NEVER :
+                SessionManager.isGuestMode() ? OnboardingPolicy.ALWAYS :
+                OnboardingPolicy.ONCE_THEN_HOVER;
+
+        String userKey = SessionManager.getOnboardingUserKey();
+
+        OnboardingManager.runWithPolicy("onboarding.main", mainGrid, mainSteps, policy, userKey);
     }
 
     

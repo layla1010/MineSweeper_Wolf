@@ -123,8 +123,12 @@ public class GameController {
         
         
         List<OnboardingStep> gameSteps = List.of(
-        		   new OnboardingStep("#exitBtn", "Exit",
-                           "Exit closes the application immediately."),
+        			new OnboardingStep("#exitBtn", "Exit",
+                        "Exit closes the application immediately."),
+        			new OnboardingStep("#helpBtn", "Help",
+                        "Opens the How to Play screen, shows the rules of the game."),
+        			new OnboardingStep("#backBtn", "Back",
+        					"Return to the New Game screen with your previously selected settings."),
                    new OnboardingStep("#pauseBtn", "Pause",
                            "Pause temporarily blocks gameplay and freezes interaction."),
                    new OnboardingStep("#soundButton", "Sound effects",
