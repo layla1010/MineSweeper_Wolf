@@ -275,7 +275,7 @@ public class MainController {
         if (p1 == null || p2 == null) {
             DialogUtil.show(AlertType.INFORMATION,
                     "",
-                    "",
+                    "Access Denied",
                     "Statistics are available only for logged-in players.\n\n" +
                             "Please login as two players before opening the statistics screen.");
             return;
