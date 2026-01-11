@@ -137,7 +137,7 @@ public class GameController {
                            "Toggle background music."),
                    new OnboardingStep("#label", "Difficulty + timer",
                            "Track current difficulty and elapsed time."),
-                   new OnboardingStep("#player1BombsLeftLabel", "Mines left",
+                   new OnboardingStep("#player1BombsLeftLabel", "what's left",
                            "Shows remaining mines,flags,questions and surprises for each board."),
                    new OnboardingStep("#heartsBox", "Shared hearts",
                            "These are shared between both players. Losing all hearts ends the match."),
