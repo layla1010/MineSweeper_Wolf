@@ -80,20 +80,30 @@ public final class OnboardingManager {
         Objects.requireNonNull(policy);
 
         if (steps.isEmpty()) return;
-        if (policy == OnboardingPolicy.NEVER) return;
+
+        Runnable continueFlow = () -> { if (afterClose != null) afterClose.run(); };
+
+        if (policy == OnboardingPolicy.NEVER) {
+            Platform.runLater(continueFlow);   // <-- FIX
+            return;
+        }
 
         if (policy == OnboardingPolicy.ALWAYS) {
-        	Platform.runLater(() -> start(flowKey, root, steps, null, afterClose));
+            Platform.runLater(() -> start(flowKey, root, steps, null, afterClose));
             return;
         }
 
         boolean done = isDone(flowKey, userKey);
         if (!done) {
-        	Platform.runLater(() -> start(flowKey, root, steps, userKey, afterClose));
+            Platform.runLater(() -> start(flowKey, root, steps, userKey, afterClose));
         } else {
-            Platform.runLater(() -> installHoverHints(root, steps));
+            Platform.runLater(() -> {
+                installHoverHints(root, steps);
+                continueFlow.run();            // <-- FIX
+            });
         }
     }
+
 
     private static void installHoverHints(Parent root, List<OnboardingStep> steps) {
         for (OnboardingStep s : steps) {
