@@ -1,6 +1,7 @@
 package control;
 
 import java.util.ArrayDeque;
+
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
@@ -34,7 +35,9 @@ public class GamePlayServiceController {
     private final GameUIServiceController ui;
     private final GameHistoryServiceController history;
     private final Runnable showEndGameScreenCallback;
+    private GameBonusServiceController bonusService;
 
+    
     public GamePlayServiceController(GameStateController s, GameUIServiceController ui, GameHistoryServiceController history, Runnable showEndGameScreenCallback) {
         this.s = s;
         this.ui = ui;
@@ -78,6 +81,11 @@ public class GamePlayServiceController {
         s.gameWon = false;
         s.mistakeMade = false;
     }
+    
+    public void setBonusService(GameBonusServiceController bonusService) {
+        this.bonusService = bonusService;
+    }
+
 
     public void togglePause() {
         s.isPaused = !s.isPaused;
@@ -215,6 +223,8 @@ public class GamePlayServiceController {
         }
 
         ui.updateScoreAndMineLabels();
+        checkSellHeartCondition();
+
     }
 
 
@@ -391,6 +401,10 @@ public class GamePlayServiceController {
                 if (s.sharedHearts < heartsBefore) {
                     s.mistakeMade = true;
                 }
+             // Check if hearts == 0 → try buy → else game over
+                if (checkLoseAndHandle()) {
+                    return;
+                }
             }
 
             if (result.triggerExplosion) {
@@ -495,6 +509,7 @@ public class GamePlayServiceController {
 
         if (!batchMode) {
             ui.updateScoreAndMineLabels();
+            checkSellHeartCondition();
         }
     }
 
@@ -559,6 +574,11 @@ public class GamePlayServiceController {
         if (s.gameOver) return true;
         if (s.sharedHearts > 0) return false;
 
+     // Try buying a heart
+        if (bonusService != null && bonusService.tryBuyHeartBeforeGameOver()) {
+            return false;
+        }
+        
         s.gameWon = false;
         onGameOver();
         return true;
@@ -801,4 +821,21 @@ public class GamePlayServiceController {
         }
         System.out.println();
     }
+    
+    
+    /************Buying/Selling hearts logic***********/
+    private void checkSellHeartCondition() {
+        if (bonusService == null) return;
+
+        if (bonusService.trySellHeartToContinue()) {
+            return;
+        }
+
+        // If player refused, game ends
+        if (s.score <= bonusService.getMinScore()) {
+            s.gameWon = false;
+            onGameOver();
+        }
+    }
+
 }

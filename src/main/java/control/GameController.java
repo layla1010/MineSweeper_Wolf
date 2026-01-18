@@ -77,6 +77,8 @@ public class GameController {
 
         playService = new GamePlayServiceController(state, uiService, historyService, this::showEndGameScreen);
         bonusService = new GameBonusServiceController(state, uiService, playService);
+        playService.setBonusService(bonusService);
+
 
         // wire cross-deps
         uiService.setBonusService(bonusService);

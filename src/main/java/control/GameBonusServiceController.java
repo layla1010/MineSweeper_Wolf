@@ -21,6 +21,7 @@ import model.Difficulty;
 import model.Question;
 import model.SysData;
 import model.Theme;
+import util.DialogUtil;
 import util.ThemeManager;
 
 public class GameBonusServiceController {
@@ -791,5 +792,81 @@ public class GameBonusServiceController {
 
         showQuestionResultPopup(q, scoreBefore, correct, netScoreChange, livesBefore, livesAfter, extraInfo);
     }
+    
+    //*********************Buying/Selling hearts logic************************//
+    
+    private int getHeartPrice() {
+        return switch (s.difficulty) {
+            case EASY -> 5;
+            case MEDIUM -> 8;
+            case HARD -> 12;
+        };
+    }
+
+    public int getMinScore() {
+        return switch (s.difficulty) {
+            case EASY -> -10;
+            case MEDIUM -> -16;
+            case HARD -> -24;
+        };
+    }
+    
+    public boolean tryBuyHeartBeforeGameOver() {
+        int price = getHeartPrice();
+        int minScore = getMinScore();
+
+        if (s.score < price || s.score - price <= minScore) {
+        	DialogUtil.show(
+        	        Alert.AlertType.INFORMATION,
+        	        "Cannot Buy Heart",
+        	        "Not Enough Score",
+        	        "You don't have enough score to safely buy a heart."
+        	    );
+        return false;
+        }
+
+        boolean buy = DialogUtil.confirm(
+                "Out of Hearts!",
+                "Buy Heart",
+                "You can buy 1 heart for " + price + " points.\n\nDo you want to continue?"
+        );
+
+        if (buy) {
+            s.score -= price;
+            s.sharedHearts = 1;
+            ui.buildHeartsBar();
+            ui.updateScoreAndMineLabels();
+            return true;
+        }
+
+        return false;
+    }
+    
+    public boolean trySellHeartToContinue() {
+        if (s.sharedHearts <= 1) return false;
+
+        int minScore = getMinScore();
+        int gain = getHeartPrice();
+
+        if (s.score > minScore) return false;
+
+        boolean sell = DialogUtil.confirm(
+                "Low Score!",
+                "Sell Heart",
+                "You can sell 1 heart for +" + gain + " points.\n\nDo you want to continue?"
+        );
+
+        if (sell) {
+            s.sharedHearts--;
+            s.score += gain;
+            ui.buildHeartsBar();
+            ui.updateScoreAndMineLabels();
+            return true;
+        }
+
+        return false;
+    }
+
+
 
 }
