@@ -56,19 +56,24 @@
             </GridPane.margin>
         </Button>
 
-        <Label text="How to Play " textFill="#E5E7EB"
-               GridPane.columnSpan="2147483647"
-               GridPane.halignment="CENTER"
-               GridPane.valignment="CENTER">
-            <font>
-                <Font name="Copperplate Gothic Bold" size="18"/>
-            </font>
-        </Label>
+        <Label text="HOW TO PLAY" textFill="#FFFFFF"
+       GridPane.columnSpan="2147483647"
+       GridPane.halignment="CENTER"
+       GridPane.valignment="CENTER"
+       style="
+          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.65), 10, 0.35, 0, 2);
+          -fx-letter-spacing: 2px;">
+    <font>
+        <Font name="Copperplate Gothic Bold" size="30"/>
+    </font>
+</Label>
 
-        <!-- Info bar row -->
-        <StackPane prefHeight="150.0" prefWidth="200.0"
-                   GridPane.columnSpan="2147483647"
-                   GridPane.rowIndex="1">
+
+        <!-- Info bar row (smaller) -->
+			<StackPane prefHeight="70.0" prefWidth="200.0"
+           GridPane.columnSpan="2147483647"
+           GridPane.rowIndex="1">
+
             <children>
                 <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
                        prefHeight="54.0" prefWidth="1228.0"
@@ -127,7 +132,7 @@
         <!-- Player 1 board -->
         <StackPane maxHeight="-Infinity" maxWidth="-Infinity"
                    minHeight="-Infinity" minWidth="-Infinity"
-                   prefHeight="430.0" prefWidth="490.0"
+                   prefHeight="380.0" prefWidth="430.0"
                    GridPane.halignment="CENTER"
                    GridPane.rowIndex="2"
                    GridPane.valignment="CENTER">
@@ -140,17 +145,13 @@
                     </padding>
 
                     <children>
-                        <StackPane fx:id="p1BoardLayer" prefHeight="430" prefWidth="490" styleClass="grid-board grid-board-p1">
+					<StackPane fx:id="p1BoardLayer" prefHeight="360" prefWidth="410" styleClass="grid-board grid-board-p1">
                             <children>
 
                                 <!-- Grid FIRST -->
-                                <GridPane fx:id="p1Grid"
-                                          maxHeight="-Infinity" maxWidth="-Infinity"
-                                          minHeight="-Infinity" minWidth="-Infinity"
-                                          prefHeight="430.0" prefWidth="490.0"
-                                          StackPane.alignment="TOP_CENTER">
+                                <GridPane fx:id="p1Grid" prefHeight="360.0" prefWidth="410.0" StackPane.alignment="TOP_CENTER">
                                     <StackPane.margin>
-                                        <Insets bottom="50.0" top="50.0"/>
+                                        <Insets bottom="20.0" top="20.0"/>
                                     </StackPane.margin>
                                 </GridPane>
 
@@ -179,59 +180,56 @@
         </StackPane>
 
         <!-- Player 2 board -->
-        <StackPane maxHeight="-Infinity" maxWidth="-Infinity"
-                   minHeight="-Infinity" minWidth="-Infinity"
-                   prefHeight="430.0" prefWidth="490.0"
-                   GridPane.columnIndex="1"
-                   GridPane.halignment="CENTER"
-                   GridPane.rowIndex="2"
-                   GridPane.valignment="CENTER">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity"
+           minHeight="-Infinity" minWidth="-Infinity"
+           prefHeight="380.0" prefWidth="430.0"
+           GridPane.columnIndex="1"
+           GridPane.halignment="CENTER"
+           GridPane.rowIndex="2"
+           GridPane.valignment="CENTER">
+    <children>
+        <Label prefHeight="500" prefWidth="500" styleClass="board-card board-card-p2"/>
+
+        <VBox alignment="TOP_CENTER" spacing="14">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="18"/>
+            </padding>
+
             <children>
-                <Label prefHeight="500" prefWidth="500" styleClass="board-card board-card-p2"/>
-
-                <VBox alignment="TOP_CENTER" spacing="14">
-                    <padding>
-                        <Insets bottom="10" left="10" right="10" top="18"/>
-                    </padding>
-
+                <StackPane fx:id="p2BoardLayer" prefHeight="360" prefWidth="410" styleClass="grid-board grid-board-p2">
                     <children>
-                        <StackPane fx:id="p2BoardLayer" prefHeight="430" prefWidth="490" styleClass="grid-board grid-board-p2">
-                            <children>
 
-                                <!-- Grid FIRST -->
-                                <GridPane fx:id="p2Grid"
-                                          maxHeight="-Infinity" maxWidth="-Infinity"
-                                          minHeight="-Infinity" minWidth="-Infinity"
-                                          prefHeight="430" prefWidth="490"
-                                          StackPane.alignment="TOP_CENTER">
-                                    <StackPane.margin>
-                                        <Insets bottom="50.0" top="50.0"/>
-                                    </StackPane.margin>
-                                </GridPane>
+                        <!-- Grid FIRST -->
+                        <GridPane fx:id="p2Grid" prefHeight="360.0" prefWidth="410.0" StackPane.alignment="TOP_CENTER">
+                            <StackPane.margin>
+                                <Insets bottom="20.0" top="20.0"/>
+                            </StackPane.margin>
+                        </GridPane>
 
-                                <!-- Highlights AFTER grid (ON TOP) -->
-                                <Rectangle fx:id="p2RowHL" arcHeight="14" arcWidth="14"
-                                           fill="rgba(77,255,140,0.18)" managed="false" mouseTransparent="true"
-                                           stroke="rgba(77,255,140,0.95)" strokeWidth="3" visible="false"/>
+                        <!-- Highlights AFTER grid (ON TOP) -->
+                        <Rectangle fx:id="p2RowHL" arcHeight="14" arcWidth="14"
+                                   fill="rgba(77,255,140,0.18)" managed="false" mouseTransparent="true"
+                                   stroke="rgba(77,255,140,0.95)" strokeWidth="3" visible="false"/>
 
-                                <Rectangle fx:id="p2ColHL" arcHeight="14" arcWidth="14"
-                                           fill="rgba(77,255,140,0.18)" managed="false" mouseTransparent="true"
-                                           stroke="rgba(77,255,140,0.95)" strokeWidth="3" visible="false"/>
+                        <Rectangle fx:id="p2ColHL" arcHeight="14" arcWidth="14"
+                                   fill="rgba(77,255,140,0.18)" managed="false" mouseTransparent="true"
+                                   stroke="rgba(77,255,140,0.95)" strokeWidth="3" visible="false"/>
 
-                                <Rectangle fx:id="p2CellHL" arcHeight="14" arcWidth="14"
-                                           fill="rgba(255,255,255,0.08)" managed="false" mouseTransparent="true"
-                                           stroke="rgba(255,255,255,0.95)" strokeWidth="3" visible="false"/>
+                        <Rectangle fx:id="p2CellHL" arcHeight="14" arcWidth="14"
+                                   fill="rgba(255,255,255,0.08)" managed="false" mouseTransparent="true"
+                                   stroke="rgba(255,255,255,0.95)" strokeWidth="3" visible="false"/>
 
-                                <Rectangle fx:id="p2NbrHL" arcHeight="14" arcWidth="14"
-                                           fill="rgba(250,204,21,0.14)" managed="false" mouseTransparent="true"
-                                           stroke="rgba(250,204,21,0.95)" strokeWidth="3" visible="false"/>
+                        <Rectangle fx:id="p2NbrHL" arcHeight="14" arcWidth="14"
+                                   fill="rgba(250,204,21,0.14)" managed="false" mouseTransparent="true"
+                                   stroke="rgba(250,204,21,0.95)" strokeWidth="3" visible="false"/>
 
-                            </children>
-                        </StackPane>
                     </children>
-                </VBox>
+                </StackPane>
             </children>
-        </StackPane>
+        </VBox>
+    </children>
+</StackPane>
+
 
         <!-- Hearts / score -->
         <StackPane prefWidth="1001.0"

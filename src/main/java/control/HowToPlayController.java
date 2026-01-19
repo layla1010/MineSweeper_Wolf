@@ -164,6 +164,10 @@ public class HowToPlayController {
  // tiny delay so the board visually updates BEFORE a dialog blocks/pops
     private static final double FX_PULSE_DELAY = 0.12; // seconds
     private static final double CLICK_FEEDBACK_DELAY = 0.55; // seconds
+    
+    
+    private static final double TILE_ICON_SIZE = 16; // was ~20-22
+
 
     final int BASE_MINES = 10;
     final int BASE_FLAGS = 40;
@@ -1613,7 +1617,7 @@ public class HowToPlayController {
         removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
-        setIcon(b, "/Images/red-flag.png", 22);
+        setIcon(b, "/Images/red-flag.png", TILE_ICON_SIZE);
         b.getStyleClass().add("cell-flagged");
     }
 
@@ -1621,7 +1625,7 @@ public class HowToPlayController {
         removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
-        setIcon(b, "/Images/question-mark.png", 20);
+        setIcon(b, "/Images/question-mark.png", TILE_ICON_SIZE);
         b.getStyleClass().addAll("cell-revealed", "cell-question");
     }
 
@@ -1629,7 +1633,7 @@ public class HowToPlayController {
         removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
-        setIcon(b, "/Images/giftbox.png", 20);
+        setIcon(b, "/Images/giftbox.png", TILE_ICON_SIZE);
         b.getStyleClass().addAll("cell-revealed", "cell-surprise");
     }
 
@@ -1913,7 +1917,7 @@ public class HowToPlayController {
         removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
-        setIcon(b, "/Images/bomb.png", 22);   // ודאי שהנתיב קיים אצלך
+        setIcon(b, "/Images/bomb.png", TILE_ICON_SIZE);
         b.getStyleClass().addAll("cell-revealed", "cell-mine");
     }
 
