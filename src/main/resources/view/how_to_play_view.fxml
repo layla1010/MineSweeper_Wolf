@@ -28,9 +28,9 @@
     <rowConstraints>
         <RowConstraints maxHeight="119.00001373291016" minHeight="10.0" prefHeight="40.6" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="373.5999877929687" minHeight="10.0" prefHeight="64.6" vgrow="SOMETIMES"/>
-        <RowConstraints minHeight="10.0" prefHeight="420.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="340.0" vgrow="SOMETIMES"/>
         <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES"/>
-        <RowConstraints maxHeight="148.00002441406252" minHeight="0.0" prefHeight="93.2" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="148.00002441406252" minHeight="0.0" prefHeight="120.0" vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="51.79998779296875" minHeight="0.0" prefHeight="48.4" vgrow="SOMETIMES"/>
     </rowConstraints>
 
@@ -139,10 +139,10 @@
             <children>
                 <Label prefHeight="500" prefWidth="500" styleClass="board-card board-card-p1"/>
 
-                <VBox alignment="TOP_CENTER" spacing="14">
-                    <padding>
-                        <Insets bottom="10" left="10" right="10" top="18"/>
-                    </padding>
+                		<VBox alignment="TOP_CENTER" spacing="8">
+    						<padding>
+        					<Insets bottom="6" left="10" right="10" top="0"/>
+    						</padding>
 
                     <children>
 					<StackPane fx:id="p1BoardLayer" prefHeight="360" prefWidth="410" styleClass="grid-board grid-board-p1">
@@ -151,7 +151,7 @@
                                 <!-- Grid FIRST -->
                                 <GridPane fx:id="p1Grid" prefHeight="360.0" prefWidth="410.0" StackPane.alignment="TOP_CENTER">
                                     <StackPane.margin>
-                                        <Insets bottom="20.0" top="20.0"/>
+                                        <Insets bottom="6.0" top="6.0"/>
                                     </StackPane.margin>
                                 </GridPane>
 
@@ -177,6 +177,9 @@
                     </children>
                 </VBox>
             </children>
+            <GridPane.margin>
+    			<Insets top="-25"/>
+			</GridPane.margin>
         </StackPane>
 
         <!-- Player 2 board -->
@@ -190,10 +193,11 @@
     <children>
         <Label prefHeight="500" prefWidth="500" styleClass="board-card board-card-p2"/>
 
-        <VBox alignment="TOP_CENTER" spacing="14">
-            <padding>
-                <Insets bottom="10" left="10" right="10" top="18"/>
-            </padding>
+        <VBox alignment="TOP_CENTER" spacing="8">
+    <padding>
+        <Insets bottom="6" left="10" right="10" top="0"/>
+    </padding>
+        
 
             <children>
                 <StackPane fx:id="p2BoardLayer" prefHeight="360" prefWidth="410" styleClass="grid-board grid-board-p2">
@@ -228,6 +232,9 @@
             </children>
         </VBox>
     </children>
+    <GridPane.margin>
+    <Insets top="-25"/>
+</GridPane.margin>
 </StackPane>
 
 
@@ -276,39 +283,70 @@
         </StackPane>
 
         <!-- Step description -->
-        <StackPane GridPane.columnSpan="2147483647"
-                   GridPane.halignment="CENTER"
-                   GridPane.rowIndex="4"
-                   GridPane.valignment="CENTER">
-            <children>
-                <Label prefHeight="80.0" prefWidth="1100"
-                       style="-fx-background-color: rgba(15,23,42,0.75);
-                              -fx-background-radius: 24;
-                              -fx-border-color: rgba(255,255,255,0.25);
-                              -fx-border-radius: 24;
-                              -fx-border-width: 1.2;"/>
+<StackPane GridPane.columnSpan="2147483647"
+           GridPane.halignment="CENTER"
+           GridPane.rowIndex="4"
+           GridPane.valignment="CENTER">
 
-                <VBox maxWidth="1050" spacing="6.0">
+    <children>
+        <!-- Card background -->
+        <Label prefHeight="120.0" prefWidth="1180.0"
+               style="
+                    -fx-background-color: rgba(10,15,30,0.88);
+                    -fx-background-radius: 26;
+                    -fx-border-color: rgba(255,255,255,0.35);
+                    -fx-border-radius: 26;
+                    -fx-border-width: 1.6;
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 18, 0.25, 0, 6);
+               "/>
+
+        <VBox maxWidth="1120" spacing="10.0">
+            <children>
+
+                <!-- Title row: badge + title -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
                     <children>
-                        <Label fx:id="stepTitle" textFill="#E5E7EB">
+                        <Label text="TUTORIAL"
+                               textFill="#FFFFFF"
+                               style="
+                                   -fx-background-color: rgba(59,130,246,0.95);
+                                   -fx-background-radius: 14;
+                                   -fx-padding: 4 10 4 10;
+                                   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 8, 0.2, 0, 2);
+                               ">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="18"/>
+                                <Font name="Copperplate Gothic Bold" size="12"/>
                             </font>
                         </Label>
 
-                        <Label fx:id="stepBody" textFill="#E5E7EB" wrapText="true">
+                        <Label fx:id="stepTitle"
+                               textFill="#F9FAFB"
+                               style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 8, 0.25, 0, 2);">
                             <font>
-                                <Font name="Copperplate Gothic Light" size="15"/>
+                                <Font name="Copperplate Gothic Bold" size="22"/>
                             </font>
                         </Label>
                     </children>
-                </VBox>
-            </children>
+                </HBox>
 
-            <padding>
-                <Insets bottom="14" left="20" right="20" top="14"/>
-            </padding>
-        </StackPane>
+                <Label fx:id="stepBody"
+                       textFill="#E5E7EB"
+                       wrapText="true"
+                       style="-fx-line-spacing: 2px;">
+                    <font>
+                        <Font name="Copperplate Gothic Light" size="16"/>
+                    </font>
+                </Label>
+
+            </children>
+        </VBox>
+    </children>
+
+    <padding>
+        <Insets bottom="16" left="26" right="26" top="16"/>
+    </padding>
+</StackPane>
+
 
         <!-- Bottom controls -->
         <Button fx:id="prevBtn" onAction="#onPrev" prefHeight="34" prefWidth="110"
