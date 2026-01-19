@@ -1409,14 +1409,14 @@ public class HowToPlayController {
 
             Image img = new Image(stream);
             ImageView iv = new ImageView(img);
-            iv.setFitHeight(50);
-            iv.setFitWidth(50);
+            iv.setFitHeight(40);
+            iv.setFitWidth(40);
             iv.setPreserveRatio(true);
 
             StackPane slot = new StackPane(iv);
-            slot.setPrefSize(50, 50);
-            slot.setMinSize(50, 50);
-            slot.setMaxSize(50, 50);
+            slot.setPrefSize(40, 40);
+            slot.setMinSize(40, 40);
+            slot.setMaxSize(40, 40);
             StackPane.setMargin(iv, new Insets(0));
 
             heartsBox.getChildren().add(slot);
