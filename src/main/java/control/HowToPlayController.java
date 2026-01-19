@@ -1746,12 +1746,12 @@ public class HowToPlayController {
     }
 
     private HBox statItem(String iconPath, String value) {
-        ImageView iv = icon(iconPath, 18);
+        ImageView iv = icon(iconPath, 14);
 
         Label valueLbl = new Label(value);
         valueLbl.getStyleClass().add("stats-value");
 
-        HBox item = new HBox(6, iv, valueLbl);
+        HBox item = new HBox(4, iv, valueLbl);
         item.setAlignment(Pos.CENTER_LEFT);
         item.setPickOnBounds(false);
         return item;
