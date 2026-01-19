@@ -152,11 +152,11 @@ public class HowToPlayController {
     private static final double DEFAULT_STEP_DELAY = 2.5;
 
     // question: show QUESTION, then show RESULTS, then continue
-    private static final double QUESTION_READ_DELAY = 7.0;
-    private static final double QUESTION_RESULT_DELAY = 6.0;
+    private static final double QUESTION_READ_DELAY = 10.0;
+    private static final double QUESTION_RESULT_DELAY = 8.0;
 
     // surprise popup reading time (auto-close)
-    private static final double SURPRISE_READ_DELAY = 6.0;
+    private static final double SURPRISE_READ_DELAY = 9.0;
 
     // ----------------- USED OVERLAY (dark like real game) -----------------
     private static final String USED_OVERLAY_ID = "USED_OVERLAY";
@@ -789,12 +789,8 @@ public class HowToPlayController {
         stage.centerOnScreen();
         stage.show();
 
-        PauseTransition pt = new PauseTransition(Duration.seconds(seconds));
-        pt.setOnFinished(e -> {
-            stage.close();
-            onAutoPick.accept(correctIdx);
-        });
-        pt.play();
+        startAutoCloseCountdown(stage, closing, seconds, () -> onAutoPick.accept(correctIdx));
+
     }
 
     // ----------------- Tutorial Question Dialog (manual) -----------------
@@ -914,9 +910,17 @@ public class HowToPlayController {
         Stage stage = buildQuestionResultStage(q, chosenIdx, scoreBefore, livesBefore, scoreAfter, livesAfter, activationCost, false);
         stage.show();
 
+     // After stage.show();
+        Label closingLabel = null;
+
+        // find the "closing" label if you want, OR פשוט הכי קל:
+        // תעשי שהפונקציה buildQuestionResultStage תחזיר גם את ה-Label.
+        // אבל אם את לא רוצה לשנות חתימה — אז עושים פשוט סגירה בלי עדכון טקסט כאן.
+
         PauseTransition pt = new PauseTransition(Duration.seconds(seconds));
         pt.setOnFinished(e -> stage.close());
         pt.play();
+
     }
 
     private Stage buildQuestionResultStage(
@@ -999,8 +1003,8 @@ public class HowToPlayController {
 
             root.getChildren().add(ok);
         } else {
-            Label closing = new Label("Closing automatically...");
-            closing.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
+        	Label closing = new Label();
+        	closing.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
             AnchorPane.setBottomAnchor(closing, 24.0);
             AnchorPane.setRightAnchor(closing, 26.0);
             root.getChildren().add(closing);
@@ -1114,9 +1118,9 @@ public class HowToPlayController {
         Stage stage = buildSurpriseStage(scoreBefore, livesBefore, surprisePoints, surpriseLives, activationCost, false);
         stage.show();
 
-        PauseTransition pt = new PauseTransition(Duration.seconds(seconds));
-        pt.setOnFinished(e -> stage.close());
-        pt.play();
+        Label closing = (Label) ((AnchorPane) stage.getScene().getRoot()).getUserData();
+        startAutoCloseCountdown(stage, closing, seconds, null);
+
     }
 
     private Stage buildSurpriseStage(
@@ -1235,12 +1239,17 @@ public class HowToPlayController {
             AnchorPane.setRightAnchor(ok, 28.0);
             root.getChildren().add(ok);
         } else {
-            Label closing = new Label("Closing automatically...");
-            closing.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
-            AnchorPane.setBottomAnchor(closing, 24.0);
-            AnchorPane.setRightAnchor(closing, 28.0);
-            root.getChildren().add(closing);
+        	Label closing = new Label();
+        	closing.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
+        	AnchorPane.setBottomAnchor(closing, 24.0);
+        	AnchorPane.setRightAnchor(closing, 28.0);
+        	root.getChildren().add(closing);
+
+        	// add this line:
+        	root.setUserData(closing);
+
         }
+        
 
         stage.setScene(new Scene(root, 820, 520));
         stage.centerOnScreen();
@@ -1922,6 +1931,49 @@ public class HowToPlayController {
     }
 
 
+    /**
+     * Shows a countdown text (e.g., "Closing in 5...") and closes the stage when time is up.
+     * Returns the Timeline so you can stop it if needed.
+     */
+    private Timeline startAutoCloseCountdown(Stage stage, Label countdownLabel, double seconds, Runnable onClosed) {
+        int total = (int) Math.ceil(seconds);
+
+        // initial text
+        if (countdownLabel != null) {
+            countdownLabel.setText("Closing in " + total + "...");
+        }
+
+        final int[] remaining = { total };
+
+        Timeline tl = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            remaining[0]--;
+
+            if (countdownLabel != null && remaining[0] > 0) {
+                countdownLabel.setText("Closing in " + remaining[0] + "...");
+            }
+
+            if (remaining[0] <= 0) {
+                if (stage.isShowing()) stage.close();
+                if (onClosed != null) onClosed.run();
+            }
+        }));
+
+        tl.setCycleCount(total);
+        tl.play();
+        return tl;
+    }
+
+    private ImageView createHourglassIcon() {
+        ImageView hourglass = new ImageView(
+                new Image(getClass().getResourceAsStream("/Images/hourglass.png"))
+        );
+        hourglass.setFitWidth(22);
+        hourglass.setFitHeight(22);
+        hourglass.setOpacity(0.85);
+        return hourglass;
+    }
+
+    
 
 
 }
