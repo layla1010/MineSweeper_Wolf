@@ -780,16 +780,22 @@ public class HowToPlayController {
 
         VBox answersBox = new VBox(10, btnA, btnB, btnC, btnD);
 
-        Label closing = new Label("Closing automatically...");
+        Label closing = new Label();
         closing.setStyle("-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 13px;");
 
-        root.getChildren().addAll(title, questionText, hint, answersBox, closing);
+        ImageView hourglass = createHourglassIcon();
 
-        stage.setScene(new Scene(root, 620, 500));
+        HBox timerRow = new HBox(8, hourglass, closing);
+        timerRow.setAlignment(Pos.CENTER_LEFT);
+
+        root.getChildren().addAll(title, questionText, hint, answersBox, timerRow);
+
+        startAutoCloseCountdown(stage, closing, seconds, () -> onAutoPick.accept(correctIdx));
+
+        stage.setScene(new Scene(root, 620, 460));
         stage.centerOnScreen();
         stage.show();
 
-        startAutoCloseCountdown(stage, closing, seconds, () -> onAutoPick.accept(correctIdx));
 
     }
 
@@ -913,13 +919,14 @@ public class HowToPlayController {
      // After stage.show();
         Label closingLabel = null;
 
-        // find the "closing" label if you want, OR פשוט הכי קל:
-        // תעשי שהפונקציה buildQuestionResultStage תחזיר גם את ה-Label.
-        // אבל אם את לא רוצה לשנות חתימה — אז עושים פשוט סגירה בלי עדכון טקסט כאן.
 
-        PauseTransition pt = new PauseTransition(Duration.seconds(seconds));
-        pt.setOnFinished(e -> stage.close());
-        pt.play();
+        Label closing = (Label) ((AnchorPane) stage.getScene().getRoot()).getUserData();
+        if (closing == null) {
+            closing = new Label();
+        }
+        startAutoCloseCountdown(stage, closing, seconds, null);
+
+
 
     }
 
@@ -1005,9 +1012,17 @@ public class HowToPlayController {
         } else {
         	Label closing = new Label();
         	closing.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
-            AnchorPane.setBottomAnchor(closing, 24.0);
-            AnchorPane.setRightAnchor(closing, 26.0);
-            root.getChildren().add(closing);
+
+        	ImageView hourglass = createHourglassIcon();
+        	HBox timerRow = new HBox(8, hourglass, closing);
+        	timerRow.setAlignment(Pos.CENTER_RIGHT);
+
+        	AnchorPane.setBottomAnchor(timerRow, 24.0);
+        	AnchorPane.setRightAnchor(timerRow, 26.0);
+
+        	root.getChildren().add(timerRow);
+        	root.setUserData(closing);
+
         }
 
         stage.setScene(new Scene(root, 880, 560));
@@ -1239,16 +1254,21 @@ public class HowToPlayController {
             AnchorPane.setRightAnchor(ok, 28.0);
             root.getChildren().add(ok);
         } else {
-        	Label closing = new Label();
-        	closing.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
-        	AnchorPane.setBottomAnchor(closing, 24.0);
-        	AnchorPane.setRightAnchor(closing, 28.0);
-        	root.getChildren().add(closing);
+            Label closing = new Label();
+            closing.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
 
-        	// add this line:
-        	root.setUserData(closing);
+            ImageView hourglass = createHourglassIcon();
+            HBox timerRow = new HBox(8, hourglass, closing);
+            timerRow.setAlignment(Pos.CENTER_RIGHT);
 
+            AnchorPane.setBottomAnchor(timerRow, 24.0);
+            AnchorPane.setRightAnchor(timerRow, 28.0);
+
+            root.getChildren().add(timerRow);
+            root.setUserData(closing);
         }
+
+
         
 
         stage.setScene(new Scene(root, 820, 520));
