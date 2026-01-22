@@ -215,20 +215,21 @@ public class NewGameController {
     @FXML
     private void onEasyCardClicked() {
         playClickSound();
-        easyToggle.fire();
+        difficultyGroup.selectToggle(easyToggle); 
     }
 
     @FXML
     private void onMediumCardClicked() {
         playClickSound();
-        medToggle.fire();
+        difficultyGroup.selectToggle(medToggle);
     }
 
     @FXML
     private void onHardCardClicked() {
         playClickSound();
-        hardToggle.fire();
+        difficultyGroup.selectToggle(hardToggle);
     }
+
 
     /**
      * Handles the "Start Game" button and validates:

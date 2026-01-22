@@ -29,20 +29,22 @@ public final class DialogUtil {
 	    applyDialogCss(alert);
 	    alert.showAndWait();
 	}
-    
-    public static void applyDialogCss(Dialog<?> dialog) {
-        if (dialog == null) return;
 
-        dialog.getDialogPane().getStylesheets().clear(); // IMPORTANT: avoid duplicates
+	
+	public static void applyDialogCss(Dialog<?> dialog) {
+	    if (dialog == null) return;
 
-        var base = DialogUtil.class.getResource("/css/base.css");
-        if (base != null) dialog.getDialogPane().getStylesheets().add(base.toExternalForm());
+	    dialog.getDialogPane().getStylesheets().clear(); // avoid duplicates
 
-        var theme = DialogUtil.class.getResource(
-            ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
-        );
-        if (theme != null) dialog.getDialogPane().getStylesheets().add(theme.toExternalForm());
-    }
+	    addCss(dialog, "/css/base.css");
+	    addCss(dialog, ThemeManager.getTheme().getCssPath()); // << works for all themes
+	}
+
+	private static void addCss(Dialog<?> dialog, String path) {
+	    var url = DialogUtil.class.getResource(path);
+	    if (url != null) dialog.getDialogPane().getStylesheets().add(url.toExternalForm());
+	}
+
 
     
     

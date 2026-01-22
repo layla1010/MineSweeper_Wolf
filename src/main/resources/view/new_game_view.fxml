@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
-<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
@@ -21,18 +20,12 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane fx:id="root" 
-          id="newGameRoot"
-          maxHeight="750.0" maxWidth="1400.0"
-          prefHeight="750.0" prefWidth="1201.0"
-          xmlns="http://javafx.com/javafx/21"
-          xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="control.NewGameController">
-          <styleClass>
-        <String fx:value="themed-bg"/>
-        <String fx:value="newgame-root"/>
+<GridPane id="newGameRoot" fx:id="root" maxHeight="750.0" maxWidth="1400.0" prefHeight="750.0" prefWidth="1201.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.NewGameController">
+
+    <styleClass>
+        <String fx:value="themed-bg" />
+        <String fx:value="newgame-root" />
     </styleClass>
-          
 
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="400.0" prefWidth="400.0" />
@@ -54,62 +47,35 @@
         <AnchorPane maxHeight="75.0" maxWidth="1200.0" minHeight="15.0" minWidth="1200.0" prefHeight="20.0" prefWidth="1200.0">
             <children>
 
-                <Button fx:id="backBtn"
-                        layoutX="20.0" layoutY="18.0"
-                        mnemonicParsing="false"
-                        onAction="#onBackClicked"
-                        prefHeight="32.0" prefWidth="32.0"
-                        styleClass="game-back-button"
-                        text="←" />
+                <Button fx:id="backBtn" layoutX="20.0" layoutY="18.0" mnemonicParsing="false" onAction="#onBackClicked" prefHeight="32.0" prefWidth="32.0" styleClass="game-back-button" text="←" />
 
-                <Text layoutX="504.0" layoutY="35.0"
-                      onMouseClicked="#playClickSound"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Game Setup" textAlignment="CENTER" wrappingWidth="200.0">
+                <Text layoutX="504.0" layoutY="35.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Game Setup" textAlignment="CENTER" wrappingWidth="200.0">
                     <font>
                         <Font name="Copperplate Gothic Bold" size="24.0" />
                     </font>
                     <styleClass>
-                        <String fx:value="setup-title"/>
+                        <String fx:value="setup-title" />
                     </styleClass>
                 </Text>
 
-                <Text layoutX="325.0" layoutY="51.0"
-                      onMouseClicked="#playClickSound"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Select difficulty level, pick your avatar, and get ready for an epic, stressful time!"
-                      wrappingWidth="557.9">
+                <Text layoutX="325.0" layoutY="51.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Select difficulty level, pick your avatar, and get ready for an epic, stressful time!" wrappingWidth="557.9">
                     <font>
                         <Font name="Copperplate Gothic Bold" size="12.0" />
                     </font>
                     <styleClass>
-                        <String fx:value="setup-subtitle"/>
+                        <String fx:value="setup-subtitle" />
                     </styleClass>
                 </Text>
 
                 <!-- SOUND BUTTON -->
-                <Button fx:id="setUpSoundButton"
-                        layoutX="1146.0" layoutY="18.0"
-                        maxHeight="-Infinity" maxWidth="-Infinity"
-                        minHeight="-Infinity" minWidth="-Infinity"
-                        mnemonicParsing="false"
-                        onAction="#onSoundOff"
-                        prefHeight="40.0" prefWidth="40.0"
-                        style="-fx-background-radius: 50; -fx-background-color: transparent;">
+                <Button fx:id="setUpSoundButton" layoutX="1146.0" layoutY="18.0" mnemonicParsing="false" onAction="#onSoundOff" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 50; -fx-background-color: transparent;">
                     <graphic>
                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
                     </graphic>
                 </Button>
 
                 <!-- MUSIC BUTTON -->
-                <Button fx:id="setUpMusicButton"
-                        layoutX="1096.0" layoutY="18.0"
-                        maxHeight="-Infinity" maxWidth="-Infinity"
-                        minHeight="-Infinity" minWidth="-Infinity"
-                        mnemonicParsing="false"
-                        onAction="#onMusicToggle"
-                        prefHeight="40.0" prefWidth="40.0"
-                        style="-fx-background-radius: 50; -fx-background-color: transparent;">
+                <Button fx:id="setUpMusicButton" layoutX="1096.0" layoutY="18.0" mnemonicParsing="false" onAction="#onMusicToggle" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 50; -fx-background-color: transparent;">
                     <graphic>
                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
                     </graphic>
@@ -122,570 +88,226 @@
         <AnchorPane minWidth="1200.0" prefHeight="296.0" prefWidth="774.0" GridPane.rowIndex="2">
             <children>
 
-                <!-- EASY CARD -->
-                <AnchorPane layoutX="6.0" layoutY="1.0"
-                            maxWidth="390.0" minHeight="253.0" minWidth="390.0"
-                            onMouseClicked="#playClickSound"
-                            prefHeight="253.0" prefWidth="390.0"
-                            style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
+                <!-- EASY CARD (container only; interactions live on ToggleButton) -->
+                <AnchorPane layoutX="6.0" layoutY="1.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" prefHeight="253.0" prefWidth="390.0" style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
                     <children>
 
-                        <ToggleButton fx:id="easyToggle"
-                                      layoutY="7.0"
-                                      maxHeight="279.0" maxWidth="390.0"
-                                      minHeight="253.0" minWidth="390.0"
-                                      mnemonicParsing="false"
-                                      onMouseClicked="#playClickSound"
-                                      prefHeight="253.0" prefWidth="390.0"
-                                      selected="true">
+                        <!-- Toggle handles hover/scale/click -->
+                        <ToggleButton fx:id="easyToggle" layoutY="7.0" maxHeight="279.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onAction="#onEasyCardClicked" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" selected="true">
                             <toggleGroup>
                                 <ToggleGroup fx:id="difficultyGroup" />
                             </toggleGroup>
                             <styleClass>
                                 <String fx:value="floating-card" />
                                 <String fx:value="difficulty-toggle" />
+                                <String fx:value="zoom-on-hover" />
                             </styleClass>
                         </ToggleButton>
 
-                        <Sphere layoutX="195.0" layoutY="37.0"
-                                onMouseClicked="#onEasyCardClicked"
-                                radius="15.0"
-                                style="-fx-effect: dropshadow(gaussian, rgba(74,222,128,0.85), 32, 0.65, 0, 0);">
+                        <!-- Everything below: mouseTransparent so hover/click belongs to ToggleButton -->
+                        <Sphere layoutX="195.0" layoutY="37.0" mouseTransparent="true" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(74,222,128,0.85), 32, 0.65, 0, 0);">
                             <material>
                                 <PhongMaterial diffuseColor="#4ADE80" specularColor="#BBF7D0" />
                             </material>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
                         </Sphere>
 
-                        <Text layoutX="179.0" layoutY="62.0"
-                              onMouseClicked="#onEasyCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="EASY">
+                        <Text layoutX="179.0" layoutY="62.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="EASY">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                             <styleClass>
-                                <String fx:value="difficulty-label"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
+                                <String fx:value="difficulty-label" />
                             </styleClass>
                         </Text>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="71.0"
-                                   onMouseClicked="#onEasyCardClicked"
-                                   strokeType="INSIDE" width="342.0">
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="71.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
                             <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
+                                <String fx:value="setup-stat-row" />
                             </styleClass>
                         </Rectangle>
 
-                        <Text layoutX="38.0" layoutY="91.0"
-                              onMouseClicked="#onEasyCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Grid Size                                                                            9x9"
-                              wrappingWidth="314.9">
+                        <Text layoutX="38.0" layoutY="91.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Grid Size                                                                            9x9" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
                         </Text>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="106.0"
-                                   onMouseClicked="#onEasyCardClicked"
-                                   strokeType="INSIDE" width="342.0">
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="106.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
                             <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
+                                <String fx:value="setup-stat-row" />
                             </styleClass>
                         </Rectangle>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                  layoutX="24.0" layoutY="141.0"
-                                   onMouseClicked="#onEasyCardClicked"
-                                   strokeType="INSIDE" width="342.0">
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="141.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
                             <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
+                                <String fx:value="setup-stat-row" />
                             </styleClass>
                         </Rectangle>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="176.0"
-                                   onMouseClicked="#onEasyCardClicked"
-                                   strokeType="INSIDE" width="342.0">
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="176.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
                             <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
+                                <String fx:value="setup-stat-row" />
                             </styleClass>
                         </Rectangle>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="211.0"
-                                   onMouseClicked="#onEasyCardClicked"
-                                   strokeType="INSIDE" width="342.0">
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="211.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
                             <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
+                                <String fx:value="setup-stat-row" />
                             </styleClass>
                         </Rectangle>
 
-                        <Text layoutX="38.0" layoutY="126.0"
-                              onMouseClicked="#onEasyCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Lives                                                                                     10"
-                              wrappingWidth="314.9">
+                        <Text layoutX="38.0" layoutY="126.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Lives                                                                                     10" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
                         </Text>
 
-                        <Text layoutX="38.0" layoutY="160.0"
-                              onMouseClicked="#onEasyCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Mines                                                 10 (for each board)"
-                              wrappingWidth="314.9">
+                        <Text layoutX="38.0" layoutY="160.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Mines                                                 10 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
                         </Text>
 
-                        <Text layoutX="38.0" layoutY="195.0"
-                              onMouseClicked="#onEasyCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Questions                                          6 (for each board)"
-                              wrappingWidth="314.9">
+                        <Text layoutX="38.0" layoutY="195.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Questions                                          6 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
                         </Text>
 
-                        <Text layoutX="38.0" layoutY="231.0"
-                              onMouseClicked="#onEasyCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Surprises                                           2 (for each board)"
-                              wrappingWidth="314.9">
+                        <Text layoutX="38.0" layoutY="231.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Surprises                                           2 (for each board)" wrappingWidth="314.9">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
                         </Text>
 
                     </children>
                 </AnchorPane>
 
                 <!-- MEDIUM CARD -->
-                <AnchorPane layoutX="405.0" layoutY="1.0"
-                            maxWidth="390.0" minHeight="253.0" minWidth="390.0"
-                            onMouseClicked="#playClickSound"
-                            prefHeight="253.0" prefWidth="390.0"
-                            style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
+                <AnchorPane layoutX="405.0" layoutY="1.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" prefHeight="253.0" prefWidth="390.0" style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
                     <children>
 
-                        <ToggleButton fx:id="medToggle"
-                                      layoutY="7.0"
-                                      maxHeight="253.0" maxWidth="390.0"
-                                      minHeight="253.0" minWidth="390.0"
-                                      mnemonicParsing="false"
-                                      onMouseClicked="#playClickSound"
-                                      prefHeight="253.0" prefWidth="390.0"
-                                      toggleGroup="$difficultyGroup">
+                        <ToggleButton fx:id="medToggle" layoutY="7.0" maxHeight="253.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onAction="#onMediumCardClicked" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" toggleGroup="$difficultyGroup">
                             <styleClass>
                                 <String fx:value="floating-card" />
                                 <String fx:value="difficulty-toggle" />
+                                <String fx:value="zoom-on-hover" />
                             </styleClass>
                         </ToggleButton>
 
-                        <Text layoutX="172.0" layoutY="62.0"
-                              onMouseClicked="#onMediumCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Medium">
+                        <Text layoutX="172.0" layoutY="62.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Medium">
                             <font>
                                 <Font name="Copperplate Gothic Light" size="12.0" />
                             </font>
                             <styleClass>
-                                <String fx:value="difficulty-label"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
+                                <String fx:value="difficulty-label" />
                             </styleClass>
                         </Text>
 
-                        <Sphere layoutX="195.0" layoutY="37.0"
-                                onMouseClicked="#onMediumCardClicked"
-                                radius="15.0">
+                        <Sphere layoutX="195.0" layoutY="37.0" mouseTransparent="true" radius="15.0">
                             <material>
                                 <PhongMaterial diffuseColor="#FB923C" specularColor="#FED7AA" />
                             </material>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
                         </Sphere>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="71.0"
-                                   onMouseClicked="#onMediumCardClicked"
-                                   strokeType="INSIDE" width="342.0">
-                            <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="71.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
+                            <styleClass><String fx:value="setup-stat-row" /></styleClass>
+                        </Rectangle>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="107.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
+                            <styleClass><String fx:value="setup-stat-row" /></styleClass>
+                        </Rectangle>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="142.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
+                            <styleClass><String fx:value="setup-stat-row" /></styleClass>
+                        </Rectangle>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="177.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
+                            <styleClass><String fx:value="setup-stat-row" /></styleClass>
+                        </Rectangle>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="212.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
+                            <styleClass><String fx:value="setup-stat-row" /></styleClass>
                         </Rectangle>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="107.0"
-                                   onMouseClicked="#onMediumCardClicked"
-                                   strokeType="INSIDE" width="342.0">
-                            <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
-                        </Rectangle>
-
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="142.0"
-                                   onMouseClicked="#onMediumCardClicked"
-                                   strokeType="INSIDE" width="342.0">
-                            <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
-                        </Rectangle>
-
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="177.0"
-                                   onMouseClicked="#onMediumCardClicked"
-                                   strokeType="INSIDE" width="342.0">
-                            <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
-                        </Rectangle>
-
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="212.0"
-                                   onMouseClicked="#onMediumCardClicked"
-                                   strokeType="INSIDE" width="342.0">
-                            <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
-                        </Rectangle>
-
-                        <Text layoutX="38.0" layoutY="91.0"
-                              onMouseClicked="#onMediumCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Text                                                                                13x13"
-                              wrappingWidth="314.9">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="12.0" />
-                            </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
+                        <Text layoutX="38.0" layoutY="91.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Grid Size                                                                       13x13" wrappingWidth="314.9">
+                            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                         </Text>
 
-                        <Text layoutX="38.0" layoutY="126.0"
-                              onMouseClicked="#onMediumCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Lives                                                                                           8"
-                              wrappingWidth="314.9">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="12.0" />
-                            </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
+                        <Text layoutX="38.0" layoutY="126.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Lives                                                                                           8" wrappingWidth="314.9">
+                            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                         </Text>
 
-                        <Text layoutX="38.0" layoutY="161.0"
-                              onMouseClicked="#onMediumCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Mines                                                 26(for each board)"
-                              wrappingWidth="314.9">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="12.0" />
-                            </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
+                        <Text layoutX="38.0" layoutY="161.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Mines                                                 26(for each board)" wrappingWidth="314.9">
+                            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                         </Text>
 
-                        <Text layoutX="38.0" layoutY="196.0"
-                              onMouseClicked="#onMediumCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Questions                                          7 (for each board)"
-                              wrappingWidth="314.9">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="12.0" />
-                            </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
+                        <Text layoutX="38.0" layoutY="196.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Questions                                          7 (for each board)" wrappingWidth="314.9">
+                            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                         </Text>
 
-                        <Text layoutX="38.0" layoutY="231.0"
-                              onMouseClicked="#onMediumCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Surprises                                           3 (for each board)"
-                              wrappingWidth="314.9">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="12.0" />
-                            </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
+                        <Text layoutX="38.0" layoutY="231.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Surprises                                           3 (for each board)" wrappingWidth="314.9">
+                            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                         </Text>
 
                     </children>
                 </AnchorPane>
 
                 <!-- HARD CARD -->
-                <AnchorPane layoutX="803.0" layoutY="1.0"
-                            maxWidth="390.0" minHeight="253.0" minWidth="390.0"
-                            onMouseClicked="#playClickSound"
-                            prefHeight="253.0" prefWidth="390.0"
-                            style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
+                <AnchorPane layoutX="803.0" layoutY="1.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" prefHeight="253.0" prefWidth="390.0" style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
                     <children>
 
-                        <ToggleButton fx:id="hardToggle"
-                                      layoutY="7.0"
-                                      maxHeight="253.0" maxWidth="390.0"
-                                      minHeight="253.0" minWidth="390.0"
-                                      mnemonicParsing="false"
-                                      onMouseClicked="#playClickSound"
-                                      prefHeight="253.0" prefWidth="390.0"
-                                      toggleGroup="$difficultyGroup">
+                        <ToggleButton fx:id="hardToggle" layoutY="7.0" maxHeight="253.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onAction="#onHardCardClicked" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" toggleGroup="$difficultyGroup">
                             <styleClass>
                                 <String fx:value="floating-card" />
                                 <String fx:value="difficulty-toggle" />
+                                <String fx:value="zoom-on-hover" />
                             </styleClass>
                         </ToggleButton>
 
-                        <Sphere layoutX="195.0" layoutY="37.0"
-                                onMouseClicked="#onHardCardClicked"
-                                radius="15.0"
-                                style="-fx-effect: dropshadow(gaussian, rgba(239,68,68,0.9), 38, 0.7, 0, 0);">
+                        <Sphere layoutX="195.0" layoutY="37.0" mouseTransparent="true" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(239,68,68,0.9), 38, 0.7, 0, 0);">
                             <material>
                                 <PhongMaterial diffuseColor="#EF4444" specularColor="#FCA5A5" />
                             </material>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
                         </Sphere>
 
-                        <Text layoutX="176.0" layoutY="62.0"
-                              onMouseClicked="#onHardCardClicked"
-                              strokeType="INSIDE" strokeWidth="0.0"
-                              text="HARD">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="12.0" />
-                            </font>
+                        <Text layoutX="176.0" layoutY="62.0" mouseTransparent="true" strokeType="INSIDE" strokeWidth="0.0" text="HARD">
+                            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                             <styleClass>
-                                <String fx:value="difficulty-label"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
+                                <String fx:value="difficulty-label" />
                             </styleClass>
                         </Text>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="71.0"
-                                   onMouseClicked="#onHardCardClicked"
-                                   strokeType="INSIDE" width="342.0">
-                            <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="71.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
+                            <styleClass><String fx:value="setup-stat-row" /></styleClass>
+                        </Rectangle>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="106.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
+                            <styleClass><String fx:value="setup-stat-row" /></styleClass>
+                        </Rectangle>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="141.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
+                            <styleClass><String fx:value="setup-stat-row" /></styleClass>
+                        </Rectangle>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="176.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
+                            <styleClass><String fx:value="setup-stat-row" /></styleClass>
+                        </Rectangle>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0" layoutX="24.0" layoutY="211.0" mouseTransparent="true" strokeType="INSIDE" width="342.0">
+                            <styleClass><String fx:value="setup-stat-row" /></styleClass>
                         </Rectangle>
 
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="106.0"
-                                   onMouseClicked="#onHardCardClicked"
-                                   strokeType="INSIDE" width="342.0">
-                            <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
-                        </Rectangle>
-
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="141.0"
-                                   onMouseClicked="#onHardCardClicked"
-                                   strokeType="INSIDE" width="342.0">
-                            <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
-                        </Rectangle>
-
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="176.0"
-                                   onMouseClicked="#onHardCardClicked"
-                                   strokeType="INSIDE" width="342.0">
-                            <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
-                        </Rectangle>
-
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="30.0"
-                                   layoutX="24.0" layoutY="211.0"
-                                   onMouseClicked="#onHardCardClicked"
-                                   strokeType="INSIDE" width="342.0">
-                            <styleClass>
-                                <String fx:value="setup-stat-row"/>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
-                        </Rectangle>
-
-                        <Text layoutX="38.0" layoutY="91.0"
-                              onMouseClicked="#onHardCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Text                                                                                 16x16"
-                              wrappingWidth="314.9">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="12.0" />
-                            </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
+                        <Text layoutX="38.0" layoutY="91.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Grid Size                                                                       16x16" wrappingWidth="314.9">
+                            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                         </Text>
 
-                        <Text layoutX="38.0" layoutY="125.0"
-                              onMouseClicked="#onHardCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Lives                                                                                          6"
-                              wrappingWidth="314.9">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="12.0" />
-                            </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
+                        <Text layoutX="38.0" layoutY="125.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Lives                                                                                          6" wrappingWidth="314.9">
+                            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                         </Text>
 
-                        <Text layoutX="38.0" layoutY="160.0"
-                              onMouseClicked="#onHardCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Mines                                                  44(for each board)"
-                              wrappingWidth="314.9">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="12.0" />
-                            </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
+                        <Text layoutX="38.0" layoutY="160.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Mines                                                  44(for each board)" wrappingWidth="314.9">
+                            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                         </Text>
 
-                        <Text layoutX="38.0" layoutY="195.0"
-                              onMouseClicked="#onHardCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Questions                                        11(for each board)"
-                              wrappingWidth="314.9">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="12.0" />
-                            </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
+                        <Text layoutX="38.0" layoutY="195.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Questions                                        11(for each board)" wrappingWidth="314.9">
+                            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                         </Text>
 
-                        <Text layoutX="38.0" layoutY="230.0"
-                              onMouseClicked="#onHardCardClicked"
-                              strokeType="OUTSIDE" strokeWidth="0.0"
-                              text="Surprises                                            4(for each board)"
-                              wrappingWidth="314.9">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="12.0" />
-                            </font>
-                            <styleClass>
-                                <String fx:value="difficulty-toggle" />
-                                <String fx:value="floating-card" />
-                                <String fx:value="zoom-on-hover" />
-                            </styleClass>
+                        <Text layoutX="38.0" layoutY="230.0" mouseTransparent="true" strokeType="OUTSIDE" strokeWidth="0.0" text="Surprises                                            4(for each board)" wrappingWidth="314.9">
+                            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                         </Text>
 
                     </children>
@@ -695,33 +317,18 @@
         </AnchorPane>
 
         <!-- PLAYER AREA + AVATARS -->
-        <AnchorPane layoutX="26.0" layoutY="29.0"
-                    maxWidth="1200.0" minHeight="209.0" minWidth="1200.0"
-                    prefHeight="270.0" prefWidth="1200.0"
-                    GridPane.rowIndex="4" GridPane.rowSpan="2147483647">
+        <AnchorPane layoutX="26.0" layoutY="29.0" maxWidth="1200.0" minHeight="209.0" minWidth="1200.0" prefHeight="270.0" prefWidth="1200.0" GridPane.rowIndex="4" GridPane.rowSpan="2147483647">
             <children>
 
                 <!-- Player 1 card -->
-                <Rectangle fx:id="recP1"
-                           arcHeight="60.0" arcWidth="60.0"
-                           height="100.0"
-                           layoutX="24.0" layoutY="-2.0"
-                           onMouseClicked="#onPlayer1AreaClicked"
-                           strokeType="INSIDE"
-                           style="-fx-background-color: rgba(255, 255, 255, 0.12);"
-                           width="390.0">
+                <Rectangle fx:id="recP1" arcHeight="60.0" arcWidth="60.0" height="100.0" layoutX="24.0" layoutY="-2.0" onMouseClicked="#onPlayer1AreaClicked" strokeType="INSIDE" style="-fx-background-color: rgba(255, 255, 255, 0.12);" width="390.0">
                     <styleClass>
                         <String fx:value="player-card" />
                         <String fx:value="zoom-on-hover" />
                     </styleClass>
                 </Rectangle>
 
-                <TextField fx:id="player1Nickname"
-                           layoutX="114.0" layoutY="35.0"
-                           onMouseClicked="#onPlayer1AreaClicked"
-                           prefHeight="26.0" prefWidth="249.0"
-                           promptText="Player 1"
-                           style="-fx-border-color: black; -fx-font-family: Copperplate Gothic Bold;">
+                <TextField fx:id="player1Nickname" layoutX="114.0" layoutY="35.0" onMouseClicked="#onPlayer1AreaClicked" prefHeight="26.0" prefWidth="249.0" promptText="Player 1" style="-fx-border-color: black; -fx-font-family: Copperplate Gothic Bold;">
                     <font>
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
@@ -731,26 +338,14 @@
                 </TextField>
 
                 <!-- Player 2 card -->
-                <Rectangle fx:id="recP2"
-                           arcHeight="60.0" arcWidth="60.0"
-                           height="100.0"
-                           layoutX="24.0" layoutY="101.0"
-                           onMouseClicked="#onPlayer2AreaClicked"
-                           strokeType="INSIDE"
-                           style="-fx-background-color: rgba(255, 255, 255, 0.12);"
-                           width="390.0">
+                <Rectangle fx:id="recP2" arcHeight="60.0" arcWidth="60.0" height="100.0" layoutX="24.0" layoutY="101.0" onMouseClicked="#onPlayer2AreaClicked" strokeType="INSIDE" style="-fx-background-color: rgba(255, 255, 255, 0.12);" width="390.0">
                     <styleClass>
                         <String fx:value="player-card" />
                         <String fx:value="zoom-on-hover" />
                     </styleClass>
                 </Rectangle>
 
-                <TextField fx:id="player2Nickname"
-                           layoutX="114.0" layoutY="138.0"
-                           onMouseClicked="#onPlayer2AreaClicked"
-                           prefHeight="26.0" prefWidth="249.0"
-                           promptText="Player 2"
-                           style="-fx-border-color: black; -fx-font-family: Copperplate Gothic Bold;">
+                <TextField fx:id="player2Nickname" layoutX="114.0" layoutY="138.0" onMouseClicked="#onPlayer2AreaClicked" prefHeight="26.0" prefWidth="249.0" promptText="Player 2" style="-fx-border-color: black; -fx-font-family: Copperplate Gothic Bold;">
                     <font>
                         <Font name="Copperplate Gothic Light" size="12.0" />
                     </font>
@@ -759,44 +354,31 @@
                     </styleClass>
                 </TextField>
 
-                <ImageView fx:id="player1avatar"
-                           fitHeight="66.0" fitWidth="58.0"
-                           layoutX="46.0" layoutY="19.0"
-                           onMouseClicked="#onPlayer1AreaClicked"
-                           preserveRatio="true">
+                <ImageView fx:id="player1avatar" fitHeight="66.0" fitWidth="58.0" layoutX="46.0" layoutY="19.0" onMouseClicked="#onPlayer1AreaClicked" preserveRatio="true">
                     <clip>
                         <Circle centerX="30" centerY="30" radius="30" />
                     </clip>
                     <image>
-                        <Image url="@/Images/plus.png" />
+                        <Image url="@/Images/default_avatar.png" />
                     </image>
                 </ImageView>
 
-                <ImageView fx:id="player2avatar"
-                           fitHeight="66.0" fitWidth="58.0"
-                           layoutX="46.0" layoutY="122.0"
-                           onMouseClicked="#onPlayer2AreaClicked"
-                           preserveRatio="true">
+                <ImageView fx:id="player2avatar" fitHeight="66.0" fitWidth="58.0" layoutX="46.0" layoutY="122.0" onMouseClicked="#onPlayer2AreaClicked" preserveRatio="true">
                     <clip>
                         <Circle centerX="30" centerY="30" radius="30" />
                     </clip>
                     <image>
-                        <Image url="@/Images/plus.png" />
+                        <Image url="@/Images/default_avatar.png" />
                     </image>
                 </ImageView>
 
                 <!-- AVATAR SELECTION CAROUSEL -->
                 <AnchorPane layoutX="421.0" layoutY="8.0" onMouseClicked="#playClickSound" prefHeight="200.0" prefWidth="768.0">
                     <children>
-                        <AnchorPane fx:id="anchor"
-                                    layoutX="8.0" layoutY="6.0"
-                                    prefHeight="175.0" prefWidth="766.0"
-                                    style="-fx-background-radius: 150; -fx-border-radius: 150; -fx-border-color: rgba(255,255,255,0.6); -fx-border-width: 3; -fx-background-color: rgba(255, 255, 255, 0.12);;">
+                        <AnchorPane fx:id="anchor" layoutX="8.0" layoutY="6.0" prefHeight="175.0" prefWidth="766.0" style="-fx-background-radius: 150; -fx-border-radius: 150; -fx-border-color: rgba(255,255,255,0.6); -fx-border-width: 3; -fx-background-color: rgba(255, 255, 255, 0.12);;">
                             <children>
 
-                                <!-- (All your avatar StackPanes remain unchanged) -->
-
-                                <!-- Avatar 10 -->
+                                <!-- Avatar options unchanged -->
                                 <StackPane layoutX="634.0" layoutY="22.0" onMouseClicked="#onAvatarClicked" prefHeight="65.0" prefWidth="65.0">
                                     <styleClass>
                                         <String fx:value="avatar-option" />
@@ -936,12 +518,7 @@
                                         <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#playClickSound" preserveRatio="true">
                                             <image><Image url="@/Images/plus.png" /></image>
                                         </ImageView>
-                                        <Button maxHeight="60.0" maxWidth="60.0" minHeight="60.0" minWidth="60.0"
-                                                mnemonicParsing="false"
-                                                onAction="#onPlus"
-                                                onMouseClicked="#playClickSound"
-                                                prefHeight="60.0" prefWidth="60.0"
-                                                style="-fx-background-radius: 100; -fx-background-color: transparent; -fx-cursor: hand;" />
+                                        <Button maxHeight="60.0" maxWidth="60.0" minHeight="60.0" minWidth="60.0" mnemonicParsing="false" onAction="#onPlus" onMouseClicked="#playClickSound" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 100; -fx-background-color: transparent; -fx-cursor: hand;" />
                                     </children>
                                 </StackPane>
 
@@ -951,19 +528,11 @@
                 </AnchorPane>
 
                 <!-- START GAME BUTTON -->
-                <Button fx:id="startGameBtn"
-                        layoutX="509.0" layoutY="208.0"
-                        mnemonicParsing="false"
-                        onAction="#onStartGameClicked"
-                        onMouseClicked="#playClickSound"
-                        prefHeight="47.0" prefWidth="182.0"
-                        style="-fx-cursor: hand;"
-                        text="start game"
-                        textFill="#f6f7ff">
-                        <styleClass>
-        <String fx:value="zoom-on-hover"/>
-        <String fx:value="start-game-btn"/>
-    </styleClass>
+                <Button fx:id="startGameBtn" layoutX="509.0" layoutY="208.0" mnemonicParsing="false" onAction="#onStartGameClicked" onMouseClicked="#playClickSound" prefHeight="47.0" prefWidth="182.0" style="-fx-cursor: hand;" text="start game" textFill="#f6f7ff">
+                    <styleClass>
+                        <String fx:value="zoom-on-hover" />
+                        <String fx:value="start-game-btn" />
+                    </styleClass>
                     <font>
                         <Font name="Copperplate Gothic Light" size="24.0" />
                     </font>
@@ -975,34 +544,19 @@
         <!-- SECTION LABEL: DIFFICULTY -->
         <AnchorPane prefHeight="73.0" prefWidth="826.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
             <children>
+                <Line id="difficultyAccentLine" endX="72.8" layoutX="97.0" layoutY="7.0" onMouseClicked="#playClickSound" startX="-100.0">
+                    <styleClass>
+                        <String fx:value="setup-accent-line" />
+                    </styleClass>
+                </Line>
 
-                <Line id="difficultyAccentLine" endX="72.8" layoutX="97.0" layoutY="7.0"
-                      onMouseClicked="#playClickSound"
-                      startX="-100.0">
-                      <styleClass>
-        <String fx:value="setup-accent-line"/>
-    </styleClass>
-    </Line>
-                <Text layoutX="5.0" layoutY="5.0"
-                      onMouseClicked="#playClickSound"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Choose Difficulty"
-                      wrappingWidth="172.5">
-                    <font>
-                        <Font name="Copperplate Gothic Bold" size="16.0" />
-                    </font>
+                <Text layoutX="5.0" layoutY="5.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose Difficulty" wrappingWidth="172.5">
+                    <font><Font name="Copperplate Gothic Bold" size="16.0" /></font>
                 </Text>
 
-                <Text layoutX="22.0" layoutY="25.0"
-                      onMouseClicked="#playClickSound"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="select the challenge that fits your skills and style"
-                      wrappingWidth="355.7">
-                    <font>
-                        <Font name="Copperplate Gothic Light" size="12.0" />
-                    </font>
+                <Text layoutX="22.0" layoutY="25.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="select the challenge that fits your skills and style" wrappingWidth="355.7">
+                    <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                 </Text>
-
             </children>
         </AnchorPane>
 
@@ -1010,34 +564,21 @@
         <AnchorPane prefHeight="70.0" prefWidth="1200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
             <children>
 
-                <Text layoutX="5.0" layoutY="13.0"
-                      onMouseClicked="#playClickSound"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Player Customization"
-                      wrappingWidth="200.0">
-                    <font>
-                        <Font name="Copperplate Gothic Bold" size="15.0" />
-                    </font>
+                <Text layoutX="5.0" layoutY="3.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Player Customization" wrappingWidth="200.0">
+                    <font><Font name="Copperplate Gothic Bold" size="15.0" /></font>
                 </Text>
 
-                <Text layoutX="18.0" layoutY="37.0"
-                      onMouseClicked="#playClickSound"
-                      strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Insert nickname and avatar"
-                      wrappingWidth="249.6">
-                    <font>
-                        <Font name="Copperplate Gothic Light" size="12.0" />
-                    </font>
+                <Text layoutX="18.0" layoutY="23.0" onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Insert nickname and avatar" wrappingWidth="249.6">
+                    <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                 </Text>
 
-                <Line id="playerAccentLine" endX="100.0" layoutX="100.0" layoutY="17.0"
-                      onMouseClicked="#playClickSound"
-                      startX="-100.0">
-                      <styleClass>
-        <String fx:value="setup-accent-line"/>
-    </styleClass>
-    </Line>
+                <Line id="playerAccentLine" endX="100.0" layoutX="100.0" layoutY="7.0" onMouseClicked="#playClickSound" startX="-100.0">
+                    <styleClass>
+                        <String fx:value="setup-accent-line" />
+                    </styleClass>
+                </Line>
             </children>
         </AnchorPane>
+
     </children>
 </GridPane>

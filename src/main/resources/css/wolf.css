@@ -715,5 +715,111 @@
     );
 }
 
+/* =========================================================
+   WOLF — CUSTOMIZE SCREEN TOGGLES (ROBUST)
+   ========================================================= */
+
+/* Base */
+.customize-root .toggle-button {
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-text-fill: rgba(255,245,220,0.95);
+
+    -fx-border-color: rgba(255,185,70,0.55);
+    -fx-border-width: 2;
+
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+
+    -fx-cursor: hand;
+    -fx-padding: 8 16 8 16;
+
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(255,185,70,0.22),
+        14,
+        0.45,
+        0,
+        0
+    );
+}
+
+/* Ensure any internal text nodes also stay visible */
+.customize-root .toggle-button .text {
+    -fx-fill: rgba(255,245,220,0.95);
+}
+
+/* Hover (not selected) */
+.customize-root .toggle-button:hover {
+    -fx-border-color: rgba(255,195,90,0.85);
+    -fx-background-color: rgba(255,185,70,0.14);
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(255,185,70,0.40),
+        18,
+        0.55,
+        0,
+        0
+    );
+}
+
+/* Pressed */
+.customize-root .toggle-button:pressed {
+    -fx-background-color: rgba(255,185,70,0.18);
+    -fx-translate-y: 1;
+}
+
+/* Selected */
+.customize-root .toggle-button:selected {
+    -fx-background-color: linear-gradient(
+        to bottom right,
+        rgba(255, 185, 70, 0.45),
+        rgba(190, 120, 30, 0.42)
+    );
+
+    -fx-border-color: rgba(255,195,90,1.0);
+    -fx-text-fill: rgba(255,250,235,1.0);
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(255,185,70,0.75),
+        22,
+        0.65,
+        0,
+        0
+    );
+}
+
+/* Selected + hover = stronger wolf glow */
+.customize-root .toggle-button:selected:hover {
+    -fx-border-color: rgba(255,215,130,1.0);
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(255,200,110,0.90),
+        26,
+        0.75,
+        0,
+        0
+    );
+}
+
+/* Keyboard focus ring */
+.customize-root .toggle-button:focused {
+    -fx-border-color: rgba(255,230,180,0.90);
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(255,200,110,0.85),
+        26,
+        0.75,
+        0,
+        0
+    );
+}
+
 
 

@@ -169,12 +169,12 @@ public class PlayLoginController {
         ));
     }
 
-    if (mainPane != null) {
+/*    if (mainPane != null) {
         mainPane.setStyle(
                 "-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);"
-        );
+        );*/
         UIAnimations.fadeIn(mainPane);
-    }
+    
 
     // Guided onboarding (login must ALWAYS show because user not known yet)
     List<OnboardingStep> loginSteps = List.of(

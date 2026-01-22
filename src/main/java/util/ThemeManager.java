@@ -20,6 +20,8 @@ public final class ThemeManager {
     // Theme variants (swap between these)
     private static final String COLORFUL_CSS = "/css/theme.css";
     private static final String WOLF_CSS     = "/css/wolf.css";
+    private static final String CYBER_CSS     = "/css/Cyber.css";
+    
 
     private static Theme currentTheme = loadTheme();
 
@@ -51,10 +53,10 @@ public final class ThemeManager {
         // 2) Remove ONLY our known variants (do not touch other stylesheets)
         removeIfPresent(scene, COLORFUL_CSS);
         removeIfPresent(scene, WOLF_CSS);
+        removeIfPresent(scene, CYBER_CSS);
 
         // 3) Add selected variant
-        String variant = (currentTheme == Theme.WOLF) ? WOLF_CSS : COLORFUL_CSS;
-        addIfMissing(scene, variant);
+        addIfMissing(scene, currentTheme.getCssPath());
 
         // 4) Force re-apply (helps immediate visual update)
         if (scene.getRoot() != null) {

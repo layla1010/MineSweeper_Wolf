@@ -39,6 +39,10 @@ public class FiltersController {
     private static final Image SWITCH_ON_WOLF  =  new Image(FiltersController.class.getResourceAsStream("/Images/switch-on-wolf.png"));
     private static final Image SWITCH_OFF_WOLF =  new Image(FiltersController.class.getResourceAsStream("/Images/switch-off-wolf.png"));
     
+    private static final Image SWITCH_ON_CYBER  =  new Image(FiltersController.class.getResourceAsStream("/Images/switch-on-cyber.png"));
+    private static final Image SWITCH_OFF_CYBER=  new Image(FiltersController.class.getResourceAsStream("/Images/switch-off-cyber.png"));
+
+
     // ====== Lifecycle ======
     @FXML
     private void initialize() {
@@ -125,14 +129,19 @@ public class FiltersController {
      * Updates the toggle image according to the boolean state.
      */
     private void syncToggle(ImageView toggle, boolean enabled) {
-    	boolean isWolf = util.ThemeManager.getTheme() == model.Theme.WOLF;
-    	
-    	if (isWolf) {
-            toggle.setImage(enabled ? SWITCH_ON_WOLF : SWITCH_OFF_WOLF);
-        } else {
-            toggle.setImage(enabled ? SWITCH_ON : SWITCH_OFF);
-        }    
+        switch (util.ThemeManager.getTheme()) {
+            case WOLF -> toggle.setImage(
+                    enabled ? SWITCH_ON_WOLF : SWITCH_OFF_WOLF
+            );
+            case CYBER_BLUE -> toggle.setImage(
+                    enabled ? SWITCH_ON_CYBER : SWITCH_OFF_CYBER
+            );
+            default -> toggle.setImage(
+                    enabled ? SWITCH_ON : SWITCH_OFF
+            );
+        }
     }
+
     
     private boolean toggleAndSync(ImageView toggle, boolean currentState, java.util.function.Consumer<Boolean> setter) {
         boolean newState = !currentState;

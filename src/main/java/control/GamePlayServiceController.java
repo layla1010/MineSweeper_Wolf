@@ -37,6 +37,7 @@ public class GamePlayServiceController {
     private final Runnable showEndGameScreenCallback;
     private GameBonusServiceController bonusService;
 
+
     
     public GamePlayServiceController(GameStateController s, GameUIServiceController ui, GameHistoryServiceController history, Runnable showEndGameScreenCallback) {
         this.s = s;
@@ -116,8 +117,7 @@ public class GamePlayServiceController {
         ui.applyTurnStateToBoards();
         ui.updateScoreAndMineLabels();
     }
-
-
+    
     /**
      * Toggles a flag icon on a covered cell.
      *  If it's a MINE: right-click reveals instantly and gives +1 score (Option A).
@@ -159,10 +159,17 @@ public class GamePlayServiceController {
             button.setGraphic(null);
             button.setText("💣");
 
-            button.getStyleClass().remove("cell-hidden");
-            button.getStyleClass().remove("cell-flagged");
+            button.getStyleClass().removeAll(
+                "cell-hidden", "cell-flagged",
+                "cell-number", "cell-empty", "cell-question", "cell-surprise"
+            );
+
             if (!button.getStyleClass().contains("cell-revealed")) button.getStyleClass().add("cell-revealed");
+            if (!button.getStyleClass().contains("cell-activated")) button.getStyleClass().add("cell-activated");
+
+            // Mine base + "correctly flagged" variant
             if (!button.getStyleClass().contains("cell-mine")) button.getStyleClass().add("cell-mine");
+            if (!button.getStyleClass().contains("cell-mine-flagged")) button.getStyleClass().add("cell-mine-flagged");
 
             button.setDisable(true);
 
@@ -387,12 +394,14 @@ public class GamePlayServiceController {
         
         //COMMON revealed state
         button.getStyleClass().add("cell-revealed");
+
         
         if (result.type == CellType.MINE) {
 
             button.setText("💣");
             button.setDisable(true);
             button.getStyleClass().add("cell-mine");
+            button.getStyleClass().add("cell-activated");
 
             int heartsBefore = s.sharedHearts;
 
@@ -481,6 +490,7 @@ public class GamePlayServiceController {
             button.setText(String.valueOf(cell.getAdjacentMines()));
             button.setDisable(true);
             button.getStyleClass().add("cell-number");
+            button.getStyleClass().add("cell-activated");
         }
 
         /* ===================== EMPTY ===================== */
@@ -489,6 +499,7 @@ public class GamePlayServiceController {
             button.setText("");
             button.setDisable(true);
             button.getStyleClass().add("cell-empty");
+            button.getStyleClass().add("cell-activated");
         }
 
         /* ===================== SCORE ===================== */
@@ -672,6 +683,9 @@ public class GamePlayServiceController {
 
         if (!button.getStyleClass().contains("cell-revealed")) {
             button.getStyleClass().add("cell-revealed");
+        }
+        if (!button.getStyleClass().contains("cell-activated")) {
+            button.getStyleClass().add("cell-activated");
         }
         button.setDisable(true);
 

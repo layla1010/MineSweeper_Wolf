@@ -221,18 +221,7 @@ public class MainController {
 
           SoundManager.playClick();
 
-          try {
-              Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-              util.ViewNavigator.switchTo(stage, "/view/players_login_view.fxml", 800, 400);
-              stage.setTitle("Login");       // optional if you want it
-              stage.setResizable(false);     // keep behavior if required
-          } catch (Exception e) {
-              e.printStackTrace();
-              DialogUtil.show(AlertType.ERROR,
-                      "Error",
-                      "Login navigation failed",
-                      e.toString());
-          }
+          goToLoginView();
       }
 
     

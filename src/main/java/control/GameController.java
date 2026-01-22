@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -44,6 +45,9 @@ public class GameController {
     @FXML private ImageView player2AvatarImage;
     @FXML private StackPane rootStack;
     private Parent howToPlayOverlay;  
+    @FXML private StackPane player1BoardWrapper;
+    @FXML private StackPane player2BoardWrapper;
+
 
     private final GameStateController state = new GameStateController();
 
@@ -95,6 +99,10 @@ public class GameController {
         uiService.loadAvatars();
         uiService.buildHeartsBar();
         uiService.initLabels();
+        uiService.initForbiddenCursor();
+        uiService.initBoardBlockers(player1BoardWrapper, player2BoardWrapper);
+        uiService.applyTurnStateToBoards(); // this will now toggle the blockers
+
         uiService.buildGrids();
 
         uiService.initForbiddenCursor();
@@ -164,11 +172,26 @@ public class GameController {
 
     @FXML
     private void onExitBtnClicked() {
+        ButtonType exitBtn = new ButtonType("Exit");
+        ButtonType stayBtn = new ButtonType("Stay", ButtonType.CANCEL.getButtonData());
+
+        var result = DialogUtil.confirmWithCustomButtons(
+            "Confirm Exit",
+            "Exit game?",
+            "Are you sure you want to exit the game?\nYour current progress will be saved as a give up.",
+            exitBtn, stayBtn
+        );
+
+        if (result.isEmpty() || result.get() != exitBtn) {
+            return; // user chose Stay/closed dialog
+        }
+
         bonusService.resetIdleHintTimer();
         historyService.saveGiveUpGame(state);
         uiService.stopTimer();
-        System.exit(0);
+        Platform.exit();
     }
+
 
     @FXML
     private void onHelpBtnClicked() {
@@ -243,6 +266,7 @@ public class GameController {
         Stage stage = (Stage) player1Grid.getScene().getWindow();
         NewGameController ng = ViewNavigator.switchToWithController(stage, "/view/new_game_view.fxml");
         ng.prefillFromConfig(state.config);
+        historyService.saveGiveUpGame(state);
     }
 
 

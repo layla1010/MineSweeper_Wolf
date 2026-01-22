@@ -156,6 +156,9 @@ public class GameBonusServiceController {
         s.score += scoreChange;
 
         ui.buildHeartsBar();
+        if (!button.getStyleClass().contains("cell-activated")) {
+            button.getStyleClass().add("cell-activated");
+        }
         button.setDisable(true);
 
         ui.updateScoreAndMineLabels();
@@ -358,6 +361,7 @@ public class GameBonusServiceController {
             btn.setText("💣");
             btn.getStyleClass().removeAll("cell-hidden");
             if (!btn.getStyleClass().contains("cell-revealed")) btn.getStyleClass().add("cell-revealed");
+            if (!btn.getStyleClass().contains("cell-activated")) btn.getStyleClass().add("cell-activated");
             if (!btn.getStyleClass().contains("cell-mine")) btn.getStyleClass().add("cell-mine");
             btn.setDisable(true);
 
@@ -782,6 +786,9 @@ public class GameBonusServiceController {
         }
 
         ui.buildHeartsBar();
+        if (!button.getStyleClass().contains("cell-activated")) {
+            button.getStyleClass().add("cell-activated");
+        }
         button.setDisable(true);
         ui.updateScoreAndMineLabels();
 

@@ -399,37 +399,23 @@ public class QuestionsManagerController implements QuestionCardActions {
 	
 	@FXML
 	private void onEditSelectedClicked(ActionEvent event) {
-
 	    List<Question> selected = getSelectedQuestions();
-
 	    if (selected.isEmpty()) {
-	        DialogUtil.show(
-	            Alert.AlertType.INFORMATION,
-	            "No selection",
-	            "Edit questions",
-	            "Please select at least one question."
-	        );
+	        DialogUtil.show(Alert.AlertType.INFORMATION, "No selection", "Edit questions",
+	                "Please select at least one question.");
 	        return;
 	    }
 
 	    try {
-	        FXMLLoader loader = new FXMLLoader(
-	                getClass().getResource("/view/Edit_Question_view.fxml")
-	        );
-	        Parent root = loader.load();
+	        Stage stage = (Stage) QuestionManagerRoot.getScene().getWindow();
 
-	        EditQuestionController editController = loader.getController();
+	        EditQuestionController editController =
+	                util.ViewNavigator.switchToWithController(stage, "/view/Edit_Question_view.fxml");
 
-	        //THIS is the bulk-edit entry point
 	        editController.enableBulkEdit(selected);
 
-	        Stage stage = (Stage) QuestionManagerRoot.getScene().getWindow();
-	        stage.setScene(new Scene(root));
 	        stage.setTitle("Edit Selected Questions");
-	        stage.centerOnScreen();
-	        stage.show();
-
-	    } catch (IOException e) {
+	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	}

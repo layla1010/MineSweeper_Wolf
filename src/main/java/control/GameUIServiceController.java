@@ -53,6 +53,13 @@ public class GameUIServiceController implements util.SettingObserver {
 
     private final ImageView player1AvatarImage;
     private final ImageView player2AvatarImage;
+    
+    private StackPane player1BoardWrapper;
+    private StackPane player2BoardWrapper;
+
+    private StackPane p1Blocker;
+    private StackPane p2Blocker;
+
 
     public GameUIServiceController(GameStateController s,
                                    GridPane player1Grid,
@@ -120,6 +127,27 @@ public class GameUIServiceController implements util.SettingObserver {
         item.setAlignment(Pos.CENTER_LEFT);
         item.setPickOnBounds(false);
         return item;
+    }
+
+    public void initBoardBlockers(StackPane p1Wrapper, StackPane p2Wrapper) {
+        this.player1BoardWrapper = p1Wrapper;
+        this.player2BoardWrapper = p2Wrapper;
+
+        // create blockers once
+        p1Blocker = createBoardBlocker(s.forbiddenCursor != null ? s.forbiddenCursor : Cursor.DEFAULT);
+        p2Blocker = createBoardBlocker(s.forbiddenCursor != null ? s.forbiddenCursor : Cursor.DEFAULT);
+
+        // make them stretch to cover wrapper
+        p1Blocker.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        p2Blocker.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        // add above the grid (last child = top)
+        player1BoardWrapper.getChildren().add(p1Blocker);
+        player2BoardWrapper.getChildren().add(p2Blocker);
+
+        // start with correct visibility based on current turn
+        p1Blocker.setVisible(false);
+        p2Blocker.setVisible(false);
     }
 
     private Label sep() {
@@ -293,27 +321,15 @@ public class GameUIServiceController implements util.SettingObserver {
         }
     }
 
-    public void applyTurnStateToBoards() {
-        if (player1Grid == null || player2Grid == null) return;
-
-        if (s.isPlayer1Turn) {
-            setBoardActive(player1Grid, player1StatsBox);
-            setBoardInactive(player2Grid, player2StatsBox);
-        } else {
-            setBoardInactive(player1Grid, player1StatsBox);
-            setBoardActive(player2Grid, player2StatsBox);
-        }
-    }
-
+    
     private void setBoardActive(GridPane grid, HBox box) {
-        grid.setDisable(false);
 
         grid.getStyleClass().remove("inactive-board");
         if (!grid.getStyleClass().contains("active-board")) {
             grid.getStyleClass().add("active-board");
         }
 
-        grid.setCursor(Cursor.HAND);
+        grid.setCursor(Cursor.DEFAULT);
 
         box.getStyleClass().remove("inactive-player-label");
         if (!box.getStyleClass().contains("active-player-label")) {
@@ -322,20 +338,20 @@ public class GameUIServiceController implements util.SettingObserver {
     }
 
     private void setBoardInactive(GridPane grid, HBox box) {
-        grid.setDisable(true);
 
         grid.getStyleClass().remove("active-board");
         if (!grid.getStyleClass().contains("inactive-board")) {
             grid.getStyleClass().add("inactive-board");
         }
 
-        grid.setCursor(s.forbiddenCursor != null ? s.forbiddenCursor : Cursor.DEFAULT);
+        grid.setCursor(Cursor.DEFAULT);
 
         box.getStyleClass().remove("active-player-label");
         if (!box.getStyleClass().contains("inactive-player-label")) {
             box.getStyleClass().add("inactive-player-label");
         }
     }
+
 
     // =======================
     // Grids
@@ -344,6 +360,36 @@ public class GameUIServiceController implements util.SettingObserver {
         buildGridForPlayer(player1Grid, s.board1, true);
         buildGridForPlayer(player2Grid, s.board2, false);
     }
+    
+    private StackPane createBoardBlocker(Cursor cursor) {
+        StackPane blocker = new StackPane();
+        blocker.setPickOnBounds(true);
+        blocker.setMouseTransparent(false);
+        blocker.setCursor(cursor);
+        blocker.setStyle("-fx-background-color: transparent;");
+        return blocker;
+    }
+
+    
+    public void applyTurnStateToBoards() {
+        if (player1Grid == null || player2Grid == null) return;
+
+        // keep your styling / labels logic
+        if (s.isPlayer1Turn) {
+            setBoardActive(player1Grid, player1StatsBox);
+            setBoardInactive(player2Grid, player2StatsBox);
+        } else {
+            setBoardInactive(player1Grid, player1StatsBox);
+            setBoardActive(player2Grid, player2StatsBox);
+        }
+
+        // overlay logic (only if initialized)
+        if (p1Blocker != null && p2Blocker != null) {
+            p1Blocker.setVisible(!s.isPlayer1Turn);
+            p2Blocker.setVisible(s.isPlayer1Turn);
+        }
+    }
+
 
     private void buildGridForPlayer(GridPane grid, model.Board board, boolean isPlayer1) {
         grid.getChildren().clear();

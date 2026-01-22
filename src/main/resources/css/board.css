@@ -77,9 +77,29 @@
 
 /* Mines */
 .cell-mine {
-    -fx-background-color: #3b0213;
-    -fx-border-color: #fb7185;
-    -fx-text-fill: #fecaca;
+    -fx-background-color: rgba(255, 70, 70, 0.25);
+    -fx-border-color: rgba(255, 120, 120, 0.85);
+    -fx-border-width: 2.0;
+    -fx-effect: dropshadow(gaussian, rgba(255,80,80,0.55), 16, 0.55, 0, 0);
+}
+
+/* Mine revealed normally -> red */
+.cell-mine .text {
+    -fx-fill: #ff2d2d;
+    -fx-font-weight: bold;
+}
+
+/* Correctly flagged mine -> green */
+.cell-mine-flagged .text {
+    -fx-fill: #4dff8c;
+    -fx-font-weight: bold;
+}
+
+.cell-mine-flagged {
+    -fx-background-color: rgba(77, 255, 140, 0.18);
+    -fx-border-color: rgba(77, 255, 140, 0.90);
+    -fx-border-width: 2.2;
+    -fx-effect: dropshadow(gaussian, rgba(77,255,140,0.55), 16, 0.55, 0, 0);
 }
 
 /* Empty */
