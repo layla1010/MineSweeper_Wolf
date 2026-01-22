@@ -30,7 +30,6 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
 import model.Theme;
-import util.DialogUtil;
 import util.SoundManager;
 import util.ThemeManager;
 import util.ViewNavigator;
@@ -45,36 +44,37 @@ public class HowToPlayController {
 
     private static final int SIZE = 9;
 
-    // Autoplay timings
+    // ---------- AUTO PLAY TIMINGS ----------
     private static final double DEFAULT_STEP_DELAY = 2.5;
     private static final double QUESTION_READ_DELAY = 7.0;
     private static final double QUESTION_RESULT_DELAY = 6.0;
     private static final double SURPRISE_READ_DELAY = 6.0;
 
-    // tiny delay so the board visually updates BEFORE a dialog blocks/pops
-    private static final double FX_PULSE_DELAY = 0.12; // seconds
-    private static final double CLICK_FEEDBACK_DELAY = 0.55; // seconds
+    private static final double FX_PULSE_DELAY = 0.12;
+    private static final double CLICK_FEEDBACK_DELAY = 0.55;
 
-    // Easy-mode constants (HowToPlay is essentially “easy demo”)
+    // ---------- EASY MODE CONSTANTS ----------
     private static final int ACTIVATION_COST_EASY = 5;
     private static final int TOTAL_HEART_SLOTS = 10;
 
-    // Demo start values
+    // ---------- DEMO START VALUES ----------
     private static final int START_MINES = 10;
     private static final String START_FLAGS = "0/3";
     private static final int START_QUESTIONS = 6;
     private static final int START_SURPRISES = 2;
     private static final int START_HEARTS = 10;
 
-    // Used overlay
+    // ---------- USED OVERLAY ----------
     private static final String USED_OVERLAY_ID = "USED_OVERLAY";
 
-    // Background resource (tries JPG first; falls back to PNG if needed)
+    // ---------- ICON SIZE ----------
+    private static final double TILE_ICON_SIZE = 16;
+
+    // ---------- BACKGROUND ----------
     private static final String BG_PRIMARY = "/Images/OIP.jpg";
     private static final String BG_FALLBACK = "/Images/OIP.png";
 
-
-    // NOTE: keeping your original object content (even though name says “EXPERT” and difficulty says “easy”)
+    // ---------- DEMO QUESTION ----------
     private static final model.Question DEMO_EXPERT_QUESTION =
             new model.Question(
                     999,
@@ -91,15 +91,10 @@ public class HowToPlayController {
     private static final int DEMO_SURPRISE_SCORE = 8;
     private static final int DEMO_SURPRISE_LIVES = 1;
 
-    // ----------------- FXML -----------------
-
+    // ---------- FXML ----------
     @FXML private Parent root;
-
     @FXML private HBox heartsBox;
     @FXML private Label scoreLabel;
-
-    @FXML private Rectangle p1NbrHL;
-    @FXML private Rectangle p2NbrHL;
 
     @FXML private GridPane p1Grid;
     @FXML private GridPane p2Grid;
@@ -110,10 +105,12 @@ public class HowToPlayController {
     @FXML private Rectangle p1RowHL;
     @FXML private Rectangle p1ColHL;
     @FXML private Rectangle p1CellHL;
+    @FXML private Rectangle p1NbrHL;
 
     @FXML private Rectangle p2RowHL;
     @FXML private Rectangle p2ColHL;
     @FXML private Rectangle p2CellHL;
+    @FXML private Rectangle p2NbrHL;
 
     @FXML private Label stepTitle;
     @FXML private Label stepBody;
@@ -121,51 +118,21 @@ public class HowToPlayController {
 
     @FXML private Button prevBtn;
     @FXML private Button nextBtn;
-    
-    @FXML private StackPane overlayRoot;
-    @FXML private Rectangle dimRect;
-
+    @FXML private Button playBtn;
+    @FXML private Button stopBtn;
     @FXML private Button backBtn;
     @FXML private Button restartBtn;
 
     @FXML private Label turnLabel;
-
-    @FXML private Button playBtn;
-    @FXML private Button stopBtn;
-
     @FXML private HBox p1StatsBox;
     @FXML private HBox p2StatsBox;
 
+    @FXML private StackPane overlayRoot;
+    @FXML private Rectangle dimRect;
 
+    // ---------- BOARD ----------
     private StackPane[][] p1Tiles;
     private StackPane[][] p2Tiles;
-
-    private boolean tutorialPopupsEnabled = true;
-    private boolean isAutoPlaying = false;
-
-    // demo counters
-    private String p1Flags, p2Flags;
-    private int p1Mines, p1Questions, p1Surprises;
-    private int p2Mines, p2Questions, p2Surprises;
-
-    private int sharedHearts;
-    private int score;
-
-    private boolean isP1Turn = true;
-
-    private final HowToPlayBoardBuilder builder = new HowToPlayBoardBuilder();
-    private final List<TourStep> steps = new ArrayList<>();
-    private int stepIndex = 0;
-
-    // pulse animation for highlight rectangles
-    private Timeline pulse;
-
-    // AUTO PLAY
-    private PauseTransition autoStepPause;
-
-    // RNG (centralized for QA/debug)
-    private final Random rng = new Random();
-
 
     private enum DemoCellType { HIDDEN, EMPTY, NUMBER, FLAG, MINE, QUESTION, SURPRISE }
 
@@ -178,12 +145,35 @@ public class HowToPlayController {
     private final boolean[][] p1Used = new boolean[SIZE][SIZE];
     private final boolean[][] p2Used = new boolean[SIZE][SIZE];
 
-    // ----------------- INIT -----------------
+    // ---------- STATE ----------
+    private boolean isP1Turn = true;
+    private boolean tutorialPopupsEnabled = true;
+    private boolean isAutoPlaying = false;
+
+    private String p1Flags, p2Flags;
+    private int p1Mines, p1Questions, p1Surprises;
+    private int p2Mines, p2Questions, p2Surprises;
+
+    private int sharedHearts;
+    private int score;
+
+    private final Random rng = new Random();
+
+    private final List<TourStep> steps = new ArrayList<>();
+    private int stepIndex = 0;
+
+    private Timeline pulse;
+    private PauseTransition autoStepPause;
+
+    private final HowToPlayBoardBuilder builder = new HowToPlayBoardBuilder();
+
+    private Runnable closeAction;
 
     @FXML
     private void initialize() {
-    	dimRect.widthProperty().bind(overlayRoot.widthProperty());
+        dimRect.widthProperty().bind(overlayRoot.widthProperty());
         dimRect.heightProperty().bind(overlayRoot.heightProperty());
+
         p1Tiles = builder.build(p1Grid, SIZE, SIZE, true);
         p2Tiles = builder.build(p2Grid, SIZE, SIZE, false);
 
@@ -197,33 +187,24 @@ public class HowToPlayController {
             runStep(0);
         });
     }
-    
-    private Runnable closeAction;
 
     public void setCloseAction(Runnable closeAction) {
         this.closeAction = closeAction;
     }
 
-
     @FXML
     private void onBack() {
         SoundManager.playClick();
         stopAutoplayIfRunning();
-        root.setEffect(null);
 
-
-        // If opened from game overlay -> close overlay
         if (closeAction != null) {
             closeAction.run();
             return;
         }
 
-        // Otherwise opened as normal navigation (Settings flow) -> go back
         Stage stage = (Stage) backBtn.getScene().getWindow();
         ViewNavigator.goBack(stage, "/view/settings_view.fxml");
     }
-
-
 
     @FXML
     private void onRestart() {
@@ -234,21 +215,17 @@ public class HowToPlayController {
     @FXML
     private void onPlay() {
         if (isAutoPlaying) return;
-
         isAutoPlaying = true;
         playBtn.setDisable(true);
         stopBtn.setDisable(false);
-
         scheduleNextAutoStep(0.0);
     }
 
     @FXML
     private void onStop() {
         isAutoPlaying = false;
-
         if (autoStepPause != null) autoStepPause.stop();
         autoStepPause = null;
-
         playBtn.setDisable(false);
         stopBtn.setDisable(true);
     }
@@ -267,6 +244,7 @@ public class HowToPlayController {
             runStepInternal(stepIndex, true);
         }
     }
+
 
     private void stopAutoplayIfRunning() {
         if (isAutoPlaying) onStop();
@@ -297,6 +275,364 @@ public class HowToPlayController {
         return DEFAULT_STEP_DELAY;
     }
 
+    private void runStep(int idx) {
+        if (idx < 0 || idx >= steps.size()) return;
+
+        stopAutoplayIfRunning();
+        stepIndex = idx;
+
+        resetAll(true);
+
+        TourStep s = steps.get(idx);
+        stepTitle.setText(s.title);
+        stepBody.setText(s.body);
+        stepCounter.setText((idx + 1) + " / " + steps.size());
+
+        prevBtn.setDisable(idx == 0);
+        nextBtn.setDisable(idx == steps.size() - 1);
+
+        s.action.run();
+        applyUsedCellsVisuals();
+    }
+
+    private void runStepInternal(int idx, boolean allowPopups) {
+        if (idx < 0 || idx >= steps.size()) return;
+
+        TourStep s = steps.get(idx);
+
+        stepTitle.setText(s.title);
+        stepBody.setText(s.body);
+        stepCounter.setText((idx + 1) + " / " + steps.size());
+
+        prevBtn.setDisable(idx == 0);
+        nextBtn.setDisable(idx == steps.size() - 1);
+
+        this.tutorialPopupsEnabled = allowPopups;
+
+        s.action.run();
+        applyUsedCellsVisuals();
+    }
+
+    // Replays without popups until the target step, then runs the target step with popups.
+    private void replayToStep(int targetIdx) {
+        resetAll(true);
+
+        for (int i = 0; i < targetIdx; i++) {
+            runStepInternal(i, false);
+        }
+
+        stepIndex = targetIdx;
+        runStepInternal(targetIdx, true);
+    }
+
+    private void resetAll(boolean resetCounters) {
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                setHidden(p1Tiles[r][c]);
+                setHidden(p2Tiles[r][c]);
+
+                p1Type[r][c] = DemoCellType.HIDDEN;
+                p2Type[r][c] = DemoCellType.HIDDEN;
+
+                p1Revealed[r][c] = false;
+                p2Revealed[r][c] = false;
+
+                p1Used[r][c] = false;
+                p2Used[r][c] = false;
+            }
+        }
+
+        hideAllHighlights();
+
+        if (resetCounters) {
+            p1Mines = START_MINES;
+            p1Flags = START_FLAGS;
+            p1Questions = START_QUESTIONS;
+            p1Surprises = START_SURPRISES;
+
+            p2Mines = START_MINES;
+            p2Flags = START_FLAGS;
+            p2Questions = START_QUESTIONS;
+            p2Surprises = START_SURPRISES;
+
+            sharedHearts = START_HEARTS;
+            score = 0;
+
+            setTurn(true); // also refreshes labels
+            buildHeartsBar();
+            updateInfoBar();
+        }
+    }
+
+    // ----------------- TURN + SNAPSHOT -----------------
+
+    private void setTurn(boolean p1Turn) {
+        p1Grid.getStyleClass().removeAll("active-board", "inactive-board");
+        p2Grid.getStyleClass().removeAll("active-board", "inactive-board");
+
+        if (p1Turn) {
+            p1Grid.getStyleClass().add("active-board");
+            p2Grid.getStyleClass().add("inactive-board");
+        } else {
+            p2Grid.getStyleClass().add("active-board");
+            p1Grid.getStyleClass().add("inactive-board");
+        }
+
+        isP1Turn = p1Turn;
+        updateInfoBar();
+    }
+
+    private void setSnapshot(
+            int p1Mines, String p1Flags, int p1Questions, int p1Surprises,
+            int p2Mines, String p2Flags, int p2Questions, int p2Surprises,
+            int hearts,
+            boolean p1Turn,
+            int score
+    ) {
+        this.p1Mines = p1Mines;
+        this.p1Flags = p1Flags;
+        this.p1Questions = p1Questions;
+        this.p1Surprises = p1Surprises;
+
+        this.p2Mines = p2Mines;
+        this.p2Flags = p2Flags;
+        this.p2Questions = p2Questions;
+        this.p2Surprises = p2Surprises;
+
+        this.sharedHearts = hearts;
+        this.score = score;
+
+        setTurn(p1Turn);
+        buildHeartsBar();
+        updateInfoBar();
+    }
+
+    // ----------------- HIGHLIGHTS -----------------
+
+    private void hideAllHighlights() {
+        setRectVisible(p1RowHL, false);
+        setRectVisible(p1ColHL, false);
+        setRectVisible(p1CellHL, false);
+        setRectVisible(p1NbrHL, false);
+
+        setRectVisible(p2RowHL, false);
+        setRectVisible(p2ColHL, false);
+        setRectVisible(p2CellHL, false);
+        setRectVisible(p2NbrHL, false);
+    }
+
+    private void setRectVisible(Rectangle r, boolean on) {
+        if (r == null) return;
+        r.setVisible(on);
+        r.setManaged(false);
+        r.setMouseTransparent(true);
+        r.setOpacity(on ? 1.0 : 0.0);
+    }
+
+    private void highlightCell(boolean isP1, int row, int col) {
+        StackPane[][] tiles = isP1 ? p1Tiles : p2Tiles;
+        StackPane layer = isP1 ? p1BoardLayer : p2BoardLayer;
+        Rectangle cellHL = isP1 ? p1CellHL : p2CellHL;
+
+        Bounds b = nodeBoundsInLayer(tiles[row][col], layer);
+        positionRect(cellHL, b);
+        setRectVisible(cellHL, true);
+    }
+
+    private void highlightNeighborhood(boolean isP1, int row, int col) {
+        StackPane[][] tiles = isP1 ? p1Tiles : p2Tiles;
+        StackPane layer = isP1 ? p1BoardLayer : p2BoardLayer;
+        Rectangle nbrHL = isP1 ? p1NbrHL : p2NbrHL;
+
+        int r0 = Math.max(0, row - 1);
+        int c0 = Math.max(0, col - 1);
+        int r1 = Math.min(SIZE - 1, row + 1);
+        int c1 = Math.min(SIZE - 1, col + 1);
+
+        Bounds a = nodeBoundsInLayer(tiles[r0][c0], layer);
+        Bounds b = nodeBoundsInLayer(tiles[r1][c1], layer);
+
+        Bounds merged = mergeBounds(a, b);
+        positionRect(nbrHL, merged);
+        setRectVisible(nbrHL, true);
+    }
+
+    private void highlightArea(boolean isP1, int r0, int c0, int r1, int c1) {
+        StackPane[][] tiles = isP1 ? p1Tiles : p2Tiles;
+        StackPane layer = isP1 ? p1BoardLayer : p2BoardLayer;
+
+        // using the "row" rectangle as a generic area rectangle (it’s fine; it’s just a visual)
+        Rectangle areaHL = isP1 ? p1RowHL : p2RowHL;
+
+        int rr0 = Math.max(0, Math.min(r0, r1));
+        int cc0 = Math.max(0, Math.min(c0, c1));
+        int rr1 = Math.min(SIZE - 1, Math.max(r0, r1));
+        int cc1 = Math.min(SIZE - 1, Math.max(c0, c1));
+
+        Bounds a = nodeBoundsInLayer(tiles[rr0][cc0], layer);
+        Bounds b = nodeBoundsInLayer(tiles[rr1][cc1], layer);
+
+        Bounds merged = mergeBounds(a, b);
+        positionRect(areaHL, merged);
+        setRectVisible(areaHL, true);
+    }
+
+    private Bounds nodeBoundsInLayer(StackPane node, StackPane layer) {
+        Bounds scene = node.localToScene(node.getBoundsInLocal());
+        return layer.sceneToLocal(scene);
+    }
+
+    private Bounds mergeBounds(Bounds a, Bounds b) {
+        double minX = Math.min(a.getMinX(), b.getMinX());
+        double minY = Math.min(a.getMinY(), b.getMinY());
+        double maxX = Math.max(a.getMaxX(), b.getMaxX());
+        double maxY = Math.max(a.getMaxY(), b.getMaxY());
+        return new BoundingBox(minX, minY, (maxX - minX), (maxY - minY));
+    }
+
+    private void positionRect(Rectangle rect, Bounds b) {
+        if (rect == null || b == null) return;
+        double pad = 4;
+        rect.setX(b.getMinX() - pad);
+        rect.setY(b.getMinY() - pad);
+        rect.setWidth(b.getWidth() + 2 * pad);
+        rect.setHeight(b.getHeight() + 2 * pad);
+        rect.setOpacity(1.0);
+    }
+
+    // ----------------- PULSE ANIMATION -----------------
+
+    private void startPulse() {
+        if (pulse != null) pulse.stop();
+
+        pulse = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> setPulseOpacity(1.0)),
+                new KeyFrame(Duration.seconds(0.55), e -> setPulseOpacity(0.55)),
+                new KeyFrame(Duration.seconds(1.10), e -> setPulseOpacity(1.0))
+        );
+        pulse.setCycleCount(Animation.INDEFINITE);
+        pulse.play();
+    }
+
+    private void setPulseOpacity(double v) {
+        pulseRect(p1RowHL, v);
+        pulseRect(p1ColHL, v);
+        pulseRect(p1CellHL, v);
+        pulseRect(p1NbrHL, v);
+
+        pulseRect(p2RowHL, v);
+        pulseRect(p2ColHL, v);
+        pulseRect(p2CellHL, v);
+        pulseRect(p2NbrHL, v);
+    }
+
+    private void pulseRect(Rectangle r, double v) {
+        if (r != null && r.isVisible()) r.setOpacity(v);
+    }
+
+    // ----------------- HEARTS + INFO BAR -----------------
+
+    private void buildHeartsBar() {
+        if (heartsBox == null) return;
+
+        heartsBox.getChildren().clear();
+
+        for (int i = 0; i < TOTAL_HEART_SLOTS; i++) {
+            boolean isFull = i < sharedHearts;
+            String imgPath = isFull ? "/Images/heart.png" : "/Images/favorite.png";
+
+            var stream = getClass().getResourceAsStream(imgPath);
+            if (stream == null) {
+                System.err.println("Missing resource: " + imgPath);
+                return;
+            }
+
+            Image img = new Image(stream);
+            ImageView iv = new ImageView(img);
+            iv.setFitHeight(50);
+            iv.setFitWidth(50);
+            iv.setPreserveRatio(true);
+
+            StackPane slot = new StackPane(iv);
+            slot.setPrefSize(50, 50);
+            slot.setMinSize(50, 50);
+            slot.setMaxSize(50, 50);
+            StackPane.setMargin(iv, new Insets(0));
+
+            heartsBox.getChildren().add(slot);
+        }
+    }
+
+    private void updateInfoBar() {
+        buildPlayerStats(p1StatsBox, "Player 1", p1Mines, p1Flags, p1Surprises, p1Questions);
+        buildPlayerStats(p2StatsBox, "Player 2", p2Mines, p2Flags, p2Surprises, p2Questions);
+
+        if (turnLabel != null) {
+            turnLabel.setText("Turn: " + (isP1Turn ? "Player 1" : "Player 2"));
+        }
+        if (scoreLabel != null) {
+            scoreLabel.setText("Score: " + score);
+        }
+    }
+
+    private ImageView icon(String path, double size) {
+        var stream = getClass().getResourceAsStream(path);
+        if (stream == null) {
+            System.err.println("Missing resource: " + path);
+            return new ImageView();
+        }
+        ImageView iv = new ImageView(new Image(stream));
+        iv.setFitWidth(size);
+        iv.setFitHeight(size);
+        iv.setPreserveRatio(true);
+        return iv;
+    }
+
+    private HBox statItem(String iconPath, String value) {
+        ImageView iv = icon(iconPath, 14);
+        Label valueLbl = new Label(value);
+        valueLbl.getStyleClass().add("stats-value");
+
+        HBox item = new HBox(4, iv, valueLbl);
+        item.setAlignment(Pos.CENTER_LEFT);
+        item.setPickOnBounds(false);
+        return item;
+    }
+
+    private Label sep() {
+        Label l = new Label("|");
+        l.getStyleClass().add("stats-sep");
+        return l;
+    }
+
+    private void buildPlayerStats(HBox box, String nickname, int mines, String flags, int surprises, int questions) {
+        if (box == null) return;
+
+        box.getChildren().clear();
+
+        Label name = new Label(nickname + ",");
+        name.getStyleClass().add("player-name");
+
+        box.getChildren().add(name);
+        box.getChildren().add(sep());
+
+        box.getChildren().add(statItem("/Images/bomb.png", String.valueOf(mines)));
+        box.getChildren().add(sep());
+
+        box.getChildren().add(statItem("/Images/red-flag.png", String.valueOf(flags)));
+        box.getChildren().add(sep());
+
+        box.getChildren().add(statItem("/Images/giftbox.png", String.valueOf(surprises)));
+        box.getChildren().add(sep());
+
+        box.getChildren().add(statItem("/Images/question-mark.png", String.valueOf(questions)));
+    }
+
+    // ----------------- END OF PART 2 -----------------
+    // Part 3 starts with: buildSteps() + board cell rendering helpers + used overlay + activations (question/surprise).
+
+
+    // ----------------- TOUR STEPS -----------------
 
     private void buildSteps() {
         steps.clear();
@@ -308,7 +644,9 @@ public class HowToPlayController {
                         "Placing flags does NOT end the turn.",
                 () -> {
                     hideAllHighlights();
-                    setSnapshot(10, "0/3", 6, 2, 10, "0/3", 6, 2, 10, true, 0);
+                    setSnapshot(10, "0/3", 6, 2,
+                            10, "0/3", 6, 2,
+                            10, true, 0);
                     highlightCell(true, 4, 4);
                 }
         ));
@@ -319,7 +657,9 @@ public class HowToPlayController {
                         "Even though multiple cells open, it still counts as ONE action and ends the turn.",
                 () -> {
                     hideAllHighlights();
-                    setSnapshot(10, "0/3", 6, 2, 10, "0/3", 6, 2, 10, true, 0);
+                    setSnapshot(10, "0/3", 6, 2,
+                            10, "0/3", 6, 2,
+                            10, true, 0);
 
                     setEmptyRevealed(p1Tiles[4][4]); markRevealed(true, 4, 4, DemoCellType.EMPTY);
                     setEmptyRevealed(p1Tiles[4][5]); markRevealed(true, 4, 5, DemoCellType.EMPTY);
@@ -340,7 +680,9 @@ public class HowToPlayController {
                 "Because Player 1 performed a turn-ending action (Reveal), the turn switches to Player 2.",
                 () -> {
                     hideAllHighlights();
-                    setSnapshot(10, "0/3", 6, 2, 10, "0/3", 6, 2, 10, false, 0);
+                    setSnapshot(10, "0/3", 6, 2,
+                            10, "0/3", 6, 2,
+                            10, false, 0);
                     highlightCell(false, 4, 4);
                 }
         ));
@@ -350,7 +692,9 @@ public class HowToPlayController {
                 "Player 2 places a flag. Flags do NOT end the turn, so Player 2 can keep placing more flags or choose another action.",
                 () -> {
                     hideAllHighlights();
-                    setSnapshot(10, "0/3", 6, 2, 10, "1/3", 6, 2, 10, false, 0);
+                    setSnapshot(10, "0/3", 6, 2,
+                            10, "1/3", 6, 2,
+                            10, false, 0);
 
                     setFlag(p2Tiles[4][4]); markFlag(false, 4, 4);
                     highlightCell(false, 4, 4);
@@ -362,7 +706,9 @@ public class HowToPlayController {
                 "Player 2 places another flag. Still the same turn (flags do NOT switch turns).",
                 () -> {
                     hideAllHighlights();
-                    setSnapshot(10, "0/3", 6, 2, 10, "2/3", 6, 2, 10, false, 0);
+                    setSnapshot(10, "0/3", 6, 2,
+                            10, "2/3", 6, 2,
+                            10, false, 0);
 
                     setFlag(p2Tiles[4][4]); markFlag(false, 4, 4);
                     setFlag(p2Tiles[4][5]); markFlag(false, 4, 5);
@@ -376,7 +722,9 @@ public class HowToPlayController {
                         "After a reveal, the turn ends and switches.",
                 () -> {
                     hideAllHighlights();
-                    setSnapshot(10, "0/3", 6, 2, 10, "2/3", 6, 2, 10, false, 0);
+                    setSnapshot(10, "0/3", 6, 2,
+                            10, "2/3", 6, 2,
+                            10, false, 0);
 
                     setFlag(p2Tiles[4][4]); markFlag(false, 4, 4);
                     setFlag(p2Tiles[4][5]); markFlag(false, 4, 5);
@@ -393,7 +741,9 @@ public class HowToPlayController {
                 "After Player 2 revealed a cell, the turn switches to Player 1.",
                 () -> {
                     hideAllHighlights();
-                    setSnapshot(10, "0/3", 6, 2, 10, "0/3", 6, 2, 10, true, 0);
+                    setSnapshot(10, "0/3", 6, 2,
+                            10, "0/3", 6, 2,
+                            10, true, 0);
                 }
         ));
 
@@ -413,7 +763,6 @@ public class HowToPlayController {
                             sharedHearts, true, score);
 
                     int r = 1, c = 1;
-
                     setMine(p1Tiles[r][c]);
                     markRevealed(true, r, c, DemoCellType.MINE);
 
@@ -422,9 +771,6 @@ public class HowToPlayController {
                     setSnapshot(p1Mines, p1Flags, p1Questions, p1Surprises,
                             p2Mines, p2Flags, p2Questions, p2Surprises,
                             sharedHearts, true, score);
-
-                    buildHeartsBar();
-                    updateInfoBar();
 
                     highlightCell(true, r, c);
                 }
@@ -531,254 +877,7 @@ public class HowToPlayController {
         ));
     }
 
-    private void runStep(int idx) {
-        if (idx < 0 || idx >= steps.size()) return;
-
-        stopAutoplayIfRunning();
-
-        stepIndex = idx;
-
-        resetAll(true);
-
-        TourStep s = steps.get(idx);
-
-        stepTitle.setText(s.title);
-        stepBody.setText(s.body);
-        stepCounter.setText((idx + 1) + " / " + steps.size());
-
-        prevBtn.setDisable(idx == 0);
-        nextBtn.setDisable(idx == steps.size() - 1);
-
-        s.action.run();
-
-        applyUsedCellsVisuals();
-    }
-
-    private void runStepInternal(int idx, boolean allowPopups) {
-        TourStep s = steps.get(idx);
-
-        stepTitle.setText(s.title);
-        stepBody.setText(s.body);
-        stepCounter.setText((idx + 1) + " / " + steps.size());
-
-        prevBtn.setDisable(idx == 0);
-        nextBtn.setDisable(idx == steps.size() - 1);
-
-        this.tutorialPopupsEnabled = allowPopups;
-
-        s.action.run();
-        applyUsedCellsVisuals();
-    }
-
-    // FIX: do not run last step twice
-    private void replayToStep(int targetIdx) {
-        resetAll(true);
-
-        for (int i = 0; i < targetIdx; i++) {
-            runStepInternal(i, false);
-        }
-
-        stepIndex = targetIdx;
-        runStepInternal(targetIdx, true);
-    }
-
-    private void resetAll(boolean resetCounters) {
-        for (int r = 0; r < SIZE; r++) {
-            for (int c = 0; c < SIZE; c++) {
-                setHidden(p1Tiles[r][c]);
-                setHidden(p2Tiles[r][c]);
-
-                p1Type[r][c] = DemoCellType.HIDDEN;
-                p2Type[r][c] = DemoCellType.HIDDEN;
-
-                p1Revealed[r][c] = false;
-                p2Revealed[r][c] = false;
-
-                p1Used[r][c] = false;
-                p2Used[r][c] = false;
-            }
-        }
-        hideAllHighlights();
-
-        if (resetCounters) {
-            p1Mines = START_MINES;
-            p1Flags = START_FLAGS;
-            p1Questions = START_QUESTIONS;
-            p1Surprises = START_SURPRISES;
-
-            p2Mines = START_MINES;
-            p2Flags = START_FLAGS;
-            p2Questions = START_QUESTIONS;
-            p2Surprises = START_SURPRISES;
-
-            sharedHearts = START_HEARTS;
-            score = 0;
-
-            updateInfoBar();
-            buildHeartsBar();
-        }
-    }
-
-
-    private void setTurn(boolean p1Turn) {
-        p1Grid.getStyleClass().removeAll("active-board", "inactive-board");
-        p2Grid.getStyleClass().removeAll("active-board", "inactive-board");
-
-        if (p1Turn) {
-            p1Grid.getStyleClass().add("active-board");
-            p2Grid.getStyleClass().add("inactive-board");
-        } else {
-            p2Grid.getStyleClass().add("active-board");
-            p1Grid.getStyleClass().add("inactive-board");
-        }
-
-        isP1Turn = p1Turn;
-        updateInfoBar();
-    }
-
-    private void setSnapshot(
-            int p1Mines, String p1Flags, int p1Questions, int p1Surprises,
-            int p2Mines, String p2Flags, int p2Questions, int p2Surprises,
-            int hearts,
-            boolean p1Turn,
-            int score
-    ) {
-        this.p1Mines = p1Mines;
-        this.p1Flags = p1Flags;
-        this.p1Questions = p1Questions;
-        this.p1Surprises = p1Surprises;
-
-        this.p2Mines = p2Mines;
-        this.p2Flags = p2Flags;
-        this.p2Questions = p2Questions;
-        this.p2Surprises = p2Surprises;
-
-        this.sharedHearts = hearts;
-        this.score = score;
-
-        setTurn(p1Turn);
-        buildHeartsBar();
-        updateInfoBar();
-    }
-
-    private void hideAllHighlights() {
-        setRectVisible(p1RowHL, false);
-        setRectVisible(p1ColHL, false);
-        setRectVisible(p1CellHL, false);
-        setRectVisible(p1NbrHL, false);
-
-        setRectVisible(p2RowHL, false);
-        setRectVisible(p2ColHL, false);
-        setRectVisible(p2CellHL, false);
-        setRectVisible(p2NbrHL, false);
-    }
-
-    private void setRectVisible(Rectangle r, boolean on) {
-        if (r == null) return;
-        r.setVisible(on);
-        r.setManaged(false);
-        r.setMouseTransparent(true);
-        r.setOpacity(on ? 1.0 : 0.0);
-    }
-
-    private void highlightCell(boolean isP1, int row, int col) {
-        StackPane[][] tiles = isP1 ? p1Tiles : p2Tiles;
-        StackPane layer = isP1 ? p1BoardLayer : p2BoardLayer;
-        Rectangle cellHL = isP1 ? p1CellHL : p2CellHL;
-
-        Bounds b = nodeBoundsInLayer(tiles[row][col], layer);
-        positionRect(cellHL, b);
-        setRectVisible(cellHL, true);
-    }
-
-    private void highlightNeighborhood(boolean isP1, int row, int col) {
-        StackPane[][] tiles = isP1 ? p1Tiles : p2Tiles;
-        StackPane layer = isP1 ? p1BoardLayer : p2BoardLayer;
-        Rectangle nbrHL = isP1 ? p1NbrHL : p2NbrHL;
-
-        int r0 = Math.max(0, row - 1);
-        int c0 = Math.max(0, col - 1);
-        int r1 = Math.min(SIZE - 1, row + 1);
-        int c1 = Math.min(SIZE - 1, col + 1);
-
-        Bounds a = nodeBoundsInLayer(tiles[r0][c0], layer);
-        Bounds b = nodeBoundsInLayer(tiles[r1][c1], layer);
-
-        Bounds merged = mergeBounds(a, b);
-        positionRect(nbrHL, merged);
-        setRectVisible(nbrHL, true);
-    }
-
-    private void highlightArea(boolean isP1, int r0, int c0, int r1, int c1) {
-        StackPane[][] tiles = isP1 ? p1Tiles : p2Tiles;
-        StackPane layer = isP1 ? p1BoardLayer : p2BoardLayer;
-
-        Rectangle areaHL = isP1 ? p1RowHL : p2RowHL;
-
-        int rr0 = Math.max(0, Math.min(r0, r1));
-        int cc0 = Math.max(0, Math.min(c0, c1));
-        int rr1 = Math.min(SIZE - 1, Math.max(r0, r1));
-        int cc1 = Math.min(SIZE - 1, Math.max(c0, c1));
-
-        Bounds a = nodeBoundsInLayer(tiles[rr0][cc0], layer);
-        Bounds b = nodeBoundsInLayer(tiles[rr1][cc1], layer);
-
-        Bounds merged = mergeBounds(a, b);
-        positionRect(areaHL, merged);
-        setRectVisible(areaHL, true);
-    }
-
-    private Bounds nodeBoundsInLayer(StackPane node, StackPane layer) {
-        Bounds scene = node.localToScene(node.getBoundsInLocal());
-        return layer.sceneToLocal(scene);
-    }
-
-    private Bounds mergeBounds(Bounds a, Bounds b) {
-        double minX = Math.min(a.getMinX(), b.getMinX());
-        double minY = Math.min(a.getMinY(), b.getMinY());
-        double maxX = Math.max(a.getMaxX(), b.getMaxX());
-        double maxY = Math.max(a.getMaxY(), b.getMaxY());
-        return new BoundingBox(minX, minY, (maxX - minX), (maxY - minY));
-    }
-
-    private void positionRect(Rectangle rect, Bounds b) {
-        if (rect == null || b == null) return;
-        double pad = 4;
-        rect.setX(b.getMinX() - pad);
-        rect.setY(b.getMinY() - pad);
-        rect.setWidth(b.getWidth() + 2 * pad);
-        rect.setHeight(b.getHeight() + 2 * pad);
-        rect.setOpacity(1.0);
-    }
-
-    private void startPulse() {
-        if (pulse != null) pulse.stop();
-
-        pulse = new Timeline(
-                new KeyFrame(Duration.ZERO, e -> setPulseOpacity(1.0)),
-                new KeyFrame(Duration.seconds(0.55), e -> setPulseOpacity(0.55)),
-                new KeyFrame(Duration.seconds(1.10), e -> setPulseOpacity(1.0))
-        );
-        pulse.setCycleCount(Animation.INDEFINITE);
-        pulse.play();
-    }
-
-    private void setPulseOpacity(double v) {
-        pulseRect(p1RowHL, v);
-        pulseRect(p1ColHL, v);
-        pulseRect(p1CellHL, v);
-        pulseRect(p1NbrHL, v);
-
-        pulseRect(p2RowHL, v);
-        pulseRect(p2ColHL, v);
-        pulseRect(p2CellHL, v);
-        pulseRect(p2NbrHL, v);
-    }
-
-    private void pulseRect(Rectangle r, double v) {
-        if (r != null && r.isVisible()) r.setOpacity(v);
-    }
-
+    // ----------------- CELL UI HELPERS -----------------
 
     private Button btn(StackPane tile) {
         return (Button) tile.getChildren().get(0);
@@ -835,7 +934,7 @@ public class HowToPlayController {
         removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
-        setIcon(b, "/Images/red-flag.png", 22);
+        setIcon(b, "/Images/red-flag.png", TILE_ICON_SIZE);
         b.getStyleClass().add("cell-flagged");
     }
 
@@ -843,7 +942,7 @@ public class HowToPlayController {
         removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
-        setIcon(b, "/Images/question-mark.png", 20);
+        setIcon(b, "/Images/question-mark.png", TILE_ICON_SIZE);
         b.getStyleClass().addAll("cell-revealed", "cell-question");
     }
 
@@ -851,7 +950,7 @@ public class HowToPlayController {
         removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
-        setIcon(b, "/Images/giftbox.png", 20);
+        setIcon(b, "/Images/giftbox.png", TILE_ICON_SIZE);
         b.getStyleClass().addAll("cell-revealed", "cell-surprise");
     }
 
@@ -859,10 +958,11 @@ public class HowToPlayController {
         removeUsedOverlay(tile);
         Button b = btn(tile);
         clearCellState(b);
-        setIcon(b, "/Images/bomb.png", 22);
+        setIcon(b, "/Images/bomb.png", TILE_ICON_SIZE);
         b.getStyleClass().addAll("cell-revealed", "cell-mine");
     }
 
+    // ----------------- USED OVERLAY -----------------
 
     private void applyUsedOverlay(StackPane tile) {
         for (Node n : tile.getChildren()) {
@@ -887,7 +987,6 @@ public class HowToPlayController {
 
     private void setUsed(StackPane tile) {
         Button b = btn(tile);
-
         b.setDisable(true);
 
         if (!b.getStyleClass().contains("cell-used")) {
@@ -909,6 +1008,8 @@ public class HowToPlayController {
             }
         }
     }
+
+    // ----------------- DEMO STATE HELPERS -----------------
 
     private void markRevealed(boolean isP1, int r, int c, DemoCellType t) {
         if (isP1) {
@@ -957,104 +1058,11 @@ public class HowToPlayController {
         else p2Mines = Math.max(0, p2Mines - 1);
 
         sharedHearts = clamp(sharedHearts - 1, 0, TOTAL_HEART_SLOTS);
+        buildHeartsBar();
+        updateInfoBar();
     }
 
-    private ImageView icon(String path, double size) {
-        var stream = getClass().getResourceAsStream(path);
-        if (stream == null) {
-            System.err.println("Missing resource: " + path);
-            return new ImageView();
-        }
-        ImageView iv = new ImageView(new Image(stream));
-        iv.setFitWidth(size);
-        iv.setFitHeight(size);
-        iv.setPreserveRatio(true);
-        return iv;
-    }
-
-    private HBox statItem(String iconPath, String value) {
-        ImageView iv = icon(iconPath, 18);
-
-        Label valueLbl = new Label(value);
-        valueLbl.getStyleClass().add("stats-value");
-
-        HBox item = new HBox(6, iv, valueLbl);
-        item.setAlignment(Pos.CENTER_LEFT);
-        item.setPickOnBounds(false);
-        return item;
-    }
-
-    private Label sep() {
-        Label l = new Label("|");
-        l.getStyleClass().add("stats-sep");
-        return l;
-    }
-
-    private void buildPlayerStats(HBox box, String nickname, int mines, String flags, int surprises, int questions) {
-        if (box == null) return;
-
-        box.getChildren().clear();
-
-        Label name = new Label(nickname + ",");
-        name.getStyleClass().add("player-name");
-
-        box.getChildren().add(name);
-        box.getChildren().add(sep());
-
-        box.getChildren().add(statItem("/Images/bomb.png", String.valueOf(mines)));
-        box.getChildren().add(sep());
-
-        box.getChildren().add(statItem("/Images/red-flag.png", String.valueOf(flags)));
-        box.getChildren().add(sep());
-
-        box.getChildren().add(statItem("/Images/giftbox.png", String.valueOf(surprises)));
-        box.getChildren().add(sep());
-
-        box.getChildren().add(statItem("/Images/question-mark.png", String.valueOf(questions)));
-    }
-
-    private void updateInfoBar() {
-        buildPlayerStats(p1StatsBox, "Player 1", p1Mines, p1Flags, p1Surprises, p1Questions);
-        buildPlayerStats(p2StatsBox, "Player 2", p2Mines, p2Flags, p2Surprises, p2Questions);
-
-        turnLabel.setText("Turn: " + (isP1Turn ? "Player 1" : "Player 2"));
-
-        if (scoreLabel != null) {
-            scoreLabel.setText("Score: " + score);
-        }
-    }
-
-    private void buildHeartsBar() {
-        if (heartsBox == null) return;
-
-        heartsBox.getChildren().clear();
-
-        for (int i = 0; i < TOTAL_HEART_SLOTS; i++) {
-            boolean isFull = i < sharedHearts;
-            String imgPath = isFull ? "/Images/heart.png" : "/Images/favorite.png";
-
-            var stream = getClass().getResourceAsStream(imgPath);
-            if (stream == null) {
-                System.err.println("Missing resource: " + imgPath);
-                return;
-            }
-
-            Image img = new Image(stream);
-            ImageView iv = new ImageView(img);
-            iv.setFitHeight(50);
-            iv.setFitWidth(50);
-            iv.setPreserveRatio(true);
-
-            StackPane slot = new StackPane(iv);
-            slot.setPrefSize(50, 50);
-            slot.setMinSize(50, 50);
-            slot.setMaxSize(50, 50);
-            StackPane.setMargin(iv, new Insets(0));
-
-            heartsBox.getChildren().add(slot);
-        }
-    }
-
+    // ----------------- CLICK FEEDBACK -----------------
 
     private void playClickFeedback(boolean isP1, int row, int col, Runnable after) {
         StackPane tile = (isP1 ? p1Tiles : p2Tiles)[row][col];
@@ -1081,6 +1089,7 @@ public class HowToPlayController {
         pt.play();
     }
 
+    // ----------------- SMALL DATA TYPES -----------------
 
     private static final class TourStep {
         final String title;
@@ -1104,7 +1113,7 @@ public class HowToPlayController {
         }
     }
 
-    // central rules (keeps your exact logic; easy/medium wrong is OR 50%)
+    // central rules (keeps the same behavior described in the tutorial)
     private Outcome computeOutcome(String diff, boolean correct) {
         String d = (diff == null) ? "easy" : diff.toLowerCase();
 
@@ -1117,7 +1126,7 @@ public class HowToPlayController {
             };
         }
 
-        // wrong
+        // wrong (easy/medium has OR 50%)
         return switch (d) {
             case "easy" -> rng.nextBoolean() ? new Outcome(-3, 0) : new Outcome(0, 0);
             case "medium" -> rng.nextBoolean() ? new Outcome(-6, 0) : new Outcome(0, 0);
@@ -1126,6 +1135,10 @@ public class HowToPlayController {
         };
     }
 
+    // ----------------- END OF PART 3 -----------------
+    // Part 4 starts with: activateQuestionHowTo / activateSurpriseHowTo + dialogs + background helpers.
+
+    // ----------------- ACTIVATIONS (HowToPlay / Real-game-like) -----------------
 
     private void activateQuestionHowTo(boolean isP1, int row, int col) {
         if (!isQuestionCell(isP1, row, col)) return;
@@ -1137,20 +1150,22 @@ public class HowToPlayController {
         int scoreBefore = score;
         int livesBefore = sharedHearts;
 
-        // activation cost always applied first
+        // Activation cost is always applied first (easy-mode behavior in tutorial)
         score -= ACTIVATION_COST_EASY;
         buildHeartsBar();
         updateInfoBar();
 
         boolean autoMode = isAutoPlaying;
 
+        // In autoplay: buttons disabled + auto-close + auto-pick (correct)
+        // In manual: interactive dialog
         showQuestionPickDialog(
                 q,
-                true,                 // tutorial mode: highlight correct answer
-                !autoMode,            // interactive only if NOT autoplay
+                true,                    // tutorialMode: highlight correct answer
+                !autoMode,               // interactive only if NOT autoplay
                 autoMode ? QUESTION_READ_DELAY : null,
                 picked -> {
-                    // On auto-pick, we always pick correctIdx; on manual pick, picked may be -1? (we enforce >=0 there)
+                    // If user closed (manual) OR got -1 somehow -> still mark used and return
                     if (picked < 0) {
                         markUsed(isP1, row, col);
                         setUsed(isP1 ? p1Tiles[row][col] : p2Tiles[row][col]);
@@ -1184,11 +1199,8 @@ public class HowToPlayController {
                             !autoMode
                     );
 
-                    if (autoMode) {
-                        showStage(result, QUESTION_RESULT_DELAY);
-                    } else {
-                        showStage(result, null);
-                    }
+                    if (autoMode) showStage(result, QUESTION_RESULT_DELAY);
+                    else showStage(result, null);
                 }
         );
     }
@@ -1201,6 +1213,7 @@ public class HowToPlayController {
         int scoreBefore = score;
         int livesBefore = sharedHearts;
 
+        // activation cost
         score -= ACTIVATION_COST_EASY;
 
         boolean good = DEMO_SURPRISE_IS_GOOD;
@@ -1225,6 +1238,7 @@ public class HowToPlayController {
                     ACTIVATION_COST_EASY,
                     !isAutoPlaying
             );
+
             if (isAutoPlaying) showStage(st, SURPRISE_READ_DELAY);
             else showStage(st, null);
         };
@@ -1232,137 +1246,122 @@ public class HowToPlayController {
         afterFxPulse(showDialog);
     }
 
-    // interactive = true  -> buttons enabled; user picks (A-D) or closes -> -1
-    // interactive = false -> buttons disabled; auto-close and auto-pick correct
- // interactive = true  -> buttons enabled; user picks (A-D) or closes -> -1 (callback)
- // interactive = false -> buttons disabled; auto-close and auto-pick correct (callback)
- private void showQuestionPickDialog(
-         model.Question q,
-         boolean tutorialMode,
-         boolean interactive,
-         Double autoCloseSeconds,
-         IntConsumer onPick
- ) {
-     Objects.requireNonNull(q, "question must not be null");
-     Objects.requireNonNull(onPick, "onPick must not be null");
+    // ----------------- QUESTION PICK DIALOG -----------------
+    // interactive = true  -> user can pick A-D or close -> -1
+    // interactive = false -> buttons disabled; auto-close and auto-pick correct (callback)
 
-     // Always create/modify/show stage on FX thread
-     Platform.runLater(() -> {
-         Stage stage = new Stage();
-         stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+    private void showQuestionPickDialog(
+            model.Question q,
+            boolean tutorialMode,
+            boolean interactive,
+            Double autoCloseSeconds,
+            IntConsumer onPick
+    ) {
+        Objects.requireNonNull(q, "question must not be null");
+        Objects.requireNonNull(onPick, "onPick must not be null");
 
-         Window owner = ownerWindow();
-         if (owner != null) stage.initOwner(owner);
+        Platform.runLater(() -> {
+            Stage stage = new Stage();
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
 
-         stage.setTitle("Question");
-         stage.setResizable(false);
+            Window owner = ownerWindow();
+            if (owner != null) stage.initOwner(owner);
 
-         VBox root = new VBox(12);
-        
-         root.setPadding(new Insets(18));
+            stage.setTitle("Question");
+            stage.setResizable(false);
 
-/*
-         if (ThemeManager.getTheme() == Theme.WOLF) {
-             root.setStyle(bgStyle(resolveBgUrl()));
-         }
-*/
-         Label title = new Label(
-                 "You got a " + (q.getDifficulty() == null ? "Question" : q.getDifficulty() + " Question") + "!"
-         );
-         title.setStyle("-fx-text-fill: white; -fx-font-size: 24px; -fx-font-family: 'Copperplate Gothic Bold';");
+            VBox rootBox = new VBox(12);
+            rootBox.setPadding(new Insets(18));
 
-         Label questionText = new Label(q.getText());
-         questionText.setWrapText(true);
-         questionText.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-family: 'Copperplate Gothic Light';");
+            Label title = new Label(
+                    "You got a " + (q.getDifficulty() == null ? "Question" : q.getDifficulty() + " Question") + "!"
+            );
+            title.setStyle("-fx-text-fill: white; -fx-font-size: 24px; -fx-font-family: 'Copperplate Gothic Bold';");
 
-         Label hint = new Label("Tutorial mode: correct answer is highlighted.");
-         hint.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
-         hint.setVisible(tutorialMode);
-         hint.setManaged(tutorialMode);
+            Label questionText = new Label(q.getText());
+            questionText.setWrapText(true);
+            questionText.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-family: 'Copperplate Gothic Light';");
 
-         int correctIdx = q.getCorrectOption();
+            Label hint = new Label("Tutorial mode: correct answer is highlighted.");
+            hint.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
+            hint.setVisible(tutorialMode);
+            hint.setManaged(tutorialMode);
 
-         Button btnA = createAnswerBtn("A", q.getOptA());
-         Button btnB = createAnswerBtn("B", q.getOptB());
-         Button btnC = createAnswerBtn("C", q.getOptC());
-         Button btnD = createAnswerBtn("D", q.getOptD());
+            int correctIdx = q.getCorrectOption();
 
-         if (tutorialMode) {
-             styleAnswerForTutorial(btnA, 0 == correctIdx);
-             styleAnswerForTutorial(btnB, 1 == correctIdx);
-             styleAnswerForTutorial(btnC, 2 == correctIdx);
-             styleAnswerForTutorial(btnD, 3 == correctIdx);
-         }
+            Button btnA = createAnswerBtn("A", q.getOptA());
+            Button btnB = createAnswerBtn("B", q.getOptB());
+            Button btnC = createAnswerBtn("C", q.getOptC());
+            Button btnD = createAnswerBtn("D", q.getOptD());
 
-         VBox answersBox = new VBox(10, btnA, btnB, btnC, btnD);
-         root.getChildren().addAll(title, questionText, hint, answersBox);
+            if (tutorialMode) {
+                styleAnswerForTutorial(btnA, 0 == correctIdx);
+                styleAnswerForTutorial(btnB, 1 == correctIdx);
+                styleAnswerForTutorial(btnC, 2 == correctIdx);
+                styleAnswerForTutorial(btnD, 3 == correctIdx);
+            }
 
-         // Single-shot result delivery (prevents double-callback bugs)
-         final boolean[] delivered = { false };
-         Runnable deliverMinusOne = () -> {
-             if (delivered[0]) return;
-             delivered[0] = true;
-             onPick.accept(-1);
-         };
+            VBox answersBox = new VBox(10, btnA, btnB, btnC, btnD);
+            rootBox.getChildren().addAll(title, questionText, hint, answersBox);
 
-         // Close handler -> treat as "no pick"
-         stage.setOnCloseRequest(e -> deliverMinusOne.run());
-         stage.setOnHidden(e -> deliverMinusOne.run()); // covers programmatic close too
+            // single-shot delivery to avoid double callbacks
+            final boolean[] delivered = { false };
 
-         if (interactive) {
-             btnA.setOnAction(e -> { if (!delivered[0]) { delivered[0] = true; stage.close(); onPick.accept(0); } });
-             btnB.setOnAction(e -> { if (!delivered[0]) { delivered[0] = true; stage.close(); onPick.accept(1); } });
-             btnC.setOnAction(e -> { if (!delivered[0]) { delivered[0] = true; stage.close(); onPick.accept(2); } });
-             btnD.setOnAction(e -> { if (!delivered[0]) { delivered[0] = true; stage.close(); onPick.accept(3); } });
+            Runnable deliverMinusOneIfNotDelivered = () -> {
+                if (delivered[0]) return;
+                delivered[0] = true;
+                onPick.accept(-1);
+            };
 
-             Scene scene = new Scene(root, 380, 350);
-             Theme current = ThemeManager.getTheme();
-             if (current == Theme.WOLF) {
-                 root.setStyle(bgStyle(resolveBgUrl()));
-             } else {
-                 ThemeManager.applyTheme(scene);
-     			}
-             
-             stage.setScene(scene);
-             stage.centerOnScreen();
-             stage.show(); // NOT showAndWait
-             return;
-         }
+            stage.setOnCloseRequest(e -> deliverMinusOneIfNotDelivered.run());
+            stage.setOnHidden(e -> deliverMinusOneIfNotDelivered.run());
 
-         // auto mode: disable and close automatically
-         btnA.setDisable(true);
-         btnB.setDisable(true);
-         btnC.setDisable(true);
-         btnD.setDisable(true);
+            Scene scene = new Scene(rootBox, 380, 350);
 
-         Label closing = new Label("Closing automatically...");
-         closing.setStyle("-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 13px;");
-         root.getChildren().add(closing);
+            Theme current = ThemeManager.getTheme();
+            if (current == Theme.WOLF) {
+                rootBox.setStyle(bgStyle(resolveBgUrl()));
+            } else {
+                ThemeManager.applyTheme(scene);
+            }
 
-         Scene scene = new Scene(root, 380, 365);
-         
-         Theme current = ThemeManager.getTheme();
-         if (current == Theme.WOLF) {
-             root.setStyle(bgStyle(resolveBgUrl()));
-         } else {
-             ThemeManager.applyTheme(scene);
- 			}
-         stage.setScene(scene);
-         stage.centerOnScreen();
-         stage.show();
+            stage.setScene(scene);
+            stage.centerOnScreen();
 
-         double seconds = (autoCloseSeconds == null) ? QUESTION_READ_DELAY : autoCloseSeconds;
-         PauseTransition pt = new PauseTransition(Duration.seconds(seconds));
-         pt.setOnFinished(e -> {
-             if (delivered[0]) return;
-             delivered[0] = true;
-             stage.close();
-             onPick.accept(correctIdx);
-         });
-         pt.play();
-     });
- }
+            if (interactive) {
+                btnA.setOnAction(e -> { if (!delivered[0]) { delivered[0] = true; stage.close(); onPick.accept(0); } });
+                btnB.setOnAction(e -> { if (!delivered[0]) { delivered[0] = true; stage.close(); onPick.accept(1); } });
+                btnC.setOnAction(e -> { if (!delivered[0]) { delivered[0] = true; stage.close(); onPick.accept(2); } });
+                btnD.setOnAction(e -> { if (!delivered[0]) { delivered[0] = true; stage.close(); onPick.accept(3); } });
 
+                stage.show();
+                return;
+            }
+
+            // autoplay mode: disable options, add countdown line, then auto-pick correct
+            btnA.setDisable(true);
+            btnB.setDisable(true);
+            btnC.setDisable(true);
+            btnD.setDisable(true);
+
+            Label closing = new Label("Closing automatically...");
+            closing.setStyle("-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 13px;");
+            rootBox.getChildren().add(closing);
+
+            stage.setHeight(365);
+            stage.show();
+
+            double seconds = (autoCloseSeconds == null) ? QUESTION_READ_DELAY : autoCloseSeconds;
+            PauseTransition pt = new PauseTransition(Duration.seconds(seconds));
+            pt.setOnFinished(e -> {
+                if (delivered[0]) return;
+                delivered[0] = true;
+                stage.close();
+                onPick.accept(correctIdx);
+            });
+            pt.play();
+        });
+    }
 
     private Button createAnswerBtn(String letter, String text) {
         if (text == null) text = "";
@@ -1401,6 +1400,7 @@ public class HowToPlayController {
         """.formatted(border, bg));
     }
 
+    // ----------------- QUESTION RESULT STAGE -----------------
 
     private Stage buildQuestionResultStage(
             model.Question q,
@@ -1417,16 +1417,22 @@ public class HowToPlayController {
 
         Stage stage = new Stage();
         stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+        Window owner = ownerWindow();
+        if (owner != null) stage.initOwner(owner);
+
         stage.setTitle("Question Result");
         stage.setResizable(false);
 
         AnchorPane root = new AnchorPane();
+
         Theme current = ThemeManager.getTheme();
         if (current == Theme.WOLF) {
             root.setStyle(bgStyle(resolveBgUrl()));
         } else {
-			root.setStyle(current.getCssPath());
-			}
+            // If you have a theme.css file, it will be added to the scene below.
+            // Here we keep root clean and rely on ThemeManager + stylesheets.
+            root.setStyle("-fx-background-color: rgba(0,0,0,0.35);");
+        }
 
         boolean isCorrectChosen = (chosenIdx == correctIdx);
 
@@ -1443,7 +1449,7 @@ public class HowToPlayController {
         Label beforeAfter = new Label(
                 "Score: " + scoreBefore + " → " + scoreAfter + "\n" +
                         "Lives: " + livesBefore + "/10 → " + livesAfter + "/10\n" +
-                        "Activation cost: -" + activationCost + " points (since we're in easy mode)"
+                        "Activation cost: -" + activationCost + " points (easy mode)"
         );
         beforeAfter.setStyle("""
             -fx-text-fill: rgba(255,255,255,0.90);
@@ -1483,7 +1489,6 @@ public class HowToPlayController {
 
             AnchorPane.setBottomAnchor(ok, 22.0);
             AnchorPane.setRightAnchor(ok, 26.0);
-
             root.getChildren().add(ok);
         } else {
             Label closing = new Label("Closing automatically...");
@@ -1494,14 +1499,20 @@ public class HowToPlayController {
         }
 
         Scene scene = new Scene(root, 580, 450);
-        scene.getStylesheets().add(
-                HowToPlayController.class.getResource("/css/theme.css").toExternalForm()
-        );
+        try {
+            scene.getStylesheets().add(
+                    HowToPlayController.class.getResource("/css/theme.css").toExternalForm()
+            );
+        } catch (Exception ignored) { }
 
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ESCAPE) stage.close();
             if (e.getCode() == KeyCode.ENTER && showOkButton) stage.close();
         });
+
+        if (current != Theme.WOLF) {
+            ThemeManager.applyTheme(scene);
+        }
 
         stage.setScene(scene);
         stage.centerOnScreen();
@@ -1575,6 +1586,11 @@ public class HowToPlayController {
         return lbl;
     }
 
+    // ----------------- END OF PART 4 -----------------
+    // Part 5 finishes the Surprise stage + ownerWindow/showStage + background helpers + class closing.
+
+
+    // ----------------- SURPRISE RESULT STAGE -----------------
 
     private Stage buildSurpriseStage(
             Window owner,
@@ -1592,13 +1608,13 @@ public class HowToPlayController {
         stage.setResizable(false);
 
         AnchorPane pane = new AnchorPane();
+
         Theme current = ThemeManager.getTheme();
         if (current == Theme.WOLF) {
             pane.setStyle(bgStyle(resolveBgUrl()));
         } else {
-            pane.setStyle(current.getCssPath());
-			}
-
+            pane.setStyle("-fx-background-color: rgba(0,0,0,0.35);");
+        }
 
         Label header = new Label("SURPRISE TUTORIAL RESULT");
         header.setStyle("""
@@ -1615,6 +1631,9 @@ public class HowToPlayController {
 
         Label subtitle = new Label("Activation cost is always applied first.");
         subtitle.setStyle("-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 14px;");
+
+        Label costLine = new Label("Activation cost: -" + activationCost + " score");
+        costLine.setStyle("-fx-text-fill: rgba(255,255,255,0.90); -fx-font-size: 14px;");
 
         Label goodLine = new Label(
                 "GOOD outcome:  Score " + scoreBefore + " → " + scoreAfterGood +
@@ -1645,9 +1664,6 @@ public class HowToPlayController {
             -fx-border-radius: 14;
             -fx-padding: 10 12 10 12;
         """);
-
-        Label costLine = new Label("Activation cost: -" + activationCost + " score");
-        costLine.setStyle("-fx-text-fill: rgba(255,255,255,0.90); -fx-font-size: 14px;");
 
         VBox content = new VBox(14, header, subtitle, costLine, goodLine, badLine);
         content.setPadding(new Insets(26));
@@ -1685,55 +1701,68 @@ public class HowToPlayController {
         }
 
         Scene scene = new Scene(pane, 420, 320);
-        scene.getStylesheets().add(
-                HowToPlayController.class.getResource("/css/theme.css").toExternalForm()
-        );
+        try {
+            scene.getStylesheets().add(
+                    HowToPlayController.class.getResource("/css/theme.css").toExternalForm()
+            );
+        } catch (Exception ignored) { }
 
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ESCAPE) stage.close();
             if (e.getCode() == KeyCode.ENTER && showOkButton) stage.close();
         });
 
+        if (current != Theme.WOLF) {
+            ThemeManager.applyTheme(scene);
+        }
+
         stage.setScene(scene);
         stage.centerOnScreen();
         return stage;
     }
 
+    // ----------------- STAGE OWNER / SHOW HELPERS -----------------
+
     private Window ownerWindow() {
         if (backBtn != null && backBtn.getScene() != null) return backBtn.getScene().getWindow();
         if (nextBtn != null && nextBtn.getScene() != null) return nextBtn.getScene().getWindow();
+        if (prevBtn != null && prevBtn.getScene() != null) return prevBtn.getScene().getWindow();
+        if (playBtn != null && playBtn.getScene() != null) return playBtn.getScene().getWindow();
         return null;
     }
 
+    /**
+     * Shows stage.
+     * - Manual mode: showAndWait (blocking)
+     * - Auto mode: show + close automatically after autoCloseSeconds
+     */
     private void showStage(Stage stage, Double autoCloseSeconds) {
         if (stage == null) return;
 
         Runnable doShow = () -> {
-            // Manual mode (blocking)
             if (autoCloseSeconds == null) {
                 stage.showAndWait();
                 return;
             }
 
-            // Auto mode (non-blocking)
             stage.show();
 
             PauseTransition pt = new PauseTransition(Duration.seconds(autoCloseSeconds));
-            pt.setOnFinished(e -> { if (stage.isShowing()) stage.close(); });
+            pt.setOnFinished(e -> {
+                if (stage.isShowing()) stage.close();
+            });
             pt.play();
         };
 
-        // Always defer: avoids "not allowed during animation/layout processing"
         Platform.runLater(doShow);
     }
+
+    // ----------------- BACKGROUND HELPERS (Wolf theme background image) -----------------
 
     private String resolveBgUrl() {
         var url = HowToPlayController.class.getResource(BG_PRIMARY);
         if (url == null) url = HowToPlayController.class.getResource(BG_FALLBACK);
-        if (url == null) {
-            // last resort: no background
-            return "";
-        }
+        if (url == null) return "";
         return url.toExternalForm();
     }
 
@@ -1746,4 +1775,6 @@ public class HowToPlayController {
             -fx-background-size: cover;
         """.formatted(bgUrl);
     }
+
+    // ----------------- END OF CLASS -----------------
 }
