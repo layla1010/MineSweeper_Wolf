@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.SysData;
 import util.SoundManager;
@@ -21,7 +22,8 @@ import util.UIAnimations;
 public class FiltersController {
 
     // ====== FXML ======
-    @FXML private GridPane rootGrid;
+    //@FXML private GridPane rootGrid;
+	@FXML private StackPane rootGrid;
 
     @FXML private ImageView musicToggle;
     @FXML private ImageView soundToggle;

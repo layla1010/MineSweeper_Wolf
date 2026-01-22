@@ -93,7 +93,8 @@ public class HowToPlayController {
 
     // ----------------- FXML -----------------
 
-    @FXML private Parent root;
+    //@FXML private Parent root;
+    @FXML private VBox root;
 
     @FXML private HBox heartsBox;
     @FXML private Label scoreLabel;

@@ -4,177 +4,93 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="647.0" styleClass="endgame-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.EndGameController">
-    <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="350.0" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="350.0" />
-    </columnConstraints>
-    <rowConstraints>
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="57.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="68.8" minHeight="10.0" prefHeight="68.8" vgrow="SOMETIMES" />
-    </rowConstraints>
+<StackPane fx:id="root" styleClass="endgame-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.EndGameController">
 
     <children>
-        <Label maxWidth="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="235.0" styleClass="neon-title" text="YOU LOST :(" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-            <font>
-                <Font name="Copperplate Gothic Bold" size="36.0" />
-            </font>
-            <GridPane.margin>
-                <Insets left="370.0" />
-            </GridPane.margin>
-        </Label>
+        <VBox alignment="CENTER" maxWidth="700.0" spacing="30.0">
+            <padding>
+                <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+            </padding>
 
-        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="286.0" prefWidth="613.0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.rowSpan="4" GridPane.valignment="CENTER">
             <children>
 
-                <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="286.0" prefWidth="600.0" style="-fx-background-color: transparent;">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="300.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="300.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="95.33" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="95.33" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="95.33" vgrow="SOMETIMES" />
-                    </rowConstraints>
+                <Label styleClass="neon-title" text="YOU LOST :(" textFill="#ff4d4d">
+                    <font>
+                        <Font name="Copperplate Gothic Bold" size="48.0" />
+                    </font>
+                </Label>
 
+                <VBox alignment="CENTER" spacing="20.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20; -fx-padding: 20;">
+                    
+                    <VBox alignment="CENTER" spacing="5.0" styleClass="stats-header" style="-fx-background-radius: 15; -fx-padding: 10; -fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.2), rgba(255,255,255,0.1));">
+                        <Text fill="WHITE" styleClass="stat-header-text" text="PLAYERS">
+                            <font><Font name="Copperplate Gothic Bold" size="20.0" /></font>
+                        </Text>
+                        <Text fx:id="playersName" fill="WHITE" styleClass="stat-value-main" text="Player 1 &amp; Player 2">
+                            <font><Font name="Copperplate Gothic Light" size="18.0" /></font>
+                        </Text>
+                    </VBox>
+
+                    <GridPane hgap="20.0" vgap="20.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints vgrow="ALWAYS" />
+                            <RowConstraints vgrow="ALWAYS" />
+                        </rowConstraints>
+
+                        <children>
+                            <VBox alignment="CENTER" spacing="5.0" styleClass="stat-card" style="-fx-background-color: linear-gradient(to bottom right, rgba(193, 98, 204, 0.4), rgba(193, 98, 204, 0.2)); -fx-background-radius: 15; -fx-padding: 15;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Text fill="WHITE" styleClass="stat-label" text="Final Score"><font><Font name="Copperplate Gothic Bold" size="16.0" /></font></Text>
+                                <Text fx:id="FinalScore" fill="WHITE" styleClass="stat-value" text="0"><font><Font name="Copperplate Gothic Light" size="24.0" /></font></Text>
+                            </VBox>
+
+                            <VBox alignment="CENTER" spacing="5.0" styleClass="stat-card" style="-fx-background-color: linear-gradient(to bottom right, rgba(193, 98, 204, 0.4), rgba(193, 98, 204, 0.2)); -fx-background-radius: 15; -fx-padding: 15;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Text fill="WHITE" styleClass="stat-label" text="Time Survived"><font><Font name="Copperplate Gothic Bold" size="16.0" /></font></Text>
+                                <Text fx:id="timeSurvived" fill="WHITE" styleClass="stat-value" text="00:00"><font><Font name="Copperplate Gothic Light" size="24.0" /></font></Text>
+                            </VBox>
+
+                            <VBox alignment="CENTER" spacing="5.0" styleClass="stat-card" style="-fx-background-color: linear-gradient(to bottom right, rgba(193, 98, 204, 0.4), rgba(193, 98, 204, 0.2)); -fx-background-radius: 15; -fx-padding: 15;" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <Text fill="WHITE" styleClass="stat-label" text="Difficulty"><font><Font name="Copperplate Gothic Bold" size="16.0" /></font></Text>
+                                <Text fx:id="difficultyLevel" fill="WHITE" styleClass="stat-value" text="HARD"><font><Font name="Copperplate Gothic Light" size="24.0" /></font></Text>
+                            </VBox>
+
+                            <VBox alignment="CENTER" spacing="5.0" styleClass="stat-card" style="-fx-background-color: linear-gradient(to bottom right, rgba(193, 98, 204, 0.4), rgba(193, 98, 204, 0.2)); -fx-background-radius: 15; -fx-padding: 15;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Text fill="WHITE" styleClass="stat-label" text="Lives Left"><font><Font name="Copperplate Gothic Bold" size="16.0" /></font></Text>
+                                <Text fx:id="livesLeft" fill="WHITE" styleClass="stat-value" text="0"><font><Font name="Copperplate Gothic Light" size="24.0" /></font></Text>
+                            </VBox>
+                        </children>
+                    </GridPane>
+                </VBox>
+
+                <HBox alignment="CENTER" spacing="30.0">
                     <children>
-                        <Rectangle arcHeight="30.0" arcWidth="30.0" height="77.0" style="-fx-fill: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));" styleClass="stats-header" width="571.0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-
-                        <Text fill="WHITE" styleClass="stat-header-text" text="PLAYERS" GridPane.halignment="CENTER" GridPane.valignment="TOP">
-                            <GridPane.margin>
-                                <Insets left="300.0" top="20.0" />
-                            </GridPane.margin>
-                            <font>
-                                <Font name="Copperplate Gothic Bold" size="23.0" />
-                            </font>
-                        </Text>
-
-                        <Text fx:id="playersName" fill="WHITE" styleClass="stat-value-main" text="Name &amp; Name" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="20.0" />
-                            </font>
-                            <GridPane.margin>
-                                <Insets left="300.0" top="25.0" />
-                            </GridPane.margin>
-                        </Text>
-
-                        <Rectangle arcHeight="25.0" arcWidth="25.0" height="77.0" style="-fx-fill: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));" styleClass="stat-card" width="285.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-
-                        <Rectangle arcHeight="25.0" arcWidth="25.0" height="77.0" style="-fx-fill: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));" styleClass="stat-card" width="285.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-
-                        <Text fill="WHITE" styleClass="stat-label" text="Final Score" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                            <GridPane.margin>
-                                <Insets bottom="50.0" />
-                            </GridPane.margin>
-                            <font>
-                                <Font name="Copperplate Gothic Bold" size="23.0" />
-                            </font>
-                        </Text>
-
-                        <Text fill="WHITE" styleClass="stat-label" text="Time Survived" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                            <font>
-                                <Font name="Copperplate Gothic Bold" size="23.0" />
-                            </font>
-                            <GridPane.margin>
-                                <Insets bottom="50.0" />
-                            </GridPane.margin>
-                        </Text>
-
-                        <Rectangle arcHeight="25.0" arcWidth="25.0" height="77.0" style="-fx-fill: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));" styleClass="stat-card" width="285.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-
-                        <Rectangle arcHeight="25.0" arcWidth="25.0" height="77.0" style="-fx-fill: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15));" styleClass="stat-card" width="285.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-
-                        <Text fill="WHITE" styleClass="stat-label" text="Difficulty" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-                            <font>
-                                <Font name="Copperplate Gothic Bold" size="23.0" />
-                            </font>
-                            <GridPane.margin>
-                                <Insets bottom="50.0" />
-                            </GridPane.margin>
-                        </Text>
-
-                        <Text fill="WHITE" styleClass="stat-label" text="Lives Left" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-                            <font>
-                                <Font name="Copperplate Gothic Bold" size="23.0" />
-                            </font>
-                            <GridPane.margin>
-                                <Insets bottom="50.0" />
-                            </GridPane.margin>
-                        </Text>
-
-                        <Text fx:id="FinalScore" fill="WHITE" styleClass="stat-value" text="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="20.0" />
-                            </font>
-                            <GridPane.margin>
-                                <Insets top="10.0" />
-                            </GridPane.margin>
-                        </Text>
-
-                        <Text fx:id="timeSurvived" fill="WHITE" styleClass="stat-value" text="00:00" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="20.0" />
-                            </font>
-                            <GridPane.margin>
-                                <Insets top="10.0" />
-                            </GridPane.margin>
-                        </Text>
-
-                        <Text fx:id="difficultyLevel" fill="WHITE" styleClass="stat-value" text="Level" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="20.0" />
-                            </font>
-                            <GridPane.margin>
-                                <Insets top="10.0" />
-                            </GridPane.margin>
-                        </Text>
-
-                        <Text fx:id="livesLeft" fill="WHITE" styleClass="stat-value" text="0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
-                            <font>
-                                <Font name="Copperplate Gothic Light" size="20.0" />
-                            </font>
-                            <GridPane.margin>
-                                <Insets top="10.0" />
-                            </GridPane.margin>
-                        </Text>
+                        <Button fx:id="playAgainBtn" onAction="#onPlayAgain" prefHeight="50.0" prefWidth="200.0" styleClass="game-button, retry-button" text="Play Again">
+                            <font><Font name="Copperplate Gothic Light" size="18.0" /></font>
+                        </Button>
+                        <Button fx:id="mainMenuBtn" onAction="#onMainMenu" prefHeight="50.0" prefWidth="200.0" styleClass="game-button, menu-button" text="Main Menu">
+                            <font><Font name="Copperplate Gothic Light" size="18.0" /></font>
+                        </Button>
                     </children>
-                </GridPane>
+                </HBox>
+
             </children>
-        </AnchorPane>
-
-        <Button fx:id="playAgainBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#onPlayAgain" prefHeight="50.0" prefWidth="186.0" styleClass="game-button retry-button" text="Play Again" GridPane.halignment="LEFT" GridPane.rowIndex="6" GridPane.valignment="CENTER">
-            <GridPane.margin>
-                <Insets left="110.0" top="30.0" />
-            </GridPane.margin>
-            <font>
-                <Font name="Copperplate Gothic Light" size="16.0" />
-            </font>
-        </Button>
-
-        <Button fx:id="mainMenuBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#onMainMenu" prefHeight="50.0" prefWidth="186.0" styleClass="game-button menu-button" text="Main Menu" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="6" GridPane.valignment="CENTER">
-            <GridPane.margin>
-                <Insets left="2.0" top="30.0" />
-            </GridPane.margin>
-            <font>
-                <Font name="Copperplate Gothic Light" size="16.0" />
-            </font>
-        </Button>
+        </VBox>
     </children>
-   <stylesheets>
-      <URL value="@../css/base.css" />
-   </stylesheets>
-</GridPane>
+
+    <stylesheets>
+        <URL value="@../css/base.css" />
+    </stylesheets>
+
+</StackPane>

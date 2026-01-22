@@ -26,10 +26,13 @@ import util.OnboardingStep;
 import util.SessionManager;
 import util.SoundManager;
 import util.UIAnimations;
+import javafx.scene.layout.StackPane;
 
 public class NewGameController {
 
-    @FXML private Parent root;
+    //@FXML private Parent root;
+	@FXML private StackPane root;
+	
     @FXML private TextField player1Nickname;
     @FXML private TextField player2Nickname;
     @FXML private ToggleGroup difficultyGroup;

@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.event.ActionEvent;
 import util.DialogUtil;
 import util.UIAnimations;
@@ -14,7 +15,8 @@ import java.util.Optional;
 
 public class AddQuestionController {
 
-	@FXML private AnchorPane AddQuestionRoot;
+	//@FXML private AnchorPane AddQuestionRoot;
+	@FXML private StackPane AddQuestionRoot;
     @FXML private Label idTextField;
     @FXML private ComboBox<String> difficultyComboBox;
     @FXML private TextArea questionTextArea;
