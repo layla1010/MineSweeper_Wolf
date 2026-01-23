@@ -19,7 +19,6 @@ import util.OnboardingStep;
 import util.SessionManager;
 import util.SoundManager;
 import util.UIAnimations;
-import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
 
 

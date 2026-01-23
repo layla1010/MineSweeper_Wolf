@@ -3,7 +3,8 @@ package model;
 public enum Theme {
     COLORFUL("Colorful theme", "/css/theme.css"),
     WOLF("Wolf theme", "/css/wolf.css"),
-	CYBER_BLUE("Cyber theme", "/css/Cyber.css");
+	CYBER_BLUE("Cyber theme", "/css/Cyber.css"),
+	GREENWOLF("Forest Wolf theme", "/css/GreenWolf.css");
 
     private final String displayName;
     private final String cssPath;

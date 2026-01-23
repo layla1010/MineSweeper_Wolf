@@ -2,8 +2,6 @@ package control;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -135,7 +133,7 @@ public class QuestionsManagerController implements QuestionCardActions {
     
 	
    private void applyWolfIconsIfNeeded() {
-    if (ThemeManager.getTheme() != Theme.WOLF) return;
+    if (ThemeManager.getTheme() == Theme.COLORFUL) return;
 
     Image wolf = new Image(getClass().getResourceAsStream("/Images/hurdle-wolf.png"));
 

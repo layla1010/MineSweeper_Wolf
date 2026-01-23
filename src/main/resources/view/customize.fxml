@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="520.0" prefWidth="720.0" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" styleClass="customize-root" fx:controller="control.CustomizeController">
+<AnchorPane prefHeight="520.0" prefWidth="720.0" styleClass="customize-root" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.CustomizeController">
 
     <children>
         <VBox fx:id="root" alignment="TOP_CENTER" spacing="22" styleClass="themed-bg" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -86,6 +86,17 @@
                      </Label>
                      <Region HBox.hgrow="ALWAYS" />
                      <ToggleButton fx:id="cyberBlueBtn" onAction="#onCyberSelected" styleClass="theme-select-btn" text="SELECT" />
+                  </children>
+               </HBox>
+               <HBox alignment="CENTER_LEFT" spacing="12" styleClass="filter-row">
+                  <children>
+                     <Label styleClass="filter-label" text="Emerald Howl">
+                        <font>
+                           <Font name="Copperplate Gothic Light" size="20" />
+                        </font>
+                     </Label>
+                     <Region HBox.hgrow="ALWAYS" />
+                     <ToggleButton fx:id="greenWolfBtn" onAction="#onGreenWolfSelected" styleClass="theme-select-btn" text="SELECT" />
                   </children>
                </HBox>
 

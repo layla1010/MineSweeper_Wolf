@@ -1,0 +1,659 @@
+/* =========================
+   WOLF THEME — GREEN (EYES / ENERGY)
+   ========================= */
+
+/* ========= COLOR TOKENS (keep here for quick tuning) ========= */
+.root {
+    /* background */
+    -fx-background-image: url("../Images/GreenWolf.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+    -fx-background-size: cover;
+
+    -fx-background-color: rgba(0,0,0,0.40);
+    -fx-background-blend-mode: multiply;
+
+    /* ---- Green “wolf eyes” palette ----
+       Primary glow:  #7CFF4A
+       Bright neon:   #39FF14
+       Deep emerald:  #00C853
+       Dark moss:     #0B2A1A
+       Gunmetal:      #0F172A
+    */
+}
+
+/* Wolf only: slight dark overlay for root-background containers */
+.root-background {
+    -fx-background-color: rgba(0,0,0,0.35);
+}
+
+/* If you use themed-bg in screens */
+.themed-bg {
+    -fx-background-image: url("../Images/GreenWolf.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+    -fx-background-size: cover;
+    -fx-background-color: rgba(0,0,0,0.40);
+    -fx-background-blend-mode: multiply;
+}
+
+/* Text defaults */
+.label {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* =========================
+   GLOBAL BUTTONS (GREEN)
+   ========================= */
+.button {
+    /* glass base */
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-border-color: rgba(124,255,74,0.40); /* green ring */
+    -fx-border-width: 2;
+
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+
+    -fx-cursor: hand;
+    -fx-text-fill: rgba(255,255,255,0.92);
+
+    /* subtle green presence (not loud everywhere) */
+    -fx-effect: dropshadow(gaussian, rgba(124,255,74,0.14), 14, 0.35, 0, 0);
+}
+
+.button:hover {
+    -fx-background-color: rgba(57,255,20,0.16);
+    -fx-border-color: rgba(124,255,74,0.70);
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.30), 18, 0.50, 0, 0);
+}
+
+.button:pressed {
+    -fx-background-color: rgba(57,255,20,0.10);
+    -fx-translate-y: 1;
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.18), 12, 0.35, 0, 0);
+}
+
+/* =========================================================
+   GLOBAL COMBOBOX BASE (SAFE / NEUTRAL)
+   ========================================================= */
+.combo-box {
+    -fx-text-fill: rgba(255,255,255,0.92);
+    -fx-cursor: hand;
+}
+.combo-box .list-cell {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* Popup base for wolf (neutral dark, subtle green border) */
+.combo-box-popup .list-view {
+    -fx-background-color: rgba(10, 10, 12, 0.92);
+    -fx-background-radius: 12;
+    -fx-padding: 4;
+
+    -fx-border-color: rgba(124,255,74,0.20);
+    -fx-border-width: 1.1;
+    -fx-border-radius: 12;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 18, 0.45, 0, 0);
+}
+
+.combo-box-popup .list-cell {
+    -fx-text-fill: rgba(255,255,255,0.92);
+    -fx-background-color: transparent;
+    -fx-effect: none;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(57,255,20,0.14);
+    -fx-background-radius: 8;
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: rgba(11, 42, 26, 0.78); /* dark moss */
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 8;
+}
+
+/* --- Questions screen: make ScrollPane transparent --- */
+.questions-scroll,
+.questions-scroll > .viewport,
+.questions-scroll .content {
+    -fx-background-color: transparent;
+}
+
+/* optional: nicer scrollbar to match wolf green */
+.questions-scroll .scroll-bar:vertical,
+.questions-scroll .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+.questions-scroll .thumb {
+    -fx-background-color: rgba(124,255,74,0.22);
+    -fx-background-radius: 10;
+}
+
+/* =========================================================
+   HISTORY — GREEN (scoped to .history-root only)
+   ========================================================= */
+
+/* History: green “energy” buttons */
+.history-small-button {
+    -fx-background-color: linear-gradient(#7CFF4A, #00C853);
+    -fx-text-fill: rgba(10, 12, 10, 0.95);
+
+    -fx-border-color: rgba(180, 255, 200, 0.55);
+    -fx-border-width: 1.2;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.22), 12, 0.30, 0, 0);
+}
+
+.history-small-button:hover {
+    -fx-background-color: linear-gradient(#A3FF7A, #22E06B);
+    -fx-border-color: rgba(210, 255, 225, 0.75);
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.34), 16, 0.45, 0, 0);
+}
+
+.history-card:hover {
+    -fx-border-color: rgba(124,255,74,0.45);
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.18), 14, 0.35, 0, 0);
+}
+
+.history-back-button:hover {
+    -fx-background-color: rgba(57,255,20,0.14);
+    -fx-border-color: rgba(124,255,74,0.70);
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.32), 16, 0.55, 0, 0);
+}
+
+/* ===== History dropdown (ComboBox) hover/selected — GREEN ===== */
+
+/* Popup panel */
+.history-root .combo-box-popup .list-view {
+    -fx-background-color: linear-gradient(
+        to bottom,
+        rgba(11, 42, 26, 0.98),
+        rgba(0, 0, 0, 0.98)
+    );
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+
+    -fx-border-color: rgba(124,255,74,0.85);
+    -fx-border-width: 1.8;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.40), 22, 0.55, 0, 0);
+}
+
+/* Popup items base */
+.history-root .combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.92);
+    -fx-effect: none;
+}
+
+/* Hover item */
+.history-root .combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: rgba(57,255,20,0.18);
+    -fx-border-color: rgba(124,255,74,0.95);
+    -fx-border-width: 1.2;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.55), 20, 0.65, 0, 0);
+}
+
+/* Selected item */
+.history-root .combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: rgba(11, 42, 26, 0.96);
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: rgba(124,255,74,1.0);
+    -fx-border-width: 1.6;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.72), 24, 0.75, 0, 0);
+}
+
+/* =========================================================
+   HISTORY ComboBox (CLOSED STATE) — GREEN + GLOW
+   ========================================================= */
+.history-root .combo-box-base {
+    -fx-background-color: linear-gradient(#7CFF4A, #00C853);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+
+    -fx-border-color: rgba(20, 20, 20, 0.55);
+    -fx-border-width: 1.4;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.55), 22, 0.65, 0, 0);
+    -fx-padding: 2 10 2 10;
+}
+
+.history-root .combo-box-base:focused,
+.history-root .combo-box:focused {
+    -fx-border-color: rgba(124,255,74,0.90);
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.78), 28, 0.75, 0, 0);
+}
+
+.history-root .combo-box .list-cell {
+    -fx-text-fill: rgba(10, 12, 10, 0.95);
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 12px;
+}
+
+.history-root .combo-box-base .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 8 0 4;
+}
+.history-root .combo-box-base .arrow-button .arrow {
+    -fx-background-color: rgba(10,12,10,0.92); /* dark arrow on neon bg */
+}
+
+/* Hover closed combobox */
+.history-root .combo-box-base:hover {
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.68), 24, 0.70, 0, 0);
+}
+
+/* ===== DatePicker calendar hover/selected/today — GREEN ===== */
+.history-root .date-picker-popup .day-cell:hover {
+    -fx-background-color: rgba(57,255,20,0.10);
+    -fx-border-color: rgba(124,255,74,0.70);
+    -fx-border-width: 1;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.40), 22, 0.55, 0, 0);
+}
+
+.history-root .date-picker-popup .selected {
+    -fx-background-color: rgba(11, 42, 26, 0.92);
+    -fx-border-color: rgba(124,255,74,0.95);
+    -fx-border-width: 1.5;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-text-fill: white;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.45), 18, 0.5, 0, 0);
+}
+
+.history-root .date-picker-popup .today {
+    -fx-border-color: rgba(124,255,74,0.9);
+    -fx-border-width: 1.2;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.40), 22, 0.55, 0, 0);
+}
+
+/* =========================================================
+   HISTORY — FILLED BADGES + DARK TEXT (keep readable)
+   ========================================================= */
+.pill-label {
+    -fx-padding: 7 18 7 18;
+    -fx-font-size: 15px;
+    -fx-font-weight: 900;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-text-fill: rgba(10, 12, 10, 0.95);
+}
+
+/* Difficulty pill (green, not orange) */
+.difficulty-pill {
+    -fx-background-color: linear-gradient(#B7FF9A, #39FF14);
+    -fx-border-color: rgba(200, 255, 220, 0.95);
+    -fx-border-width: 2;
+    -fx-text-fill: rgba(10, 12, 10, 0.95);
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.32), 18, 0.45, 0, 0);
+}
+
+.difficulty-pill:hover {
+    -fx-background-color: linear-gradient(#D1FFC0, #7CFF4A);
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.45), 22, 0.55, 0, 0);
+}
+
+/* Result pills */
+.result-pill-won {
+    -fx-background-color: linear-gradient(#7CFF4A, #00C853);
+    -fx-border-color: rgba(200, 255, 220, 0.95);
+    -fx-border-width: 2;
+    -fx-text-fill: rgba(10, 12, 10, 0.95);
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.30), 18, 0.45, 0, 0);
+}
+.result-pill-lost {
+    /* keep lost as red (semantic), but tone it so it fits */
+    -fx-background-color: linear-gradient(#FF7A7A, #D62828);
+    -fx-border-color: rgba(255, 200, 200, 0.95);
+    -fx-border-width: 2;
+    -fx-text-fill: rgba(12, 10, 10, 0.95);
+    -fx-effect: dropshadow(gaussian, rgba(255,80,80,0.22), 18, 0.45, 0, 0);
+}
+.result-pill-giveup {
+    /* swap yellow -> toxic green-yellow (still distinct) */
+    -fx-background-color: linear-gradient(#D9FF57, #7CFF4A);
+    -fx-border-color: rgba(235, 255, 190, 0.95);
+    -fx-border-width: 2;
+    -fx-text-fill: rgba(10, 12, 10, 0.95);
+    -fx-effect: dropshadow(gaussian, rgba(160,255,90,0.28), 18, 0.45, 0, 0);
+}
+.result-pill-won:hover,
+.result-pill-lost:hover,
+.result-pill-giveup:hover {
+    -fx-translate-y: -1;
+}
+
+/* =========================
+   HISTORY BASE (preserve glass look)
+   ========================= */
+.history-root .history-card {
+    -fx-background-color: rgba(255,255,255,0.14);
+    -fx-border-color: rgba(255,255,255,0.22);
+}
+
+.history-root .history-glass-input {
+    -fx-background-color: rgba(255,255,255,0.14);
+    -fx-border-color: rgba(124,255,74,0.35);
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255,255,255,0.70);
+}
+
+/* =========================================================
+   SIGNUP / NEW GAME — convert orange accents to green
+   ========================================================= */
+#PlayerNameSignup {
+    -fx-fill: white;
+}
+
+/* Sign-Up button hover (green glow) */
+#signUpBtn:hover {
+    -fx-background-color: linear-gradient(#7CFF4A, #00C853);
+    -fx-border-color: rgba(210, 255, 225, 0.95);
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.55), 18, 0.5, 0, 0);
+}
+
+/* ===== NEW GAME (WOLF ONLY) ===== */
+#newGameRoot .label {
+    -fx-text-fill: rgba(255,255,255,0.95) !important;
+}
+
+#newGameRoot Text {
+    -fx-fill: rgba(255,255,255,0.95) !important;
+}
+
+#newGameRoot .toggle-button.difficulty-toggle {
+    -fx-border-color: rgba(124,255,74,0.35);
+    -fx-border-width: 2.2;
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.18), 14, 0.35, 0, 4);
+}
+
+#newGameRoot .toggle-button.difficulty-toggle:selected {
+    -fx-border-color: rgba(124,255,74,0.90);
+}
+
+/* selected hover: stronger green glow */
+#newGameRoot .toggle-button.difficulty-toggle:selected:hover {
+    -fx-border-color: rgba(200,255,220,1.0);
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.70), 26, 0.65, 0, 0);
+}
+
+/* Start Game button: green eyes */
+#newGameRoot .start-game-btn {
+    -fx-background-color: linear-gradient(#7CFF4A, #00C853);
+    -fx-border-color: rgba(200,255,220,0.85);
+    -fx-border-width: 2;
+    -fx-text-fill: rgba(10,12,10,0.95);
+
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.55), 22, 0.60, 0, 0);
+}
+
+#newGameRoot .start-game-btn:hover {
+    -fx-background-color: linear-gradient(#A3FF7A, #22E06B);
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.75), 26, 0.70, 0, 0);
+}
+
+/* Setup title glow: green */
+#newGameRoot .setup-title {
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(124,255,74,0.95), 30, 0.75, 0, 0);
+}
+
+/* =========================================================
+   CUSTOMIZE SCREEN TOGGLES — green conversion
+   ========================================================= */
+.customize-root .toggle-button {
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-text-fill: rgba(230,255,235,0.95);
+
+    -fx-border-color: rgba(124,255,74,0.55);
+    -fx-border-width: 2;
+
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+
+    -fx-cursor: hand;
+    -fx-padding: 8 16 8 16;
+
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.18), 14, 0.45, 0, 0);
+}
+
+.customize-root .toggle-button .text {
+    -fx-fill: rgba(230,255,235,0.95);
+}
+
+.customize-root .toggle-button:hover {
+    -fx-border-color: rgba(124,255,74,0.85);
+    -fx-background-color: rgba(57,255,20,0.12);
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.35), 18, 0.55, 0, 0);
+}
+
+.customize-root .toggle-button:pressed {
+    -fx-background-color: rgba(57,255,20,0.16);
+    -fx-translate-y: 1;
+}
+
+.customize-root .toggle-button:selected {
+    -fx-background-color: linear-gradient(
+        to bottom right,
+        rgba(124,255,74,0.45),
+        rgba(0,200,83,0.35)
+    );
+
+    -fx-border-color: rgba(200,255,220,1.0);
+    -fx-text-fill: rgba(245,255,248,1.0);
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.70), 22, 0.65, 0, 0);
+}
+
+.customize-root .toggle-button:selected:hover {
+    -fx-border-color: rgba(220,255,235,1.0);
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.90), 26, 0.75, 0, 0);
+}
+
+.customize-root .toggle-button:focused {
+    -fx-border-color: rgba(220,255,235,0.90);
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.85), 26, 0.75, 0, 0);
+}
+
+/* =========================================================
+   ONBOARDING NEXT — green
+   ========================================================= */
+.onboarding-next {
+    -fx-background-radius: 12;
+    -fx-background-color: linear-gradient(to bottom right, #B7FF9A, #39FF14);
+    -fx-text-fill: #111;
+    -fx-border-color: rgba(0,0,0,0.70);
+    -fx-border-width: 1.6;
+    -fx-border-radius: 12;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.55), 16, 0.45, 0, 0);
+}
+.onboarding-next:hover {
+    -fx-background-color: linear-gradient(to bottom right, #D1FFC0, #7CFF4A);
+}
+.onboarding-next:pressed {
+    -fx-background-color: linear-gradient(to bottom right, #8BFF66, #22E06B);
+    -fx-translate-y: 1;
+}
+
+/* =========================================================
+   STATS SCREEN — convert ember hovers to green (scoped)
+   ========================================================= */
+.stats-root .settings-back-button:hover {
+    -fx-background-color: rgba(57,255,20,0.14);
+    -fx-background-radius: 999;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.65), 18, 0.6, 0, 0);
+}
+
+/* =========================================================
+   SETTINGS — green hover (scoped)
+   ========================================================= */
+.settings-root .menu-card:hover {
+    -fx-background-color: linear-gradient(
+        to bottom right,
+        rgba(20, 120, 70, 0.70),
+        rgba(10, 45, 28, 0.88)
+    );
+
+    -fx-border-color: rgba(124,255,74,0.55);
+    -fx-translate-y: -2;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.30), 18, 0.45, 0, 0);
+}
+
+.settings-root .menu-card:pressed {
+    -fx-background-color: rgba(15, 12, 10, 0.95);
+    -fx-border-color: rgba(124,255,74,0.35);
+    -fx-effect: none;
+    -fx-translate-y: 0;
+}
+
+.settings-root .settings-back-button:hover {
+    -fx-background-color: rgba(57,255,20,0.14);
+    -fx-background-radius: 999;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.70), 18, 0.6, 0, 0);
+}
+
+/* =========================================================
+   ALERTS — keep your image background, switch accents to green
+   ========================================================= */
+.dialog-pane {
+    -fx-background-insets: 0;
+    -fx-background-radius: 22;
+    -fx-border-radius: 22;
+
+    -fx-background-image: url("../Images/green.png");
+    -fx-background-position: center center;
+    -fx-background-size: cover;
+
+    -fx-background-color: rgba(0,0,0,0.35);
+    -fx-background-blend-mode: multiply;
+
+    -fx-border-color: rgba(124,255,74,0.28);
+    -fx-border-width: 1.2;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 28, 0.35, 0, 0);
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: transparent;
+    -fx-padding: 18 18 10 18;
+}
+.dialog-pane .header-panel .label {
+    -fx-text-fill: rgba(255,255,255,0.95);
+    -fx-font-size: 18px;
+    -fx-font-family: "Copperplate Gothic Bold", "Georgia", serif;
+}
+
+.dialog-pane .content.label {
+    -fx-text-fill: rgba(255,255,255,0.92);
+    -fx-font-size: 14px;
+    -fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
+}
+
+.dialog-pane .button {
+    -fx-background-color: rgba(57,255,20,0.14);
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+
+    -fx-border-color: rgba(124,255,74,0.55);
+    -fx-border-width: 1.6;
+
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+
+    -fx-padding: 8 18;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.22), 12, 0.35, 0, 0);
+}
+.dialog-pane .button:hover {
+    -fx-background-color: rgba(57,255,20,0.22);
+}
+.dialog-pane .button:pressed {
+    -fx-background-color: rgba(57,255,20,0.10);
+    -fx-translate-y: 1;
+}
+
+/* =========================================================
+   END GAME — swap orange neon to green neon (scoped)
+   ========================================================= */
+.endgame-root .neon-title {
+    -fx-text-fill: #7CFF4A;
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.9), 20, 0.55, 0, 0);
+}
+
+.endgame-root .stats-panel {
+    -fx-stroke: rgba(124,255,74,0.55);
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.45), 30, 0.45, 0, 0);
+}
+
+.endgame-root .stats-header {
+    -fx-stroke: rgba(124,255,74,0.65);
+}
+
+.endgame-root .stat-card {
+    -fx-stroke: rgba(124,255,74,0.45);
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.30), 14, 0.4, 0, 0);
+}
+
+.endgame-root .stat-card:hover {
+    -fx-stroke: #7CFF4A;
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.85), 22, 0.6, 0, 0);
+}
+
+/* Buttons base ring stays black as you wanted */
+.endgame-root .game-button {
+    -fx-border-color: rgba(0, 0, 0, 0.90) !important;
+    -fx-border-width: 2.2 !important;
+}
+
+.endgame-root .game-button:hover {
+    -fx-background-color: linear-gradient(to bottom right, #B7FF9A, #39FF14);
+    -fx-text-fill: #111;
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.9), 28, 0.65, 0, 0);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+
+    -fx-border-color: rgba(0, 0, 0, 0.95) !important;
+}
+
+.endgame-root .game-button:pressed {
+    -fx-scale-x: 0.96;
+    -fx-scale-y: 0.96;
+}
+
+.endgame-root {
+    -fx-pref-height: 520px;
+    -fx-padding: 20 20 35 20;
+}

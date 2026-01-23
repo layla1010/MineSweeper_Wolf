@@ -94,7 +94,7 @@ public class QuestionCardController {
     
     private void applyWolfIconsIfNeeded() {
         // wolf theme only
-        if (ThemeManager.getTheme() != Theme.WOLF) return;
+        if (ThemeManager.getTheme() == Theme.COLORFUL) return;
 
         // swap to white icons (wolf)
         editImg.setImage(new Image(getClass().getResourceAsStream("/Images/editing-wolf.png")));

@@ -13,7 +13,6 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Screen;
-import model.Theme;
 
 
 

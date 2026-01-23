@@ -21,6 +21,7 @@ public final class ThemeManager {
     private static final String COLORFUL_CSS = "/css/theme.css";
     private static final String WOLF_CSS     = "/css/wolf.css";
     private static final String CYBER_CSS     = "/css/Cyber.css";
+    private static final String GREEN_CSS     = "/css/GreenWolf.css";
     
 
     private static Theme currentTheme = loadTheme();
@@ -54,6 +55,7 @@ public final class ThemeManager {
         removeIfPresent(scene, COLORFUL_CSS);
         removeIfPresent(scene, WOLF_CSS);
         removeIfPresent(scene, CYBER_CSS);
+        removeIfPresent(scene, GREEN_CSS);
 
         // 3) Add selected variant
         addIfMissing(scene, currentTheme.getCssPath());

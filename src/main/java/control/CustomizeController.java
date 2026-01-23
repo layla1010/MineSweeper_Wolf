@@ -18,6 +18,7 @@ public class CustomizeController {
 
     @FXML private ToggleButton defaultBtn;
     @FXML private ToggleButton wolfBtn;
+    @FXML private ToggleButton greenWolfBtn;
     @FXML private ToggleButton cyberBlueBtn; 
 
     private final ToggleGroup themeGroup = new ToggleGroup();
@@ -27,6 +28,7 @@ public class CustomizeController {
         // Put ALL toggles in the group
         defaultBtn.setToggleGroup(themeGroup);
         wolfBtn.setToggleGroup(themeGroup);
+        greenWolfBtn.setToggleGroup(themeGroup);
         cyberBlueBtn.setToggleGroup(themeGroup);
 
         // Optional but recommended: prevent “no selection”
@@ -47,6 +49,11 @@ public class CustomizeController {
     @FXML
     private void onWolfSelected() {
         applyAndPersistTheme(Theme.WOLF);
+    }
+    
+    @FXML
+    private void onGreenWolfSelected() {
+        applyAndPersistTheme(Theme.GREENWOLF);
     }
 
     @FXML
@@ -72,7 +79,10 @@ public class CustomizeController {
             themeGroup.selectToggle(wolfBtn);
         } else if (theme == Theme.CYBER_BLUE) {
             themeGroup.selectToggle(cyberBlueBtn);
-        } else {
+        }else if (theme == Theme.GREENWOLF) {
+            themeGroup.selectToggle(greenWolfBtn);
+        }
+        else {
             themeGroup.selectToggle(defaultBtn);
         }
     }
@@ -97,5 +107,6 @@ public class CustomizeController {
         defaultBtn.setText(defaultBtn.isSelected() ? "SELECTED" : "SELECT");
         wolfBtn.setText(wolfBtn.isSelected() ? "SELECTED" : "SELECT");
         cyberBlueBtn.setText(cyberBlueBtn.isSelected() ? "SELECTED" : "SELECT");
+        greenWolfBtn.setText(greenWolfBtn.isSelected() ? "SELECTED" : "SELECT");
     }
 }
