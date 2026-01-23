@@ -13,6 +13,9 @@ import java.util.function.Consumer;
 public final class ViewNavigator {
 
     private ViewNavigator() {}
+    private static final double APP_WIDTH = 1300;
+    private static final double APP_HEIGHT = 770;
+
 
     // =================================================================================
     // "Hot-Swap" Content + Forced Full Size Strategy To Solve Resolution Problem
@@ -21,34 +24,37 @@ public final class ViewNavigator {
         Scene currentScene = stage.getScene();
 
         if (currentScene != null) {
-            // OPTION A: Window is already open.
-            // Just replace the content. This keeps the window size exactly as it is.
+            // Switching views → keep window size
             currentScene.setRoot(newRoot);
-            
         } else {
-            // OPTION B: First Launch (Application Start)
+            // First launch
             Scene newScene = new Scene(newRoot);
             ThemeManager.applyTheme(newScene);
             stage.setScene(newScene);
-            
-            // FORCE FULL SCREEN SIZE & LOCK IT 
-            
-            // Get the visual bounds of the screen (total size minus taskbar)
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-            // Force the stage to match these bounds
-            stage.setX(screenBounds.getMinX());
-            stage.setY(screenBounds.getMinY());
-            stage.setWidth(screenBounds.getWidth());
-            stage.setHeight(screenBounds.getHeight());
+            stage.setResizable(true); // allow applying size first
+            stage.show();
 
-            // Disable resizing (Removes the Maximize/Restore button functionality)
-            // The user cannot make the window smaller now.
-            stage.setResizable(false); 
+            // Enforce fixed design resolution AFTER show
+            javafx.application.Platform.runLater(() -> {
+                stage.setWidth(APP_WIDTH);
+                stage.setHeight(APP_HEIGHT);
+
+                stage.setMinWidth(APP_WIDTH);
+                stage.setMinHeight(APP_HEIGHT);
+                stage.setMaxWidth(APP_WIDTH);
+                stage.setMaxHeight(APP_HEIGHT);
+
+                stage.centerOnScreen();
+                stage.setResizable(false); // lock it
+            });
+
+            return; // prevent double show
         }
-        
+
         stage.show();
     }
+
 
     // =================================================================================
     // PUBLIC METHODS

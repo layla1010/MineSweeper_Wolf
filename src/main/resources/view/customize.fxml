@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="520.0" prefWidth="720.0" styleClass="customize-root" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.CustomizeController">
+<AnchorPane prefHeight="520.0" prefWidth="720.0" styleClass="customize-root" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.CustomizeController">
 
     <children>
         <VBox fx:id="root" alignment="TOP_CENTER" spacing="22" styleClass="themed-bg" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -47,37 +47,37 @@
             <!-- Options -->
             <VBox maxWidth="560" spacing="16">
                 <children>
-
+         
                     <!-- Default -->
-                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="filter-row">
+                    <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15));" styleClass="filter-row">
                         <children>
                             <Label styleClass="filter-label" text="Colorful">
                                 <font>
                                     <Font name="Copperplate Gothic Light" size="20" />
                                 </font>
                             </Label>
-
+         
                             <Region HBox.hgrow="ALWAYS" />
-
+         
                             <ToggleButton fx:id="defaultBtn" onAction="#onDefaultSelected" styleClass="theme-select-btn" text="SELECT" />
                         </children>
                     </HBox>
-
+         
                     <!-- Wolf -->
-                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="filter-row">
+                    <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15));" styleClass="filter-row">
                         <children>
                             <Label styleClass="filter-label" text="Fiery Wolf (Default)">
                                 <font>
                                     <Font name="Copperplate Gothic Light" size="20" />
                                 </font>
                             </Label>
-
+         
                             <Region HBox.hgrow="ALWAYS" />
-
+         
                             <ToggleButton fx:id="wolfBtn" onAction="#onWolfSelected" styleClass="theme-select-btn" text="SELECT" />
                         </children>
                     </HBox>
-               <HBox alignment="CENTER_LEFT" spacing="12" styleClass="filter-row">
+               <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15));" styleClass="filter-row">
                   <children>
                      <Label styleClass="filter-label" text="Cyber blue">
                         <font>
@@ -88,7 +88,7 @@
                      <ToggleButton fx:id="cyberBlueBtn" onAction="#onCyberSelected" styleClass="theme-select-btn" text="SELECT" />
                   </children>
                </HBox>
-               <HBox alignment="CENTER_LEFT" spacing="12" styleClass="filter-row">
+               <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15));" styleClass="filter-row">
                   <children>
                      <Label styleClass="filter-label" text="Emerald Howl">
                         <font>

@@ -313,31 +313,36 @@
     -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.45), 22, 0.55, 0, 0);
 }
 
-/* Result pills */
+/* GAME RESULT — WON */
 .result-pill-won {
-    -fx-background-color: linear-gradient(#7CFF4A, #00C853);
+    -fx-background-color: linear-gradient(#4CFFA3, #00C46A);
     -fx-border-color: rgba(200, 255, 220, 0.95);
     -fx-border-width: 2;
     -fx-text-fill: rgba(10, 12, 10, 0.95);
 
-    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.30), 18, 0.45, 0, 0);
+    -fx-effect: dropshadow(gaussian, rgba(0,255,140,0.30), 18, 0.45, 0, 0);
 }
+
+/* GAME RESULT — LOST */
 .result-pill-lost {
-    /* keep lost as red (semantic), but tone it so it fits */
     -fx-background-color: linear-gradient(#FF7A7A, #D62828);
     -fx-border-color: rgba(255, 200, 200, 0.95);
     -fx-border-width: 2;
     -fx-text-fill: rgba(12, 10, 10, 0.95);
-    -fx-effect: dropshadow(gaussian, rgba(255,80,80,0.22), 18, 0.45, 0, 0);
+
+    -fx-effect: dropshadow(gaussian, rgba(255,80,80,0.28), 18, 0.45, 0, 0);
 }
+
+/* GAME RESULT — GIVE UP */
 .result-pill-giveup {
-    /* swap yellow -> toxic green-yellow (still distinct) */
-    -fx-background-color: linear-gradient(#D9FF57, #7CFF4A);
-    -fx-border-color: rgba(235, 255, 190, 0.95);
+    -fx-background-color: linear-gradient(#FFE27A, #FFB800);
+    -fx-border-color: rgba(255, 240, 190, 0.95);
     -fx-border-width: 2;
-    -fx-text-fill: rgba(10, 12, 10, 0.95);
-    -fx-effect: dropshadow(gaussian, rgba(160,255,90,0.28), 18, 0.45, 0, 0);
+    -fx-text-fill: rgba(18, 14, 6, 0.95);
+
+    -fx-effect: dropshadow(gaussian, rgba(255,170,60,0.30), 18, 0.45, 0, 0);
 }
+
 .result-pill-won:hover,
 .result-pill-lost:hover,
 .result-pill-giveup:hover {

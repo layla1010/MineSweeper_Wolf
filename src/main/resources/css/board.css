@@ -87,12 +87,14 @@
 .cell-mine .text {
     -fx-fill: #ff2d2d;
     -fx-font-weight: bold;
+	-fx-border-color: black;
 }
 
 /* Correctly flagged mine -> green */
 .cell-mine-flagged .text {
     -fx-fill: #4dff8c;
     -fx-font-weight: bold;
+	-fx-border-color: black;
 }
 
 .cell-mine-flagged {

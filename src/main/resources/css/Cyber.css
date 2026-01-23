@@ -228,6 +228,7 @@
    CYBER — SETTINGS MENU CARD (HOVER)
    ========================= */
 
+   
 .settings-root .menu-card:hover {
     -fx-background-color: linear-gradient(
         to bottom right,

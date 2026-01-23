@@ -14,14 +14,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="AddQuestionRoot"
-           styleClass="themed-bg"
-           xmlns="http://javafx.com/javafx/21"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="control.AddQuestionController">
+<StackPane fx:id="AddQuestionRoot" prefHeight="770.0" prefWidth="1300.0" styleClass="themed-bg" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.AddQuestionController">
 
     <children>
-        <VBox alignment="TOP_CENTER" maxWidth="800.0" spacing="20.0">
+        <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="1300.0" prefHeight="700.0" prefWidth="1300.0" spacing="20.0">
             <padding>
                 <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
             </padding>
@@ -34,19 +30,18 @@
                     </font>
                 </Label>
 
-                <VBox spacing="15.0"
-                      style="-fx-background-color: rgba(0,0,0,0.2); -fx-background-radius: 15; -fx-padding: 20;">
+                <VBox prefHeight="770.0" prefWidth="1300.0" spacing="15.0" style="-fx-background-color: rgba(0,0,0,0.2); -fx-background-radius: 15; -fx-padding: 20;">
 
                     <HBox alignment="CENTER_LEFT" spacing="15.0">
                         <Label prefWidth="150.0" text="ID:" textFill="WHITE">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="16.0" />
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
                             </font>
                         </Label>
                         <!-- keep fx:id as-is to match controller field name -->
                         <Label fx:id="idTextField" text="id" textFill="#ffd700">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="16.0" />
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
                             </font>
                         </Label>
                     </HBox>
@@ -54,7 +49,7 @@
                     <HBox alignment="CENTER_LEFT" spacing="15.0">
                         <Label prefWidth="150.0" text="Difficulty:" textFill="WHITE">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="16.0" />
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
                             </font>
                         </Label>
 
@@ -73,67 +68,67 @@
                     <VBox spacing="5.0">
                         <Label text="Question Text:" textFill="WHITE">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="16.0" />
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
                             </font>
                         </Label>
-                        <TextArea fx:id="questionTextArea"
-                                  prefRowCount="3"
-                                  wrapText="true"
-                                  styleClass="glass-input" />
+                        <TextArea fx:id="questionTextArea" prefRowCount="3" styleClass="glass-input" wrapText="true">
+                     <font>
+                        <Font size="18.0" />
+                     </font></TextArea>
                     </VBox>
 
                     <HBox alignment="CENTER_LEFT" spacing="10.0">
-                        <Label text="A:" textFill="WHITE" minWidth="25.0">
+                        <Label minWidth="25.0" text="A:" textFill="WHITE">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="16.0" />
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="optionATextField"
-                                   promptText="Option A"
-                                   styleClass="glass-input"
-                                   HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="optionATextField" promptText="Option A" styleClass="glass-input" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font size="18.0" />
+                     </font></TextField>
                     </HBox>
 
                     <HBox alignment="CENTER_LEFT" spacing="10.0">
-                        <Label text="B:" textFill="WHITE" minWidth="25.0">
+                        <Label minWidth="25.0" text="B:" textFill="WHITE">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="16.0" />
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="optionBTextField"
-                                   promptText="Option B"
-                                   styleClass="glass-input"
-                                   HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="optionBTextField" promptText="Option B" styleClass="glass-input" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font size="18.0" />
+                     </font></TextField>
                     </HBox>
 
                     <HBox alignment="CENTER_LEFT" spacing="10.0">
-                        <Label text="C:" textFill="WHITE" minWidth="25.0">
+                        <Label minWidth="25.0" text="C:" textFill="WHITE">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="16.0" />
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="optionCTextField"
-                                   promptText="Option C"
-                                   styleClass="glass-input"
-                                   HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="optionCTextField" promptText="Option C" styleClass="glass-input" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font size="18.0" />
+                     </font></TextField>
                     </HBox>
 
                     <HBox alignment="CENTER_LEFT" spacing="10.0">
-                        <Label text="D:" textFill="WHITE" minWidth="25.0">
+                        <Label minWidth="25.0" text="D:" textFill="WHITE">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="16.0" />
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="optionDTextField"
-                                   promptText="Option D"
-                                   styleClass="glass-input"
-                                   HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="optionDTextField" promptText="Option D" styleClass="glass-input" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font size="18.0" />
+                     </font></TextField>
                     </HBox>
 
                     <HBox alignment="CENTER_LEFT" spacing="15.0">
                         <Label text="Correct Answer:" textFill="WHITE">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="16.0" />
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
                             </font>
                         </Label>
                         <ComboBox fx:id="correctAnswerComboBox" prefWidth="100.0" styleClass="glass-combo">
@@ -152,27 +147,15 @@
 
                 <HBox alignment="CENTER" spacing="20.0">
                     <children>
-                        <Button fx:id="saveButton"
-                                onAction="#onSaveButtonClicked"
-                                prefHeight="45.0"
-                                prefWidth="165.0"
-                                styleClass="primary-button"
-                                text="Save Question"
-                                textFill="WHITE">
+                        <Button fx:id="saveButton" onAction="#onSaveButtonClicked" prefHeight="44.0" prefWidth="231.0" styleClass="primary-button" text="Save Question" textFill="WHITE">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="16.0" />
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
                             </font>
                         </Button>
 
-                        <Button fx:id="cancelButton"
-                                onAction="#onCancelButtonClicked"
-                                prefHeight="45.0"
-                                prefWidth="150.0"
-                                styleClass="secondary-button"
-                                text="Cancel"
-                                textFill="WHITE">
+                        <Button fx:id="cancelButton" onAction="#onCancelButtonClicked" prefHeight="45.0" prefWidth="150.0" styleClass="secondary-button" text="Cancel" textFill="WHITE">
                             <font>
-                                <Font name="Copperplate Gothic Bold" size="16.0" />
+                                <Font name="Copperplate Gothic Bold" size="24.0" />
                             </font>
                         </Button>
                     </children>

@@ -100,3 +100,13 @@ date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Off
 2026-01-23,2:04,EASY,111,WIN,k,mm,,,false,S10.png,S6.png
 2026-01-22,0:39,EASY,155,WIN,pp,gf,,,false,S9.png,S1.png
 2026-01-22,0:59,EASY,159,WIN,d,sw,,,false,S12.png,S1.png
+2026-01-23,0:20,HARD,34,GIVE_UP,j,h,,,false,S1.png,S12.png
+2026-01-23,0:12,MEDIUM,3,GIVE_UP,j,g,,,false,S1.png,S10.png
+2026-01-23,0:04,EASY,4,GIVE_UP,ja,jaja,,,false,S5.png,S6.png
+2026-01-23,1:18,EASY,128,WIN,ghj,yui,,,false,S6.png,S1.png
+2026-01-23,0:31,EASY,168,WIN,j,g,,,false,S7.png,S8.png
+2026-01-23,1:21,EASY,180,WIN,jk,fg,,,false,S11.png,S9.png
+2026-01-23,0:46,EASY,180,WIN,j,k,,,false,S6.png,S2.png
+2026-01-23,0:52,EASY,176,WIN,k, jh,,,false,S8.png,S6.png
+2026-01-23,1:05,EASY,174,WIN,g,k,,,false,S7.png,S10.png
+2026-01-23,1:19,EASY,146,WIN,ij,gh,,,false,S1.png,S10.png

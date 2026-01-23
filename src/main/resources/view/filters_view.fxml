@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="rootGrid" styleClass="themed-bg" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.FiltersController">
+<StackPane fx:id="rootGrid" styleClass="themed-bg" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.FiltersController">
 
     <children>
         <VBox alignment="TOP_CENTER" maxWidth="800.0" spacing="20.0">
@@ -48,7 +48,7 @@
                     </padding>
                     <children>
 
-                        <HBox alignment="CENTER_LEFT" minHeight="80.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
+                        <HBox alignment="CENTER_LEFT" minHeight="80.0" style="-fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
                             <padding><Insets left="30.0" right="20.0" /></padding>
                             <children>
                                 <Label styleClass="filter-label" text="Music" />
@@ -63,7 +63,7 @@
                             </children>
                         </HBox>
 
-                        <HBox alignment="CENTER_LEFT" minHeight="80.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
+                        <HBox alignment="CENTER_LEFT" minHeight="80.0" style="-fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
                             <padding><Insets left="30.0" right="20.0" /></padding>
                             <children>
                                 <Label styleClass="filter-label" text="Sound" />
@@ -78,7 +78,7 @@
                             </children>
                         </HBox>
 
-                        <HBox alignment="CENTER_LEFT" minHeight="80.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
+                        <HBox alignment="CENTER_LEFT" minHeight="80.0" style="-fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
                             <padding><Insets left="30.0" right="20.0" /></padding>
                             <children>
                                 <Label styleClass="filter-label" text="Timer" />
@@ -93,7 +93,7 @@
                             </children>
                         </HBox>
 
-                        <HBox alignment="CENTER_LEFT" minHeight="80.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
+                        <HBox alignment="CENTER_LEFT" minHeight="80.0" style="-fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
                             <padding><Insets left="30.0" right="20.0" /></padding>
                             <children>
                                 <Label styleClass="filter-label" text="Smart Hints" />
@@ -108,7 +108,7 @@
                             </children>
                         </HBox>
 
-                        <HBox alignment="CENTER_LEFT" minHeight="80.0" style="-fx-background-color: linear-gradient(to bottom right, rgba(255,255,255,0.30), rgba(255,255,255,0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
+                        <HBox alignment="CENTER_LEFT" minHeight="80.0" style="-fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15)); -fx-border-color: rgba(255,255,255,0.50);" styleClass="filter-row">
                             <padding><Insets left="30.0" right="20.0" /></padding>
                             <children>
                                 <Label styleClass="filter-label" text="Auto Remove Flag" />

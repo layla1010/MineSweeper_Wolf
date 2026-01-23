@@ -207,6 +207,29 @@
     -fx-cursor: hand;
 }
 
+.settings-root .menu-card {
+      -fx-background-color: rgba(255,255,255,0.08);
+      -fx-border-color: rgba(255,255,255,0.18);
+      -fx-border-width: 1.6;
+
+      -fx-background-radius: 22;
+      -fx-border-radius: 22;
+
+      -fx-padding: 18 18 18 18;
+      -fx-cursor: hand;
+
+      -fx-content-display: left;
+      -fx-alignment: CENTER_LEFT;
+  }
+  
+.settings-root .menu-card:hover {
+      -fx-translate-y: -2;
+  }
+
+  .settings-root .menu-card:pressed {
+      -fx-translate-y: 0;
+  }
+
 /* =========================
    GAME SETUP BACK BUTTON
    ========================= */

@@ -22,11 +22,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane fx:id="root"
-           id="newGameRoot"
-           xmlns="http://javafx.com/javafx/21"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="control.NewGameController">
+<StackPane id="newGameRoot" fx:id="root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.NewGameController">
 
     <styleClass>
         <String fx:value="themed-bg" />
@@ -44,59 +40,38 @@
                 <!-- Header row: Back + title + sound/music -->
                 <HBox alignment="CENTER_LEFT" spacing="20.0">
                     <children>
-                        <Button fx:id="backBtn"
-                                mnemonicParsing="false"
-                                onAction="#onBackClicked"
-                                prefHeight="40.0"
-                                prefWidth="40.0"
-                                styleClass="game-back-button"
-                                text="←" />
+                        <Button fx:id="backBtn" mnemonicParsing="false" onAction="#onBackClicked" prefHeight="40.0" prefWidth="40.0" styleClass="game-back-button" text="←" />
 
                         <Region HBox.hgrow="ALWAYS" />
 
                         <VBox alignment="CENTER">
                             <children>
-                                <Text onMouseClicked="#playClickSound"
-                                      strokeType="OUTSIDE"
-                                      strokeWidth="0.0"
-                                      text="Game Setup"
-                                      textAlignment="CENTER">
+                                <Text onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Game Setup" textAlignment="CENTER">
                                     <font><Font name="Copperplate Gothic Bold" size="32.0" /></font>
                                     <styleClass><String fx:value="setup-title" /></styleClass>
                                 </Text>
 
-                                <Text onMouseClicked="#playClickSound"
-                                      strokeType="OUTSIDE"
-                                      strokeWidth="0.0"
-                                      text="Select difficulty level, pick your avatar, and get ready!"
-                                      textAlignment="CENTER">
+                                <Text onMouseClicked="#playClickSound" strokeType="OUTSIDE" strokeWidth="0.0" text="Select difficulty level, pick your avatar, and get ready!" textAlignment="CENTER">
                                     <font><Font name="Copperplate Gothic Bold" size="14.0" /></font>
                                     <styleClass><String fx:value="setup-subtitle" /></styleClass>
                                 </Text>
                             </children>
+                     <HBox.margin>
+                        <Insets left="50.0" />
+                     </HBox.margin>
                         </VBox>
 
                         <Region HBox.hgrow="ALWAYS" />
 
                         <HBox spacing="10.0">
                             <children>
-                                <Button fx:id="setUpMusicButton"
-                                        mnemonicParsing="false"
-                                        onAction="#onMusicToggle"
-                                        prefHeight="40.0"
-                                        prefWidth="40.0"
-                                        style="-fx-background-radius: 50; -fx-background-color: transparent;">
+                                <Button fx:id="setUpMusicButton" mnemonicParsing="false" onAction="#onMusicToggle" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 50; -fx-background-color: transparent;">
                                     <graphic>
                                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
                                     </graphic>
                                 </Button>
 
-                                <Button fx:id="setUpSoundButton"
-                                        mnemonicParsing="false"
-                                        onAction="#onSoundOff"
-                                        prefHeight="40.0"
-                                        prefWidth="40.0"
-                                        style="-fx-background-radius: 50; -fx-background-color: transparent;">
+                                <Button fx:id="setUpSoundButton" mnemonicParsing="false" onAction="#onSoundOff" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 50; -fx-background-color: transparent;">
                                     <graphic>
                                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
                                     </graphic>
@@ -111,8 +86,14 @@
                     <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Choose Difficulty">
                             <font><Font name="Copperplate Gothic Bold" size="18.0" /></font>
+                     <VBox.margin>
+                        <Insets right="1000.0" />
+                     </VBox.margin>
                         </Text>
-                        <Line endX="100.0" startX="-100.0" styleClass="setup-accent-line" />
+                        <Line endX="100.0" startX="-100.0" stroke="WHITE" styleClass="setup-accent-line">
+                     <VBox.margin>
+                        <Insets right="1000.0" />
+                     </VBox.margin></Line>
                     </children>
                     <padding><Insets bottom="10.0" top="10.0" /></padding>
                 </VBox>
@@ -122,17 +103,9 @@
                     <children>
 
                         <!-- EASY -->
-                        <AnchorPane maxWidth="390.0" minWidth="390.0" prefHeight="253.0" prefWidth="390.0"
-                                    style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
+                        <AnchorPane maxWidth="390.0" minWidth="390.0" prefHeight="253.0" prefWidth="390.0" style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
                             <children>
-                                <ToggleButton fx:id="easyToggle"
-                                              maxHeight="279.0" maxWidth="390.0"
-                                              minHeight="253.0" minWidth="390.0"
-                                              mnemonicParsing="false"
-                                              onAction="#onEasyCardClicked"
-                                              onMouseClicked="#playClickSound"
-                                              prefHeight="253.0" prefWidth="390.0"
-                                              selected="true">
+                                <ToggleButton fx:id="easyToggle" maxHeight="279.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onAction="#onEasyCardClicked" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" selected="true">
                                     <toggleGroup><ToggleGroup fx:id="difficultyGroup" /></toggleGroup>
                                     <styleClass>
                                         <String fx:value="floating-card" />
@@ -141,32 +114,30 @@
                                     </styleClass>
                                 </ToggleButton>
 
-                                <Sphere layoutX="195.0" layoutY="37.0" mouseTransparent="true" radius="15.0"
-                                        style="-fx-effect: dropshadow(gaussian, rgba(74,222,128,0.85), 32, 0.65, 0, 0);">
+                                <Sphere layoutX="195.0" layoutY="37.0" mouseTransparent="true" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(74,222,128,0.85), 32, 0.65, 0, 0);">
                                     <material>
                                         <PhongMaterial diffuseColor="#4ADE80" specularColor="#BBF7D0" />
                                     </material>
                                 </Sphere>
 
-                                <Text layoutX="179.0" layoutY="62.0" mouseTransparent="true"
-                                      text="EASY" styleClass="difficulty-label">
+                                <Text layoutX="179.0" layoutY="62.0" mouseTransparent="true" styleClass="difficulty-label" text="EASY">
                                     <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                 </Text>
 
                                 <VBox layoutX="38.0" layoutY="80.0" mouseTransparent="true" spacing="10.0">
-                                    <Text text="Grid Size                                                 9x9" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Grid Size                                                 9x9">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
-                                    <Text text="Lives                                                          10" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Lives                                                          10">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
-                                    <Text text="Mines                               10 (for each board)" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Mines                               10 (for each board)">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
-                                    <Text text="Questions                        6 (for each board)" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Questions                        6 (for each board)">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
-                                    <Text text="Surprises                         2 (for each board)" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Surprises                         2 (for each board)">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
                                 </VBox>
@@ -174,17 +145,9 @@
                         </AnchorPane>
 
                         <!-- MEDIUM -->
-                        <AnchorPane maxWidth="390.0" minWidth="390.0" prefHeight="253.0" prefWidth="390.0"
-                                    style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
+                        <AnchorPane maxWidth="390.0" minWidth="390.0" prefHeight="253.0" prefWidth="390.0" style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
                             <children>
-                                <ToggleButton fx:id="medToggle"
-                                              maxHeight="253.0" maxWidth="390.0"
-                                              minHeight="253.0" minWidth="390.0"
-                                              mnemonicParsing="false"
-                                              onAction="#onMediumCardClicked"
-                                              onMouseClicked="#playClickSound"
-                                              prefHeight="253.0" prefWidth="390.0"
-                                              toggleGroup="$difficultyGroup">
+                                <ToggleButton fx:id="medToggle" maxHeight="253.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onAction="#onMediumCardClicked" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" toggleGroup="$difficultyGroup">
                                     <styleClass>
                                         <String fx:value="floating-card" />
                                         <String fx:value="difficulty-toggle" />
@@ -196,25 +159,24 @@
                                     <material><PhongMaterial diffuseColor="#FB923C" specularColor="#FED7AA" /></material>
                                 </Sphere>
 
-                                <Text layoutX="172.0" layoutY="62.0" mouseTransparent="true"
-                                      text="Medium" styleClass="difficulty-label">
+                                <Text layoutX="172.0" layoutY="62.0" mouseTransparent="true" styleClass="difficulty-label" text="Medium">
                                     <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                 </Text>
 
                                 <VBox layoutX="38.0" layoutY="80.0" mouseTransparent="true" spacing="10.0">
-                                    <Text text="Grid Size                                              13x13" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Grid Size                                              13x13">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
-                                    <Text text="Lives                                                            8" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Lives                                                            8">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
-                                    <Text text="Mines                               26 (for each board)" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Mines                               26 (for each board)">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
-                                    <Text text="Questions                        7 (for each board)" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Questions                        7 (for each board)">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
-                                    <Text text="Surprises                         3 (for each board)" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Surprises                         3 (for each board)">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
                                 </VBox>
@@ -222,17 +184,9 @@
                         </AnchorPane>
 
                         <!-- HARD -->
-                        <AnchorPane maxWidth="390.0" minWidth="390.0" prefHeight="253.0" prefWidth="390.0"
-                                    style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
+                        <AnchorPane maxWidth="390.0" minWidth="390.0" prefHeight="253.0" prefWidth="390.0" style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
                             <children>
-                                <ToggleButton fx:id="hardToggle"
-                                              maxHeight="253.0" maxWidth="390.0"
-                                              minHeight="253.0" minWidth="390.0"
-                                              mnemonicParsing="false"
-                                              onAction="#onHardCardClicked"
-                                              onMouseClicked="#playClickSound"
-                                              prefHeight="253.0" prefWidth="390.0"
-                                              toggleGroup="$difficultyGroup">
+                                <ToggleButton fx:id="hardToggle" maxHeight="253.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onAction="#onHardCardClicked" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" toggleGroup="$difficultyGroup">
                                     <styleClass>
                                         <String fx:value="floating-card" />
                                         <String fx:value="difficulty-toggle" />
@@ -240,30 +194,28 @@
                                     </styleClass>
                                 </ToggleButton>
 
-                                <Sphere layoutX="195.0" layoutY="37.0" mouseTransparent="true" radius="15.0"
-                                        style="-fx-effect: dropshadow(gaussian, rgba(239,68,68,0.9), 38, 0.7, 0, 0);">
+                                <Sphere layoutX="195.0" layoutY="37.0" mouseTransparent="true" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(239,68,68,0.9), 38, 0.7, 0, 0);">
                                     <material><PhongMaterial diffuseColor="#EF4444" specularColor="#FCA5A5" /></material>
                                 </Sphere>
 
-                                <Text layoutX="176.0" layoutY="62.0" mouseTransparent="true"
-                                      text="HARD" styleClass="difficulty-label">
+                                <Text layoutX="176.0" layoutY="62.0" mouseTransparent="true" styleClass="difficulty-label" text="HARD">
                                     <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                 </Text>
 
                                 <VBox layoutX="38.0" layoutY="80.0" mouseTransparent="true" spacing="10.0">
-                                    <Text text="Grid Size                                              16x16" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Grid Size                                              16x16">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
-                                    <Text text="Lives                                                            6" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Lives                                                            6">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
-                                    <Text text="Mines                               44 (for each board)" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Mines                               44 (for each board)">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
-                                    <Text text="Questions                      11 (for each board)" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Questions                      11 (for each board)">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
-                                    <Text text="Surprises                         4 (for each board)" styleClass="difficulty-text" fill="WHITE">
+                                    <Text fill="WHITE" styleClass="difficulty-text" text="Surprises                         4 (for each board)">
                                         <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                     </Text>
                                 </VBox>
@@ -278,8 +230,14 @@
                     <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Player Customization">
                             <font><Font name="Copperplate Gothic Bold" size="18.0" /></font>
+                     <VBox.margin>
+                        <Insets right="1000.0" />
+                     </VBox.margin>
                         </Text>
-                        <Line endX="100.0" startX="-100.0" styleClass="setup-accent-line" />
+                        <Line endX="100.0" startX="-100.0" stroke="WHITE" styleClass="setup-accent-line">
+                     <VBox.margin>
+                        <Insets right="1000.0" />
+                     </VBox.margin></Line>
                     </children>
                     <padding><Insets top="10.0" /></padding>
                 </VBox>
@@ -294,35 +252,19 @@
 
                                 <AnchorPane prefHeight="100.0" prefWidth="390.0">
                                     <children>
-                                        <Rectangle fx:id="recP1"
-                                                   arcHeight="60.0" arcWidth="60.0"
-                                                   height="100.0"
-                                                   onMouseClicked="#onPlayer1AreaClicked"
-                                                   strokeType="INSIDE"
-                                                   style="-fx-background-color: rgba(255, 255, 255, 0.12);"
-                                                   width="390.0">
+                                        <Rectangle fx:id="recP1" arcHeight="60.0" arcWidth="60.0" height="100.0" onMouseClicked="#onPlayer1AreaClicked" strokeType="INSIDE" style="-fx-background-color: rgba(255, 255, 255, 0.12);" width="390.0">
                                             <styleClass>
                                                 <String fx:value="player-card" />
                                                 <String fx:value="zoom-on-hover" />
                                             </styleClass>
                                         </Rectangle>
 
-                                        <ImageView fx:id="player1avatar"
-                                                   fitHeight="66.0" fitWidth="58.0"
-                                                   layoutX="46.0" layoutY="19.0"
-                                                   onMouseClicked="#onPlayer1AreaClicked"
-                                                   preserveRatio="true">
+                                        <ImageView fx:id="player1avatar" fitHeight="66.0" fitWidth="58.0" layoutX="46.0" layoutY="19.0" onMouseClicked="#onPlayer1AreaClicked" preserveRatio="true">
                                             <clip><Circle centerX="30" centerY="30" radius="30" /></clip>
                                             <image><Image url="@/Images/default_avatar.png" /></image>
                                         </ImageView>
 
-                                        <TextField fx:id="player1Nickname"
-                                                   layoutX="114.0" layoutY="35.0"
-                                                   onMouseClicked="#onPlayer1AreaClicked"
-                                                   prefHeight="30.0"
-                                                   prefWidth="249.0"
-                                                   promptText="Player 1"
-                                                   styleClass="glass-input">
+                                        <TextField fx:id="player1Nickname" layoutX="114.0" layoutY="35.0" onMouseClicked="#onPlayer1AreaClicked" prefHeight="30.0" prefWidth="249.0" promptText="Player 1" styleClass="glass-input">
                                             <font><Font name="Copperplate Gothic Bold" size="14.0" /></font>
                                         </TextField>
                                     </children>
@@ -330,35 +272,19 @@
 
                                 <AnchorPane prefHeight="100.0" prefWidth="390.0">
                                     <children>
-                                        <Rectangle fx:id="recP2"
-                                                   arcHeight="60.0" arcWidth="60.0"
-                                                   height="100.0"
-                                                   onMouseClicked="#onPlayer2AreaClicked"
-                                                   strokeType="INSIDE"
-                                                   style="-fx-background-color: rgba(255, 255, 255, 0.12);"
-                                                   width="390.0">
+                                        <Rectangle fx:id="recP2" arcHeight="60.0" arcWidth="60.0" height="100.0" onMouseClicked="#onPlayer2AreaClicked" strokeType="INSIDE" style="-fx-background-color: rgba(255, 255, 255, 0.12);" width="390.0">
                                             <styleClass>
                                                 <String fx:value="player-card" />
                                                 <String fx:value="zoom-on-hover" />
                                             </styleClass>
                                         </Rectangle>
 
-                                        <ImageView fx:id="player2avatar"
-                                                   fitHeight="66.0" fitWidth="58.0"
-                                                   layoutX="46.0" layoutY="19.0"
-                                                   onMouseClicked="#onPlayer2AreaClicked"
-                                                   preserveRatio="true">
+                                        <ImageView fx:id="player2avatar" fitHeight="66.0" fitWidth="58.0" layoutX="46.0" layoutY="19.0" onMouseClicked="#onPlayer2AreaClicked" preserveRatio="true">
                                             <clip><Circle centerX="30" centerY="30" radius="30" /></clip>
                                             <image><Image url="@/Images/default_avatar.png" /></image>
                                         </ImageView>
 
-                                        <TextField fx:id="player2Nickname"
-                                                   layoutX="114.0" layoutY="35.0"
-                                                   onMouseClicked="#onPlayer2AreaClicked"
-                                                   prefHeight="30.0"
-                                                   prefWidth="249.0"
-                                                   promptText="Player 2"
-                                                   styleClass="glass-input">
+                                        <TextField fx:id="player2Nickname" layoutX="114.0" layoutY="35.0" onMouseClicked="#onPlayer2AreaClicked" prefHeight="30.0" prefWidth="249.0" promptText="Player 2" styleClass="glass-input">
                                             <font><Font name="Copperplate Gothic Bold" size="14.0" /></font>
                                         </TextField>
                                     </children>
@@ -370,10 +296,7 @@
                         <!-- Avatar carousel -->
                         <AnchorPane prefHeight="230.0" prefWidth="770.0">
                             <children>
-                                <AnchorPane fx:id="anchor"
-                                            layoutX="0.0" layoutY="10.0"
-                                            prefHeight="175.0" prefWidth="766.0"
-                                            style="-fx-background-radius: 150; -fx-border-radius: 150; -fx-border-color: rgba(255,255,255,0.6); -fx-border-width: 3; -fx-background-color: rgba(255, 255, 255, 0.12);">
+                                <AnchorPane fx:id="anchor" layoutX="0.0" layoutY="10.0" prefHeight="175.0" prefWidth="766.0" style="-fx-background-radius: 150; -fx-border-radius: 150; -fx-border-color: rgba(255,255,255,0.6); -fx-border-width: 3; -fx-background-color: rgba(255, 255, 255, 0.12);">
                                     <children>
 
                                         <!-- Row 1 -->
@@ -515,29 +438,15 @@
                                                 <ImageView fitHeight="60.0" fitWidth="60.0" preserveRatio="true">
                                                     <image><Image url="@/Images/plus.png" /></image>
                                                 </ImageView>
-                                                <Button mnemonicParsing="false"
-                                                        onAction="#onPlus"
-                                                        prefHeight="60.0"
-                                                        prefWidth="60.0"
-                                                        style="-fx-background-radius: 100; -fx-background-color: transparent; -fx-cursor: hand;" />
+                                                <Button mnemonicParsing="false" onAction="#onPlus" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 100; -fx-background-color: transparent; -fx-cursor: hand;" />
                                             </children>
                                         </StackPane>
 
                                     </children>
                                 </AnchorPane>
-
+      
                                 <!-- Start game button -->
-                                <Button fx:id="startGameBtn"
-                                        layoutX="509.0"
-                                        layoutY="220.0"
-                                        mnemonicParsing="false"
-                                        onAction="#onStartGameClicked"
-                                        onMouseClicked="#playClickSound"
-                                        prefHeight="47.0"
-                                        prefWidth="240.0"
-                                        styleClass="start-game-btn"
-                                        text="START GAME"
-                                        textFill="#f6f7ff">
+                                <Button fx:id="startGameBtn" layoutX="66.0" layoutY="219.0" mnemonicParsing="false" onAction="#onStartGameClicked" onMouseClicked="#playClickSound" prefHeight="47.0" prefWidth="240.0" styleClass="start-game-btn" text="START GAME" textFill="#f6f7ff">
                                     <font>
                                         <Font name="Copperplate Gothic Light" size="22.0" />
                                     </font>

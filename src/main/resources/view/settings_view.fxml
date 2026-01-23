@@ -12,17 +12,17 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="rootGrid" styleClass="settings-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.SettingsController">
+<StackPane fx:id="rootGrid" prefHeight="770.0" prefWidth="1300.0" styleClass="settings-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.SettingsController">
 
     <children>
-        <VBox alignment="TOP_CENTER" maxWidth="700.0" spacing="20.0">
+        <VBox alignment="TOP_CENTER" maxWidth="1300.0" prefWidth="1300.0" spacing="20.0">
             <padding>
                 <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
             </padding>
 
             <children>
 
-                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                <HBox alignment="CENTER_LEFT" maxWidth="-Infinity" prefHeight="70.0" prefWidth="1300.0" spacing="20.0">
                     <children>
                         <Button fx:id="backBtn" onAction="#onBackToMainClicked" prefHeight="50.0" prefWidth="60.0" styleClass="settings-back-button" text="⬅">
                            <font><Font name="Copperplate Gothic Bold" size="20.0" /></font>
@@ -32,9 +32,6 @@
 
                         <HBox alignment="CENTER" spacing="15.0">
                             <children>
-                                <ImageView fitHeight="70.0" fitWidth="70.0" preserveRatio="true" styleClass="wolf-logo">
-                                    <image><Image url="@../Images/wolf_logo.png" /></image>
-                                </ImageView>
                                 <Label styleClass="settings-title" text="WOLF SETTINGS" textFill="#e5f4ff">
                                     <font><Font name="Copperplate Gothic Bold" size="32.0" /></font>
                                 </Label>

@@ -315,8 +315,6 @@ public class QuestionsManagerController implements QuestionCardActions {
             deleteSelectedButton.setManaged(true);
 
             selectButton.setText("Exit Select Mode");
-            selectButton.getStyleClass().add("button-bold");
-
         } else {
             //EXIT selection mode
             exitSelectionMode();
