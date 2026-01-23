@@ -12,6 +12,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -40,7 +41,8 @@ public class GameController {
     @FXML private Button musicButton;
     @FXML private HBox player1StatsBox;
     @FXML private HBox player2StatsBox;
-    @FXML private Parent root;
+    //@FXML private Parent root;
+    @FXML private VBox root;
     @FXML private ImageView player1AvatarImage;
     @FXML private ImageView player2AvatarImage;
     @FXML private StackPane rootStack;

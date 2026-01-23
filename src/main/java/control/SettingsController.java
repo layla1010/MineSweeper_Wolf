@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import util.DialogUtil;
 import util.SoundManager;
@@ -17,8 +18,9 @@ public class SettingsController {
 
     private static final Logger LOG = Logger.getLogger(SettingsController.class.getName());
 
-    @FXML private GridPane rootGrid;
-
+    //@FXML private GridPane rootGrid;
+    @FXML private StackPane rootGrid;
+    
     @FXML private Button filtersBtn;
     @FXML private Button customizeBtn;
     @FXML private Button howToPlayBtn;
