@@ -281,4 +281,11 @@ public class MainController {
         }
     }
 
+    
+    @FXML
+    private void onLeaderboardClicked() {
+        Stage stage = (Stage) mainGrid.getScene().getWindow();
+        util.ViewNavigator.switchTo(stage, "/view/leaderboard_view.fxml");
+    }
+
 }

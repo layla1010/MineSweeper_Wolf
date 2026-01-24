@@ -558,6 +558,11 @@ public class SysData {
         return p;
     }
     
+    public List<Player> getAllPlayers() {
+        ensurePlayersLoaded();
+        return new ArrayList<>(playersByEmail.values());
+    }
+    
     private static final class ResetToken {
         final String code;
         final long expiresAtMillis;
@@ -577,6 +582,14 @@ public class SysData {
         p.setPassword(newPassword);
         savePlayersToCsv();
     }
+    
+ // SysData.java
+    public List<Player> getAllRegisteredPlayers() {
+        ensurePlayersLoaded();
+        // playersByEmail is the unique map (email key), so values are unique Players
+        return new ArrayList<>(playersByEmail.values());
+    }
+
     
     public void createPasswordResetOtp(String email, String code, int ttlMinutes) {
         long expiresAt = System.currentTimeMillis() + ttlMinutes * 60_000L;

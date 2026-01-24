@@ -1,0 +1,251 @@
+/* ===============================
+   ROOT
+   =============================== */
+
+.leaderboard-root {
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 18px;
+}
+
+/* ===============================
+   LABELS / GENERAL TEXT
+   =============================== */
+
+.label {
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 18px;
+    -fx-text-fill: #e5e7eb;
+}
+
+/* Title */
+.leaderboard-title {
+    -fx-font-family: "Copperplate Gothic Bold";
+    -fx-font-size: 35px;
+    -fx-text-fill: white;
+}
+
+/* ===============================
+   FILTER ROW
+   =============================== */
+
+.leaderboard-filters {
+    -fx-padding: 2 0 2 0;
+}
+
+/* ===============================
+   BUTTONS
+   =============================== */
+
+.button {
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 18px;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-background-color: rgba(0, 0, 0, 0.35);
+    -fx-text-fill: white;
+    -fx-border-color: rgba(255, 255, 255, 0.25);
+    -fx-border-width: 1;
+}
+
+.button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.18);
+}
+
+.button:pressed {
+    -fx-background-color: rgba(255, 255, 255, 0.30);
+}
+
+/* ===============================
+   COMBO BOX (FORCE CONSISTENT LOOK)
+   =============================== */
+
+.combo-box, .combo-box-base {
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 18px;
+
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-background-color: rgba(0, 0, 0, 0.35);
+    -fx-border-color: rgba(255, 255, 255, 0.25);
+    -fx-border-width: 1;
+
+    -fx-mark-color: white;
+}
+
+.combo-box .list-cell {
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 18px;
+    -fx-text-fill: #f9fafb;
+    -fx-background-color: transparent;
+}
+
+/* Popup list */
+.combo-box-popup .list-view {
+    -fx-background-color: rgba(0,0,0,0.85);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(255,255,255,0.25);
+    -fx-border-width: 1;
+}
+
+.combo-box-popup .list-cell {
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 18px;
+    -fx-text-fill: #f9fafb;
+    -fx-padding: 10 12 10 12;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(255,255,255,0.18);
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: rgba(255,255,255,0.28);
+}
+
+/* ===============================
+   TAB PANE (MATCH TABLE DESIGN)
+   =============================== */
+
+.leaderboard-tabs {
+    -fx-background-color: transparent;
+}
+
+/* remove default header background */
+.leaderboard-tabs .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+/* header strip container */
+.leaderboard-tabs .tab-header-area {
+    -fx-padding: 0 0 8 0;
+}
+
+/* tabs */
+.leaderboard-tabs .tab {
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 18px;
+
+    -fx-background-color: rgba(0,0,0,0.35);
+    -fx-background-radius: 10 10 0 0;
+    -fx-border-radius: 10 10 0 0;
+    -fx-border-color: rgba(255,255,255,0.25);
+    -fx-border-width: 1;
+
+    -fx-padding: 8 18 8 18;
+}
+
+/* selected tab pops like a card */
+.leaderboard-tabs .tab:selected {
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-border-color: rgba(255,255,255,0.35);
+}
+
+/* text in the tab */
+.leaderboard-tabs .tab .tab-label {
+    -fx-text-fill: #f9fafb;
+}
+
+/* content area below tabs */
+.leaderboard-tabs .tab-content-area {
+    -fx-background-color: transparent;
+}
+
+/* ===============================
+   TABLE VIEW (CORE)
+   =============================== */
+
+.table-view {
+    -fx-background-color: rgba(0, 0, 0, 0.55);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.25);
+    -fx-border-width: 1;
+    -fx-padding: 6;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header {
+    -fx-background-color: rgba(255, 255, 255, 0.12);
+    -fx-border-color: rgba(255, 255, 255, 0.15);
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header .label {
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+}
+
+/* ===============================
+   TABLE ROWS
+   =============================== */
+
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: rgba(255, 255, 255, 0.03);
+}
+
+.table-row-cell:even {
+    -fx-background-color: rgba(255, 255, 255, 0.06);
+}
+
+.table-row-cell:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.18);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: rgba(255, 255, 255, 0.28);
+}
+
+/* ===============================
+   TABLE CELLS
+   =============================== */
+
+.table-cell {
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 18px;
+    -fx-text-fill: #f9fafb;
+    -fx-alignment: CENTER;
+    -fx-padding: 10 6 10 6;
+}
+
+/* Left-align names (rank + avatars then name => name is usually 3rd col in Players, 4th in Teams) */
+#playersTable .table-cell {
+    /* default ok */
+}
+#teamsTable .table-cell {
+    /* default ok */
+}
+
+/* ===============================
+   AVATAR CELLS
+   =============================== */
+
+.table-cell ImageView {
+    -fx-fit-width: 36px;
+    -fx-fit-height: 36px;
+    -fx-preserve-ratio: true;
+    -fx-smooth: true;
+}
+
+/* ===============================
+   SCROLL BAR (SUBTLE)
+   =============================== */
+
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255, 255, 255, 0.25);
+    -fx-background-radius: 6;
+}

@@ -15,7 +15,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="rootStack" prefHeight="770.0" prefWidth="1300.0" styleClass="root-stack" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.GameController">
+<StackPane fx:id="rootStack" prefHeight="770.0" prefWidth="1300.0" styleClass="root-stack" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.GameController">
 
     <children>
         <VBox fx:id="root" alignment="TOP_CENTER" spacing="10.0" stylesheets="@../css/board.css">

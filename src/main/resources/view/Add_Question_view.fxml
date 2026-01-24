@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="AddQuestionRoot" prefHeight="770.0" prefWidth="1300.0" styleClass="themed-bg" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.AddQuestionController">
+<StackPane fx:id="AddQuestionRoot" prefHeight="770.0" prefWidth="1300.0" styleClass="themed-bg" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.AddQuestionController">
 
     <children>
         <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="1300.0" prefHeight="700.0" prefWidth="1300.0" spacing="20.0">
