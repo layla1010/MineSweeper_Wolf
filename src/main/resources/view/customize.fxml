@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -10,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="520.0" prefWidth="720.0" styleClass="customize-root" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.CustomizeController">
+<AnchorPane prefHeight="800.0" prefWidth="1300.0" styleClass="customize-root" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.CustomizeController">
 
     <children>
         <VBox fx:id="root" alignment="TOP_CENTER" spacing="22" styleClass="themed-bg" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -19,90 +20,222 @@
                 <Insets bottom="26" left="26" right="26" top="22" />
             </padding>
 
-            <!-- Top bar: back button -->
-            <HBox alignment="CENTER_LEFT" prefHeight="60">
-                <children>
-                    <Button fx:id="backBtn" onAction="#onBackClicked" styleClass="settings-back-button" text="←">
-                        <font>
-                            <Font name="Copperplate Gothic Bold" size="18" />
-                        </font>
-                    </Button>
-                    <Region HBox.hgrow="ALWAYS" />
-                </children>
-            </HBox>
+            <children>
 
-            <!-- Title -->
-            <Label styleClass="settings-title" text="CUSTOMIZE THEMES" textFill="WHITE">
-                <font>
-                    <Font name="Copperplate Gothic Bold" size="44" />
-                </font>
-            </Label>
+                <!-- Top bar stays fixed -->
+                <HBox alignment="CENTER_LEFT" prefHeight="60">
+                    <children>
+                        <Button fx:id="backBtn" onAction="#onBackClicked" styleClass="settings-back-button" text="←">
+                            <font>
+                                <Font name="Copperplate Gothic Bold" size="18" />
+                            </font>
+                        </Button>
+                        <Region HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
 
-            <Label styleClass="settings-subtitle" text="Choose how your game looks. Changes apply immediately." textFill="WHITE">
-                <font>
-                    <Font name="Copperplate Gothic Light" size="16" />
-                </font>
-            </Label>
+                <!-- Everything else scrolls -->
+                <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
 
-            <!-- Options -->
-            <VBox maxWidth="560" spacing="16">
-                <children>
-         
-                    <!-- Default -->
-                    <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15));" styleClass="filter-row">
-                        <children>
-                            <Label styleClass="filter-label" text="Colorful">
-                                <font>
-                                    <Font name="Copperplate Gothic Light" size="20" />
-                                </font>
-                            </Label>
-         
-                            <Region HBox.hgrow="ALWAYS" />
-         
-                            <ToggleButton fx:id="defaultBtn" onAction="#onDefaultSelected" styleClass="theme-select-btn" text="SELECT" />
-                        </children>
-                    </HBox>
-         
-                    <!-- Wolf -->
-                    <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15));" styleClass="filter-row">
-                        <children>
-                            <Label styleClass="filter-label" text="Fiery Wolf (Default)">
-                                <font>
-                                    <Font name="Copperplate Gothic Light" size="20" />
-                                </font>
-                            </Label>
-         
-                            <Region HBox.hgrow="ALWAYS" />
-         
-                            <ToggleButton fx:id="wolfBtn" onAction="#onWolfSelected" styleClass="theme-select-btn" text="SELECT" />
-                        </children>
-                    </HBox>
-               <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15));" styleClass="filter-row">
-                  <children>
-                     <Label styleClass="filter-label" text="Cyber blue">
-                        <font>
-                           <Font name="Copperplate Gothic Light" size="20" />
-                        </font>
-                     </Label>
-                     <Region HBox.hgrow="ALWAYS" />
-                     <ToggleButton fx:id="cyberBlueBtn" onAction="#onCyberSelected" styleClass="theme-select-btn" text="SELECT" />
-                  </children>
-               </HBox>
-               <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-background-color: linear-gradient(    to bottom right,    rgba(0, 0, 0, 0.30),    rgba(0, 0, 0, 0.15));" styleClass="filter-row">
-                  <children>
-                     <Label styleClass="filter-label" text="Emerald Howl">
-                        <font>
-                           <Font name="Copperplate Gothic Light" size="20" />
-                        </font>
-                     </Label>
-                     <Region HBox.hgrow="ALWAYS" />
-                     <ToggleButton fx:id="greenWolfBtn" onAction="#onGreenWolfSelected" styleClass="theme-select-btn" text="SELECT" />
-                  </children>
-               </HBox>
+                    <content>
+                        <VBox fx:id="scrollContent" alignment="TOP_CENTER" maxWidth="900" spacing="22" style="-fx-background-color: transparent;">
 
-                </children>
-            </VBox>
+                            <children>
 
+                                <!-- THEMES TITLE -->
+                                <Label styleClass="settings-title" text="CUSTOMIZE THEMES" textFill="WHITE">
+                                    <font>
+                                        <Font name="Copperplate Gothic Bold" size="44" />
+                                    </font>
+                                </Label>
+
+                                <Label styleClass="settings-subtitle" text="Choose how your game looks. Changes apply immediately." textFill="WHITE">
+                                    <font>
+                                        <Font name="Copperplate Gothic Light" size="16" />
+                                    </font>
+                                </Label>
+
+                                <!-- Theme options -->
+                                <VBox maxWidth="560" spacing="16">
+                                    <children>
+
+                                        <!-- Default -->
+                                        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50;                                                      -fx-background-color: linear-gradient(to bottom right, rgba(0,0,0,0.30), rgba(0,0,0,0.15));" styleClass="filter-row">
+                                            <children>
+                                                <Label styleClass="filter-label" text="Colorful">
+                                                    <font>
+                                                        <Font name="Copperplate Gothic Light" size="20" />
+                                                    </font>
+                                                </Label>
+
+                                                <Region HBox.hgrow="ALWAYS" />
+
+                                                <ToggleButton fx:id="defaultBtn" onAction="#onDefaultSelected" styleClass="theme-select-btn" text="SELECT" />
+                                            </children>
+                                        </HBox>
+
+                                        <!-- Wolf -->
+                                        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50;                                                      -fx-background-color: linear-gradient(to bottom right, rgba(0,0,0,0.30), rgba(0,0,0,0.15));" styleClass="filter-row">
+                                            <children>
+                                                <Label styleClass="filter-label" text="Fiery Wolf (Default)">
+                                                    <font>
+                                                        <Font name="Copperplate Gothic Light" size="20" />
+                                                    </font>
+                                                </Label>
+
+                                                <Region HBox.hgrow="ALWAYS" />
+
+                                                <ToggleButton fx:id="wolfBtn" onAction="#onWolfSelected" styleClass="theme-select-btn" text="SELECT" />
+                                            </children>
+                                        </HBox>
+
+                                        <!-- Cyber blue -->
+                                        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50;                                                      -fx-background-color: linear-gradient(to bottom right, rgba(0,0,0,0.30), rgba(0,0,0,0.15));" styleClass="filter-row">
+                                            <children>
+                                                <Label styleClass="filter-label" text="Cyber blue">
+                                                    <font>
+                                                        <Font name="Copperplate Gothic Light" size="20" />
+                                                    </font>
+                                                </Label>
+
+                                                <Region HBox.hgrow="ALWAYS" />
+
+                                                <ToggleButton fx:id="cyberBlueBtn" onAction="#onCyberSelected" styleClass="theme-select-btn" text="SELECT" />
+                                            </children>
+                                        </HBox>
+
+                                        <!-- Emerald Howl -->
+                                        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50;                                                      -fx-background-color: linear-gradient(to bottom right, rgba(0,0,0,0.30), rgba(0,0,0,0.15));" styleClass="filter-row">
+                                            <children>
+                                                <Label styleClass="filter-label" text="Emerald Howl">
+                                                    <font>
+                                                        <Font name="Copperplate Gothic Light" size="20" />
+                                                    </font>
+                                                </Label>
+
+                                                <Region HBox.hgrow="ALWAYS" />
+
+                                                <ToggleButton fx:id="greenWolfBtn" onAction="#onGreenWolfSelected" styleClass="theme-select-btn" text="SELECT" />
+                                            </children>
+                                        </HBox>
+
+                                    </children>
+                                </VBox>
+
+                                <!-- MUSIC TITLE -->
+                                <Label styleClass="settings-title" text="MUSIC" textFill="WHITE">
+                                    <font>
+                                        <Font name="Copperplate Gothic Bold" size="36" />
+                                    </font>
+                                </Label>
+
+                                <Label styleClass="settings-subtitle" text="Choose your background music. Preview pauses current music and resumes after." textFill="WHITE">
+                                    <font>
+                                        <Font name="Copperplate Gothic Light" size="16" />
+                                    </font>
+                                </Label>
+
+                                <!-- Music options -->
+                                <VBox maxWidth="560" spacing="16">
+                                    <children>
+
+                                        <!-- Retro -->
+                                        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50;                                                      -fx-background-color: linear-gradient(to bottom right, rgba(0,0,0,0.30), rgba(0,0,0,0.15));" styleClass="filter-row">
+                                            <children>
+                                                <Label styleClass="filter-label" text="Retro (Default)">
+                                                    <font>
+                                                        <Font name="Copperplate Gothic Light" size="20" />
+                                                    </font>
+                                                </Label>
+
+                                                <Region HBox.hgrow="ALWAYS" />
+
+                                                <Button fx:id="previewRetroBtn" onAction="#onPreviewRetro" styleClass="theme-select-btn" text="▶" />
+
+                                                <ToggleButton fx:id="musicRetroBtn" onAction="#onMusicRetroSelected" styleClass="theme-select-btn" text="SELECT" />
+                                            </children>
+                                        </HBox>
+
+                                        <!-- Arcade -->
+                                        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50;                                                      -fx-background-color: linear-gradient(to bottom right, rgba(0,0,0,0.30), rgba(0,0,0,0.15));" styleClass="filter-row">
+                                            <children>
+                                                <Label styleClass="filter-label" text="Arcade">
+                                                    <font>
+                                                        <Font name="Copperplate Gothic Light" size="20" />
+                                                    </font>
+                                                </Label>
+
+                                                <Region HBox.hgrow="ALWAYS" />
+
+                                                <Button fx:id="previewArcadeBtn" onAction="#onPreviewArcade" styleClass="theme-select-btn" text="▶" />
+
+                                                <ToggleButton fx:id="musicArcadeBtn" onAction="#onMusicArcadeSelected" styleClass="theme-select-btn" text="SELECT" />
+                                            </children>
+                                        </HBox>
+
+                                        <!-- Escalation -->
+                                        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50;                                                      -fx-background-color: linear-gradient(to bottom right, rgba(0,0,0,0.30), rgba(0,0,0,0.15));" styleClass="filter-row">
+                                            <children>
+                                                <Label styleClass="filter-label" text="Escalation">
+                                                    <font>
+                                                        <Font name="Copperplate Gothic Light" size="20" />
+                                                    </font>
+                                                </Label>
+
+                                                <Region HBox.hgrow="ALWAYS" />
+
+                                                <Button fx:id="previewEscalationBtn" onAction="#onPreviewEscalation" styleClass="theme-select-btn" text="▶" />
+
+                                                <ToggleButton fx:id="musicEscalationBtn" onAction="#onMusicEscalationSelected" styleClass="theme-select-btn" text="SELECT" />
+                                            </children>
+                                        </HBox>
+
+                                        <!-- Friendly Tempo -->
+                                        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50;                                                      -fx-background-color: linear-gradient(to bottom right, rgba(0,0,0,0.30), rgba(0,0,0,0.15));" styleClass="filter-row">
+                                            <children>
+                                                <Label styleClass="filter-label" text="Friendly Tempo">
+                                                    <font>
+                                                        <Font name="Copperplate Gothic Light" size="20" />
+                                                    </font>
+                                                </Label>
+
+                                                <Region HBox.hgrow="ALWAYS" />
+
+                                                <Button fx:id="previewFriendlyTempoBtn" onAction="#onPreviewFriendlyTempo" styleClass="theme-select-btn" text="▶" />
+
+                                                <ToggleButton fx:id="musicFriendlyTempoBtn" onAction="#onMusicFriendlyTempoSelected" styleClass="theme-select-btn" text="SELECT" />
+                                            </children>
+                                        </HBox>
+
+                                        <!-- Jazzy Beats & Bots -->
+                                        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50;                                                      -fx-background-color: linear-gradient(to bottom right, rgba(0,0,0,0.30), rgba(0,0,0,0.15));" styleClass="filter-row">
+                                            <children>
+                                                <Label styleClass="filter-label" text="Jazzy Beats &amp; Bots">
+                                                    <font>
+                                                        <Font name="Copperplate Gothic Light" size="20" />
+                                                    </font>
+                                                </Label>
+
+                                                <Region HBox.hgrow="ALWAYS" />
+
+                                                <Button fx:id="previewJazzyBotsBtn" onAction="#onPreviewJazzyBots" styleClass="theme-select-btn" text="▶" />
+
+                                                <ToggleButton fx:id="musicJazzyBotsBtn" onAction="#onMusicJazzyBotsSelected" styleClass="theme-select-btn" text="SELECT" />
+                                            </children>
+                                        </HBox>
+
+                                    </children>
+                                </VBox>
+
+                            </children>
+                     <padding>
+                        <Insets left="350.0" />
+                     </padding>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+
+            </children>
         </VBox>
     </children>
 </AnchorPane>
