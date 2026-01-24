@@ -1,12 +1,20 @@
 package control;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.geometry.Pos;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import model.Game;
 import model.GameResult;
@@ -29,32 +37,48 @@ public class LeaderboardController {
 
     @FXML private TabPane tabs;
 
+    // Players table (simplified)
     @FXML private TableView<LeaderboardRow> playersTable;
     @FXML private TableColumn<LeaderboardRow, Number> pRankCol;
-    @FXML private TableColumn<LeaderboardRow, String> pNameCol;
-    @FXML private TableColumn<LeaderboardRow, Number> pWinsCol;
-    @FXML private TableColumn<LeaderboardRow, Number> pGamesCol;
-    @FXML private TableColumn<LeaderboardRow, Number> pWinRateCol;
-    @FXML private TableColumn<LeaderboardRow, Number> pAvgScoreCol;
-    @FXML private TableColumn<LeaderboardRow, String> pAvgTimeCol;
-
     @FXML private TableColumn<LeaderboardRow, String> pAvatarCol;
+    @FXML private TableColumn<LeaderboardRow, String> pNameCol;
+    @FXML private TableColumn<LeaderboardRow, Number> pGamesCol;
+    @FXML private TableColumn<LeaderboardRow, String> pMetricCol;
 
+    // Teams table (simplified)
     @FXML private TableView<LeaderboardRow> teamsTable;
     @FXML private TableColumn<LeaderboardRow, Number> tRankCol;
-
-    // NEW: separate names instead of "Team"
-    @FXML private TableColumn<LeaderboardRow, String> tP1NameCol;
-    @FXML private TableColumn<LeaderboardRow, String> tP2NameCol;
-
-    @FXML private TableColumn<LeaderboardRow, Number> tWinsCol;
-    @FXML private TableColumn<LeaderboardRow, Number> tGamesCol;
-    @FXML private TableColumn<LeaderboardRow, Number> tWinRateCol;
-    @FXML private TableColumn<LeaderboardRow, Number> tAvgScoreCol;
-    @FXML private TableColumn<LeaderboardRow, String> tAvgTimeCol;
-
     @FXML private TableColumn<LeaderboardRow, String> tAvatar1Col;
+    @FXML private TableColumn<LeaderboardRow, String> tP1NameCol;
     @FXML private TableColumn<LeaderboardRow, String> tAvatar2Col;
+    @FXML private TableColumn<LeaderboardRow, String> tP2NameCol;
+    @FXML private TableColumn<LeaderboardRow, Number> tGamesCol;
+    @FXML private TableColumn<LeaderboardRow, String> tMetricCol;
+
+    // Players podium
+    @FXML private ImageView p1Avatar;
+    @FXML private ImageView p2Avatar;
+    @FXML private ImageView p3Avatar;
+    @FXML private Label p1Name;
+    @FXML private Label p2Name;
+    @FXML private Label p3Name;
+    @FXML private Label p1Stat;
+    @FXML private Label p2Stat;
+    @FXML private Label p3Stat;
+
+    // Teams podium
+    @FXML private ImageView t1Avatar1;
+    @FXML private ImageView t1Avatar2;
+    @FXML private ImageView t2Avatar1;
+    @FXML private ImageView t2Avatar2;
+    @FXML private ImageView t3Avatar1;
+    @FXML private ImageView t3Avatar2;
+    @FXML private Label t1Name;
+    @FXML private Label t2Name;
+    @FXML private Label t3Name;
+    @FXML private Label t1Stat;
+    @FXML private Label t2Stat;
+    @FXML private Label t3Stat;
 
     private final ObservableList<LeaderboardRow> playerRows = FXCollections.observableArrayList();
     private final ObservableList<LeaderboardRow> teamRows   = FXCollections.observableArrayList();
@@ -64,7 +88,6 @@ public class LeaderboardController {
     private static final class Stats {
         int games;
         int wins;
-
         int totalScore;
 
         int totalWinTimeSeconds;
@@ -97,6 +120,8 @@ public class LeaderboardController {
         }
     }
 
+    // ------------------------------- Init -------------------------------
+
     @FXML
     private void initialize() {
         SysData.getInstance().ensureHistoryLoaded();
@@ -107,50 +132,54 @@ public class LeaderboardController {
             timeWindowCombo.getSelectionModel().select(TimeWindow.ALL_TIME);
             timeWindowCombo.setOnAction(e -> reload());
         }
+
         if (metricCombo != null) {
             metricCombo.setItems(FXCollections.observableArrayList(Metric.values()));
             metricCombo.getSelectionModel().select(Metric.WINS);
             metricCombo.setOnAction(e -> reload());
         }
 
-        // Rank columns (with medals)
+        // Rank columns with medals
         configureRankColumn(pRankCol);
         configureRankColumn(tRankCol);
 
-        // Players columns
-        if (pNameCol != null) pNameCol.setCellValueFactory(c -> c.getValue().nameProperty());
-        if (pWinsCol != null) pWinsCol.setCellValueFactory(c -> c.getValue().winsProperty());
+        // Players fixed columns
+        if (pNameCol != null)  pNameCol.setCellValueFactory(c -> c.getValue().nameProperty());
         if (pGamesCol != null) pGamesCol.setCellValueFactory(c -> c.getValue().gamesProperty());
-        if (pWinRateCol != null) pWinRateCol.setCellValueFactory(c -> c.getValue().winRateProperty());
-        if (pAvgScoreCol != null) pAvgScoreCol.setCellValueFactory(c -> c.getValue().avgScoreProperty());
-        if (pAvgTimeCol != null) {
-            pAvgTimeCol.setCellValueFactory(c ->
-                    new javafx.beans.property.SimpleStringProperty(c.getValue().getAvgWinTimeText()));
-        }
+        configureAvatarColumn(pAvatarCol, LeaderboardRow::getAvatar1Id);
 
-        // Teams columns (NEW)
+        // Teams fixed columns
         if (tP1NameCol != null) tP1NameCol.setCellValueFactory(c -> c.getValue().player1NameProperty());
         if (tP2NameCol != null) tP2NameCol.setCellValueFactory(c -> c.getValue().player2NameProperty());
+        if (tGamesCol != null)  tGamesCol.setCellValueFactory(c -> c.getValue().gamesProperty());
 
-        if (tWinsCol != null) tWinsCol.setCellValueFactory(c -> c.getValue().winsProperty());
-        if (tGamesCol != null) tGamesCol.setCellValueFactory(c -> c.getValue().gamesProperty());
-        if (tWinRateCol != null) tWinRateCol.setCellValueFactory(c -> c.getValue().winRateProperty());
-        if (tAvgScoreCol != null) tAvgScoreCol.setCellValueFactory(c -> c.getValue().avgScoreProperty());
-        if (tAvgTimeCol != null) {
-            tAvgTimeCol.setCellValueFactory(c ->
-                    new javafx.beans.property.SimpleStringProperty(c.getValue().getAvgWinTimeText()));
-        }
-
-        // Avatar columns
-        configureAvatarColumn(pAvatarCol, LeaderboardRow::getAvatar1Id);
         configureAvatarColumn(tAvatar1Col, LeaderboardRow::getAvatar1Id);
         configureAvatarColumn(tAvatar2Col, LeaderboardRow::getAvatar2Id);
 
+        // Dynamic metric columns (value computed from current metric selection)
+        configurePlayersMetricColumn();
+        configureTeamsMetricColumn();
+
         if (playersTable != null) playersTable.setItems(playerRows);
-        if (teamsTable != null) teamsTable.setItems(teamRows);
+        if (teamsTable != null)   teamsTable.setItems(teamRows);
+
+     // Podium players
+        applyPodiumAvatarClips(p1Avatar, 70);
+        applyPodiumAvatarClips(p2Avatar, 56);
+        applyPodiumAvatarClips(p3Avatar, 56);
+
+        // Podium teams
+        applyPodiumAvatarClips(t1Avatar1, 56);
+        applyPodiumAvatarClips(t1Avatar2, 56);
+        applyPodiumAvatarClips(t2Avatar1, 48);
+        applyPodiumAvatarClips(t2Avatar2, 48);
+        applyPodiumAvatarClips(t3Avatar1, 48);
+        applyPodiumAvatarClips(t3Avatar2, 48);
 
         reload();
     }
+
+    // ------------------------------- Column config helpers -------------------------------
 
     private interface AvatarIdGetter {
         String get(LeaderboardRow row);
@@ -160,7 +189,6 @@ public class LeaderboardController {
         if (col == null) return;
 
         col.setCellValueFactory(c -> c.getValue().rankProperty());
-
         col.setCellFactory(tc -> new TableCell<>() {
             @Override
             protected void updateItem(Number rank, boolean empty) {
@@ -179,7 +207,7 @@ public class LeaderboardController {
                     case 3 -> { setText(null); setGraphic(new Label("🥉")); }
                     default -> { setGraphic(null); setText(String.valueOf(r)); }
                 }
-                setAlignment(javafx.geometry.Pos.CENTER);
+                setAlignment(Pos.CENTER);
             }
         });
     }
@@ -187,16 +215,17 @@ public class LeaderboardController {
     private void configureAvatarColumn(TableColumn<LeaderboardRow, String> col, AvatarIdGetter getter) {
         if (col == null) return;
 
-        col.setCellValueFactory(cd -> new javafx.beans.property.SimpleStringProperty(getter.get(cd.getValue())));
+        // ✅ THIS IS THE MISSING PIECE
+        col.setCellValueFactory(cd ->
+                new SimpleStringProperty(getter.get(cd.getValue()))
+        );
+
         col.setCellFactory(tc -> new TableCell<>() {
             private final ImageView iv = new ImageView();
 
             {
-                // change these numbers to resize avatars
-                iv.setFitWidth(40);
-                iv.setFitHeight(40);
-                iv.setPreserveRatio(true);
-                setAlignment(javafx.geometry.Pos.CENTER);
+                makeCircular(iv, 40);
+                setAlignment(Pos.CENTER);
             }
 
             @Override
@@ -220,7 +249,60 @@ public class LeaderboardController {
         });
     }
 
-    // --------------------------------- Actions ---------------------------------
+
+    private void configurePlayersMetricColumn() {
+        if (pMetricCol == null) return;
+
+        pMetricCol.setCellValueFactory(cd -> {
+            LeaderboardRow r = cd.getValue();
+            Metric m = (metricCombo != null && metricCombo.getValue() != null) ? metricCombo.getValue() : Metric.WINS;
+            return new SimpleStringProperty(formatMetricValue(r, m));
+        });
+
+        pMetricCol.setStyle("-fx-alignment: CENTER;");
+    }
+
+    private void configureTeamsMetricColumn() {
+        if (tMetricCol == null) return;
+
+        tMetricCol.setCellValueFactory(cd -> {
+            LeaderboardRow r = cd.getValue();
+            Metric m = (metricCombo != null && metricCombo.getValue() != null) ? metricCombo.getValue() : Metric.WINS;
+            return new SimpleStringProperty(formatMetricValue(r, m));
+        });
+
+        tMetricCol.setStyle("-fx-alignment: CENTER;");
+    }
+
+    private static String metricHeader(Metric m) {
+        return switch (m) {
+            case WINS -> "Wins";
+            case WIN_RATE -> "Win Rate";
+            case AVG_SCORE -> "Avg Score";
+            case AVG_WIN_TIME -> "Avg Time";
+        };
+    }
+
+    private static String formatMetricValue(LeaderboardRow r, Metric m) {
+        return switch (m) {
+            case WINS -> String.valueOf(r.getWins());
+            case WIN_RATE -> String.format(Locale.US, "%.1f%%", r.getWinRate());
+            case AVG_SCORE -> String.format(Locale.US, "%.1f", r.getAvgScore());
+            case AVG_WIN_TIME -> r.getAvgWinTimeText();
+        };
+    }
+
+    private static String podiumStat(LeaderboardRow r, Metric m) {
+        String metricText = switch (m) {
+            case WINS -> "Wins: " + r.getWins();
+            case WIN_RATE -> String.format(Locale.US, "Win Rate: %.1f%%", r.getWinRate());
+            case AVG_SCORE -> String.format(Locale.US, "Avg Score: %.1f", r.getAvgScore());
+            case AVG_WIN_TIME -> "Avg Time: " + r.getAvgWinTimeText();
+        };
+        return metricText + "   |   Games: " + r.getGames();
+    }
+
+    // ------------------------------- Actions -------------------------------
 
     @FXML
     private void onRefresh() {
@@ -233,7 +315,7 @@ public class LeaderboardController {
         util.ViewNavigator.switchTo(stage, "/view/main_view.fxml");
     }
 
-    // --------------------------------- Reload pipeline ---------------------------------
+    // ------------------------------- Reload pipeline -------------------------------
 
     private void reload() {
         TimeWindow window = (timeWindowCombo != null && timeWindowCombo.getValue() != null)
@@ -244,40 +326,150 @@ public class LeaderboardController {
                 ? metricCombo.getValue()
                 : Metric.WINS;
 
+        // update headers for the dynamic metric columns
+        if (pMetricCol != null) pMetricCol.setText(metricHeader(metric));
+        if (tMetricCol != null) tMetricCol.setText(metricHeader(metric));
+
         Map<String, Player> regByName = buildRegisteredPlayersMap();
 
         List<Game> games = registeredVsRegisteredGames(regByName);
         games = applyWindow(games, window);
 
-        playerRows.setAll(buildPlayerRows(games, metric, regByName));
-        teamRows.setAll(buildTeamRows(games, metric, regByName));
+        List<LeaderboardRow> allPlayers = buildPlayerRows(games, metric, regByName);
+        List<LeaderboardRow> allTeams   = buildTeamRows(games, metric, regByName);
+
+        updatePlayersPodium(allPlayers, metric);
+        updateTeamsPodium(allTeams, metric);
+
+        // remove top 3 rows from tables (because podium shows them)
+        playerRows.setAll(allPlayers.stream().skip(3).toList());
+        teamRows.setAll(allTeams.stream().skip(3).toList());
 
         if (playersTable != null) playersTable.refresh();
-        if (teamsTable != null) teamsTable.refresh();
+        if (teamsTable != null)   teamsTable.refresh();
     }
+
+    private void updatePlayersPodium(List<LeaderboardRow> rows, Metric metric) {
+        LeaderboardRow r1 = (rows.size() > 0) ? rows.get(0) : null;
+        LeaderboardRow r2 = (rows.size() > 1) ? rows.get(1) : null;
+        LeaderboardRow r3 = (rows.size() > 2) ? rows.get(2) : null;
+
+        setPodiumSlotPlayer(r1, p1Avatar, p1Name, p1Stat, metric);
+        setPodiumSlotPlayer(r2, p2Avatar, p2Name, p2Stat, metric);
+        setPodiumSlotPlayer(r3, p3Avatar, p3Name, p3Stat, metric);
+    }
+
+    private void setPodiumSlotPlayer(LeaderboardRow r,
+                                     ImageView avatar,
+                                     Label name,
+                                     Label stat,
+                                     Metric metric) {
+        if (avatar == null || name == null || stat == null) return;
+
+        if (r == null) {
+            avatar.setImage(null);
+            name.setText("—");
+            stat.setText("—");
+            return;
+        }
+
+        avatar.setImage(resolveAvatarImage(r.getAvatar1Id()));
+        name.setText(safeText(r.getName()));
+        stat.setText(podiumStat(r, metric));
+    }
+
+    private void updateTeamsPodium(List<LeaderboardRow> rows, Metric metric) {
+        LeaderboardRow r1 = (rows.size() > 0) ? rows.get(0) : null;
+        LeaderboardRow r2 = (rows.size() > 1) ? rows.get(1) : null;
+        LeaderboardRow r3 = (rows.size() > 2) ? rows.get(2) : null;
+
+        setPodiumSlotTeam(r1, t1Avatar1, t1Avatar2, t1Name, t1Stat, metric);
+        setPodiumSlotTeam(r2, t2Avatar1, t2Avatar2, t2Name, t2Stat, metric);
+        setPodiumSlotTeam(r3, t3Avatar1, t3Avatar2, t3Name, t3Stat, metric);
+    }
+
+    private void setPodiumSlotTeam(LeaderboardRow r,
+                                   ImageView a1, ImageView a2,
+                                   Label name,
+                                   Label stat,
+                                   Metric metric) {
+        if (a1 == null || a2 == null || name == null || stat == null) return;
+
+        if (r == null) {
+            a1.setImage(null);
+            a2.setImage(null);
+            name.setText("—");
+            stat.setText("—");
+            return;
+        }
+
+        a1.setImage(resolveAvatarImage(r.getAvatar1Id()));
+        a2.setImage(resolveAvatarImage(r.getAvatar2Id()));
+
+        String teamName = safeText(r.getPlayer1Name()) + " + " + safeText(r.getPlayer2Name());
+        name.setText(teamName);
+
+        stat.setText(podiumStat(r, metric));
+    }
+
+    
+    private static void makeCircular(ImageView iv, double size) {
+        if (iv == null) return;
+
+        iv.setFitWidth(size);
+        iv.setFitHeight(size);
+        iv.setPreserveRatio(true);
+        iv.setSmooth(true);
+
+        // Clip the image pixels to a circle
+        Circle clip = new Circle(size / 2.0, size / 2.0, size / 2.0);
+        iv.setClip(clip);
+
+        // If size might change later, keep clip synced (safe)
+        iv.layoutBoundsProperty().addListener((obs, oldB, b) -> {
+            double w = b.getWidth();
+            double h = b.getHeight();
+            double r = Math.min(w, h) / 2.0;
+            clip.setCenterX(w / 2.0);
+            clip.setCenterY(h / 2.0);
+            clip.setRadius(r);
+        });
+    }
+
+    private static void applyPodiumAvatarClips(ImageView iv, double size) {
+        makeCircular(iv, size);
+    }
+    
+    private Image resolveAvatarImage(String avatarId) {
+        Image img = util.AvatarManager.resolveAvatar(avatarId);
+        if (img != null) return img;
+
+        var stream = getClass().getResourceAsStream("/Images/S5.png");
+        return (stream == null) ? null : new Image(stream);
+    }
+
+    private static String safeText(String s) {
+        return (s == null || s.isBlank()) ? "—" : s;
+    }
+
+    // ------------------------------- Data extraction -------------------------------
 
     private Map<String, Player> buildRegisteredPlayersMap() {
         SysData sys = SysData.getInstance();
         sys.ensurePlayersLoaded();
 
         Map<String, Player> map = new HashMap<>();
-        for (Game g : sys.getHistory().getGames()) {
-            if (g == null) continue;
+        for (Player p : sys.getAllPlayers()) { 
+            if (p == null) continue;
+            String name = p.getOfficialName();
+            if (name == null || name.isBlank()) continue;
 
-            addIfRegistered(map, g.getPlayer1OfficialName());
-            addIfRegistered(map, g.getPlayer2OfficialName());
+            map.put(name.trim().toLowerCase(), p);
         }
         return map;
     }
 
-    private void addIfRegistered(Map<String, Player> map, String officialName) {
-        if (officialName == null || officialName.isBlank()) return;
-        String key = officialName.trim().toLowerCase();
-        if (map.containsKey(key)) return;
 
-        Player p = SysData.getInstance().findPlayerByOfficialName(officialName.trim());
-        if (p != null) map.put(key, p);
-    }
 
     private List<Game> registeredVsRegisteredGames(Map<String, Player> regByName) {
         SysData sys = SysData.getInstance();
@@ -291,8 +483,8 @@ public class LeaderboardController {
             String o2 = g.getPlayer2OfficialName();
             if (o1 == null || o1.isBlank() || o2 == null || o2.isBlank()) continue;
 
-            if (!regByName.containsKey(o1.trim().toLowerCase())) continue;
-            if (!regByName.containsKey(o2.trim().toLowerCase())) continue;
+            if (!regByName.containsKey(o1.trim().toLowerCase(Locale.ROOT))) continue;
+            if (!regByName.containsKey(o2.trim().toLowerCase(Locale.ROOT))) continue;
 
             out.add(g);
         }
@@ -317,13 +509,20 @@ public class LeaderboardController {
 
     private List<LeaderboardRow> buildPlayerRows(List<Game> games, Metric metric, Map<String, Player> regByName) {
         Map<String, Stats> stats = new HashMap<>();
+        Map<String, String> canonicalName = new HashMap<>(); // <-- remember original casing
 
         for (Game g : games) {
             String o1 = g.getPlayer1OfficialName().trim();
             String o2 = g.getPlayer2OfficialName().trim();
 
-            Stats s1 = stats.computeIfAbsent(o1.toLowerCase(), kk -> new Stats());
-            Stats s2 = stats.computeIfAbsent(o2.toLowerCase(), kk -> new Stats());
+            String k1 = o1.toLowerCase();
+            String k2 = o2.toLowerCase();
+
+            canonicalName.putIfAbsent(k1, o1);
+            canonicalName.putIfAbsent(k2, o2);
+
+            Stats s1 = stats.computeIfAbsent(k1, kk -> new Stats());
+            Stats s2 = stats.computeIfAbsent(k2, kk -> new Stats());
 
             int score = g.getFinalScore();
             int durSec = g.getDurationSeconds();
@@ -341,12 +540,17 @@ public class LeaderboardController {
 
         List<LeaderboardRow> rows = new ArrayList<>();
         int rank = 1;
+
         for (var e : sorted) {
             String key = e.getKey();
             Stats s = e.getValue();
 
             Player p = regByName.get(key);
-            String displayName = (p != null) ? p.getOfficialName() : key;
+
+            // prefer Player official name, otherwise use canonical from history (not lowercase key)
+            String displayName = (p != null)
+                    ? p.getOfficialName()
+                    : canonicalName.getOrDefault(key, key);
 
             LeaderboardRow r = new LeaderboardRow(LeaderboardRow.Type.PLAYER, rank++, displayName);
             r.setGames(s.games);
@@ -354,6 +558,8 @@ public class LeaderboardController {
             r.setWinRate(s.winRate());
             r.setAvgScore(s.avgScore());
             r.setAvgWinTimeSeconds(s.avgWinTimeSeconds());
+
+            // avatar: if Player was found -> use it; else keep null (will show default)
             r.setAvatar1Id((p != null) ? p.getAvatarId() : null);
 
             rows.add(r);
@@ -416,8 +622,8 @@ public class LeaderboardController {
     }
 
     private static String teamKey(String a, String b) {
-        String x = a.trim().toLowerCase();
-        String y = b.trim().toLowerCase();
+        String x = a.trim().toLowerCase(Locale.ROOT);
+        String y = b.trim().toLowerCase(Locale.ROOT);
         return (x.compareTo(y) <= 0) ? x + "||" + y : y + "||" + x;
     }
 
@@ -428,13 +634,13 @@ public class LeaderboardController {
             case AVG_SCORE -> Comparator.<Map.Entry<String, Stats>>comparingDouble(e -> e.getValue().avgScore()).reversed();
             case AVG_WIN_TIME -> Comparator.<Map.Entry<String, Stats>>comparingDouble(e -> {
                 double t = e.getValue().avgWinTimeSeconds();
-                return (t <= 0) ? Double.POSITIVE_INFINITY : t;
+                return (t <= 0) ? Double.POSITIVE_INFINITY : t; // smaller is better; no wins => bottom
             });
         };
 
         cmp = cmp.thenComparing(e -> e.getValue().wins, Comparator.reverseOrder())
-                 .thenComparing(e -> e.getValue().games, Comparator.reverseOrder())
-                 .thenComparing(Map.Entry::getKey);
+                .thenComparing(e -> e.getValue().games, Comparator.reverseOrder())
+                .thenComparing(Map.Entry::getKey);
 
         return map.entrySet().stream().sorted(cmp).collect(Collectors.toList());
     }

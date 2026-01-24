@@ -12,7 +12,7 @@ public final class ViewNavigator {
 
     private ViewNavigator() {}
     private static final double APP_WIDTH = 1300;
-    private static final double APP_HEIGHT = 770;
+    private static final double APP_HEIGHT = 800;
 
 
     // =================================================================================

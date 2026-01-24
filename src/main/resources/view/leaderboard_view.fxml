@@ -9,6 +9,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
@@ -41,62 +42,160 @@
 
                 <Region HBox.hgrow="ALWAYS" />
 
-                <Button fx:id="refreshBtn" onAction="#onRefresh" prefHeight="34" prefWidth="120" text="Refresh" />
+                <Button fx:id="refreshBtn" onAction="#onRefresh" prefHeight="41.0" prefWidth="146.0" text="Refresh" />
             </HBox>
 
             <!-- Tabs -->
             <TabPane fx:id="tabs" styleClass="leaderboard-tabs" VBox.vgrow="ALWAYS">
                 <tabs>
+
+                    <!-- PLAYERS TAB -->
                     <Tab closable="false" text="Players">
                         <content>
-                            <VBox spacing="10">
+                            <VBox spacing="12" styleClass="lb-tab-content">
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
 
-                                <TableView fx:id="playersTable" VBox.vgrow="ALWAYS">
+                                <!-- Podium (Top 3 Players) -->
+<HBox alignment="BOTTOM_CENTER" spacing="18" styleClass="lb-podium">
+
+    <!-- #2 -->
+    <VBox alignment="BOTTOM_CENTER" spacing="0" styleClass="lb-podium-slot">
+        <VBox alignment="CENTER" spacing="6" styleClass="lb-podium-card lb-silver lb-podium-content">
+            <Label styleClass="lb-rank-chip" text="#2" />
+            <ImageView fx:id="p2Avatar" fitHeight="56" fitWidth="56" preserveRatio="true" />
+            <Label fx:id="p2Name" styleClass="lb-podium-name" text="—" />
+            <Label fx:id="p2Stat" styleClass="lb-podium-stat" text="—" />
+        </VBox>
+
+
+    </VBox>
+
+    <!-- #1 -->
+    <VBox alignment="BOTTOM_CENTER" spacing="0" styleClass="lb-podium-slot">
+        <VBox alignment="CENTER" spacing="6" styleClass="lb-podium-card lb-gold lb-podium-content">
+            <Label styleClass="lb-rank-chip" text="👑 #1" />
+            <ImageView fx:id="p1Avatar" fitHeight="70" fitWidth="70" preserveRatio="true" />
+            <Label fx:id="p1Name" styleClass="lb-podium-name" text="—" />
+            <Label fx:id="p1Stat" styleClass="lb-podium-stat" text="—" />
+        </VBox>
+
+    </VBox>
+
+    <!-- #3 -->
+    <VBox alignment="BOTTOM_CENTER" spacing="0" styleClass="lb-podium-slot">
+        <VBox alignment="CENTER" spacing="6" styleClass="lb-podium-card lb-bronze lb-podium-content">
+            <Label styleClass="lb-rank-chip" text="#3" />
+            <ImageView fx:id="p3Avatar" fitHeight="56" fitWidth="56" preserveRatio="true" />
+            <Label fx:id="p3Name" styleClass="lb-podium-name" text="—" />
+            <Label fx:id="p3Stat" styleClass="lb-podium-stat" text="—" />
+        </VBox>
+    </VBox>
+
+</HBox>
+
+
+                                <!-- Simplified table (no top 3) -->
+                                <TableView fx:id="playersTable" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="346.0" prefWidth="1002.0" styleClass="lb-table" VBox.vgrow="ALWAYS">
                                     <columns>
-                                        <TableColumn fx:id="pRankCol" prefWidth="110" text="#" />
-                                        <TableColumn fx:id="pAvatarCol" prefWidth="80" text="" />
-                                        <TableColumn fx:id="pNameCol" prefWidth="326" text="Player" />
-                                        <TableColumn fx:id="pWinsCol" prefWidth="109" text="Wins" />
-                                        <TableColumn fx:id="pGamesCol" prefWidth="101" text="Games" />
-                                        <TableColumn fx:id="pWinRateCol" prefWidth="165" text="Win Rate" />
-                                        <TableColumn fx:id="pAvgScoreCol" prefWidth="141" text="Avg Score" />
-                                        <TableColumn fx:id="pAvgTimeCol" prefWidth="172.0" text="Avg Time" />
+                                        <TableColumn fx:id="pRankCol" prefWidth="90.0" text="#" />
+                                        <TableColumn fx:id="pAvatarCol" text="" />
+                                        <TableColumn fx:id="pNameCol" prefWidth="419.1999969482422" text="Player" />
+                                        <TableColumn fx:id="pGamesCol" prefWidth="240.800048828125" text="Games" />
+                                        <TableColumn fx:id="pMetricCol" prefWidth="163.99997558593748" text="Wins" />
                                     </columns>
+                           <VBox.margin>
+                              <Insets left="110.0" />
+                           </VBox.margin>
                                 </TableView>
+
                             </VBox>
                         </content>
                     </Tab>
 
+                    <!-- TEAMS TAB -->
                     <Tab closable="false" text="Teams">
                         <content>
-                            <VBox spacing="10">
+                            <VBox spacing="12" styleClass="lb-tab-content">
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
 
-                                <TableView fx:id="teamsTable" VBox.vgrow="ALWAYS">
+                                <!-- Podium (Top 3 Teams) -->
+<HBox alignment="BOTTOM_CENTER" spacing="18" styleClass="lb-podium">
+
+    <!-- #2 -->
+    <VBox alignment="BOTTOM_CENTER" spacing="0" styleClass="lb-podium-slot">
+        <VBox alignment="CENTER" spacing="6" styleClass="lb-podium-card lb-silver lb-podium-content">
+            <Label styleClass="lb-rank-chip" text="#2" />
+            <HBox alignment="CENTER" spacing="6">
+                <ImageView fx:id="t2Avatar1" fitHeight="48" fitWidth="48" preserveRatio="true" />
+                <ImageView fx:id="t2Avatar2" fitHeight="48" fitWidth="48" preserveRatio="true" />
+            </HBox>
+            <Label fx:id="t2Name" styleClass="lb-podium-name" text="—" />
+            <Label fx:id="t2Stat" styleClass="lb-podium-stat" text="—" />
+        </VBox>
+
+        <StackPane styleClass="lb-step lb-step-silver">
+            <Label styleClass="lb-step-num" text="2" />
+        </StackPane>
+    </VBox>
+
+    <!-- #1 -->
+    <VBox alignment="BOTTOM_CENTER" spacing="0" styleClass="lb-podium-slot">
+        <VBox alignment="CENTER" spacing="6" styleClass="lb-podium-card lb-gold lb-podium-content">
+            <Label styleClass="lb-rank-chip" text="🏆 #1" />
+            <HBox alignment="CENTER" spacing="6">
+                <ImageView fx:id="t1Avatar1" fitHeight="56" fitWidth="56" preserveRatio="true" />
+                <ImageView fx:id="t1Avatar2" fitHeight="56" fitWidth="56" preserveRatio="true" />
+            </HBox>
+            <Label fx:id="t1Name" styleClass="lb-podium-name" text="—" />
+            <Label fx:id="t1Stat" styleClass="lb-podium-stat" text="—" />
+        </VBox>
+
+        <StackPane styleClass="lb-step lb-step-gold">
+            <Label styleClass="lb-step-num" text="1" />
+        </StackPane>
+    </VBox>
+
+    <!-- #3 -->
+    <VBox alignment="BOTTOM_CENTER" spacing="0" styleClass="lb-podium-slot">
+        <VBox alignment="CENTER" spacing="6" styleClass="lb-podium-card lb-bronze lb-podium-content">
+            <Label styleClass="lb-rank-chip" text="#3" />
+            <HBox alignment="CENTER" spacing="6">
+                <ImageView fx:id="t3Avatar1" fitHeight="48" fitWidth="48" preserveRatio="true" />
+                <ImageView fx:id="t3Avatar2" fitHeight="48" fitWidth="48" preserveRatio="true" />
+            </HBox>
+            <Label fx:id="t3Name" styleClass="lb-podium-name" text="—" />
+            <Label fx:id="t3Stat" styleClass="lb-podium-stat" text="—" />
+        </VBox>
+
+        <StackPane styleClass="lb-step lb-step-bronze">
+            <Label styleClass="lb-step-num" text="3" />
+        </StackPane>
+    </VBox>
+
+</HBox>
+
+
+                                <!-- Simplified teams table (no top 3) -->
+                                <TableView fx:id="teamsTable" styleClass="lb-table" VBox.vgrow="ALWAYS">
                                     <columns>
-                                        <TableColumn fx:id="tRankCol" prefWidth="80" text="#" />
-
-                                        <TableColumn fx:id="tAvatar1Col" maxWidth="70.0" prefWidth="70.0" text="" />
-                                        <TableColumn fx:id="tP1NameCol" maxWidth="210.0" prefWidth="210.0" text="Player 1" />
-
-                                        <TableColumn fx:id="tAvatar2Col" maxWidth="70.0" prefWidth="70.0" text="" />
-                                        <TableColumn fx:id="tP2NameCol" maxWidth="210.0" prefWidth="210.0" text="Player 2" />
-
-                                        <TableColumn fx:id="tWinsCol" prefWidth="116.7999267578125" text="Wins" />
-                                        <TableColumn fx:id="tGamesCol" prefWidth="95" text="Games" />
-                                        <TableColumn fx:id="tWinRateCol" prefWidth="120" text="Win Rate" />
-                                        <TableColumn fx:id="tAvgScoreCol" prefWidth="120" text="Avg Score" />
-                                        <TableColumn fx:id="tAvgTimeCol" prefWidth="130.39995117187505" text="Avg Time" />
+                                        <TableColumn fx:id="tRankCol" prefWidth="90" text="#" />
+                                        <TableColumn fx:id="tAvatar1Col" prefWidth="70" text="" />
+                                        <TableColumn fx:id="tP1NameCol" prefWidth="320" text="Player 1" />
+                                        <TableColumn fx:id="tAvatar2Col" prefWidth="70" text="" />
+                                        <TableColumn fx:id="tP2NameCol" prefWidth="320" text="Player 2" />
+                                        <TableColumn fx:id="tGamesCol" prefWidth="140" text="Games" />
+                                        <TableColumn fx:id="tMetricCol" prefWidth="200" text="Wins" />
                                     </columns>
                                 </TableView>
+
                             </VBox>
                         </content>
                     </Tab>
+
                 </tabs>
             </TabPane>
 

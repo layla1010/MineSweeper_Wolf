@@ -182,12 +182,14 @@ public class PlayLoginController {
                     "Use this tab for a 2-player match. Each player logs in with their own account."),
             new OnboardingStep("#adminTab", "Admin login",
                     "Use Admin only for admin features. Regular matches do not require admin login."),
+            new OnboardingStep("#forgotPasswordText", "Forgot password",
+                    "Enter your email to receive a one-time password (OTP). Use it as your password on this login screen."),
             new OnboardingStep("#playersLoginButton", "Login",
                     "After entering both players’ names and passwords, press Login to continue."),
             new OnboardingStep("#skipLoginButton", "Play as guest",
                     "Skip enters Guest Mode. Your match won’t be linked to registered player accounts."),
-            new OnboardingStep("#forgotPasswordText", "Forgot password",
-                    "Enter your email to receive a one-time password (OTP). Use it as your password on this login screen.")
+            new OnboardingStep("#signUpHereText", "Sign Up",
+                    "Click here to create a new account if you don’t have one yet, it will navigate you to the Sign Up screen.")
     );
 
     OnboardingManager.runWithPolicy(

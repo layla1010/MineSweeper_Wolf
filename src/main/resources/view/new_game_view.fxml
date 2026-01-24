@@ -22,7 +22,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane id="newGameRoot" fx:id="root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.NewGameController">
+
+<StackPane id="newGameRoot" fx:id="root" maxHeight="770.0" prefHeight="770.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.NewGameController">
 
     <styleClass>
         <String fx:value="themed-bg" />
@@ -105,7 +106,7 @@
                         <!-- EASY -->
                         <AnchorPane maxWidth="390.0" minWidth="390.0" prefHeight="253.0" prefWidth="390.0" style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
                             <children>
-                                <ToggleButton fx:id="easyToggle" maxHeight="279.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onAction="#onEasyCardClicked" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" selected="true">
+                                <ToggleButton fx:id="easyToggle" maxHeight="294.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onAction="#onEasyCardClicked" onMouseClicked="#playClickSound" prefHeight="294.0" prefWidth="390.0" selected="true">
                                     <toggleGroup><ToggleGroup fx:id="difficultyGroup" /></toggleGroup>
                                     <styleClass>
                                         <String fx:value="floating-card" />
@@ -114,40 +115,57 @@
                                     </styleClass>
                                 </ToggleButton>
 
-                                <Sphere layoutX="195.0" layoutY="37.0" mouseTransparent="true" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(74,222,128,0.85), 32, 0.65, 0, 0);">
+                                <Sphere layoutX="199.0" layoutY="26.0" mouseTransparent="true" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(74,222,128,0.85), 32, 0.65, 0, 0);">
                                     <material>
                                         <PhongMaterial diffuseColor="#4ADE80" specularColor="#BBF7D0" />
                                     </material>
                                 </Sphere>
 
-                                <Text layoutX="179.0" layoutY="62.0" mouseTransparent="true" styleClass="difficulty-label" text="EASY">
+                                <Text layoutX="183.0" layoutY="51.0" mouseTransparent="true" styleClass="difficulty-label" text="EASY">
                                     <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                 </Text>
 
-                                <VBox layoutX="38.0" layoutY="80.0" mouseTransparent="true" spacing="10.0">
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Grid Size                                                 9x9">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Lives                                                          10">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Mines                               10 (for each board)">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Questions                        6 (for each board)">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Surprises                         2 (for each board)">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                </VBox>
+                                <VBox layoutX="56.0" layoutY="69.0" mouseTransparent="true" spacing="10.0">
+
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Grid Size                                                 9x9">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Lives                                                          10">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Mines                               10 (for each board)">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Questions                        6 (for each board)">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Surprises                         2 (for each board)">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								</VBox>
+
                             </children>
                         </AnchorPane>
 
                         <!-- MEDIUM -->
                         <AnchorPane maxWidth="390.0" minWidth="390.0" prefHeight="253.0" prefWidth="390.0" style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
                             <children>
-                                <ToggleButton fx:id="medToggle" maxHeight="253.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onAction="#onMediumCardClicked" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" toggleGroup="$difficultyGroup">
+                                <ToggleButton fx:id="medToggle" maxHeight="294.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onAction="#onMediumCardClicked" onMouseClicked="#playClickSound" prefHeight="294.0" prefWidth="390.0" toggleGroup="$difficultyGroup">
                                     <styleClass>
                                         <String fx:value="floating-card" />
                                         <String fx:value="difficulty-toggle" />
@@ -155,38 +173,61 @@
                                     </styleClass>
                                 </ToggleButton>
 
-                                <Sphere layoutX="195.0" layoutY="37.0" mouseTransparent="true" radius="15.0">
-                                    <material><PhongMaterial diffuseColor="#FB923C" specularColor="#FED7AA" /></material>
+                                   <Sphere layoutX="204.0" layoutY="26.0" mouseTransparent="true" radius="15.0">
+                                    <material>
+                              <PhongMaterial diffuseColor="#FB923C" specularColor="#FED7AA" />
+                           </material>
                                 </Sphere>
 
-                                <Text layoutX="172.0" layoutY="62.0" mouseTransparent="true" styleClass="difficulty-label" text="Medium">
-                                    <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+                                   <Text layoutX="181.0" layoutY="51.0" mouseTransparent="true" styleClass="difficulty-label" text="Medium">
+                                    <font>
+                              <Font name="Copperplate Gothic Light" size="12.0" />
+                           </font>
                                 </Text>
 
-                                <VBox layoutX="38.0" layoutY="80.0" mouseTransparent="true" spacing="10.0">
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Grid Size                                              13x13">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Lives                                                            8">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Mines                               26 (for each board)">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Questions                        7 (for each board)">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Surprises                         3 (for each board)">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                </VBox>
+                               
+                                
+                                <VBox layoutX="60.0" layoutY="67.0" mouseTransparent="true" spacing="10.0">
+
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Grid Size                                                 13x13">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Lives                                                          8">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Mines                               26 (for each board)">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Questions                        7 (for each board)">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Surprises                         3 (for each board)">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								</VBox>
+
                             </children>
                         </AnchorPane>
 
                         <!-- HARD -->
                         <AnchorPane maxWidth="390.0" minWidth="390.0" prefHeight="253.0" prefWidth="390.0" style="-fx-background-radius: 24; -fx-border-radius: 24; -fx-border-width: 1.8;">
                             <children>
-                                <ToggleButton fx:id="hardToggle" maxHeight="253.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onAction="#onHardCardClicked" onMouseClicked="#playClickSound" prefHeight="253.0" prefWidth="390.0" toggleGroup="$difficultyGroup">
+                                <ToggleButton fx:id="hardToggle" maxHeight="294.0" maxWidth="390.0" minHeight="253.0" minWidth="390.0" mnemonicParsing="false" onAction="#onHardCardClicked" onMouseClicked="#playClickSound" prefHeight="294.0" prefWidth="390.0" toggleGroup="$difficultyGroup">
                                     <styleClass>
                                         <String fx:value="floating-card" />
                                         <String fx:value="difficulty-toggle" />
@@ -194,31 +235,47 @@
                                     </styleClass>
                                 </ToggleButton>
 
-                                <Sphere layoutX="195.0" layoutY="37.0" mouseTransparent="true" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(239,68,68,0.9), 38, 0.7, 0, 0);">
+                                <Sphere layoutX="195.0" layoutY="31.0" mouseTransparent="true" radius="15.0" style="-fx-effect: dropshadow(gaussian, rgba(239,68,68,0.9), 38, 0.7, 0, 0);">
                                     <material><PhongMaterial diffuseColor="#EF4444" specularColor="#FCA5A5" /></material>
                                 </Sphere>
 
-                                <Text layoutX="176.0" layoutY="62.0" mouseTransparent="true" styleClass="difficulty-label" text="HARD">
+                                <Text layoutX="176.0" layoutY="56.0" mouseTransparent="true" styleClass="difficulty-label" text="HARD">
                                     <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
                                 </Text>
 
-                                <VBox layoutX="38.0" layoutY="80.0" mouseTransparent="true" spacing="10.0">
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Grid Size                                              16x16">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Lives                                                            6">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Mines                               44 (for each board)">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Questions                      11 (for each board)">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                    <Text fill="WHITE" styleClass="difficulty-text" text="Surprises                         4 (for each board)">
-                                        <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
-                                    </Text>
-                                </VBox>
+                                <VBox layoutX="47.0" layoutY="76.0" mouseTransparent="true" spacing="10.0">
+
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Grid Size                                                 16x16">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Lives                                                          6">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Mines                               44 (for each board)">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Questions                        11 (for each board)">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								    <HBox styleClass="difficulty-stat-pill">
+								        <Text styleClass="difficulty-text" text="Surprises                         4 (for each board)">
+								            <font><Font name="Copperplate Gothic Light" size="12.0" /></font>
+								        </Text>
+								    </HBox>
+								
+								</VBox>
                             </children>
                         </AnchorPane>
 
@@ -243,7 +300,7 @@
                 </VBox>
 
                 <!-- Player cards + avatar carousel -->
-                <HBox alignment="CENTER" spacing="30.0">
+                <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="284.0" prefWidth="1223.0" spacing="30.0">
                     <children>
 
                         <!-- Players -->
@@ -294,7 +351,7 @@
                         </VBox>
 
                         <!-- Avatar carousel -->
-                        <AnchorPane prefHeight="230.0" prefWidth="770.0">
+                        <AnchorPane maxHeight="-Infinity" prefHeight="250.0" prefWidth="770.0">
                             <children>
                                 <AnchorPane fx:id="anchor" layoutX="0.0" layoutY="10.0" prefHeight="175.0" prefWidth="766.0" style="-fx-background-radius: 150; -fx-border-radius: 150; -fx-border-color: rgba(255,255,255,0.6); -fx-border-width: 3; -fx-background-color: rgba(255, 255, 255, 0.12);">
                                     <children>
@@ -446,7 +503,7 @@
                                 </AnchorPane>
       
                                 <!-- Start game button -->
-                                <Button fx:id="startGameBtn" layoutX="66.0" layoutY="219.0" mnemonicParsing="false" onAction="#onStartGameClicked" onMouseClicked="#playClickSound" prefHeight="47.0" prefWidth="240.0" styleClass="start-game-btn" text="START GAME" textFill="#f6f7ff">
+                                <Button fx:id="startGameBtn" layoutX="66.0" layoutY="204.0" mnemonicParsing="false" onAction="#onStartGameClicked" onMouseClicked="#playClickSound" prefHeight="47.0" prefWidth="240.0" styleClass="start-game-btn" text="START GAME" textFill="#f6f7ff">
                                     <font>
                                         <Font name="Copperplate Gothic Light" size="22.0" />
                                     </font>

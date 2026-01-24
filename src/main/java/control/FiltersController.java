@@ -41,7 +41,10 @@ public class FiltersController {
     private static final Image SWITCH_OFF_WOLF =  new Image(FiltersController.class.getResourceAsStream("/Images/switch-off-wolf.png"));
     
     private static final Image SWITCH_ON_CYBER  =  new Image(FiltersController.class.getResourceAsStream("/Images/switch-on-cyber.png"));
-    private static final Image SWITCH_OFF_CYBER=  new Image(FiltersController.class.getResourceAsStream("/Images/switch-off-cyber.png"));
+    private static final Image SWITCH_OFF_CYBER=  new Image(FiltersController.class.getResourceAsStream("/Images/switch-off-cyber.png")); 
+    
+    private static final Image SWITCH_ON_GREEN  =  new Image(FiltersController.class.getResourceAsStream("/Images/switch-on-green.png"));
+    private static final Image SWITCH_OFF_GREEN=  new Image(FiltersController.class.getResourceAsStream("/Images/switch-off-green.png"));
 
 
     // ====== Lifecycle ======
@@ -136,6 +139,9 @@ public class FiltersController {
             );
             case CYBER_BLUE -> toggle.setImage(
                     enabled ? SWITCH_ON_CYBER : SWITCH_OFF_CYBER
+            );
+            case GREENWOLF -> toggle.setImage(
+                    enabled ? SWITCH_ON_GREEN : SWITCH_OFF_GREEN
             );
             default -> toggle.setImage(
                     enabled ? SWITCH_ON : SWITCH_OFF

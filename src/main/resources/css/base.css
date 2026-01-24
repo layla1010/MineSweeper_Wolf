@@ -26,6 +26,40 @@
     -fx-border-color: rgba(255,255,255,0.60);
 }
 
+.difficulty-stat-pill {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-border-color: rgba(255,255,255,0.55);
+    -fx-border-width: 1.5;
+
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+
+    -fx-padding: 7 12 7 12;
+}
+
+/* Text inside the pill */
+.difficulty-stat-pill Text {
+    -fx-fill: rgba(255,255,255,0.92);
+	}
+	.difficulty-dot {
+	    -fx-stroke: rgba(255,255,255,0.35);
+	    -fx-stroke-width: 1;
+	}
+
+	.difficulty-dot-easy {
+	    -fx-fill: #4ADE80;
+	    -fx-effect: dropshadow(gaussian, rgba(74,222,128,0.85), 32, 0.65, 0, 0);
+	}
+
+	.difficulty-dot-medium {
+	    -fx-fill: #FB923C;
+	    -fx-effect: dropshadow(gaussian, rgba(251,146,60,0.85), 32, 0.65, 0, 0);
+	}
+
+	.difficulty-dot-hard {
+	    -fx-fill: #EF4444;
+	    -fx-effect: dropshadow(gaussian, rgba(239,68,68,0.90), 38, 0.70, 0, 0);
+	}
 
 /* =========================
    NEW GAME – STAT ROWS (BASE neutral)

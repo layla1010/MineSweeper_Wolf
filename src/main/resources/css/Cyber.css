@@ -624,6 +624,20 @@
     -fx-fill: rgba(0, 0, 0, 0.45);
 }
 
+/* =========================================================
+   CYBER — BOARD NUMBER CELLS (FIX VISIBILITY)
+   ========================================================= */
+
+/* If numbers are shown as Button text */
+.cell-number {
+    -fx-text-fill: #020021;  /* same as cyber background */
+}
+
+/* In case a Label/Text node is used inside the cell */
+.cell-number .text,
+.cell-number Text {
+    -fx-fill: #020021;
+}
 
 
 /* =========================
@@ -645,4 +659,27 @@
 .endgame-root .game-button:hover {
     -fx-background-color: linear-gradient(#006bff, #2fd2ff);
     -fx-text-fill: #020021;
+}
+
+/* =========================================================
+   QUESTIONS MANAGEMENT — CYBER BLUE
+   ========================================================= */
+
+/* Make the ScrollPane + viewport + content transparent */
+.root-background .questions-scroll,
+.root-background .questions-scroll > .viewport,
+.root-background .questions-scroll .content {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+/* The little corner square (bottom-right) can also show default color */
+.root-background .questions-scroll .corner {
+    -fx-background-color: transparent;
+}
+
+/* If any child container gets a background by default, force it transparent */
+.root-background #questionsContainerVBox {
+    -fx-background-color: transparent;
 }

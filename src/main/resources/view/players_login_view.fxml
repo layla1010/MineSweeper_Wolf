@@ -113,15 +113,18 @@
 
                                 <TextField fx:id="p1NameField" layoutY="131.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" promptText="Enter Player 1's Name">
                         <font>
-                           <Font size="24.0" />
+                           <Font name="Copperplate Gothic Light" size="24.0" />
                         </font></TextField>
 
                                 <PasswordField fx:id="p1PasswordField" layoutY="200.0" prefHeight="50.0" prefWidth="400.0" promptText="Enter Player 1's Password">
                         <font>
-                           <Font size="24.0" />
+                           <Font name="Copperplate Gothic Light" size="24.0" />
                         </font></PasswordField>
 
-                                <TextField fx:id="p1PasswordVisibleField" layoutX="74.0" layoutY="129.0" managed="false" prefHeight="26.0" prefWidth="27.0" promptText="Enter Player 1's Password" visible="false" />
+                                <TextField fx:id="p1PasswordVisibleField" layoutY="200.0" managed="false" prefHeight="50.0" prefWidth="400.0" promptText="Enter Player 1's Password" visible="false">
+                        <font>
+                           <Font name="Copperplate Gothic Light" size="24.0" />
+                        </font></TextField>
 
 								<Button fx:id="p1TogglePasswordButton" layoutX="406.0" layoutY="211.0" mnemonicParsing="false" onMousePressed="#onP1PasswordPress" onMouseReleased="#onP1PasswordRelease" prefHeight="26.0" prefWidth="30.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
                                     <graphic>
@@ -148,15 +151,18 @@
 
                                 <TextField fx:id="p2NameField" layoutY="131.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" promptText="Enter Player 2's Name">
                         <font>
-                           <Font size="24.0" />
+                           <Font name="Copperplate Gothic Light" size="24.0" />
                         </font></TextField>
 
                                 <PasswordField fx:id="p2PasswordField" layoutY="200.0" prefHeight="50.0" prefWidth="400.0" promptText="Enter Player 2's Password">
                         <font>
-                           <Font size="24.0" />
+                           <Font name="Copperplate Gothic Light" size="24.0" />
                         </font></PasswordField>
 
-                                <TextField fx:id="p2PasswordVisibleField" layoutX="75.0" layoutY="129.0" managed="false" prefHeight="26.0" prefWidth="250.0" promptText="Enter Player 2's Password" visible="false" />
+                                <TextField fx:id="p2PasswordVisibleField" layoutY="200.0" managed="false" prefHeight="50.0" prefWidth="400.0" promptText="Enter Player 2's Password" visible="false">
+                        <font>
+                           <Font name="Copperplate Gothic Light" size="24.0" />
+                        </font></TextField>
 
 								<Button fx:id="p2TogglePasswordButton" layoutX="411.0" layoutY="211.0" mnemonicParsing="false" onMousePressed="#onP2PasswordPress" onMouseReleased="#onP2PasswordRelease" prefHeight="26.0" prefWidth="30.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
                                     <graphic>

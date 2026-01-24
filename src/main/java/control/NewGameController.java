@@ -59,7 +59,7 @@ public class NewGameController {
     @FXML private Button setUpMusicButton;
 
     private AvatarManager avatarManager;
-    private static final int MAX_NAME_LEN = 7;
+    private static final int MAX_NAME_LEN = 15;
 
     /**
      * Sets player 1 as active by default, wires avatar thumbnails,

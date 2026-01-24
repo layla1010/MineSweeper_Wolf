@@ -53,9 +53,9 @@
                             <children>
                                 <Label styleClass="filter-label" text="Music" />
                                 <Region HBox.hgrow="ALWAYS" />
-                                <StackPane onMouseClicked="#onMusicToggled" style="-fx-cursor: hand;">
+                                <StackPane onMouseClicked="#onMusicToggled" prefWidth="100.0" style="-fx-cursor: hand;">
                                      <children>
-                                         <ImageView fx:id="musicToggle" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                                         <ImageView fx:id="musicToggle" fitHeight="80.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                             <image><Image url="@../Images/switch-on.png" /></image>
                                          </ImageView>
                                      </children>
@@ -68,9 +68,9 @@
                             <children>
                                 <Label styleClass="filter-label" text="Sound" />
                                 <Region HBox.hgrow="ALWAYS" />
-                                <StackPane onMouseClicked="#onSoundToggled" style="-fx-cursor: hand;">
+                                <StackPane onMouseClicked="#onSoundToggled" prefWidth="100.0" style="-fx-cursor: hand;">
                                      <children>
-                                         <ImageView fx:id="soundToggle" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                                         <ImageView fx:id="soundToggle" fitHeight="80.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                             <image><Image url="@../Images/switch-on.png" /></image>
                                          </ImageView>
                                      </children>
@@ -83,9 +83,9 @@
                             <children>
                                 <Label styleClass="filter-label" text="Timer" />
                                 <Region HBox.hgrow="ALWAYS" />
-                                <StackPane onMouseClicked="#onTimerToggled" style="-fx-cursor: hand;">
+                                <StackPane onMouseClicked="#onTimerToggled" prefWidth="100.0" style="-fx-cursor: hand;">
                                      <children>
-                                         <ImageView fx:id="timerToggle" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                                         <ImageView fx:id="timerToggle" fitHeight="80.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                             <image><Image url="@../Images/switch-on.png" /></image>
                                          </ImageView>
                                      </children>
@@ -98,9 +98,9 @@
                             <children>
                                 <Label styleClass="filter-label" text="Smart Hints" />
                                 <Region HBox.hgrow="ALWAYS" />
-                                <StackPane onMouseClicked="#onSmartHintsToggled" style="-fx-cursor: hand;">
+                                <StackPane onMouseClicked="#onSmartHintsToggled" prefWidth="100.0" style="-fx-cursor: hand;">
                                      <children>
-                                         <ImageView fx:id="smartHintsToggle" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                                         <ImageView fx:id="smartHintsToggle" fitHeight="80.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                             <image><Image url="@../Images/switch-on.png" /></image>
                                          </ImageView>
                                      </children>
@@ -113,9 +113,9 @@
                             <children>
                                 <Label styleClass="filter-label" text="Auto Remove Flag" />
                                 <Region HBox.hgrow="ALWAYS" />
-                                <StackPane onMouseClicked="#onAutoRemoveFlagToggled" style="-fx-cursor: hand;">
+                                <StackPane onMouseClicked="#onAutoRemoveFlagToggled" prefWidth="100.0" style="-fx-cursor: hand;">
                                      <children>
-                                         <ImageView fx:id="autoRemoveFlagToggle" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                                         <ImageView fx:id="autoRemoveFlagToggle" fitHeight="80.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                             <image><Image url="@../Images/switch-on.png" /></image>
                                          </ImageView>
                                      </children>

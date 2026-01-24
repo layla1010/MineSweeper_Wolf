@@ -7,21 +7,58 @@
     -fx-font-size: 18px;
 }
 
+/* Apply ONLY inside leaderboard */
+.leaderboard-root .button {
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-padding: 8 18 8 18;
+
+    /* Use theme lookup colors if you have them */
+    -fx-background-color: rgba(0,0,0,0.35);
+    -fx-border-color: -fx-accent;
+    -fx-border-width: 2;
+
+    -fx-text-fill: white;
+}
+
+.leaderboard-root .button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.25), 18, 0.25, 0, 0);
+    -fx-background-color: rgba(255,255,255,0.10);
+}
+
+.leaderboard-root .combo-box,
+.leaderboard-root .combo-box-base {
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+
+    -fx-background-color: rgba(0,0,0,0.35);
+    -fx-border-color: -fx-accent;
+    -fx-border-width: 2;
+
+    -fx-mark-color: white;
+    -fx-text-fill: white;
+}
+
+.leaderboard-root .combo-box .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+
 /* ===============================
    LABELS / GENERAL TEXT
    =============================== */
-
-.label {
-    -fx-font-family: "Copperplate Gothic Light";
-    -fx-font-size: 18px;
-    -fx-text-fill: #e5e7eb;
-}
 
 /* Title */
 .leaderboard-title {
     -fx-font-family: "Copperplate Gothic Bold";
     -fx-font-size: 35px;
     -fx-text-fill: white;
+}
+
+/* Change cursor when hovering tabs */
+.tab-pane .tab-header-area .tab {
+    -fx-cursor: hand;
 }
 
 /* ===============================
@@ -32,45 +69,10 @@
     -fx-padding: 2 0 2 0;
 }
 
-/* ===============================
-   BUTTONS
-   =============================== */
-
-.button {
-    -fx-font-family: "Copperplate Gothic Light";
-    -fx-font-size: 18px;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-background-color: rgba(0, 0, 0, 0.35);
-    -fx-text-fill: white;
-    -fx-border-color: rgba(255, 255, 255, 0.25);
-    -fx-border-width: 1;
-}
-
-.button:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.18);
-}
-
-.button:pressed {
-    -fx-background-color: rgba(255, 255, 255, 0.30);
-}
 
 /* ===============================
    COMBO BOX (FORCE CONSISTENT LOOK)
    =============================== */
-
-.combo-box, .combo-box-base {
-    -fx-font-family: "Copperplate Gothic Light";
-    -fx-font-size: 18px;
-
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-background-color: rgba(0, 0, 0, 0.35);
-    -fx-border-color: rgba(255, 255, 255, 0.25);
-    -fx-border-width: 1;
-
-    -fx-mark-color: white;
-}
 
 .combo-box .list-cell {
     -fx-font-family: "Copperplate Gothic Light";
@@ -249,3 +251,147 @@
     -fx-background-color: rgba(255, 255, 255, 0.25);
     -fx-background-radius: 6;
 }
+
+
+/* Podium visuals */
+.lb-podium { -fx-padding: 8 0 8 0; }
+
+.lb-podium-card {
+    -fx-min-width: 220;
+    -fx-padding: 12 14 12 14;
+    -fx-background-radius: 22;
+    -fx-border-radius: 22;
+
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-border-color: rgba(255,255,255,0.16);
+    -fx-border-width: 1.6;
+}
+
+.lb-gold   { -fx-border-color: rgba(255,215,0,0.70); }
+.lb-silver { -fx-border-color: rgba(220,220,220,0.55); }
+.lb-bronze { -fx-border-color: rgba(205,127,50,0.55); }
+
+.lb-rank-chip {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-background-radius: 999;
+    -fx-padding: 5 12 5 12;
+    -fx-font-family: "Copperplate Gothic Bold";
+}
+
+.lb-avatar-frame {
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-background-color: rgba(0,0,0,0.20);
+    -fx-border-color: rgba(255,255,255,0.20);
+    -fx-border-width: 2;
+    -fx-padding: 6;
+}
+.lb-avatar-frame-big { -fx-padding: 8; }
+
+.lb-podium-name {
+    -fx-font-family: "Copperplate Gothic Bold";
+    -fx-font-size: 15px;
+}
+.lb-podium-stat {
+    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-size: 12px;
+    -fx-opacity: 0.9;
+}
+
+/* Table → transparent base */
+.lb-table,
+.lb-table .virtual-flow,
+.lb-table .virtual-flow .clipped-container,
+.lb-table .virtual-flow .clipped-container .sheet {
+    -fx-background-color: transparent;
+}
+
+/* Header styling */
+.lb-table .column-header-background {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-background-radius: 16;
+    -fx-padding: 8;
+}
+.lb-table .column-header, 
+.lb-table .filler {
+    -fx-background-color: transparent;
+}
+
+/* Row cards */
+.lb-table .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 6 0 6 0;
+}
+
+.lb-table .table-row-cell:filled .table-cell {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(255,255,255,0.14);
+    -fx-border-width: 1.2;
+    -fx-padding: 10 10 10 10;
+}
+
+.lb-table .table-row-cell:filled:hover .table-cell {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-border-color: rgba(255,255,255,0.28);
+}
+
+.lb-podium .lb-avatar-frame,
+.lb-podium .lb-avatar-frame-big {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+/* -------------------------------
+   PODIUM: real steps
+   ------------------------------- */
+
+.lb-podium {
+    -fx-padding: 6 0 10 0;
+}
+
+/* each slot is a mini-stage that stacks: step (bottom) + content (top) */
+.lb-podium-slot {
+    -fx-alignment: BOTTOM_CENTER;
+    -fx-padding: 0 6 0 6;
+}
+
+/* the content floats slightly above the step */
+.lb-podium-content {
+    -fx-translate-y: -10;
+}
+
+/* base step */
+.lb-step {
+    -fx-min-width: 250;
+    -fx-max-width: 250;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-width: 1.4;
+
+    /* 3D-ish shadow */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 22, 0.35, 0, 10);
+}
+
+/* heights = podium effect */
+.lb-step-gold   { -fx-min-height: 120; -fx-background-color: rgba(255,255,255,0.08); -fx-border-color: rgba(255,215,0,0.55); }
+.lb-step-silver { -fx-min-height: 92;  -fx-background-color: rgba(255,255,255,0.07); -fx-border-color: rgba(220,220,220,0.38); }
+.lb-step-bronze { -fx-min-height: 76;  -fx-background-color: rgba(255,255,255,0.06); -fx-border-color: rgba(205,127,50,0.38); }
+
+/* number on the podium step */
+.lb-step-num {
+    -fx-font-family: "Copperplate Gothic Bold";
+    -fx-font-size: 26px;
+    -fx-text-fill: rgba(255,255,255,0.85);
+    -fx-padding: 0 0 10 0;
+}
+
+/* optional: add a “top surface” highlight */
+.lb-step {
+    -fx-background-insets: 0;
+}
+
+
