@@ -20,6 +20,9 @@ import model.Game;
 import model.GameResult;
 import model.Player;
 import model.SysData;
+import util.OnboardingManager;
+import util.OnboardingPolicy;
+import util.OnboardingStep;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -124,6 +127,26 @@ public class LeaderboardController {
 
     @FXML
     private void initialize() {
+    	
+    	 // Guided onboarding (login must ALWAYS show because user not known yet)
+        List<OnboardingStep> LeaderBoardSteps = List.of(
+                new OnboardingStep("#timeWindowCombo", "Time Window Filter",
+                        "Select the time range used to calculate rankings (e.g., recent games vs. all-time). The podium and tables update based on this filter."),
+                new OnboardingStep("#metricCombo", "Sort By",
+                        "Choose the metric that determines ranking (for example: wins, win rate, games played). All results—including the podium and tables—are sorted using this metric."),
+                new OnboardingStep("#refreshBtn", "Refresh",
+                        "Click Refresh to apply the selected filters and reload the leaderboard results immediately."),
+                new OnboardingStep("#tabs", "Player & Team Rankings",
+                        "Switch between Player and Team rankings. Both tabs reflect the selected time window and sorting metric.")
+        );
+
+        OnboardingManager.runWithPolicy(
+                "onboarding.competitve_insights",
+                root,
+                LeaderBoardSteps,
+                OnboardingPolicy.ALWAYS,
+                null
+        );
         SysData.getInstance().ensureHistoryLoaded();
         SysData.getInstance().ensurePlayersLoaded();
 

@@ -62,6 +62,19 @@ public class MainController {
                 || SessionManager.getPlayer1() != null
                 || SessionManager.getPlayer2() != null;
 
+        
+        mainSteps.add(new OnboardingStep("#newGameBtn", "New Game",
+        		"Start a new game and choose your match settings."));
+        mainSteps.add(new OnboardingStep("#LeaderBoardBtn", "Competitive Insights",
+        		"View the leaderboard to see top scores from registered players and admins only."));
+        mainSteps.add(new OnboardingStep("#historyBtn", "History",
+        		"View previous games, results, and match details."));
+        mainSteps.add(new OnboardingStep("#questionManagementBtn", "Question Management",
+        		"Manage game questions, answers, and difficulty content (Only for Admin)."));
+        mainSteps.add(new OnboardingStep("#statisticsBtn", "Statistics",
+        		"Analyze player performance, scores, and game statistics (Only for registered players)."));
+
+        
         // Show exactly one of them (never both)
         if (hasLoggedInSession && !isGuest) {
             mainSteps.add(new OnboardingStep("#logoutBtn", "Log out",
@@ -70,15 +83,7 @@ public class MainController {
             mainSteps.add(new OnboardingStep("#loginLink", "Log in",
                     "Go to the login screen to sign in or create a new account."));
         }
-        mainSteps.add(new OnboardingStep("#newGameBtn", "New Game",
-        		"Start a new game and choose your match settings."));
-        mainSteps.add(new OnboardingStep("#historyBtn", "History",
-        		"View previous games, results, and match details."));
-        mainSteps.add(new OnboardingStep("#questionManagementBtn", "Question Management",
-        		"Manage game questions, answers, and difficulty content (Only for Admin)."));
-        mainSteps.add(new OnboardingStep("#statisticsBtn", "Statistics",
-        		"Analyze player performance, scores, and game statistics (Only for registered players)."));
-
+       
         
         OnboardingPolicy policy =
                 SessionManager.isAdminMode() ? OnboardingPolicy.NEVER :
