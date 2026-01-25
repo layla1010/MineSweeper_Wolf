@@ -473,7 +473,7 @@ public class GameUIServiceController implements util.SettingObserver {
             if (e.getButton() == MouseButton.PRIMARY) {
                 boolean activated = bonusService.tryHandleSecondClickActivation(board, r, c, button, tile, tileIsPlayer1);
                 if (activated) {
-                    playService.switchTurn();
+                    //playService.switchTurn();
                     return;
                 }
 

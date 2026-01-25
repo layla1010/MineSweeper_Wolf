@@ -112,3 +112,5 @@ date,duration,difficulty,score,result,player1Nickname,player2Nickname,player1Off
 2026-01-23,1:19,EASY,146,WIN,ij,gh,,,false,S1.png,S10.png
 2026-01-24,0:25,EASY,-2,GIVE_UP,hj,g,,,false,S9.png,S1.png
 2026-01-24,0:39,EASY,129,GIVE_UP,k,m,,,false,S10.png,S1.png
+2026-01-25,0:24,EASY,94,GIVE_UP,e,w,,,false,S12.png,S6.png
+2026-01-25,0:12,EASY,36,GIVE_UP,w,q,,,false,S12.png,S1.png

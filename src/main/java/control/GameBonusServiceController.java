@@ -223,10 +223,13 @@ public class GameBonusServiceController {
         alert.getDialogPane().setMinWidth(560);
 
 
+//        alert.getDialogPane().getStylesheets().add(
+//        	    GameBonusServiceController.class.getResource(
+//        	        ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
+//        	    ).toExternalForm()
+//        	);
         alert.getDialogPane().getStylesheets().add(
-        	    GameBonusServiceController.class.getResource(
-        	        ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
-        	    ).toExternalForm()
+        	    getClass().getResource(ThemeManager.getTheme().getCssPath()).toExternalForm()
         	);
 
 
@@ -282,12 +285,15 @@ public class GameBonusServiceController {
 
         dialog.getDialogPane().setContent(root);
 
+//        dialog.getDialogPane().getStylesheets().add(
+//        	    GameBonusServiceController.class.getResource(
+//        	            ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
+//        	        ).toExternalForm()
+//        	    );
+        
         dialog.getDialogPane().getStylesheets().add(
-        	    GameBonusServiceController.class.getResource(
-        	            ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
-        	        ).toExternalForm()
-        	    );
-
+        	    getClass().getResource(ThemeManager.getTheme().getCssPath()).toExternalForm()
+        	);
 
         Optional<Integer> result = dialog.showAndWait();
         return result.orElse(-1);
@@ -486,10 +492,13 @@ public class GameBonusServiceController {
 		alert.getDialogPane().setMinHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
 		alert.getDialogPane().setMinWidth(560);
 		
+//		alert.getDialogPane().getStylesheets().add(
+//			    GameBonusServiceController.class.getResource(
+//			        ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
+//			    ).toExternalForm()
+//			);
 		alert.getDialogPane().getStylesheets().add(
-			    GameBonusServiceController.class.getResource(
-			        ThemeManager.getTheme() == Theme.WOLF ? "/css/wolf.css" : "/css/theme.css"
-			    ).toExternalForm()
+			    getClass().getResource(ThemeManager.getTheme().getCssPath()).toExternalForm()
 			);
 
 		
