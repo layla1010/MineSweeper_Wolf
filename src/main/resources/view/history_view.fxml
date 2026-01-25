@@ -68,7 +68,7 @@
                      </ImageView>
                   </graphic>
                   <HBox.margin>
-                     <Insets left="400.0" />
+                     <Insets left="350.0" />
                   </HBox.margin>
                </Button>
                <Button fx:id="musicButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onMusicToggle" prefHeight="44.0" prefWidth="55.0" style="-fx-background-color: TRANSPARENT;">

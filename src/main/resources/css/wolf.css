@@ -821,5 +821,237 @@
     );
 }
 
+/* =========================================================
+   WOLF THEME — LEADERBOARD (EMBER / ORANGE)
+   Everything below is SCOPED to .leaderboard-root only
+   ========================================================= */
+
+/* Title */
+.leaderboard-root .leaderboard-title {
+    -fx-text-fill: rgba(255,255,255,0.95);
+    -fx-effect: dropshadow(gaussian, rgba(255,159,67,0.55), 18, 0.55, 0, 0);
+}
+
+/* Filter labels (your filter labels have no styleClass, so scope via root) */
+.leaderboard-root .label {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* Buttons inside leaderboard = ember accent, but still “wolf glass” */
+.leaderboard-root .button {
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-border-color: rgba(255, 160, 90, 0.45);
+    -fx-border-width: 2;
+
+    -fx-text-fill: rgba(255,255,255,0.92);
+
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.18), 14, 0.35, 0, 0);
+}
+
+.leaderboard-root .button:hover {
+    -fx-background-color: rgba(255, 140, 0, 0.18);
+    -fx-border-color: rgba(255, 170, 90, 0.80);
+
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.35), 18, 0.50, 0, 0);
+}
+
+.leaderboard-root .button:pressed {
+    -fx-background-color: rgba(255, 140, 0, 0.12);
+    -fx-translate-y: 1;
+
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.22), 12, 0.35, 0, 0);
+}
+
+/* =========================================================
+   LEADERBOARD — TABS (EMBER)
+   ========================================================= */
+
+.leaderboard-root .leaderboard-tabs .tab {
+    -fx-background-color: rgba(0,0,0,0.30);
+    -fx-border-color: rgba(255, 160, 90, 0.18);
+}
+
+.leaderboard-root .leaderboard-tabs .tab:hover {
+    -fx-background-color: rgba(255, 140, 0, 0.10);
+    -fx-border-color: rgba(255, 160, 90, 0.45);
+}
+
+.leaderboard-root .leaderboard-tabs .tab:selected {
+    -fx-background-color: rgba(30, 12, 6, 0.70);
+    -fx-border-color: rgba(255, 170, 80, 0.90);
+
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.22), 16, 0.45, 0, 0);
+}
+
+.leaderboard-root .leaderboard-tabs .tab .tab-label {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* =========================================================
+   LEADERBOARD — COMBOBOX (EMBER) - same behavior as History but orange
+   ========================================================= */
+
+/* Closed state (pill) */
+.leaderboard-root .combo-box-base {
+    -fx-background-color: linear-gradient(#FF9A2F, #FF4D00);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+
+    -fx-border-color: rgba(255, 80, 80, 0.55);
+    -fx-border-width: 1.4;
+
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.45), 20, 0.60, 0, 0);
+    -fx-padding: 2 10 2 10;
+}
+
+.leaderboard-root .combo-box-base:hover {
+    -fx-border-color: rgba(255, 100, 100, 0.75);
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.60), 24, 0.70, 0, 0);
+}
+
+.leaderboard-root .combo-box-base:focused,
+.leaderboard-root .combo-box:focused {
+    -fx-border-color: rgba(255, 60, 60, 0.85);
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.75), 28, 0.75, 0, 0);
+}
+
+/* Closed value text */
+.leaderboard-root .combo-box .list-cell {
+    -fx-text-fill: rgba(255,255,255,0.95);
+}
+
+/* Arrow */
+.leaderboard-root .combo-box-base .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 8 0 4;
+}
+.leaderboard-root .combo-box-base .arrow-button .arrow {
+    -fx-background-color: white;
+}
+
+/* Popup panel */
+.leaderboard-root .combo-box-popup .list-view {
+    -fx-background-color: linear-gradient(
+        to bottom,
+        rgba(30, 12, 6, 0.98),
+        rgba(0, 0, 0, 0.98)
+    );
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+
+    -fx-border-color: rgba(255, 145, 40, 0.85);
+    -fx-border-width: 1.8;
+
+    -fx-effect: dropshadow(gaussian, rgba(255, 160, 90, 0.45), 22, 0.55, 0, 0);
+}
+
+/* Popup items */
+.leaderboard-root .combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.92);
+    -fx-effect: none;
+}
+
+.leaderboard-root .combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: rgba(255, 120, 0, 0.20);
+    -fx-border-color: rgba(255, 170, 80, 0.95);
+    -fx-border-width: 1.2;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.45), 20, 0.65, 0, 0);
+}
+
+.leaderboard-root .combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: rgba(35, 14, 8, 0.96);
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: rgba(255, 170, 80, 1.0);
+    -fx-border-width: 1.6;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.60), 24, 0.75, 0, 0);
+}
+
+/* =========================================================
+   LEADERBOARD — TABLE (EMBER)
+   ========================================================= */
+
+/* Header strip */
+.leaderboard-root .lb-table .column-header-background {
+    -fx-background-color: rgba(255, 140, 40, 0.08);
+    -fx-border-color: rgba(255, 160, 90, 0.18);
+    -fx-border-width: 0 0 1 0;
+}
+
+.leaderboard-root .lb-table .column-header .label {
+    -fx-text-fill: rgba(255,255,255,0.95);
+}
+
+/* Row “cards” */
+.leaderboard-root .lb-table .table-row-cell:filled .table-cell {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-border-color: rgba(255, 160, 90, 0.16);
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+.leaderboard-root .lb-table .table-row-cell:filled:hover .table-cell {
+    -fx-background-color: rgba(255, 140, 0, 0.14);
+    -fx-border-color: rgba(255, 170, 90, 0.45);
+
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.18), 14, 0.35, 0, 0);
+}
+
+.leaderboard-root .lb-table .table-row-cell:filled:selected .table-cell {
+    -fx-background-color: rgba(30, 12, 6, 0.78);
+    -fx-border-color: rgba(255, 170, 80, 0.90);
+
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.24), 18, 0.50, 0, 0);
+}
+
+/* Scrollbar thumb */
+.leaderboard-root .scroll-bar:vertical .thumb,
+.leaderboard-root .scroll-bar:horizontal .thumb {
+    -fx-background-color: rgba(255, 160, 90, 0.22);
+    -fx-background-radius: 10;
+}
+
+/* =========================================================
+   LEADERBOARD — PODIUM (EMBER)
+   ========================================================= */
+
+.leaderboard-root .lb-podium-card {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-border-color: rgba(255, 160, 90, 0.18);
+
+    -fx-effect: dropshadow(gaussian, rgba(255,120,0,0.16), 14, 0.35, 0, 0);
+}
+
+.leaderboard-root .lb-rank-chip {
+    -fx-background-color: rgba(255, 140, 0, 0.16);
+    -fx-text-fill: rgba(255,255,255,0.95);
+    -fx-border-color: rgba(255, 170, 90, 0.55);
+    -fx-border-width: 1.2;
+}
+
+/* Keep medal borders as-is, just don’t let them look dead */
+.leaderboard-root .lb-gold   { -fx-border-color: rgba(255,215,0,0.60); }
+.leaderboard-root .lb-silver { -fx-border-color: rgba(220,220,220,0.45); }
+.leaderboard-root .lb-bronze { -fx-border-color: rgba(205,127,50,0.45); }
+
+/* Steps */
+.leaderboard-root .lb-step {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-border-color: rgba(255, 160, 90, 0.14);
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 22, 0.35, 0, 10);
+}
+.leaderboard-root .lb-step-num {
+    -fx-text-fill: rgba(255,255,255,0.90);
+}
+
 
 

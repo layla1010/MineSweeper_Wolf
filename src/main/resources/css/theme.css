@@ -692,3 +692,117 @@
 .customize-root .toggle-button:focused {
     -fx-border-color: rgba(255,255,255,0.85) !important;
 }
+
+/* =========================================================
+   LEADERBOARD — DEFAULT THEME (COLORFUL)
+   Scoped to leaderboard-root so it affects only this screen
+   ========================================================= */
+
+.leaderboard-root .leaderboard-title {
+    -fx-text-fill: white;
+}
+
+/* Buttons use global .button by default; optionally override only inside leaderboard */
+.leaderboard-root .button {
+    -fx-text-fill: white;
+}
+
+/* ComboBox text */
+.leaderboard-root .combo-box,
+.leaderboard-root .combo-box .list-cell {
+    -fx-text-fill: white;
+}
+
+/* Closed ComboBox (optional themed look) */
+.leaderboard-root .combo-box-base {
+    -fx-background-color: rgba(255,255,255,0.16);
+    -fx-border-color: rgba(255,255,255,0.40);
+}
+
+/* Combo popup (optional themed look) */
+.leaderboard-root .combo-box-popup .list-view {
+    -fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
+    -fx-border-color: rgba(255,255,255,0.25);
+}
+
+.leaderboard-root .combo-box-popup .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+.leaderboard-root .combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(0,0,0,0.25);
+}
+
+.leaderboard-root .combo-box-popup .list-cell:selected {
+    -fx-background-color: rgba(255,255,255,0.18);
+}
+
+/* Tabs */
+.leaderboard-root .leaderboard-tabs .tab {
+    -fx-background-color: rgba(0,0,0,0.18);
+    -fx-border-color: rgba(255,255,255,0.22);
+}
+.leaderboard-root .leaderboard-tabs .tab:selected {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-border-color: rgba(255,255,255,0.35);
+}
+.leaderboard-root .leaderboard-tabs .tab .tab-label {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* Table header strip */
+.leaderboard-root .lb-table .column-header-background {
+    -fx-background-color: rgba(255,255,255,0.06);
+}
+
+/* Table header text */
+.leaderboard-root .lb-table .column-header .label {
+    -fx-text-fill: white;
+}
+
+/* Card cells */
+.leaderboard-root .lb-table .table-row-cell:filled .table-cell {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-border-color: rgba(255,255,255,0.14);
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+.leaderboard-root .lb-table .table-row-cell:filled:hover .table-cell {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-border-color: rgba(255,255,255,0.28);
+}
+.leaderboard-root .lb-table .table-row-cell:filled:selected .table-cell {
+    -fx-background-color: rgba(255,255,255,0.16);
+    -fx-border-color: rgba(255,255,255,0.35);
+}
+
+/* Podium cards */
+.leaderboard-root .lb-podium-card {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-border-color: rgba(255,255,255,0.16);
+}
+
+/* Podium medals (borders only) */
+.leaderboard-root .lb-gold   { -fx-border-color: rgba(255,215,0,0.70); }
+.leaderboard-root .lb-silver { -fx-border-color: rgba(220,220,220,0.55); }
+.leaderboard-root .lb-bronze { -fx-border-color: rgba(205,127,50,0.55); }
+
+/* Podium text */
+.leaderboard-root .lb-podium-name,
+.leaderboard-root .lb-podium-stat,
+.leaderboard-root .lb-rank-chip {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+.leaderboard-root .lb-rank-chip {
+    -fx-background-color: rgba(255,255,255,0.10);
+}
+
+/* Steps */
+.leaderboard-root .lb-step {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-border-color: rgba(255,255,255,0.14);
+}
+.leaderboard-root .lb-step-num {
+    -fx-text-fill: rgba(255,255,255,0.85);
+}
+

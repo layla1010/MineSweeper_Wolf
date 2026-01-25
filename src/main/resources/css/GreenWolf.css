@@ -662,3 +662,233 @@
     -fx-pref-height: 520px;
     -fx-padding: 20 20 35 20;
 }
+
+/* =========================================================
+   LEADERBOARD — WOLF GREEN (scoped to .leaderboard-root)
+   ========================================================= */
+
+/* Title */
+.leaderboard-root .leaderboard-title {
+    -fx-text-fill: rgba(255,255,255,0.95);
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.55), 18, 0.55, 0, 0);
+}
+
+/* Filter labels (your FXML labels don’t have styleClass, so scope via .label) */
+.leaderboard-root .label {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* Buttons inside leaderboard (optional: slightly stronger “wolf” ring) */
+.leaderboard-root .button {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-border-color: rgba(124,255,74,0.45);
+    -fx-border-width: 2;
+
+    -fx-text-fill: rgba(255,255,255,0.92);
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.18), 14, 0.35, 0, 0);
+}
+
+.leaderboard-root .button:hover {
+    -fx-background-color: rgba(57,255,20,0.16);
+    -fx-border-color: rgba(124,255,74,0.80);
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.32), 18, 0.50, 0, 0);
+}
+
+.leaderboard-root .button:pressed {
+    -fx-background-color: rgba(57,255,20,0.10);
+    -fx-translate-y: 1;
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.22), 12, 0.35, 0, 0);
+}
+
+/* Tabs (glass + green focus) */
+.leaderboard-root .leaderboard-tabs .tab {
+    -fx-background-color: rgba(0,0,0,0.30);
+    -fx-border-color: rgba(124,255,74,0.22);
+}
+
+.leaderboard-root .leaderboard-tabs .tab:hover {
+    -fx-background-color: rgba(57,255,20,0.10);
+    -fx-border-color: rgba(124,255,74,0.55);
+}
+
+.leaderboard-root .leaderboard-tabs .tab:selected {
+    -fx-background-color: rgba(11,42,26,0.55); /* dark moss */
+    -fx-border-color: rgba(124,255,74,0.95);
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.28), 16, 0.45, 0, 0);
+}
+
+.leaderboard-root .leaderboard-tabs .tab .tab-label {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* =========================================================
+   LEADERBOARD COMBOBOX — WOLF GREEN (closed + popup)
+   ========================================================= */
+
+/* Closed state: match history’s “neon pill” behavior but keep text readable */
+.leaderboard-root .combo-box-base {
+    -fx-background-color: linear-gradient(#7CFF4A, #00C853);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+
+    -fx-border-color: rgba(20, 20, 20, 0.55);
+    -fx-border-width: 1.4;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.55), 20, 0.60, 0, 0);
+    -fx-padding: 2 10 2 10;
+}
+
+.leaderboard-root .combo-box-base:hover {
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.70), 24, 0.70, 0, 0);
+}
+
+.leaderboard-root .combo-box-base:focused,
+.leaderboard-root .combo-box:focused {
+    -fx-border-color: rgba(124,255,74,0.90);
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.78), 28, 0.75, 0, 0);
+}
+
+/* Closed value text color should be dark because background is neon */
+.leaderboard-root .combo-box .list-cell {
+    -fx-text-fill: rgba(10, 12, 10, 0.95);
+}
+
+/* Arrow on neon bg */
+.leaderboard-root .combo-box-base .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 8 0 4;
+}
+.leaderboard-root .combo-box-base .arrow-button .arrow {
+    -fx-background-color: rgba(10,12,10,0.92);
+}
+
+/* Popup panel */
+.leaderboard-root .combo-box-popup .list-view {
+    -fx-background-color: linear-gradient(
+        to bottom,
+        rgba(11, 42, 26, 0.98),
+        rgba(0, 0, 0, 0.98)
+    );
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+
+    -fx-border-color: rgba(124,255,74,0.85);
+    -fx-border-width: 1.8;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.40), 22, 0.55, 0, 0);
+}
+
+.leaderboard-root .combo-box-popup .list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+.leaderboard-root .combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: rgba(57,255,20,0.18);
+    -fx-border-color: rgba(124,255,74,0.95);
+    -fx-border-width: 1.2;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.55), 20, 0.65, 0, 0);
+}
+
+.leaderboard-root .combo-box-popup .list-view .list-cell:selected {
+    -fx-background-color: rgba(11, 42, 26, 0.96);
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: rgba(124,255,74,1.0);
+    -fx-border-width: 1.6;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.72), 24, 0.75, 0, 0);
+}
+
+/* =========================================================
+   LEADERBOARD TABLE — WOLF GREEN (scoped)
+   ========================================================= */
+
+/* Header strip */
+.leaderboard-root .lb-table .column-header-background {
+    -fx-background-color: rgba(57,255,20,0.06);
+    -fx-border-color: rgba(124,255,74,0.18);
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Header text */
+.leaderboard-root .lb-table .column-header .label {
+    -fx-text-fill: rgba(255,255,255,0.95);
+}
+
+/* Row “cards” */
+.leaderboard-root .lb-table .table-row-cell:filled .table-cell {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-border-color: rgba(124,255,74,0.18);
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+.leaderboard-root .lb-table .table-row-cell:filled:hover .table-cell {
+    -fx-background-color: rgba(57,255,20,0.14);
+    -fx-border-color: rgba(124,255,74,0.55);
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.18), 14, 0.35, 0, 0);
+}
+
+.leaderboard-root .lb-table .table-row-cell:filled:selected .table-cell {
+    -fx-background-color: rgba(11,42,26,0.70);
+    -fx-border-color: rgba(124,255,74,0.95);
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.28), 18, 0.50, 0, 0);
+}
+
+/* Scrollbar thumb (subtle green) */
+.leaderboard-root .scroll-bar:vertical .thumb,
+.leaderboard-root .scroll-bar:horizontal .thumb {
+    -fx-background-color: rgba(124,255,74,0.22);
+    -fx-background-radius: 10;
+}
+
+/* =========================================================
+   LEADERBOARD PODIUM — WOLF GREEN (scoped)
+   ========================================================= */
+
+.leaderboard-root .lb-podium-card {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-border-color: rgba(124,255,74,0.22);
+
+    -fx-effect: dropshadow(gaussian, rgba(57,255,20,0.18), 14, 0.35, 0, 0);
+}
+
+/* keep medal colors but add a faint green presence */
+.leaderboard-root .lb-gold   { -fx-border-color: rgba(255,215,0,0.60); }
+.leaderboard-root .lb-silver { -fx-border-color: rgba(220,220,220,0.45); }
+.leaderboard-root .lb-bronze { -fx-border-color: rgba(205,127,50,0.45); }
+
+.leaderboard-root .lb-rank-chip {
+    -fx-background-color: rgba(57,255,20,0.14);
+    -fx-text-fill: rgba(255,255,255,0.95);
+    -fx-border-color: rgba(124,255,74,0.55);
+    -fx-border-width: 1.2;
+}
+
+.leaderboard-root .lb-podium-name,
+.leaderboard-root .lb-podium-stat {
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+
+/* Podium steps */
+.leaderboard-root .lb-step {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-border-color: rgba(124,255,74,0.20);
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 22, 0.35, 0, 10);
+}
+
+.leaderboard-root .lb-step-num {
+    -fx-text-fill: rgba(255,255,255,0.90);
+}

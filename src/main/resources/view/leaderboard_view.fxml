@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -14,8 +15,14 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<StackPane fx:id="root" prefHeight="770.0" prefWidth="1300.0" styleClass="leaderboard-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.LeaderboardController">
+<StackPane fx:id="root" prefHeight="770.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.LeaderboardController">
+
+  <styleClass>
+    <String fx:value="leaderboard-root"/>
+    <String fx:value="themed-bg"/>
+  </styleClass>
 
     <children>
         <VBox maxWidth="1300.0" prefWidth="1300.0" spacing="16.0">
@@ -34,15 +41,24 @@
 
             <!-- Filters -->
             <HBox alignment="CENTER_LEFT" spacing="12" styleClass="leaderboard-filters">
-                <Label text="Time Window:" />
+                <Label text="Time Window:">
+               <font>
+                  <Font name="Copperplate Gothic Light" size="20.0" />
+               </font></Label>
                 <ComboBox fx:id="timeWindowCombo" prefWidth="200" />
 
-                <Label text="Sort By:" />
+                <Label text="Sort By:">
+               <font>
+                  <Font name="Copperplate Gothic Light" size="20.0" />
+               </font></Label>
                 <ComboBox fx:id="metricCombo" prefWidth="240" />
 
                 <Region HBox.hgrow="ALWAYS" />
 
-                <Button fx:id="refreshBtn" onAction="#onRefresh" prefHeight="41.0" prefWidth="146.0" text="Refresh" />
+                <Button fx:id="refreshBtn" onAction="#onRefresh" prefHeight="41.0" prefWidth="146.0" text="Refresh">
+               <font>
+                  <Font name="Copperplate Gothic Light" size="21.0" />
+               </font></Button>
             </HBox>
 
             <!-- Tabs -->
@@ -50,7 +66,7 @@
                 <tabs>
 
                     <!-- PLAYERS TAB -->
-                    <Tab closable="false" text="Players">
+                    <Tab closable="false" style="fx-font-family: copperplate gothic light;" text="Players">
                         <content>
                             <VBox spacing="12" styleClass="lb-tab-content">
                                 <padding>
@@ -58,6 +74,8 @@
                                 </padding>
 
                                 <!-- Podium (Top 3 Players) -->
+                                <StackPane styleClass="lb-podium-wrap">
+
 <HBox alignment="BOTTOM_CENTER" spacing="18" styleClass="lb-podium">
 
     <!-- #2 -->
@@ -94,6 +112,8 @@
     </VBox>
 
 </HBox>
+</StackPane>
+
 
 
                                 <!-- Simplified table (no top 3) -->
@@ -115,7 +135,7 @@
                     </Tab>
 
                     <!-- TEAMS TAB -->
-                    <Tab closable="false" text="Teams">
+                    <Tab closable="false" style="fx-font-family: copperplate gothic light;" text="Teams">
                         <content>
                             <VBox spacing="12" styleClass="lb-tab-content">
                                 <padding>
@@ -123,7 +143,10 @@
                                 </padding>
 
                                 <!-- Podium (Top 3 Teams) -->
+                                <StackPane styleClass="lb-podium-wrap">
+
 <HBox alignment="BOTTOM_CENTER" spacing="18" styleClass="lb-podium">
+
 
     <!-- #2 -->
     <VBox alignment="BOTTOM_CENTER" spacing="0" styleClass="lb-podium-slot">
@@ -177,6 +200,8 @@
     </VBox>
 
 </HBox>
+</StackPane>
+
 
 
                                 <!-- Simplified teams table (no top 3) -->

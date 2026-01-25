@@ -1,304 +1,97 @@
-/* ===============================
-   ROOT
-   =============================== */
+/* =========================
+   LEADERBOARD SCREEN (LAYOUT ONLY)
+   No theme colors here.
+   Theme colors must be in theme.css / wolf.css ONLY.
+   ========================= */
 
+/* Root typography baseline (NO font-family here unless you want to force it) */
 .leaderboard-root {
-    -fx-font-family: "Copperplate Gothic Light";
-    -fx-font-size: 18px;
+    -fx-font-size: 15px;
 }
 
-/* Apply ONLY inside leaderboard */
+/* Title typography only */
+.leaderboard-title {
+    -fx-font-family: "Copperplate Gothic Bold", "Georgia", "Serif";
+    -fx-font-size: 35px;
+}
+
+/* Filters row layout */
+.leaderboard-filters {
+    -fx-padding: 2 0 2 0;
+    -fx-spacing: 12;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Buttons: shape/spacing only (NO colors) */
 .leaderboard-root .button {
     -fx-background-radius: 999;
     -fx-border-radius: 999;
     -fx-padding: 8 18 8 18;
-
-    /* Use theme lookup colors if you have them */
-    -fx-background-color: rgba(0,0,0,0.35);
-    -fx-border-color: -fx-accent;
-    -fx-border-width: 2;
-
-    -fx-text-fill: white;
+    -fx-cursor: hand;
 }
 
-.leaderboard-root .button:hover {
-    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.25), 18, 0.25, 0, 0);
-    -fx-background-color: rgba(255,255,255,0.10);
-}
-
+/* ComboBoxes: shape only (NO colors) */
 .leaderboard-root .combo-box,
 .leaderboard-root .combo-box-base {
     -fx-background-radius: 999;
     -fx-border-radius: 999;
-
-    -fx-background-color: rgba(0,0,0,0.35);
-    -fx-border-color: -fx-accent;
-    -fx-border-width: 2;
-
-    -fx-mark-color: white;
-    -fx-text-fill: white;
-}
-
-.leaderboard-root .combo-box .list-cell {
-    -fx-text-fill: white;
-    -fx-background-color: transparent;
-}
-
-
-/* ===============================
-   LABELS / GENERAL TEXT
-   =============================== */
-
-/* Title */
-.leaderboard-title {
-    -fx-font-family: "Copperplate Gothic Bold";
-    -fx-font-size: 35px;
-    -fx-text-fill: white;
-}
-
-/* Change cursor when hovering tabs */
-.tab-pane .tab-header-area .tab {
-    -fx-cursor: hand;
-}
-
-/* ===============================
-   FILTER ROW
-   =============================== */
-
-.leaderboard-filters {
-    -fx-padding: 2 0 2 0;
-}
-
-
-/* ===============================
-   COMBO BOX (FORCE CONSISTENT LOOK)
-   =============================== */
-
-.combo-box .list-cell {
-    -fx-font-family: "Copperplate Gothic Light";
-    -fx-font-size: 18px;
-    -fx-text-fill: #f9fafb;
-    -fx-background-color: transparent;
-}
-
-/* Popup list */
-.combo-box-popup .list-view {
-    -fx-background-color: rgba(0,0,0,0.85);
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-border-color: rgba(255,255,255,0.25);
     -fx-border-width: 1;
 }
 
-.combo-box-popup .list-cell {
-    -fx-font-family: "Copperplate Gothic Light";
-    -fx-font-size: 18px;
-    -fx-text-fill: #f9fafb;
+/* Popup: shape only (NO colors) */
+.leaderboard-root .combo-box-popup .list-view {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-padding: 4;
+}
+
+/* Popup cells: typography + padding only */
+.leaderboard-root .combo-box-popup .list-cell {
+    -fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
+    -fx-font-size: 15px;
     -fx-padding: 10 12 10 12;
 }
 
-.combo-box-popup .list-cell:hover {
-    -fx-background-color: rgba(255,255,255,0.18);
-}
-
-.combo-box-popup .list-cell:selected {
-    -fx-background-color: rgba(255,255,255,0.28);
-}
-
-/* ===============================
-   TAB PANE (MATCH TABLE DESIGN)
-   =============================== */
-
+/* Tabs: layout only (NO colors) */
 .leaderboard-tabs {
     -fx-background-color: transparent;
 }
 
-/* remove default header background */
 .leaderboard-tabs .tab-header-area .tab-header-background {
     -fx-background-color: transparent;
 }
 
-/* header strip container */
 .leaderboard-tabs .tab-header-area {
     -fx-padding: 0 0 8 0;
 }
 
-/* tabs */
+/* Tab typography/shape only */
 .leaderboard-tabs .tab {
-    -fx-font-family: "Copperplate Gothic Light";
+    -fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
     -fx-font-size: 18px;
 
-    -fx-background-color: rgba(0,0,0,0.35);
     -fx-background-radius: 10 10 0 0;
     -fx-border-radius: 10 10 0 0;
-    -fx-border-color: rgba(255,255,255,0.25);
     -fx-border-width: 1;
 
     -fx-padding: 8 18 8 18;
 }
 
-/* selected tab pops like a card */
-.leaderboard-tabs .tab:selected {
-    -fx-background-color: rgba(255,255,255,0.12);
-    -fx-border-color: rgba(255,255,255,0.35);
-}
-
-/* text in the tab */
 .leaderboard-tabs .tab .tab-label {
-    -fx-text-fill: #f9fafb;
+    -fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
 }
 
-/* content area below tabs */
+/* Content area transparency */
 .leaderboard-tabs .tab-content-area {
     -fx-background-color: transparent;
 }
 
-/* ===============================
-   TABLE VIEW (CORE)
-   =============================== */
+/* =========================
+   TABLE (layout only)
+   ========================= */
 
-.table-view {
-    -fx-background-color: rgba(0, 0, 0, 0.55);
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-border-color: rgba(255, 255, 255, 0.25);
-    -fx-border-width: 1;
-    -fx-padding: 6;
-}
-
-.table-view .column-header-background {
-    -fx-background-color: transparent;
-}
-
-.table-view .column-header {
-    -fx-background-color: rgba(255, 255, 255, 0.12);
-    -fx-border-color: rgba(255, 255, 255, 0.15);
-    -fx-border-width: 0 0 1 0;
-}
-
-.table-view .column-header .label {
-    -fx-font-family: "Copperplate Gothic Light";
-    -fx-font-size: 18px;
-    -fx-text-fill: white;
-    -fx-alignment: CENTER;
-}
-
-/* ===============================
-   TABLE ROWS
-   =============================== */
-
-.table-row-cell {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-}
-
-.table-row-cell:odd {
-    -fx-background-color: rgba(255, 255, 255, 0.03);
-}
-
-.table-row-cell:even {
-    -fx-background-color: rgba(255, 255, 255, 0.06);
-}
-
-.table-row-cell:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.18);
-}
-
-.table-row-cell:selected {
-    -fx-background-color: rgba(255, 255, 255, 0.28);
-}
-
-/* ===============================
-   TABLE CELLS
-   =============================== */
-
-.table-cell {
-    -fx-font-family: "Copperplate Gothic Light";
-    -fx-font-size: 18px;
-    -fx-text-fill: #f9fafb;
-    -fx-alignment: CENTER;
-    -fx-padding: 10 6 10 6;
-}
-
-/* Left-align names (rank + avatars then name => name is usually 3rd col in Players, 4th in Teams) */
-#playersTable .table-cell {
-    /* default ok */
-}
-#teamsTable .table-cell {
-    /* default ok */
-}
-
-/* ===============================
-   AVATAR CELLS
-   =============================== */
-
-.table-cell ImageView {
-    -fx-fit-width: 36px;
-    -fx-fit-height: 36px;
-    -fx-preserve-ratio: true;
-    -fx-smooth: true;
-}
-
-/* ===============================
-   SCROLL BAR (SUBTLE)
-   =============================== */
-
-.scroll-bar:vertical {
-    -fx-background-color: transparent;
-}
-
-.scroll-bar:vertical .thumb {
-    -fx-background-color: rgba(255, 255, 255, 0.25);
-    -fx-background-radius: 6;
-}
-
-
-/* Podium visuals */
-.lb-podium { -fx-padding: 8 0 8 0; }
-
-.lb-podium-card {
-    -fx-min-width: 220;
-    -fx-padding: 12 14 12 14;
-    -fx-background-radius: 22;
-    -fx-border-radius: 22;
-
-    -fx-background-color: rgba(255,255,255,0.06);
-    -fx-border-color: rgba(255,255,255,0.16);
-    -fx-border-width: 1.6;
-}
-
-.lb-gold   { -fx-border-color: rgba(255,215,0,0.70); }
-.lb-silver { -fx-border-color: rgba(220,220,220,0.55); }
-.lb-bronze { -fx-border-color: rgba(205,127,50,0.55); }
-
-.lb-rank-chip {
-    -fx-background-color: rgba(255,255,255,0.10);
-    -fx-background-radius: 999;
-    -fx-padding: 5 12 5 12;
-    -fx-font-family: "Copperplate Gothic Bold";
-}
-
-.lb-avatar-frame {
-    -fx-background-radius: 999;
-    -fx-border-radius: 999;
-    -fx-background-color: rgba(0,0,0,0.20);
-    -fx-border-color: rgba(255,255,255,0.20);
-    -fx-border-width: 2;
-    -fx-padding: 6;
-}
-.lb-avatar-frame-big { -fx-padding: 8; }
-
-.lb-podium-name {
-    -fx-font-family: "Copperplate Gothic Bold";
-    -fx-font-size: 15px;
-}
-.lb-podium-stat {
-    -fx-font-family: "Copperplate Gothic Light";
-    -fx-font-size: 12px;
-    -fx-opacity: 0.9;
-}
-
-/* Table → transparent base */
+/* Use ONLY lb-table so we don't affect other tables in the app */
 .lb-table,
 .lb-table .virtual-flow,
 .lb-table .virtual-flow .clipped-container,
@@ -306,92 +99,147 @@
     -fx-background-color: transparent;
 }
 
-/* Header styling */
+/* Header strip shape only */
 .lb-table .column-header-background {
-    -fx-background-color: rgba(255,255,255,0.06);
     -fx-background-radius: 16;
     -fx-padding: 8;
 }
-.lb-table .column-header, 
+
+/* Header cell shape only */
+.lb-table .column-header,
 .lb-table .filler {
     -fx-background-color: transparent;
 }
 
-/* Row cards */
+/* Header typography only */
+.lb-table .column-header .label {
+    -fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
+    -fx-font-size: 18px;
+    -fx-alignment: CENTER;
+}
+
+/* Row layout only */
 .lb-table .table-row-cell {
     -fx-background-color: transparent;
     -fx-padding: 6 0 6 0;
 }
 
+/* “Card cell” shape only */
 .lb-table .table-row-cell:filled .table-cell {
-    -fx-background-color: rgba(255,255,255,0.06);
     -fx-background-radius: 14;
     -fx-border-radius: 14;
-    -fx-border-color: rgba(255,255,255,0.14);
     -fx-border-width: 1.2;
     -fx-padding: 10 10 10 10;
+
+    -fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
+    -fx-font-size: 18px;
+    -fx-alignment: CENTER;
 }
 
-.lb-table .table-row-cell:filled:hover .table-cell {
-    -fx-background-color: rgba(255,255,255,0.10);
-    -fx-border-color: rgba(255,255,255,0.28);
+/* Avatar sizing only */
+.lb-table .table-cell ImageView {
+    -fx-fit-width: 36px;
+    -fx-fit-height: 36px;
+    -fx-preserve-ratio: true;
+    -fx-smooth: true;
 }
 
-.lb-podium .lb-avatar-frame,
-.lb-podium .lb-avatar-frame-big {
+/* Scrollbar shape only */
+.leaderboard-root .scroll-bar:vertical {
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-    -fx-padding: 0;
 }
 
-/* -------------------------------
-   PODIUM: real steps
-   ------------------------------- */
+.leaderboard-root .scroll-bar:vertical .thumb {
+    -fx-background-radius: 6;
+}
+
+/* =========================
+   PODIUM (layout only)
+   ========================= */
 
 .lb-podium {
     -fx-padding: 6 0 10 0;
 }
 
-/* each slot is a mini-stage that stacks: step (bottom) + content (top) */
 .lb-podium-slot {
     -fx-alignment: BOTTOM_CENTER;
     -fx-padding: 0 6 0 6;
 }
 
-/* the content floats slightly above the step */
 .lb-podium-content {
     -fx-translate-y: -10;
 }
 
-/* base step */
+/* Podium card shape only */
+.lb-podium-card {
+    -fx-min-width: 220;
+    -fx-padding: 12 14 12 14;
+    -fx-background-radius: 22;
+    -fx-border-radius: 22;
+    -fx-border-width: 1.6;
+}
+
+/* Rank chip shape + typography only */
+.lb-rank-chip {
+    -fx-background-radius: 999;
+    -fx-padding: 5 12 5 12;
+    -fx-font-family: "Copperplate Gothic Bold", "Georgia", "Serif";
+}
+
+/* Podium labels typography only */
+.lb-podium-name {
+    -fx-font-family: "Copperplate Gothic Bold", "Georgia", "Serif";
+    -fx-font-size: 15px;
+}
+
+.lb-podium-stat {
+    -fx-font-family: "Copperplate Gothic Light", "Georgia", "Serif";
+    -fx-font-size: 12px;
+    -fx-opacity: 0.9;
+}
+
+/* Steps shape only */
 .lb-step {
     -fx-min-width: 250;
     -fx-max-width: 250;
     -fx-background-radius: 16;
     -fx-border-radius: 16;
     -fx-border-width: 1.4;
-
-    /* 3D-ish shadow */
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 22, 0.35, 0, 10);
 }
 
-/* heights = podium effect */
-.lb-step-gold   { -fx-min-height: 120; -fx-background-color: rgba(255,255,255,0.08); -fx-border-color: rgba(255,215,0,0.55); }
-.lb-step-silver { -fx-min-height: 92;  -fx-background-color: rgba(255,255,255,0.07); -fx-border-color: rgba(220,220,220,0.38); }
-.lb-step-bronze { -fx-min-height: 76;  -fx-background-color: rgba(255,255,255,0.06); -fx-border-color: rgba(205,127,50,0.38); }
+/* Heights only */
+.lb-step-gold   { -fx-min-height: 120; }
+.lb-step-silver { -fx-min-height: 92; }
+.lb-step-bronze { -fx-min-height: 76; }
 
-/* number on the podium step */
+/* Number typography only */
 .lb-step-num {
-    -fx-font-family: "Copperplate Gothic Bold";
+    -fx-font-family: "Copperplate Gothic Bold", "Georgia", "Serif";
     -fx-font-size: 26px;
-    -fx-text-fill: rgba(255,255,255,0.85);
     -fx-padding: 0 0 10 0;
 }
+/* Podium wrapper panel (works on any background, even white) */
+.lb-podium-wrap {
+    -fx-padding: 14 18 14 18;
 
-/* optional: add a “top surface” highlight */
-.lb-step {
-    -fx-background-insets: 0;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+
+    -fx-background-color: linear-gradient(
+        to bottom right,
+        rgba(0, 0, 0, 0.30),
+        rgba(0, 0, 0, 0.15)
+    );
+
+    -fx-border-color: rgba(255,255,255,0.50);
+    -fx-border-width: 1.4;
+
+    /* Optional but recommended for separation */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 18, 0.35, 0, 8);
 }
 
+/* keep your existing spacing */
+.lb-podium { 
+    -fx-padding: 6 0 10 0;
+}
 
