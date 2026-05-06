@@ -124,7 +124,7 @@ This project was built with emphasis on:
 
 ---
 
-#  Future Improvements
+#  Possible Future Improvements
 
 - Online multiplayer support
 - AI opponent system
