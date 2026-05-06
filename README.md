@@ -100,7 +100,7 @@ Designed as a complete desktop game experience with a cinematic fantasy-inspired
 #  Technologies Used
 
 - Java
-- JavaFX / Swing (depending on your implementation)
+- JavaFX
 - Object-Oriented Programming (OOP)
 - File/Data Management
 - Custom UI Design
