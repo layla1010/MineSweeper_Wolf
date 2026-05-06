@@ -97,6 +97,23 @@ Designed as a complete desktop game experience with a cinematic fantasy-inspired
 
 ---
 
+## How to Run
+
+### Requirements
+- Java JDK 19
+- Maven
+- JavaFX dependencies configured through Maven
+
+### Run with Eclipse
+1. Clone or download the repository.
+2. Open Eclipse.
+3. Import the project as an existing Maven project.
+4. Make sure the project uses JDK 19.
+5. Wait for Maven to download the required dependencies.
+6. Run `control.Main`.
+   
+---
+
 #  Technologies Used
 
 - Java
